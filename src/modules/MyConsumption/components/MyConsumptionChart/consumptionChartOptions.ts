@@ -1,3 +1,4 @@
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { metricTargetType, metricTargetsEnum, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics.d'
 import { EChartsOption } from 'echarts'
 import dayjs from 'dayjs'
@@ -26,7 +27,7 @@ dayjs.extend(timezone)
  * @param timestamps Timestamps.
  * @param values Values datapoints.
  * @param theme Theme used for colors, fonts and backgrounds purposes.
- * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param switchButtonType Boolean indicating if solar production consent is off.
  * @param isMobile Is Mobile view.
  * @param period Period type.
  * @param axisColor Color of the axis.
@@ -37,7 +38,7 @@ export const getEchartsConsumptionChartOptions = (
     timestamps: targetTimestampsValuesFormat,
     values: targetTimestampsValuesFormat,
     theme: Theme,
-    isSolarProductionConsentOff: boolean,
+    switchButtonType: SwitchConsumptionButtonTypeEnum,
     isMobile: boolean,
     period: periodType,
     axisColor: string,
@@ -47,6 +48,10 @@ export const getEchartsConsumptionChartOptions = (
 
     let filteredValues: targetTimestampsValuesFormat = {}
     Object.entries(values).map(([key, arr]) => {
+        // TODO: maybe add a special implementation for production targets in consumption chart ?
+        if (key === metricTargetsEnum.autoconsumption) {
+            filteredValues[key as metricTargetType] = arr
+        }
         if (arr.some((value) => value !== null)) {
             filteredValues[key as metricTargetType] = arr
         }
@@ -64,19 +69,14 @@ export const getEchartsConsumptionChartOptions = (
         ...getDefaultOptionsEchartsConsumptionChart(
             theme,
             isMobile,
+            period,
             selectedLabelPeriodIndex,
             xAxisTimestamps,
             isPeriodUsed,
         ),
-        ...getXAxisOptionEchartsConsumptionChart(xAxisData, isSolarProductionConsentOff, period, axisColor),
+        ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
-        ...getSeriesOptionEchartsConsumptionChart(
-            filteredValues,
-            period,
-            isSolarProductionConsentOff,
-            isPeriodUsed,
-            theme,
-        ),
+        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isPeriodUsed, switchButtonType, theme),
     } as EChartsOption
 }
 
@@ -85,6 +85,7 @@ export const getEchartsConsumptionChartOptions = (
  *
  * @param theme Theme used for colors, fonts and backgrounds.
  * @param isMobile Is Mobile view.
+ * @param period Period type.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @param xAxisTimestamps Timestamps.
  * @param isPeriodUsed Boolean indicating if the period is used.
@@ -93,6 +94,7 @@ export const getEchartsConsumptionChartOptions = (
 const getDefaultOptionsEchartsConsumptionChart = (
     theme: Theme,
     isMobile: boolean,
+    period: periodType,
     selectedLabelPeriod: IPeriodTimeIndexs | undefined,
     xAxisTimestamps: number[],
     isPeriodUsed: boolean,
@@ -107,14 +109,21 @@ const getDefaultOptionsEchartsConsumptionChart = (
         },
         tooltip: {
             // Confine set to true helps for responsive, to avoid overflowing and hiding part of the tooltip on mobile.
-            confine: true,
+            confine: isMobile ? false : true,
             trigger: 'axis',
+            position: isMobile
+                ? () => {
+                      return { top: '-90', left: '20' }
+                  }
+                : 'inside',
         },
         dataZoom: [
             {
                 type: 'inside', // This enables zooming with the mouse wheel or touch gestures
                 start: 0, // start at 0 (0%) of the xAxis
                 end: 100, // end at 100 (100%) of the xAxis
+                disabled: period !== PeriodEnum.DAILY, // Disable zooming for period other than day
+                minValueSpan: 10,
             },
         ],
         brush: {
@@ -185,16 +194,16 @@ const getDefaultOptionsEchartsConsumptionChart = (
  *
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
- * @param isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param isPeriodUsed Boolean indicating if the period selction is used.
+ * @param switchButtonType Indicates the current switch button type.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getSeriesOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
-    isSolarProductionConsentOff: boolean,
     isPeriodUsed: boolean,
+    switchButtonType: SwitchConsumptionButtonTypeEnum,
     theme: Theme,
 ) => {
     // Targets functions yAxis Value formatter type (label shown in tooltip).
@@ -205,7 +214,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
         const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
             target as metricTargetsEnum,
             theme,
-            isSolarProductionConsentOff,
+            switchButtonType,
         )
         // When the series is Transparent we hide it through type 'line' and symbole none, so that it won't interject with the already bar and line charts additional to its own stack name.
         const typeTargetSeries: EChartsOption['series'] =
@@ -220,16 +229,9 @@ export const getSeriesOptionEchartsConsumptionChart = (
             emphasis: {
                 focus: period === PeriodEnum.DAILY ? 'none' : 'series',
             },
-            name: `${getNameTargetSeriesEchartsConsumptionChart(
-                target as metricTargetsEnum,
-                isSolarProductionConsentOff,
-            )}`,
+            name: `${getNameTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, switchButtonType)}`,
             data: values[target as metricTargetType],
-            stack: getStackTargetSeriesEchartsConsumptionChart(
-                target as metricTargetsEnum,
-                theme,
-                isSolarProductionConsentOff,
-            ),
+            stack: getStackTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, theme, switchButtonType),
             yAxisIndex: Number(targetYAxisIndex),
             tooltip: {
                 valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
@@ -253,20 +255,14 @@ export const getSeriesOptionEchartsConsumptionChart = (
         const index = resultSeries.findIndex(
             (serie) =>
                 serie.name ===
-                    getNameTargetSeriesEchartsConsumptionChart(
-                        metricTargetsEnum.idleConsumption,
-                        isSolarProductionConsentOff,
-                    ) ||
+                    getNameTargetSeriesEchartsConsumptionChart(metricTargetsEnum.idleConsumption, switchButtonType) ||
                 serie.name ===
                     getNameTargetSeriesEchartsConsumptionChart(
                         metricTargetsEnum.eurosIdleConsumption,
-                        isSolarProductionConsentOff,
+                        switchButtonType,
                     ) ||
                 serie.name ===
-                    getNameTargetSeriesEchartsConsumptionChart(
-                        metricTargetsEnum.subscriptionPrices,
-                        isSolarProductionConsentOff,
-                    ),
+                    getNameTargetSeriesEchartsConsumptionChart(metricTargetsEnum.subscriptionPrices, switchButtonType),
         )
 
         // if no index then veille is not activated and we are not showing it in the first place
@@ -285,14 +281,14 @@ export const getSeriesOptionEchartsConsumptionChart = (
  * Get Xaxis option of Echarts Consumption Option.
  *
  * @param xAxisData X axis data array.
- * @param isSolarProductionConsentOff IsSolarProductionConsentOff.
+ * @param switchButtonType Indicates the current switch button type.
  * @param period Current period.
  * @param axisColor Color of the axis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getXAxisOptionEchartsConsumptionChart = (
     xAxisData: string[],
-    isSolarProductionConsentOff: boolean,
+    switchButtonType: SwitchConsumptionButtonTypeEnum,
     period: periodType,
     axisColor: string,
 ) =>
@@ -303,7 +299,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
                 type: 'category',
                 data: xAxisData,
                 axisLabel: {
-                    interval: getXAxisLabelInterval(isSolarProductionConsentOff, period),
+                    interval: getXAxisLabelInterval(switchButtonType, period),
                     hideOverlap: true,
                     rotate: 30,
                     /**
@@ -352,13 +348,13 @@ export const getXAxisOptionEchartsConsumptionChart = (
  * Function that give the index of the time in timestamps that we will get the interval from.
  * For exemple : ['00:30', '01:00', '01:30', '02:00'], if we put the index 1, it will show every 2 timestamps in the axis line.
  *
- * @param isSolarProductionConsentOff Is production on, to know if data is every minute or 30min.
+ * @param switchButtonType Indicates the current switch button type.
  * @param period Period to know if it's daily or not.
  * @returns Value of the index that will be the reference for the times.
  */
-const getXAxisLabelInterval = (isSolarProductionConsentOff: boolean, period: periodType) => {
+const getXAxisLabelInterval = (switchButtonType: SwitchConsumptionButtonTypeEnum, period: periodType) => {
     if (period === 'daily') {
-        return isSolarProductionConsentOff ? 59 : 1
+        return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ? 59 : 1
     }
 }
 
@@ -388,13 +384,13 @@ export const getXAxisCategoriesData = (timestamps: number[], period: periodType)
  *
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
- * @param isSolarProductionConsentOff Indicates if solarProduction consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Color of the given target series in EchartsConsumptionChart.
  */
 export const getColorTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
     theme: Theme,
-    isSolarProductionConsentOff?: boolean,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
     switch (target) {
         case metricTargetsEnum.externalTemperature:
@@ -425,7 +421,9 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.totalOffIdleConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
-            return isSolarProductionConsentOff ? TRANSPARENT_COLOR : theme.palette.secondary.main
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? TRANSPARENT_COLOR
+                : theme.palette.secondary.main
         case metricTargetsEnum.euroPeakHourConsumption:
             return '#6BCBFF'
         case metricTargetsEnum.euroOffPeakConsumption:
@@ -459,12 +457,12 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
  * Function that returns the name which represents the label for each target series of EchartsConsumptionChart (shown in tooltip and legend).
  *
  * @param target MetricTarget Chart.
- * @param isSolarProductionConsentOff Indicates if solarProduction consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Label of the given target series in EchartsConsumptionChart.
  */
 export const getNameTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
-    isSolarProductionConsentOff?: boolean,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
     const totalConsumptionSeriesLabel = 'Consommation totale'
     const totalEurosConsumptionSeriesLabel = 'Consommation euro totale'
@@ -474,9 +472,13 @@ export const getNameTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.totalIdleConsumption:
             return totalConsumptionSeriesLabel
         case metricTargetsEnum.consumption:
-            return isSolarProductionConsentOff ? totalConsumptionSeriesLabel : 'Electricité achetée sur le réseau'
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? totalConsumptionSeriesLabel
+                : 'Electricité achetée sur le réseau'
         case metricTargetsEnum.baseConsumption:
-            return isSolarProductionConsentOff ? 'Consommation de base' : 'Electricité achetée sur le réseau'
+            return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                ? 'Consommation de base'
+                : 'Electricité achetée sur le réseau'
         case metricTargetsEnum.autoconsumption:
             return 'Autoconsommation'
         case metricTargetsEnum.eurosConsumption:
@@ -651,15 +653,15 @@ export const getTypeTargetSeriesEchartsConsumptionChart = (
  * 3rd case: Targets that has their series color 'TRANSPARENT', it's a workaround so that they will seem invisible and won't conflicts with the others charts even if they have invisible Color.
  * @param target MetricTarget Chart.
  * @param theme Current MUI Theme Applied.
- * @param isSolarProductionConsentOff Indicates if solarProduction consent is off.
+ * @param switchButtonType Indicates the current switch button type.
  * @returns Stack group name of the given target series in EchartsConsumptionChart.
  */
 export const getStackTargetSeriesEchartsConsumptionChart = (
     target: metricTargetsEnum,
     theme: Theme,
-    isSolarProductionConsentOff?: boolean,
+    switchButtonType?: SwitchConsumptionButtonTypeEnum,
 ) => {
-    const targetColor = getColorTargetSeriesEchartsConsumptionChart(target, theme, isSolarProductionConsentOff)
+    const targetColor = getColorTargetSeriesEchartsConsumptionChart(target, theme, switchButtonType)
     const stackHiddenTargetsSeries = 'stackHiddenTargetsSeries'
     const stackConsumptionTargetsSeries = 'stackConsumptionTargetsSeries'
     if (target === metricTargetsEnum.pMax) return 'stackPmaxTargetSeries'
@@ -700,6 +702,9 @@ export const getYAxisOptionEchartsConsumptionChart = (
             axisLine: {
                 onZero: true,
                 show: true,
+                axisLabel: {
+                    show: true,
+                },
                 lineStyle: {
                     color: axisColor,
                     type: 'solid',
@@ -727,6 +732,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
             axisLabel: {
                 formatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
             },
+            min: 0,
         })),
     } as EChartsOption
 }
@@ -829,13 +835,22 @@ const ConsumptionValueFormatter = (
     metricsInterval: '1m' | '30m',
     isYAxisValueFormatter?: boolean,
 ) => {
-    // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
-    // Inspired by Reference: https://github.com/apache/echarts/issues/9896#issuecomment-463113642
-    // https://jsfiddle.net/ovilia/k1bsuteo/6/
-    const yAxisLineVisibleValuesList: string[] = []
-    // This variables helps to detect when it's the final process to remove duplicated values from yAxisLine when, because yAxisLine calls valuesFormat have two processes for the values and it's the final and second process that it handles the draw of values
-    let isYAxisLineFinalValueFormatProcess = false
-    let tempYAxisValue = '0'
+    /**
+     * I************************************************************************************************.
+     * TODO - it seems that de duplicated values errors is handled in echarts, their is no need to handle it manualy because it's causing the axis label disapear on zooming.
+     * If somehow an error of duplicated values is detected, we can use this code to handle it, otherwise we can remove it later.
+     * I************************************************************************************************.
+     */
+
+    // ********************************************************************************
+    // // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
+    // // Inspired by Reference: https://github.com/apache/echarts/issues/9896#issuecomment-463113642
+    // // https://jsfiddle.net/ovilia/k1bsuteo/6/
+    // const yAxisLineVisibleValuesList: string[] = []
+    // // This variables helps to detect when it's the final process to remove duplicated values from yAxisLine when, because yAxisLine calls valuesFormat have two processes for the values and it's the final and second process that it handles the draw of values
+    // let isYAxisLineFinalValueFormatProcess = false
+    // let tempYAxisValue = '0'
+
     return function (value: undefined | number) {
         let newValue: string = ''
         if (period === PeriodEnum.DAILY) {
@@ -850,17 +865,18 @@ const ConsumptionValueFormatter = (
                 Boolean(isYAxisValueFormatter),
             )
         }
-        if (isYAxisValueFormatter) {
-            // When it's the final valueFormat Process it's time to handle the duplicated values.
-            // To know if we are on the second final process we need to have gone through the first process by tempYAxisValue which indicates that it's not 0, and we go back again to 0 indicated by newValue.
-            if (parseInt(newValue) !== 0) tempYAxisValue = newValue
-            if (parseInt(tempYAxisValue) !== 0 && parseInt(newValue) === 0 && !isYAxisLineFinalValueFormatProcess)
-                isYAxisLineFinalValueFormatProcess = true
-            if (isYAxisLineFinalValueFormatProcess) {
-                if (yAxisLineVisibleValuesList.includes(newValue)) return null
-                yAxisLineVisibleValuesList.push(newValue)
-            }
-        }
+        // if (isYAxisValueFormatter) {
+        //     // When it's the final valueFormat Process it's time to handle the duplicated values.
+        //     // To know if we are on the second final process we need to have gone through the first process by tempYAxisValue which indicates that it's not 0, and we go back again to 0 indicated by newValue.
+        //     if (parseInt(newValue) !== 0) tempYAxisValue = newValue
+        //     if (parseInt(tempYAxisValue) !== 0 && parseInt(newValue) === 0 && !isYAxisLineFinalValueFormatProcess)
+        //         isYAxisLineFinalValueFormatProcess = true
+        //     if (isYAxisLineFinalValueFormatProcess) {
+        //         if (yAxisLineVisibleValuesList.includes(newValue)) return null
+        //         yAxisLineVisibleValuesList.push(newValue)
+        //     }
+        //     console.log(newValue, 'newValue', isYAxisLineFinalValueFormatProcess, tempYAxisValue, yAxisLineVisibleValuesList)
+        // }
         return newValue
     }
 }

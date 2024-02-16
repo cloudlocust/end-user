@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import MobileDetect from 'mobile-detect'
 import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
-import { useHistory } from 'react-router'
+import { useHistory } from 'react-router-dom'
 
 const Root = styled('div')(() => ({
     overscrollBehavior: 'contain',

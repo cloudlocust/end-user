@@ -70,11 +70,7 @@ export function useConsents() {
      */
     const getConsents = useCallback(
         async (houseId?: number) => {
-            setNrlinkConsent(undefined)
-            setEnedisSgeConsent(undefined)
-            setEnphaseConsent(undefined)
             if (!houseId || !currentHousing?.meter?.guid) return
-
             setConsentsLoading(true)
             /**
              * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.

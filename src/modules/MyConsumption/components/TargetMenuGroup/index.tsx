@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { ITargetMenuGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { tempPmaxFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
-import { Menu, MenuItem, ListItemIcon, Tooltip } from '@mui/material'
+import { isTempPmaxFeatureDisabled } from 'src/modules/MyHouse/MyHouseConfig'
+import { Menu, MenuItem, ListItemIcon } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { SyntheticEvent } from 'react'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -119,57 +119,39 @@ const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: 
                         <TypographyFormatMessage>Ajouter un axe sur le graphique :</TypographyFormatMessage>
                     </MenuItem>
                     {buttonOptions.map((option) => {
-                        const disabledPmax = hidePmax && option.value === 'Pmax'
-                        const disabledTemperature =
-                            tempPmaxFeatureState && (option.value === 'temperature' || option.value === 'Pmax')
-                        const disabledField = disabledPmax || disabledTemperature
+                        const isPmaxOptionExcluded = (isTempPmaxFeatureDisabled || hidePmax) && option.value === 'Pmax'
+                        const isTemperatureOptionExcluded = isTempPmaxFeatureDisabled && option.value === 'temperature'
+
+                        if (isPmaxOptionExcluded || isTemperatureOptionExcluded) return null
+
                         const activeField = activeButton === option.value
-                        const activeBackgroundColor = activeField
-                            ? theme.palette.primary.light
-                            : theme.palette.common.white
-                        const activeColor = activeField
+                        const BackgroundColor = activeField ? theme.palette.primary.light : theme.palette.common.white
+                        const Color = activeField
                             ? theme.palette.primary.contrastText
                             : theme.palette.secondary.contrastText
 
                         return (
-                            <Tooltip
-                                arrow
-                                placement="top"
-                                disableHoverListener={!disabledField}
-                                title={
-                                    <TypographyFormatMessage>
-                                        {disabledPmax
-                                            ? "Cette fonctionnalité n'est pas disponible sur cette période"
-                                            : "Cette fonctionnalité n'est pas encore disponible"}
-                                    </TypographyFormatMessage>
-                                }
+                            <MenuItem
+                                key={option.value}
+                                onClick={() => {
+                                    handleTarget(option.targets)
+                                    handleClose()
+                                }}
+                                style={{
+                                    backgroundColor: BackgroundColor,
+                                    color: Color,
+                                    fontWeight: '500',
+                                    cursor: 'pointer',
+                                }}
                             >
-                                <MenuItem
-                                    key={option.value}
-                                    onClick={() => {
-                                        if (disabledField) return
-                                        handleTarget(option.targets)
-                                        handleClose()
-                                    }}
-                                    disabled={disabledField}
-                                    style={{
-                                        backgroundColor: disabledField
-                                            ? theme.palette.grey[600]
-                                            : activeBackgroundColor,
-                                        color: disabledField ? theme.palette.common.black : activeColor,
-                                        fontWeight: '500',
-                                        cursor: disabledField ? 'default' : 'pointer',
-                                    }}
-                                >
-                                    <ListItemIcon>{option.icon}</ListItemIcon>
-                                    <TypographyFormatMessage>{option.label}</TypographyFormatMessage>
-                                    {activeField && (
-                                        <ListItemIcon className="ml-auto">
-                                            <Check />
-                                        </ListItemIcon>
-                                    )}
-                                </MenuItem>
-                            </Tooltip>
+                                <ListItemIcon>{option.icon}</ListItemIcon>
+                                <TypographyFormatMessage>{option.label}</TypographyFormatMessage>
+                                {activeField && (
+                                    <ListItemIcon className="ml-auto">
+                                        <Check />
+                                    </ListItemIcon>
+                                )}
+                            </MenuItem>
                         )
                     })}
                 </Menu>
