@@ -19,6 +19,7 @@ import {
     WRONG_TARGET_TEXT,
     computeAverageIdleConsumption,
     isWidgetMonthlyMetrics,
+    computeTotalEurosWithSubscriptionPrice,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -208,10 +209,13 @@ describe('Test widget functions', () => {
     })
 
     describe('test computeTotalEuros', () => {
-        test('when it returns € unit', () => {
-            const val = 70
+        test.each`
+            target
+            ${metricTargetsEnum.eurosConsumption}
+            ${metricTargetsEnum.subscriptionPrices}
+        `('when it returns € unit, when target is $target', ({ target }) => {
             const expectedResult = {
-                value: val.toFixed(2),
+                value: 70.5,
                 unit: '€',
             }
             const data: IMetric[] = [
@@ -219,15 +223,19 @@ describe('Test widget functions', () => {
                     datapoints: [
                         [20, 1640995200000],
                         [50, 1641081600000],
-                        [0, 1641081600000],
+                        [0.50001, 1641081600000],
                     ],
-                    target: metricTargetsEnum.eurosConsumption,
+                    target,
                 },
             ]
-            const result = computeTotalEuros(data)
+            const result = computeTotalEuros(data, target)
             expect(result).toStrictEqual(expectedResult)
         })
-        test('when it returns 0 €', () => {
+        test.each`
+            target
+            ${metricTargetsEnum.eurosConsumption}
+            ${metricTargetsEnum.subscriptionPrices}
+        `('when it returns 0 €', ({ target }) => {
             const val = 0
             const expectedResult = {
                 value: val,
@@ -236,10 +244,57 @@ describe('Test widget functions', () => {
             const data: IMetric[] = [
                 {
                     datapoints: [[null, 1640995200000]] as number[][],
-                    target: metricTargetsEnum.eurosConsumption,
+                    target: target,
                 },
             ]
-            const result = computeTotalEuros(data)
+            const result = computeTotalEuros(data, target)
+            expect(result).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('test computeTotalEurosWithSubscriptionPrice', () => {
+        test('when it returns € unit', () => {
+            const expectedResult = {
+                value: 140.5,
+                unit: '€',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [
+                        [20, 1640995200000],
+                        [50, 1641081600000],
+                        [0.50001, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.eurosConsumption,
+                },
+                {
+                    datapoints: [
+                        [20, 1640995200000],
+                        [50, 1641081600000],
+                        [0, 1641081600000],
+                    ],
+                    target: metricTargetsEnum.subscriptionPrices,
+                },
+            ]
+            const result = computeTotalEurosWithSubscriptionPrice(data)
+            expect(result).toStrictEqual(expectedResult)
+        })
+        test('when it returns 0 €', () => {
+            const expectedResult = {
+                value: 0,
+                unit: '€',
+            }
+            const data: IMetric[] = [
+                {
+                    datapoints: [[null, 1640995200000]] as number[][],
+                    target: metricTargetsEnum.eurosConsumption,
+                },
+                {
+                    datapoints: [[null, 1640995200000]] as number[][],
+                    target: metricTargetsEnum.subscriptionPrices,
+                },
+            ]
+            const result = computeTotalEurosWithSubscriptionPrice(data)
             expect(result).toStrictEqual(expectedResult)
         })
     })
@@ -259,7 +314,12 @@ describe('Test widget functions', () => {
                 {
                     target: metricTargetsEnum.eurosConsumption,
                     unit: '€',
-                    value: val.toFixed(2),
+                    value: val,
+                },
+                {
+                    target: metricTargetsEnum.subscriptionPrices,
+                    unit: '€',
+                    value: val,
                 },
                 {
                     target: metricTargetsEnum.consumption,
@@ -487,6 +547,11 @@ describe('Test widget functions', () => {
             let cases = [
                 {
                     target: metricTargetsEnum.eurosConsumption,
+                    percentageChange,
+                    color: 'error',
+                },
+                {
+                    target: metricTargetsEnum.subscriptionPrices,
                     percentageChange,
                     color: 'error',
                 },
