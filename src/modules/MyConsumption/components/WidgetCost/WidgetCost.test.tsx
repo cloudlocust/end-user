@@ -5,7 +5,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import WidgetCost from 'src/modules/MyConsumption/components/WidgetCost'
+import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 
 const TOTAL_COST_TEXT = 'Coût Total'
 const TOTAL_COST_INCLUDING_SUBSCRIPTIONS_TEXT = 'Coût total abonnements compris'

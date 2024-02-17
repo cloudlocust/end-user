@@ -17,7 +17,7 @@ const emptyValueUnit = { value: 0, unit: '' }
  * @param props Same Props as Widget Component.
  * @returns WidgetCost Component.
  */
-const WidgetCost = (props: IWidgetProps) => {
+export const WidgetCost = (props: IWidgetProps) => {
     const { metricsInterval, range, period, filters } = props
 
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
@@ -88,5 +88,3 @@ const WidgetCost = (props: IWidgetProps) => {
         </Widget>
     )
 }
-
-export default WidgetCost
