@@ -64,6 +64,7 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         isMetricsLoading: false,
         setRange: jest.fn(),
         setMetricsInterval: jest.fn(),
+        setData: jest.fn(),
     }),
 }))
 
