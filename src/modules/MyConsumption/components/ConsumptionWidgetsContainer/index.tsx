@@ -15,7 +15,7 @@ import { RootState } from 'src/redux'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfDay, startOfDay } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
-import WidgetCost from 'src/modules/MyConsumption/components/WidgetCost'
+import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
