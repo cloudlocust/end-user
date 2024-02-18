@@ -27,6 +27,7 @@ import {
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 
 /**
  * MyConsumptionContainer.
@@ -169,6 +170,11 @@ export const MyConsumptionContainer = () => {
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}
+
+            {/* FAQ used to understand the charts  */}
+            <div className="p-12 sm:p-24">
+                <ChartFAQ period={period} />
+            </div>
 
             {/* Ecowatt Widget */}
             <div className="p-12 sm:p-24" id="ecowatt-widget">
