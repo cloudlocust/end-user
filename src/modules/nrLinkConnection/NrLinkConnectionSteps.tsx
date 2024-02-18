@@ -13,7 +13,6 @@ import 'src/modules/nrLinkConnection/NrLinkConnectionSteps.scss'
 import { IMeter } from 'src/modules/Meters/Meters'
 import MuiLink from '@mui/material/Link'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
@@ -21,6 +20,7 @@ import { linksColor, primaryContrastTextColor, primaryMainColor } from 'src/modu
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import ContractStepNrLinkConnection from 'src/modules/nrLinkConnection/components/ContractStepNrLinkConnection/ContractStepNrLinkConnection'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 
 /**
  *
@@ -113,7 +113,7 @@ const NrLinkConnectionSteps = () => {
                     (theme) => linksColor || theme.palette.primary.main,
             }}
             className="md:text-14"
-            to={URL_CONSUMPTION}
+            to={URL_DASHBOARD}
             underline="none"
         >
             {activeStep !== NrlinkConnectionStepsEnum.fourthStep && (

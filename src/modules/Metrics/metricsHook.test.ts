@@ -1,6 +1,6 @@
 import { reduxedRenderHook } from 'src/common/react-platform-components/test'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
+import { IMetric, getMetricType, metricRangeType, metricTargetsType } from 'src/modules/Metrics/Metrics'
 import { act } from '@testing-library/react-hooks'
 import { getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 
@@ -138,8 +138,12 @@ describe('useMetrics hook test', () => {
             expect(result.current.isMetricsLoading).toBeFalsy()
 
             // GetMetricsWithParams
-            act(() => {
-                result.current.getMetricsWithParams({ ...mockHookArguments, targets: [FAKE_TARGETS[0].target] })
+            let returnedData: IMetric[] | [] = []
+            act(async () => {
+                returnedData = await result.current.getMetricsWithParams({
+                    ...mockHookArguments,
+                    targets: [FAKE_TARGETS[0].target],
+                })
             })
             await waitForValueToChange(
                 () => {
@@ -148,7 +152,27 @@ describe('useMetrics hook test', () => {
                 { timeout: 10000 },
             )
             expect(result.current.isMetricsLoading).toBeFalsy()
+            expect(returnedData.length).toBeGreaterThan(0)
             expect(result.current.data.length).toBeGreaterThan(0)
+        }, 30000)
+
+        test('success (when the parameter isSettingData is equal to false)', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
+            expect(result.current.isMetricsLoading).toBeFalsy()
+
+            let returnedData: IMetric[] | [] = []
+            act(async () => {
+                returnedData = await result.current.getMetricsWithParams(
+                    { ...mockHookArguments, targets: [FAKE_TARGETS[0].target] },
+                    false,
+                )
+            })
+            await waitForValueToChange(() => result.current.isMetricsLoading, { timeout: 10000 })
+            expect(result.current.isMetricsLoading).toBeFalsy()
+            expect(returnedData.length).toBeGreaterThan(0)
+            expect(result.current.data.length).toBe(0)
         }, 30000)
 
         test('fail', async () => {
@@ -158,9 +182,13 @@ describe('useMetrics hook test', () => {
             } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
             expect(result.current.isMetricsLoading).toBeFalsy()
             // GetMetricsWithParams
-            act(() => {
+            let returnedData: IMetric[] | [] = []
+            act(async () => {
                 try {
-                    result.current.getMetricsWithParams({ ...mockHookArguments, targets: [FAKE_TARGETS[0].target] })
+                    returnedData = await result.current.getMetricsWithParams({
+                        ...mockHookArguments,
+                        targets: [FAKE_TARGETS[0].target],
+                    })
                 } catch (err) {}
             })
             await waitForValueToChange(
@@ -170,6 +198,7 @@ describe('useMetrics hook test', () => {
                 { timeout: 10000 },
             )
             expect(result.current.isMetricsLoading).toBeFalsy()
+            expect(returnedData.length).toBe(0)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_METRICS_ERROR_MESSAGE, {
                 variant: 'error',
                 autoHideDuration: 5000,

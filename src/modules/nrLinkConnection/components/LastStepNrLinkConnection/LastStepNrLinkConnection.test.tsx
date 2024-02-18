@@ -3,7 +3,7 @@ import { LastStepNrLinkConnection } from 'src/modules/nrLinkConnection'
 import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axios } from 'src/common/react-platform-components'
-import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import { API_RESOURCES_URL } from 'src/configs'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import { LastStepNrLinkConnectionProps } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection.d'
@@ -229,7 +229,7 @@ describe('Test LastStepNrLinkConnection', () => {
             userEvent.click(getByText(NEXT_BUTTON_TEXT))
 
             await waitFor(() => {
-                expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
+                expect(mockHistoryPush).toHaveBeenCalledWith(URL_DASHBOARD)
             })
 
             axios.post = originalAxiosPost

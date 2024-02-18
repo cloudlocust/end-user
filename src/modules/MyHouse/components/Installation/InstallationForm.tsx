@@ -29,7 +29,7 @@ import { linksColor } from 'src/modules/utils/muiThemeVariables'
  * @returns Equipment Form equipment.
  */
 // TODO: this component is to be redone because it's a mess (thank you Kseniia)
-export const InstallationForm = () => {
+export const InstallationTab = () => {
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const {

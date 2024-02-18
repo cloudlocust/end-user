@@ -2,6 +2,7 @@ import { Card, CardContent, IconButton, Typography } from '@mui/material'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { ConsumptionLabelCardProps } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 /**
  * Consumption Label Card Element.
@@ -62,7 +63,10 @@ const ConsumptionLabelCard = ({
                             </div>
                         </div>
                         {useType && (
-                            <div className="flex-1 border-l-1 border-grey-400 pl-10 ml-10 flex items-center">
+                            <div
+                                className="flex-1 border-l-1 border-grey-400 pl-10 ml-10 flex items-center"
+                                aria-label="useType"
+                            >
                                 <Typography className="text-14 text-grey-800">{useType}</Typography>
                             </div>
                         )}

@@ -155,7 +155,7 @@ function NavbarStyle3Content(props: /**
 
     return (
         <ClickAwayListener onClickAway={() => setPanelOpen(false)}>
-            <Root className={'flex flex-auto flex h-full'}>
+            <Root className={'flex flex-auto h-full'}>
                 <ThemeProvider theme={theme}>
                     <div id="fuse-navbar-side-panel" className="flex flex-shrink-0 flex-col items-center">
                         <NavbarLogo />

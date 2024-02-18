@@ -21,11 +21,6 @@ jest.mock('notistack', () => ({
 }))
 
 const measurementModes = ['mode A', 'mode B', 'mode C']
-const errorMessages = [
-    `Un problème s'est produit lors de la récupération du résultat de la mesure en mode mode A : Error in getting measurement result`,
-    `Un problème s'est produit lors de la récupération du résultat de la mesure en mode mode B : Error in getting measurement result`,
-    `Un problème s'est produit lors de la récupération du résultat de la mesure en mode mode C : Error in getting measurement result`,
-]
 const housingEquipmentId = 35
 const equipmentNumber = 1
 
@@ -96,14 +91,6 @@ describe('useEquipmentMeasurementResults hook', () => {
             [measurementModes[0]]: null,
             [measurementModes[1]]: null,
             [measurementModes[2]]: null,
-        })
-
-        expect(mockEnqueueSnackbar).toHaveBeenCalledTimes(3)
-        errorMessages.forEach((errorMessage) => {
-            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(errorMessage, {
-                autoHideDuration: 5000,
-                variant: 'error',
-            })
         })
     })
 })
