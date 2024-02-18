@@ -2,7 +2,7 @@ import { rest } from 'msw'
 import {
     addActivityRequestBodyType,
     ConsumptionLabelDataType,
-} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes'
+} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.types'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
