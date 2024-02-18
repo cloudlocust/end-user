@@ -48,19 +48,24 @@ const ConsumptionWidgetsContainer = ({
     )
 
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
-        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.pMax]
+        let widgetsToRender: metricTargetType[] = []
 
-        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-        if (
-            period === 'daily' &&
-            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
-            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
-        ) {
-            widgetsToRender = [
-                ...widgetsToRender,
-                metricTargetsEnum.externalTemperature,
-                metricTargetsEnum.internalTemperature,
-            ]
+        if (period !== 'daily') {
+            // When the period is not daily we show the Pmax widget
+            widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
+        } else {
+            const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+            if (
+                range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
+                range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
+            ) {
+                // When the period is daily and the range is today we show the external and internal temperature widgets
+                widgetsToRender = [
+                    ...widgetsToRender,
+                    metricTargetsEnum.externalTemperature,
+                    metricTargetsEnum.internalTemperature,
+                ]
+            }
         }
 
         if (isProductionEnabled) {

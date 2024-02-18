@@ -15,6 +15,8 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 import {
     targetYAxisIndexEnum,
     getTargetsYAxisValueFormattersType,
+    IPeriodTime,
+    IPeriodTimeIndexs,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -28,6 +30,8 @@ dayjs.extend(timezone)
  * @param switchButtonType Boolean indicating if solar production consent is off.
  * @param isMobile Is Mobile view.
  * @param period Period type.
+ * @param axisColor Color of the axis.
+ * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
  */
 export const getEchartsConsumptionChartOptions = (
@@ -37,6 +41,8 @@ export const getEchartsConsumptionChartOptions = (
     switchButtonType: SwitchConsumptionButtonTypeEnum,
     isMobile: boolean,
     period: periodType,
+    axisColor: string,
+    selectedLabelPeriod?: IPeriodTime,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
 
@@ -52,11 +58,25 @@ export const getEchartsConsumptionChartOptions = (
         return undefined
     })
 
+    const xAxisData = getXAxisCategoriesData(xAxisTimestamps, period)
+    const selectedLabelPeriodIndex: IPeriodTimeIndexs = {
+        startTime: selectedLabelPeriod?.startTime ? xAxisData.indexOf(selectedLabelPeriod.startTime) : undefined,
+        endTime: selectedLabelPeriod?.endTime ? xAxisData.indexOf(selectedLabelPeriod.endTime) : undefined,
+    }
+    const isPeriodUsed = selectedLabelPeriod?.startTime && selectedLabelPeriod?.endTime ? true : false
+
     return {
-        ...getDefaultOptionsEchartsConsumptionChart(theme, period, isMobile),
-        ...getXAxisOptionEchartsConsumptionChart(xAxisTimestamps, switchButtonType, period, theme),
-        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, theme),
-        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, switchButtonType, theme),
+        ...getDefaultOptionsEchartsConsumptionChart(
+            theme,
+            isMobile,
+            period,
+            selectedLabelPeriodIndex,
+            xAxisTimestamps,
+            isPeriodUsed,
+        ),
+        ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
+        ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
+        ...getSeriesOptionEchartsConsumptionChart(filteredValues, period, isPeriodUsed, switchButtonType, theme),
     } as EChartsOption
 }
 
@@ -64,12 +84,22 @@ export const getEchartsConsumptionChartOptions = (
  * Echarts ConsumptionChart Default option.
  *
  * @param theme Theme used for colors, fonts and backgrounds.
- * @param period Period type.
  * @param isMobile Is Mobile view.
+ * @param period Period type.
+ * @param selectedLabelPeriod The period selected by the user to highlight.
+ * @param xAxisTimestamps Timestamps.
+ * @param isPeriodUsed Boolean indicating if the period is used.
  * @returns Default EchartsConsumptionChart option.
  */
-const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, period: periodType, isMobile: boolean) =>
-    ({
+const getDefaultOptionsEchartsConsumptionChart = (
+    theme: Theme,
+    isMobile: boolean,
+    period: periodType,
+    selectedLabelPeriod: IPeriodTimeIndexs | undefined,
+    xAxisTimestamps: number[],
+    isPeriodUsed: boolean,
+) => {
+    let defaultOptions = {
         color: 'transparent',
         axisPointer: {
             triggerOn: isMobile ? 'click' : 'mousemove',
@@ -96,20 +126,75 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, period: periodTy
                 minValueSpan: 10,
             },
         ],
+        brush: {
+            toolbox: ['lineX'],
+            xAxisIndex: 0,
+        },
+        toolbox: {
+            feature: {
+                brush: {
+                    show: false,
+                },
+            },
+        },
         // Putting % on the left & bottom & right helps to give space to make visible all the labels on xAxis & yAxis.
         grid: {
             left: '5%',
             right: '4%',
             bottom: '3%',
+            top: '5%',
             containLabel: true,
         },
-    } as EChartsOption)
+    } as EChartsOption
+
+    const commonVisualMapOptions = {
+        show: false,
+        target: {
+            inRange: {
+                opacity: 1,
+            },
+            outOfRange: {
+                opacity: 0.5,
+            },
+        },
+        dimension: 0,
+    }
+
+    if (isPeriodUsed) {
+        return {
+            ...defaultOptions,
+            visualMap: {
+                ...commonVisualMapOptions,
+                pieces: [
+                    {
+                        gte: selectedLabelPeriod?.startTime,
+                        lte: selectedLabelPeriod?.endTime,
+                    },
+                ],
+            },
+        }
+    } else {
+        return {
+            ...defaultOptions,
+            visualMap: {
+                ...commonVisualMapOptions,
+                pieces: [
+                    {
+                        gte: 0,
+                        lte: xAxisTimestamps.length - 1,
+                    },
+                ],
+            },
+        }
+    }
+}
 
 /**
  * Get Xaxis option of Echarts Consumption Option.
  *
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
+ * @param isPeriodUsed Boolean indicating if the period selction is used.
  * @param switchButtonType Indicates the current switch button type.
  * @param theme Theme used for colors, fonts and backgrounds of xAxis.
  * @returns XAxis object option for Echarts Consumption Options.
@@ -117,6 +202,7 @@ const getDefaultOptionsEchartsConsumptionChart = (theme: Theme, period: periodTy
 export const getSeriesOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
+    isPeriodUsed: boolean,
     switchButtonType: SwitchConsumptionButtonTypeEnum,
     theme: Theme,
 ) => {
@@ -141,7 +227,7 @@ export const getSeriesOptionEchartsConsumptionChart = (
         return {
             ...typeTargetSeries,
             emphasis: {
-                focus: 'series',
+                focus: period === PeriodEnum.DAILY ? 'none' : 'series',
             },
             name: `${getNameTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, switchButtonType)}`,
             data: values[target as metricTargetType],
@@ -154,6 +240,9 @@ export const getSeriesOptionEchartsConsumptionChart = (
             smooth: true,
             itemStyle: {
                 color: colorTargetSeries,
+            },
+            lineStyle: {
+                color: isPeriodUsed ? TRANSPARENT_COLOR : colorTargetSeries,
             },
         }
     })
@@ -191,24 +280,24 @@ export const getSeriesOptionEchartsConsumptionChart = (
 /**
  * Get Xaxis option of Echarts Consumption Option.
  *
- * @param xAxisTimestamps Timestamps array.
+ * @param xAxisData X axis data array.
  * @param switchButtonType Indicates the current switch button type.
  * @param period Current period.
- * @param theme Theme used for colors, fonts and backgrounds of xAxis.
+ * @param axisColor Color of the axis.
  * @returns XAxis object option for Echarts Consumption Options.
  */
 export const getXAxisOptionEchartsConsumptionChart = (
-    xAxisTimestamps: number[],
+    xAxisData: string[],
     switchButtonType: SwitchConsumptionButtonTypeEnum,
     period: periodType,
-    theme: Theme,
+    axisColor: string,
 ) =>
     ({
         xAxis: [
             {
                 // Rotate to 40 so that we can show all the hours.
                 type: 'category',
-                data: getXAxisCategoriesData(xAxisTimestamps, period),
+                data: xAxisData,
                 axisLabel: {
                     interval: getXAxisLabelInterval(switchButtonType, period),
                     hideOverlap: true,
@@ -232,7 +321,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
                     // Important to put onZero so that bar charts don't overflow with yAxis.
                     onZero: true,
                     lineStyle: {
-                        color: theme.palette.primary.contrastText,
+                        color: axisColor,
                         type: 'solid',
                         opacity: 1,
                     },
@@ -246,7 +335,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: theme.palette.primary.contrastText,
+                        color: axisColor,
                         type: 'dashed',
                         opacity: 0.4,
                     },
@@ -587,13 +676,13 @@ export const getStackTargetSeriesEchartsConsumptionChart = (
  *
  * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Current period.
- * @param theme Theme used for colors, fonts and backgrounds of xAxis.
+ * @param axisColor Color of the axis.
  * @returns YAxis object option for Echarts Consumption Options.
  */
 export const getYAxisOptionEchartsConsumptionChart = (
     values: targetTimestampsValuesFormat,
     period: periodType,
-    theme: Theme,
+    axisColor: string,
 ) => {
     // Not showing the yAxis that don't have their targets in the values.
     // For example if euros_consumption target is not in values and there's no euro targets, then yAxis of euros will have show: false.
@@ -617,7 +706,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
                     show: true,
                 },
                 lineStyle: {
-                    color: theme.palette.primary.contrastText,
+                    color: axisColor,
                     type: 'solid',
                     opacity: 1,
                 },
@@ -631,7 +720,7 @@ export const getYAxisOptionEchartsConsumptionChart = (
             splitLine: {
                 show: true,
                 lineStyle: {
-                    color: theme.palette.primary.contrastText,
+                    color: axisColor,
                     type: 'dashed',
                     opacity: [targetYAxisIndexEnum.PMAX, targetYAxisIndexEnum.TEMPERATURE].includes(
                         targetYAxisIndex as targetYAxisIndexEnum,

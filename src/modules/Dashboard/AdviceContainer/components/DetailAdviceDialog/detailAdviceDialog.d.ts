@@ -16,4 +16,12 @@ export interface DetailAdviceDialogProps {
      * Clicked ecogeste to display.
      */
     currentEcogeste: IEcogeste | null
+    /**
+     * Function to set the view status of the ecogeste.
+     */
+    setViewStatus?: (ecogesteId: number, status: boolean) => Promise<void>
+    /**
+     * Specifies whether the popup is for a dashboard advice or not.
+     */
+    isDashboardAdvice?: boolean
 }

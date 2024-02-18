@@ -11,8 +11,7 @@ import {
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -150,16 +149,9 @@ export const Widget = memo(
                                         percentageChange={targetsInfos[target].percentageChange}
                                         period={period}
                                         noValueMessage={
-                                            target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
-                                                // maxWidth to have a more balanced text.
-                                                <TypographyFormatMessage style={{ maxWidth: '90%' }}>
-                                                    La puissance maximale n'est pas disponible sur la journée en cours
-                                                </TypographyFormatMessage>
-                                            ) : (
-                                                <TypographyFormatMessage>
-                                                    {DEFAULT_NO_VALUE_MESSAGE}
-                                                </TypographyFormatMessage>
-                                            )
+                                            <TypographyFormatMessage>
+                                                {DEFAULT_NO_VALUE_MESSAGE}
+                                            </TypographyFormatMessage>
                                         }
                                     />
                                 ))}
