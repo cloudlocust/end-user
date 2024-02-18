@@ -73,7 +73,6 @@ let mockSetRange = jest.fn()
 
 let echartsConsumptionChartContainerProps: SimplifiedConsumptionChartContainerPropsType = {
     filters: mockFilters,
-    isSolarProductionConsentOff: false,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
     setRange: mockSetRange,

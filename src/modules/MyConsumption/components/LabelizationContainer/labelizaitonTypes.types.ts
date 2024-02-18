@@ -61,10 +61,6 @@ export type SimplifiedConsumptionChartContainerPropsType =
          */
         filters: metricFiltersType
         /**
-         * Is production consent off.
-         */
-        isSolarProductionConsentOff: boolean
-        /**
          * Enedis Sge consent.
          */
         enedisSgeConsent?: IEnedisSgeConsent
