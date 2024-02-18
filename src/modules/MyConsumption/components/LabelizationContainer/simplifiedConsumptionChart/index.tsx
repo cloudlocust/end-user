@@ -16,7 +16,7 @@ import {
     SimplifiedConsumptionChartContainerPropsType,
     addActivityFormFieldsType,
     addActivityRequestBodyType,
-} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.types'
 import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import ReactECharts from 'echarts-for-react'
 import AddLabelButtonForm from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm'
@@ -27,6 +27,8 @@ import { useLabelization } from 'src/modules/MyConsumption/components/Labelizati
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import convert, { Unit } from 'convert-units'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { LabelCardDataType } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -35,7 +37,6 @@ import convert, { Unit } from 'convert-units'
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
  * @param props.filters Consumption or production chart type.
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.setRange Set Range.
  * @returns MyConsumptionChartContainer Component.
  */
@@ -43,15 +44,13 @@ const SimplifiedConsumptionChartContainer = ({
     range,
     metricsInterval,
     filters,
-    isSolarProductionConsentOff,
     setRange,
 }: SimplifiedConsumptionChartContainerPropsType) => {
     const theme = useTheme()
+    const { consumptionToggleButton } = useMyConsumptionStore()
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     // Meanwhile the setTargets for useMetrics needs to add {type: 'timeserie'} everytime...
-    const [targets, setTargets] = useState<metricTargetType[]>(
-        getDefaultConsumptionTargets(isSolarProductionConsentOff),
-    )
+    const [targets, setTargets] = useState<metricTargetType[]>(getDefaultConsumptionTargets(consumptionToggleButton))
     const period = PeriodEnum.DAILY
     const chartRef = useRef<ReactECharts>(null)
 
@@ -84,8 +83,8 @@ const SimplifiedConsumptionChartContainer = ({
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset.
     // This useEffect reset metrics.
     useEffect(() => {
-        setTargets(getDefaultConsumptionTargets(isSolarProductionConsentOff))
-    }, [isSolarProductionConsentOff])
+        setTargets(getDefaultConsumptionTargets(consumptionToggleButton))
+    }, [consumptionToggleButton])
 
     const getMetrics = useCallback(async () => {
         await getMetricsWithParams({
@@ -106,7 +105,7 @@ const SimplifiedConsumptionChartContainer = ({
         const dataWithoutEuros = data.filter((metric) => metric.target !== metricTargetsEnum.eurosConsumption)
         if (dataWithoutEuros.length > 0) {
             let chartData = dataWithoutEuros
-            const fileteredMetricsData = filterMetricsData(chartData, period, isSolarProductionConsentOff)
+            const fileteredMetricsData = filterMetricsData(chartData, period, consumptionToggleButton)
             if (fileteredMetricsData) chartData = fileteredMetricsData
             setConsumptionChartData(chartData)
         } else {
@@ -261,7 +260,6 @@ const SimplifiedConsumptionChartContainer = ({
                     <MyConsumptionChart
                         data={consumptionChartData}
                         period={period}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
                         axisColor={theme.palette.common.black}
                         selectedLabelPeriod={inputPeriodTime}
                         chartRef={chartRef}

@@ -54,7 +54,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
     const { formatMessage } = useIntl()
 
     const testSteps = [
-        'Choisissez le réglage de votre appareil que vous souhaitez mesurer',
+        "Choisissez le réglage de l'appareil que vous souhaitez mesurer",
         'Mettez en route de votre appareil',
         'Lancez la mesure',
     ]

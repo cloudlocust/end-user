@@ -25,9 +25,7 @@ describe('InfosPage Component', () => {
                 'Analysons ensemble la consommation moyenne de votre appareil en suivant 3 étapes simples',
             ),
         ).toBeInTheDocument()
-        expect(
-            screen.getByText('Choisissez le réglage de votre appareil que vous souhaitez mesurer'),
-        ).toBeInTheDocument()
+        expect(screen.getByText("Choisissez le réglage de l'appareil que vous souhaitez mesurer")).toBeInTheDocument()
         expect(screen.getByText('Mettez en route de votre appareil')).toBeInTheDocument()
         expect(screen.getByText('Lancez la mesure')).toBeInTheDocument()
     })

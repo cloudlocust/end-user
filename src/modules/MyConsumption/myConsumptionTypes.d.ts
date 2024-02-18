@@ -144,48 +144,13 @@ export type EurosConsumptionButtonTogglerProps =
     // eslint-disable-next-line jsdoc/require-jsdoc
     {
         /**
-         * Handler when clicking on EuroButton.
+         * Handler when clicking on EurosConsumptionButton.
          */
-        onEuroClick: () => void
+        onEurosConsumptionButtonToggle: (isEuroToggled: boolean) => void
         /**
-         * Handler when clicking on ConsumptionButton.
+         * Indicate if euro button is toggled.
          */
-        onConsumptionClick: () => void
-        /**
-         * Indicate eurosConsumption or consumption IconButton to be shown.
-         */
-        showEurosConsumption?: boolean
-        /**
-         * Indicate if EurosConsumptionButton is disabled.
-         */
-        disabled?: boolean
-    }
-/**
- * Interface for SwitchIdleConsumptionProps.
- */
-export type SwitchIdleConsumptionProps =
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    {
-        /**
-         * RemoveIdleTarget.
-         */
-        removeIdleTarget: () => void
-        /**
-         * AddIdleTarget.
-         */
-        addIdleTarget: () => void
-        /**
-         * Value of idleConsumptionButton.
-         */
-        isIdleConsumptionButtonSelected: boolean
-        /**
-         * Indicate if IdleConsumptionTogglButton is disabled.
-         */
-        isIdleConsumptionButtonDisabled?: boolean
-        /**
-         * Callback when clicking the infoIcon on disabled idleConsumption button.
-         */
-        onClickIdleConsumptionDisabledInfoIcon: () => void
+        isEurosButtonToggled?: boolean
     }
 
 /**

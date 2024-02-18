@@ -63,7 +63,7 @@ export const EquipmentMeasurementResults = ({
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
-            <Typography variant="h5" fontSize={MAX_WIDTH_600 ? 17 : 20} marginBottom="20px">
+            <Typography variant="h5" className="text-18 sm:text-20 mb-20">
                 {formatMessage({
                     id: 'Résultats des mesures',
                     defaultMessage: 'Résultats des mesures',
@@ -72,7 +72,7 @@ export const EquipmentMeasurementResults = ({
             </Typography>
 
             <TableContainer component={Paper} elevation={3} data-testid="table-container">
-                <Table size={MAX_WIDTH_600 ? 'small' : 'medium'} sx={{ minWidth: 385 }}>
+                <Table size={MAX_WIDTH_600 ? 'small' : 'medium'}>
                     <TableBody>
                         {measurementModes.map((measurementMode) => (
                             <TableRow
@@ -83,31 +83,33 @@ export const EquipmentMeasurementResults = ({
                                 }}
                             >
                                 <TableCell align="left">
-                                    <Typography fontSize={MAX_WIDTH_600 ? 14 : 16}>
+                                    <Typography className="text-15 sm:text-16 pl-0 sm:pl-52">
                                         {formatMessage({
-                                            id: 'Conso active mode',
-                                            defaultMessage: 'Conso active mode',
+                                            id: 'Mode',
+                                            defaultMessage: 'Mode',
                                         })}{' '}
-                                        {measurementMode}&nbsp;:
+                                        {measurementMode}
                                     </Typography>
                                 </TableCell>
                                 <TableCell
                                     align="center"
                                     data-testid="measurement-result"
-                                    height={MAX_WIDTH_600 ? 60 : 73}
+                                    className="h-60 sm:h-72"
                                     width="26%"
                                 >
-                                    <MeasurementResult
-                                        handleClickingOnMeasurementResult={() => {
-                                            handleClickingOnMeasurementResult(
-                                                measurementMode,
-                                                measurementResults[measurementMode] || null,
-                                            )
-                                        }}
-                                        result={measurementResults[measurementMode] || null}
-                                        isLoading={isLoadingMeasurements}
-                                        isMobileView={MAX_WIDTH_600}
-                                    />
+                                    <div className="min-w-64 sm:min-w-72 text-center">
+                                        <MeasurementResult
+                                            handleClickingOnMeasurementResult={() => {
+                                                handleClickingOnMeasurementResult(
+                                                    measurementMode,
+                                                    measurementResults[measurementMode] || null,
+                                                )
+                                            }}
+                                            result={measurementResults[measurementMode] || null}
+                                            isLoading={isLoadingMeasurements}
+                                            isMobileView={MAX_WIDTH_600}
+                                        />
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

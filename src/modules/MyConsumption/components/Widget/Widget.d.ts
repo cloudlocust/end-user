@@ -57,6 +57,10 @@ export interface IWidgetProps {
      * Children of the Widget.
      */
     children?: ReactNode | ReactElement
+    /**
+     * Position of the children.
+     */
+    childrenPosition?: 'top' | 'bottom'
 }
 
 /**

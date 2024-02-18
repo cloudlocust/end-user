@@ -26,6 +26,8 @@ import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPrefe
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
 import { activitiesEndpoints } from './handlers/labelization'
+import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
+import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 
 /**
  * Handlers to mock urls for tests.
@@ -69,6 +71,9 @@ export const handlers = [
     ...accessRightsEndpoints,
     /****** Activities endpiont. */
     ...activitiesEndpoints,
+    ...DashboardEndpoints,
+    /****** Alpiq Subscription Endpoints. */
+    ...AlpiqSubscriptionEndpoints,
 ]
 
 /**

@@ -5,6 +5,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useTheme } from '@mui/material/styles'
 import { useConfirm } from 'material-ui-confirm'
 import { useIntl } from 'src/common/react-platform-translation'
+import { ConsumptionLabelCardProps } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 /**
  * Consumption Label Card Element.
@@ -92,7 +93,10 @@ const ConsumptionLabelCard = ({ labelData, deleteLabel }: ConsumptionLabelCardPr
                             </div>
                         </div>
                         {useType && (
-                            <div className="flex-1 border-l-1 border-grey-400 pl-10 ml-10 flex items-center">
+                            <div
+                                className="flex-1 border-l-1 border-grey-400 pl-10 ml-10 flex items-center"
+                                aria-label="useType"
+                            >
                                 <Typography className="text-14 text-grey-800">{useType}</Typography>
                             </div>
                         )}

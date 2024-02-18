@@ -20,13 +20,13 @@ export const MeasurementResult = ({
     isMobileView,
 }: MeasurementResultProps) =>
     isLoading ? (
-        <CircularProgress size={isMobileView ? 14 : 16} />
+        <CircularProgress size={isMobileView ? 15 : 16} />
     ) : result || result === 0 ? (
-        <Button onClick={handleClickingOnMeasurementResult} variant="text" sx={{ fontSize: isMobileView ? 14 : 16 }}>
-            {result} W
+        <Button onClick={handleClickingOnMeasurementResult} variant="text" sx={{ fontSize: isMobileView ? 15 : 16 }}>
+            {result}&nbsp;W
         </Button>
     ) : (
-        <Typography color="primary" fontWeight={500} fontSize={isMobileView ? 14 : 16}>
+        <Typography color="primary" fontWeight={500} fontSize={isMobileView ? 15 : 16}>
             ?
         </Typography>
     )

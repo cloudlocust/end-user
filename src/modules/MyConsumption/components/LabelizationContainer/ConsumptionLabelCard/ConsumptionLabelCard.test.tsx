@@ -4,6 +4,7 @@ import { ConfirmProvider } from 'material-ui-confirm'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
+import { ConsumptionLabelCardProps } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 jest.mock('src/modules/MyConsumption/utils/unitConversionFunction', () => ({
     ...jest.requireActual('src/modules/MyConsumption/utils/unitConversionFunction'),
@@ -15,7 +16,7 @@ const mockDeleteLabel = jest.fn()
 
 const LABEL_ID = 14
 
-const mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
+let mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
     labelData: {
         labelId: LABEL_ID,
         equipmentName: 'Micro-onde',
@@ -32,7 +33,7 @@ const mockConsumptionLabelCardProp: ConsumptionLabelCardProps = {
 const POPUP_DIALOG_TEXT = 'Vous êtes sur le point de supprimer le label. Êtes-vous sûr de vouloir continuer ?'
 
 describe('ConsumptionLabelCard', () => {
-    test('render the label card and opens the dialog when the delete button is clicked', async () => {
+    test('render correctly the label card and opens the dialog when the delete button is clicked', async () => {
         const { getByText } = reduxedRender(
             <Router>
                 <ConfirmProvider>
@@ -79,5 +80,16 @@ describe('ConsumptionLabelCard', () => {
                 expect(mockDeleteLabel).toHaveBeenCalledWith(LABEL_ID)
             })
         })
+    })
+
+    test('should render correctly when useType is not specified', () => {
+        mockConsumptionLabelCardProp.labelData.useType = undefined
+        const { queryByLabelText } = reduxedRender(
+            <Router>
+                <ConsumptionLabelCard {...mockConsumptionLabelCardProp} />
+            </Router>,
+        )
+
+        expect(queryByLabelText('useType')).toBeNull()
     })
 })

@@ -7,7 +7,7 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 import {
     addActivityRequestBodyType,
     ConsumptionLabelDataType,
-} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes'
+} from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.types'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const HOUSING_ACTIVITIES_API = (housingId: number) => `${HOUSING_API}/${housingId}/activities`

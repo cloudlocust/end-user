@@ -24,7 +24,11 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
 
     const orderedEquipmentsList = useMemo(() => {
         return [
-            ...orderBy(equipmentsList, (el) => el.name, 'asc'),
+            ...orderBy(
+                equipmentsList?.length! > 0 ? equipmentsList : [],
+                (el) => mapppingEquipmentToLabel[el.name as unknown as equipmentNameType],
+                'asc',
+            ),
             { id: Math.random(), name: 'other', allowed_type: ['electricity'] } as unknown as equipmentType,
         ]
     }, [equipmentsList])
@@ -56,13 +60,17 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                             setEquipmentValue(event.target.value as equipmentType)
                         }}
                         fullWidth
-                        data-testid={'equipments-select'}
+                        data-testid="equipments-select"
                     >
                         {orderedEquipmentsList.length > 0 &&
                             orderedEquipmentsList.map((option) => {
                                 if (!mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]) return null
                                 return (
-                                    <MenuItem key={option.id} value={option as unknown as string}>
+                                    <MenuItem
+                                        key={option.id}
+                                        value={option as unknown as string}
+                                        data-testid="equipment-option"
+                                    >
                                         {formatMessage({
                                             id: mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]!,
                                             defaultMessage:
@@ -91,16 +99,13 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                             (equipmentValue === 'other' && customEquipmentValue.length <= 0)
                         }
                         onClick={async () => {
-                            // If equipmentValue is a custom equipment
+                            // Else it's a predefined equipment
                             if (Object.values(equipmentValue).includes('other')) {
                                 await addEquipment({
                                     name: customEquipmentValue,
                                     allowedType: ['electricity'],
                                 })
-                            }
-
-                            // Else it's a predefined equipment
-                            if (typeof equipmentValue === 'object') {
+                            } else if (typeof equipmentValue === 'object') {
                                 await addHousingEquipment([
                                     {
                                         equipmentId: equipmentValue.id,

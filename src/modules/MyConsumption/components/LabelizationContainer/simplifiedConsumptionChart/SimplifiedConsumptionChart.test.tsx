@@ -14,7 +14,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import SimplifiedConsumptionChartContainer from 'src/modules/MyConsumption/components/LabelizationContainer/simplifiedConsumptionChart'
-import { SimplifiedConsumptionChartContainerPropsType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+import { SimplifiedConsumptionChartContainerPropsType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.types'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
 
 // List of houses to add to the redux state
@@ -84,7 +84,11 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
-    targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+    targets: [
+        metricTargetsEnum.consumptionByTariffComponent,
+        metricTargetsEnum.consumption,
+        metricTargetsEnum.eurosConsumption,
+    ],
 }
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { BASENAME_URL, FIREBASE_MESSAGING_SW_URL, MSW_MOCK } from './configs'
+import { BASENAME_URL, MSW_MOCK } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -18,6 +18,16 @@ import { SnackbarProvider } from 'src/common/react-platform-components/alerts/Sn
 import { pwaTrackingListeners } from './pwaEventlisteners'
 import TagManager from 'react-gtm-module'
 import { TAG_MANAGER_CONFIG } from 'src/configs'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            retry: false,
+        },
+    },
+})
 
 const isBrowser = typeof window !== 'undefined'
 
@@ -33,19 +43,21 @@ if (isBrowser) {
 const Application: FC<any> = () => {
     return (
         <React.StrictMode>
-            <StyledEngineProvider injectFirst>
-                <Provider store={store}>
-                    <PersistGate persistor={getPersistor()}>
-                        <TranslatitonProvider>
-                            <Router basename={BASENAME_URL}>
-                                <SnackbarProvider>
-                                    <App />
-                                </SnackbarProvider>
-                            </Router>
-                        </TranslatitonProvider>
-                    </PersistGate>
-                </Provider>
-            </StyledEngineProvider>
+            <QueryClientProvider client={queryClient}>
+                <StyledEngineProvider injectFirst>
+                    <Provider store={store}>
+                        <PersistGate persistor={getPersistor()}>
+                            <TranslatitonProvider>
+                                <Router basename={BASENAME_URL} getUserConfirmation={() => {}}>
+                                    <SnackbarProvider>
+                                        <App />
+                                    </SnackbarProvider>
+                                </Router>
+                            </TranslatitonProvider>
+                        </PersistGate>
+                    </Provider>
+                </StyledEngineProvider>
+            </QueryClientProvider>
         </React.StrictMode>
     )
 }
@@ -80,13 +92,6 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development' && MS
 if (isBrowser && 'serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     window.addEventListener('load', async () => {
         await navigator.serviceWorker.register(`${process.env.PUBLIC_URL}/pwaSW.js`)
-    })
-}
-
-// Fireabse messaging Service worker.
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-        await navigator.serviceWorker.register(`${FIREBASE_MESSAGING_SW_URL}`)
     })
 }
 
