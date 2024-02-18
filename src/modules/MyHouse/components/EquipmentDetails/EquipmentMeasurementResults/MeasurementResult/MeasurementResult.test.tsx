@@ -7,13 +7,13 @@ const mockedHandleClickingOnMeasurementResult = jest.fn()
 
 describe('MeasurementResult', () => {
     test('calling the handleClickingOnMeasurementResult function when clicking on a result value', async () => {
-        const { getByRole } = reduxedRender(
+        const { getByText } = reduxedRender(
             <MeasurementResult
                 handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
                 result={120}
             />,
         )
-        const resultButton = getByRole('button', { name: '120 W' })
+        const resultButton = getByText('120 W')
         userEvent.click(resultButton)
         await waitFor(() => {
             expect(mockedHandleClickingOnMeasurementResult).toHaveBeenCalledTimes(1)

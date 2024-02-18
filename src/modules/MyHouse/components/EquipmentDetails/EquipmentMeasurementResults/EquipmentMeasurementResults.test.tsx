@@ -33,7 +33,7 @@ describe('EquipmentMeasurementResultsList', () => {
         ).toBeInTheDocument()
         expect(getByTestId(tableContainerTestId)).toBeInTheDocument()
         mockedMeasurementModes.forEach((mode) => {
-            expect(getByText(`Conso active mode ${mode} :`)).toBeInTheDocument()
+            expect(getByText(`Mode ${mode}`)).toBeInTheDocument()
             expect(getByText(`${mockedMeasurementResults[mode]} W`)).toBeInTheDocument()
         })
     })

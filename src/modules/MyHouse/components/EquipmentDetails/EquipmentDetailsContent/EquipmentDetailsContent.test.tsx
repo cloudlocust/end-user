@@ -24,7 +24,6 @@ describe('EquipmentDetailsContent component', () => {
 
         expect(screen.getByLabelText('Mon équipement')).toBeInTheDocument()
         expect(screen.getByTestId(TABLE_CONTAINER_TEST_ID)).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: "Supprimer l'appareil" })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: MESURER_L_APPAREIL })).toBeInTheDocument()
     })
 

@@ -1,5 +1,6 @@
 import { RefObject } from 'react'
-import { targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import { Dispatch, SetStateAction } from 'react'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import ReactECharts from 'echarts-for-react'
 
@@ -100,6 +101,8 @@ export interface ConsumptionChartContainerProps {
     enedisSgeConsent?: IEnedisSgeConsent
     // eslint-disable-next-line jsdoc/require-jsdoc
     isSolarProductionConsentOff: boolean
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    setMetricsInterval: Dispatch<SetStateAction<metricIntervalType>>
 }
 
 /**
@@ -110,10 +113,6 @@ export interface ConsumptionChartProps {
      * Data.
      */
     data: IMetric[]
-    /**
-     * Is Solar production consent off.
-     */
-    isSolarProductionConsentOff: boolean
     /**
      * Period Type.
      */
