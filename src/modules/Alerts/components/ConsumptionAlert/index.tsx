@@ -171,8 +171,8 @@ const ConsumptionAlert = ({
                         </div>
                         <Divider className="mx-20 mb-12" />
                         <ButtonsGroup
-                            isConsumptionAlertsLoading={isConsumptionAlertsLoading && isNovuAlertPreferencesLoading}
-                            isSavingAlertLoading={isSavingAlertLoading && isNovuAlertPreferencesLoading}
+                            isConsumptionAlertsLoading={isConsumptionAlertsLoading || isNovuAlertPreferencesLoading}
+                            isSavingAlertLoading={isSavingAlertLoading || isNovuAlertPreferencesLoading}
                         />
                     </div>
                 </Card>
