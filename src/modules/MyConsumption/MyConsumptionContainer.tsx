@@ -87,7 +87,7 @@ export const MyConsumptionContainer = () => {
     }, [loadConnectedPlugList])
 
     // check if the user has a tempo contract
-    const hasTempoContract = useMemo(
+    const doesUserHasTempoContract = useMemo(
         () => contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false,
         [contractList],
     )
@@ -181,7 +181,7 @@ export const MyConsumptionContainer = () => {
 
             {/* FAQ used to understand the charts  */}
             <div className="p-12 sm:p-24">
-                <ChartFAQ period={period} hasTempoContract={hasTempoContract} />
+                <ChartFAQ period={period} hasTempoContract={doesUserHasTempoContract} />
             </div>
 
             {/* Ecowatt Widget */}

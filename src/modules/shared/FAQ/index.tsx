@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Card from '@mui/material/Card'
 import { styled } from '@mui/material/styles'
-import { FAQProps } from 'src/modules/shared/FAQ/FAQTypes'
+import { FAQProps } from 'src/modules/shared/FAQ/FAQ.types'
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
     ({ theme }) => ({
