@@ -1,7 +1,11 @@
 /**
- * Props of the ConsumptionLabelCard component.
+ * Label card data.
  */
-export interface ConsumptionLabelCardProps {
+export interface LabelCardDataType {
+    /**
+     * The label id.
+     */
+    labelId: number
     /**
      * The label equipment name.
      */
@@ -30,4 +34,18 @@ export interface ConsumptionLabelCardProps {
      * The type of use for the equipment.
      */
     useType?: string | null
+}
+
+/**
+ * Props of the ConsumptionLabelCard component.
+ */
+export interface ConsumptionLabelCardProps {
+    /**
+     * Label card data.
+     */
+    labelData: LabelCardDataType
+    /**
+     * Function to delete the label.
+     */
+    deleteLabel: (activityId: number) => Promise<void>
 }
