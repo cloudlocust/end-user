@@ -11,6 +11,7 @@ import { utcToZonedTime } from 'date-fns-tz'
 
 const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
+const CONSOMMATION_VEILLE_TEXT = 'Consommation de Veille'
 const PRODUCTION_TOTAL_TEXT = 'Production Totale'
 const PRODUCTION_INJECTED_TEXT = 'Injectée'
 const AUTOCONSOMMATION_TEXT = 'Autoconsommation'
@@ -78,6 +79,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             hasMissingHousingContracts: false,
             enedisOff: false,
             enphaseOff: false,
+            isIdleWidgetShown: true,
         }
     })
 
@@ -99,6 +101,28 @@ describe('ConsumptionWidgetsContainer test', () => {
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_VEILLE_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
+        expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
+        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
+        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
+    })
+    test('do not show the widget "veille" when isIdleWidgetShown is false', async () => {
+        consumptionWidgetsContainerProps.isIdleWidgetShown = false
+        const { container, getByText, queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionWidgetsMetricsProvider>
+                    <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
+                </ConsumptionWidgetsMetricsProvider>
+            </Router>,
+        )
+        expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(7)
+
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_VEILLE_TEXT)).not.toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
@@ -119,6 +143,7 @@ describe('ConsumptionWidgetsContainer test', () => {
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_VEILLE_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
@@ -139,6 +164,7 @@ describe('ConsumptionWidgetsContainer test', () => {
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_VEILLE_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
@@ -159,6 +185,7 @@ describe('ConsumptionWidgetsContainer test', () => {
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
+        expect(getByText(CONSOMMATION_VEILLE_TEXT)).toBeInTheDocument()
         expect(queryByText(PRODUCTION_TOTAL_TEXT)).not.toBeInTheDocument()
         expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
@@ -178,6 +205,7 @@ describe('ConsumptionWidgetsContainer test', () => {
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
+        expect(getByText(CONSOMMATION_VEILLE_TEXT)).toBeInTheDocument()
         expect(queryByText(PRODUCTION_TOTAL_TEXT)).not.toBeInTheDocument()
         expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()

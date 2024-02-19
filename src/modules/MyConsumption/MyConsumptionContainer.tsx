@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
@@ -83,6 +83,11 @@ export const MyConsumptionContainer = () => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
+    const isIdleShown = useMemo(
+        () => isSolarProductionConsentOff && period !== 'daily',
+        [isSolarProductionConsentOff, period],
+    )
+
     if (consentsLoading)
         return (
             <Box
@@ -136,6 +141,7 @@ export const MyConsumptionContainer = () => {
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
                             metricsInterval={metricsInterval}
+                            isIdleShown={isIdleShown}
                             setMetricsInterval={setMetricsInterval}
                         />
                     </>
@@ -166,6 +172,7 @@ export const MyConsumptionContainer = () => {
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
                         enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
+                        isIdleWidgetShown={isIdleShown}
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}
