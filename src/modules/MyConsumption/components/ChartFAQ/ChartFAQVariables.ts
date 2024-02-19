@@ -1,0 +1,123 @@
+import { FAQItem } from 'src/modules/shared/FAQ/FAQ.types'
+
+/**
+ * The title of the FAQ for the daily period.
+ */
+export const faqTitleForDailyPeriod = 'Comprendre ma consommation'
+/**
+ *  The FAQ items questions/answers for the daily period.
+ */
+export const faqForDailyPeriod: Array<FAQItem> = [
+    {
+        title: 'Comment expliquer ma consommation alors que je suis absent(e) ?',
+        content:
+            'Magna consectetur culpa duis ad est tempor pariatur velit ullamco aute exercitation magna sunt commodo minim enim aliquip eiusmod ipsum adipisicing magna ipsum reprehenderit lorem magna voluptate magna aliqua culpa. Sit nisi adipisicing pariatur enim enim sunt officia ad labore voluptate magna proident velit excepteur pariatur cillum sit excepteur elit veniam excepteur minim nisi cupidatat proident dolore irure veniam mollit.',
+    },
+    {
+        title: 'Pourquoi ma facture ne reflète-t-elle pas ma consommation mensuelle ?',
+        content:
+            'Et in lorem qui ipsum deserunt duis exercitation lorem elit qui qui ipsum tempor nulla velit aliquip enim consequat incididunt pariatur duis excepteur elit irure nulla ipsum dolor dolore est. Aute deserunt nostrud id non ipsum do adipisicing laboris in minim officia magna elit minim mollit elit velit veniam lorem pariatur veniam sit excepteur irure commodo excepteur duis quis in.',
+    },
+    {
+        title: 'Est-il possible de suivre ma consommation en temps réel ?',
+        content:
+            'Id fugiat et cupidatat magna nulla nulla eu cillum officia nostrud dolore in veniam ullamco nulla ex duis est enim nisi aute ipsum velit et laboris est pariatur est culpa. Culpa sunt ipsum esse quis excepteur enim culpa est voluptate reprehenderit consequat duis officia irure voluptate veniam dolore fugiat dolor est amet nostrud non velit irure do voluptate id sit.',
+    },
+    {
+        title: 'Comment sont utilisées mes données de consommation ?',
+        content:
+            'Excepteur deserunt tempor do lorem elit id magna pariatur irure ullamco elit dolor consectetur ad officia fugiat incididunt do elit aute esse eu voluptate adipisicing incididunt ea dolor aliqua dolor. Consequat est quis deserunt voluptate ipsum incididunt laboris occaecat irure laborum voluptate non sit labore voluptate sunt id sint ut laboris aute cupidatat occaecat eiusmod non magna aliquip deserunt nisi.',
+    },
+]
+
+/**
+ * The title of the FAQ for the daily tempo.
+ */
+export const faqTitleForDailyPeriodTempo = 'Comprendre ma consommation Tempo'
+/**
+ *  The FAQ items questions/answers for the daily tempo.
+ */
+export const faqForDailyPeriodTempo: Array<FAQItem> = [
+    {
+        title: 'Comment expliquer ma consommation alors que je suis absent(e) tempo?',
+        content:
+            'Magna consectetur culpa duis ad est tempor pariatur velit ullamco aute exercitation magna sunt commodo minim enim aliquip eiusmod ipsum adipisicing magna ipsum reprehenderit lorem magna voluptate magna aliqua culpa. Sit nisi adipisicing pariatur enim enim sunt officia ad labore voluptate magna proident velit excepteur pariatur cillum sit excepteur elit veniam excepteur minim nisi cupidatat proident dolore irure veniam mollit.',
+    },
+    {
+        title: 'Pourquoi ma facture ne reflète-t-elle pas ma consommation mensuelle tempo ?',
+        content:
+            'Et in lorem qui ipsum deserunt duis exercitation lorem elit qui qui ipsum tempor nulla velit aliquip enim consequat incididunt pariatur duis excepteur elit irure nulla ipsum dolor dolore est. Aute deserunt nostrud id non ipsum do adipisicing laboris in minim officia magna elit minim mollit elit velit veniam lorem pariatur veniam sit excepteur irure commodo excepteur duis quis in.',
+    },
+    {
+        title: 'Est-il possible de suivre ma consommation en temps réel tempo?',
+        content:
+            'Id fugiat et cupidatat magna nulla nulla eu cillum officia nostrud dolore in veniam ullamco nulla ex duis est enim nisi aute ipsum velit et laboris est pariatur est culpa. Culpa sunt ipsum esse quis excepteur enim culpa est voluptate reprehenderit consequat duis officia irure voluptate veniam dolore fugiat dolor est amet nostrud non velit irure do voluptate id sit.',
+    },
+    {
+        title: 'Comment sont utilisées mes données de consommation tempo ?',
+        content:
+            'Excepteur deserunt tempor do lorem elit id magna pariatur irure ullamco elit dolor consectetur ad officia fugiat incididunt do elit aute esse eu voluptate adipisicing incididunt ea dolor aliqua dolor. Consequat est quis deserunt voluptate ipsum incididunt laboris occaecat irure laborum voluptate non sit labore voluptate sunt id sint ut laboris aute cupidatat occaecat eiusmod non magna aliquip deserunt nisi.',
+    },
+]
+
+/**
+ * The title of the FAQ for the periodic intervals.
+ */
+export const faqTitleForPeriodicIntervals = 'Comprendre ma consommation Periodic'
+
+/**
+ *  The FAQ items questions/answers for the periodic intervals.
+ */
+export const faqForPeriodicIntervals: Array<FAQItem> = [
+    {
+        title: 'Comment expliquer ma consommation alors que je suis absent(e) Periodic?',
+        content:
+            'Magna consectetur culpa duis ad est tempor parifatur velit ullamco aute exercitation magna sunt commodo minim enim aliquip eiusmod ipsum adipisicing magna ipsum reprehenderit lorem magna voluptate magna aliqua culpa. Sit nisi adipisicing pariatur enim enim sunt officia ad labore voluptate magna proident velit excepteur pariatur cillum sit excepteur elit veniam excepteur minim nisi cupidatat proident dolore irure veniam mollit.',
+    },
+    {
+        title: 'Pourquoi ma facture ne reflète-t-elle pas ma consommation mensuelle Periodic?',
+        content:
+            'Et in lorem qui ipsum deserunt duis exercitation lorsem elit qui qui ipsum tempor nulla velit aliquip enim consequat incididunt pariatur duis excepteur elit irure nulla ipsum dolor dolore est. Aute deserunt nostrud id non ipsum do adipisicing laboris in minim officia magna elit minim mollit elit velit veniam lorem pariatur veniam sit excepteur irure commodo excepteur duis quis in.',
+    },
+    {
+        title: 'Est-il possible de suivre ma consommation en temps réel Periodic?',
+        content:
+            'Id fugiat et cupidatat magna nulla nulla eu cillum offifcia nostrud dolore in veniam ullamco nulla ex duis est enim nisi aute ipsum velit et laboris est pariatur est culpa. Culpa sunt ipsum esse quis excepteur enim culpa est voluptate reprehenderit consequat duis officia irure voluptate veniam dolore fugiat dolor est amet nostrud non velit irure do voluptate id sit.',
+    },
+    {
+        title: 'Comment sont utilisées mes données de consommation Periodic?',
+        content:
+            'Excepteur deserunt tempor do lorem elit id magna pariaetur irure ullamco elit dolor consectetur ad officia fugiat incididunt do elit aute esse eu voluptate adipisicing incididunt ea dolor aliqua dolor. Consequat est quis deserunt voluptate ipsum incididunt laboris occaecat irure laborum voluptate non sit labore voluptate sunt id sint ut laboris aute cupidatat occaecat eiusmod non magna aliquip deserunt nisi.',
+    },
+]
+
+/**
+ * The title of the FAQ for the periodic intervals tempo.
+ */
+export const faqTitleForPeriodicIntervalsTempo = 'Comprendre ma consommation Periodic Tempo'
+
+/**
+ *  The FAQ items questions/answers for the periodic intervals tempo.
+ */
+export const faqForPeriodicIntervalsTempo: Array<FAQItem> = [
+    {
+        title: 'Comment expliquer ma consommation alors que je suis absent(e) Periodic tempo?',
+        content:
+            'Magna consectetur culpa duis ad est tempor pariatur velfit ullamco aute exercitation magna sunt commodo minim enim aliquip eiusmod ipsum adipisicing magna ipsum reprehenderit lorem magna voluptate magna aliqua culpa. Sit nisi adipisicing pariatur enim enim sunt officia ad labore voluptate magna proident velit excepteur pariatur cillum sit excepteur elit veniam excepteur minim nisi cupidatat proident dolore irure veniam mollit.',
+    },
+    {
+        title: 'Pourquoi ma facture ne reflète-t-elle pas ma consommatiosn mensuelle Periodic tempo ?',
+        content:
+            'Et in lorem qui ipsum deserunt duis exercitation lorem eleit qui qui ipsum tempor nulla velit aliquip enim consequat incididunt pariatur duis excepteur elit irure nulla ipsum dolor dolore est. Aute deserunt nostrud id non ipsum do adipisicing laboris in minim officia magna elit minim mollit elit velit veniam lorem pariatur veniam sit excepteur irure commodo excepteur duis quis in.',
+    },
+    {
+        title: 'Est-il possible de suivre ma consommation en temps réel Periodic tempo?',
+        content:
+            'Id fugiat et cupidatat magna nulla nulla eu cillum officdia nostrud dolore in veniam ullamco nulla ex duis est enim nisi aute ipsum velit et laboris est pariatur est culpa. Culpa sunt ipsum esse quis excepteur enim culpa est voluptate reprehenderit consequat duis officia irure voluptate veniam dolore fugiat dolor est amet nostrud non velit irure do voluptate id sit.',
+    },
+    {
+        title: 'Comment sont utilisées mes données de consommation Periodic tempo ?',
+        content:
+            'Excepteur deserunt tempor do lorem elit id magna pariatsur irure ullamco elit dolor consectetur ad officia fugiat incididunt do elit aute esse eu voluptate adipisicing incididunt ea dolor aliqua dolor. Consequat est quis deserunt voluptate ipsum incididunt laboris occaecat irure laborum voluptate non sit labore voluptate sunt id sint ut laboris aute cupidatat occaecat eiusmod non magna aliquip deserunt nisi.',
+    },
+]
