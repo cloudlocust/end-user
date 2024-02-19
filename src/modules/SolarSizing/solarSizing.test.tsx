@@ -80,7 +80,7 @@ describe('SolarSizing', () => {
             expect(mockRefetch).toBeCalled()
         })
 
-        expect(getByText('400')).toBeInTheDocument()
+        expect(getByText('250')).toBeInTheDocument()
         expect(getByText('1000')).toBeInTheDocument()
     })
 })

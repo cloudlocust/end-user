@@ -24,7 +24,7 @@ export const SolarSizing = () => {
     const [inclinationValue, setInclinationValue] = useState<number>(0)
     const { addSolarSizing, refetch, solarSizingData } = useSolarSizing(currentHousing?.id)
     const history = useHistory()
-    const [latestSurface, setLatestSurface] = useState<number | null>(null)
+    const [latestSurface, setLatestSurface] = useState<number>(0)
 
     const solarSizingDefaultValuess = {}
 
@@ -60,28 +60,28 @@ export const SolarSizing = () => {
 
     // Retrieve surface from the latest solar sizing data
     useEffect(() => {
-        if (solarSizingData?.data) {
-            const { surface } = solarSizingData.data.solarSizing.slice(-1)[0]
+        if (solarSizingData?.data?.solarSizing.length) {
+            const { surface } = solarSizingData?.data?.solarSizing?.slice(-1)[0]!
             setLatestSurface(surface)
         }
-    }, [solarSizingData?.data])
+    }, [solarSizingData?.data?.solarSizing])
 
     const annualProduction = solarSizingData?.data['annualProduction']
     const autoConsumptionPercentage = solarSizingData?.data['autoConsumptionPercentage']
     const autoProductionPercentage = solarSizingData?.data['autoProductionPercentage']
 
     const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
-    const potentialSolarPanelPerSurface = round(latestSurface ?? 0 / oneSolarPanelSurface)
+    const potentialSolarPanelPerSurface = round(latestSurface / oneSolarPanelSurface)
 
     const averageConsumptionFromAnualProduction = useMemo(
         () => (annualProduction! * autoConsumptionPercentage!) / 100,
         [annualProduction, autoConsumptionPercentage],
-    )
+    ).toFixed(2)
 
     const averageProducationFromAnualProduction = useMemo(
         () => (annualProduction! * autoProductionPercentage!) / 100,
         [annualProduction, autoProductionPercentage],
-    )
+    ).toFixed(2)
 
     return (
         <PageSimple
