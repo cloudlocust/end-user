@@ -228,11 +228,6 @@ describe('Load MyConsumptionDatePicker', () => {
     })
 
     test('Should disable only the years 2008 and 2010', async () => {
-        // mockPeriod = PeriodEnum.YEARLY
-        // const maxDate = new Date('2005-01-01 00:00:00:000')
-        // const date = new Date('2024-01-01 00:00:00:000')
-        // mockRange = getRange(mockPeriod, date, 'sub')
-
         mockPeriod = PeriodEnum.YEARLY
         const date = new Date('2019-01-01 00:00:00:000')
         mockRange = getRange(mockPeriod, date, 'add')
