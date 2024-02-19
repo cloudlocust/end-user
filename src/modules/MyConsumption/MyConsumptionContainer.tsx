@@ -95,9 +95,16 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
+    /**
+     * Handles the selection of years in the date picker.
+     * In yearly view, only the n years are displayed if the enedis consent is active.
+     *
+     * @param {Date} date - The selected date.
+     * @returns {boolean} - True if the date should be displayed in the date picker, false otherwise.
+     */
     const handleYearsOfDatePicker = useCallback(
-        (date) => {
-            // in yearly view display only the last three years if the enedis consent is active.
+        (date: Date) => {
+            // in yearly view display only the last n years if the enedis consent is active.
             return (
                 period === PeriodEnum.YEARLY &&
                 !enedisOff &&
@@ -108,8 +115,14 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         [enedisOff, period],
     )
 
+    /**
+     * Determines whether the previous year navigation button should be disabled in the yearly view.
+     * The button is disabled if the enedis consent is active and the range is within the last n years.
+     *
+     * @returns {boolean} True if the previous year navigation button should be disabled, false otherwise.
+     */
     const disablePreviousYearOfNavigationButton = useMemo(() => {
-        // in yearly view display only the previous button for the last three years if the enedis consent is active.
+        // in yearly view display only the previous button for the last n years if the enedis consent is active.
         return (
             period === PeriodEnum.YEARLY &&
             !enedisOff &&

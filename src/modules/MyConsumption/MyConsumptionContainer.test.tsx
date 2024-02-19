@@ -241,7 +241,7 @@ describe('MyConsumptionContainer test', () => {
         })
     })
 
-    test('should all years of date picker disabled except the last NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW years on the yearly view if enedisSge connected', async () => {
+    test(`should all years of date picker disabled except the last ${NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW} years on the yearly view if enedisSge connected`, async () => {
         mockNrlinkConsent = { ...nrLinkConsent, nrlinkConsentState: 'CONNECTED' }
         mockEnedisConsent = { ...enedisSGeConsent, enedisSgeConsentState: 'CONNECTED' }
         mockConsentsLoading = false
@@ -282,7 +282,7 @@ describe('MyConsumptionContainer test', () => {
         }
     })
 
-    test('should previous button of year navigation disabled in last NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW on the yearly view if enedisSge connected', async () => {
+    test(`should previous button of year navigation disabled in last ${NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW} on the yearly view if enedisSge connected`, async () => {
         mockNrlinkConsent = { ...nrLinkConsent, nrlinkConsentState: 'CONNECTED' }
         mockEnedisConsent = { ...enedisSGeConsent, enedisSgeConsentState: 'CONNECTED' }
         mockConsentsLoading = false
