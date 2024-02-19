@@ -14,15 +14,23 @@ export const HOUSING_ACTIVITIES_API = (housingId: number) => `${HOUSING_API}/${h
 /**
  * Default error message for get activities.
  */
-export const TEST_GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE = 'Erreur lors du chargement de vos labels'
+export const GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE = 'Erreur lors du chargement de vos labels'
 /**
  * Default error message for add activity.
  */
-export const TEST_ADD_ACTIVITY_DEFAULT_ERROR_MESSAGE = "Erreur lors de l'enregistrement du label"
+export const ADD_ACTIVITY_DEFAULT_ERROR_MESSAGE = "Erreur lors de l'enregistrement du label"
 /**
  * Success message for add activity.
  */
-export const TEST_ADD_ACTIVITY_SUCCESS_MESSAGE = 'Label enregistrée avec succès'
+export const ADD_ACTIVITY_SUCCESS_MESSAGE = 'Label enregistré avec succès'
+/**
+ * Default error message for deleting activity.
+ */
+export const DELETE_ACTIVITY_DEFAULT_ERROR_MESSAGE = 'Erreur lors de la suppression du label'
+/**
+ * Success message for deleting activity.
+ */
+export const DELETE_ACTIVITY_SUCCESS_MESSAGE = 'Label supprimé avec succès'
 
 /**
 `* Hooks for labelization.
@@ -33,9 +41,10 @@ export const TEST_ADD_ACTIVITY_SUCCESS_MESSAGE = 'Label enregistrée avec succè
 export const useLabelization = (housingId?: number) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
-    const [isGetActivitiesLoading, setIsGetActivitiesLoading] = useState(false)
     const [activitiesList, setActivitiesList] = useState<ConsumptionLabelDataType[] | null>(null)
+    const [isGetActivitiesLoading, setIsGetActivitiesLoading] = useState(false)
     const [isAddActivityLoading, setIsAddActivityLoading] = useState(false)
+    const [isDeleteActivityLoading, setIsDeleteActivityLoading] = useState(false)
 
     /**
      * Get activities function.
@@ -58,8 +67,8 @@ export const useLabelization = (housingId?: number) => {
                           defaultMessage: error.response.data.detail,
                       })
                     : formatMessage({
-                          id: TEST_GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
-                          defaultMessage: TEST_GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
+                          id: GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
+                          defaultMessage: GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
                       }),
                 { variant: 'error' },
             )
@@ -86,8 +95,8 @@ export const useLabelization = (housingId?: number) => {
                     await getActivitiesList()
                     enqueueSnackbar(
                         formatMessage({
-                            id: TEST_ADD_ACTIVITY_SUCCESS_MESSAGE,
-                            defaultMessage: TEST_ADD_ACTIVITY_SUCCESS_MESSAGE,
+                            id: ADD_ACTIVITY_SUCCESS_MESSAGE,
+                            defaultMessage: ADD_ACTIVITY_SUCCESS_MESSAGE,
                         }),
                         { variant: 'success' },
                     )
@@ -101,8 +110,8 @@ export const useLabelization = (housingId?: number) => {
                               defaultMessage: error.response.data.detail,
                           })
                         : formatMessage({
-                              id: TEST_ADD_ACTIVITY_DEFAULT_ERROR_MESSAGE,
-                              defaultMessage: TEST_ADD_ACTIVITY_DEFAULT_ERROR_MESSAGE,
+                              id: ADD_ACTIVITY_DEFAULT_ERROR_MESSAGE,
+                              defaultMessage: ADD_ACTIVITY_DEFAULT_ERROR_MESSAGE,
                           }),
                     { variant: 'error' },
                 )
@@ -113,11 +122,53 @@ export const useLabelization = (housingId?: number) => {
         [enqueueSnackbar, formatMessage, getActivitiesList, housingId],
     )
 
+    /**
+     * Delete activity function.
+     */
+    const deleteActivity = useCallback(
+        async (activityId: number) => {
+            if (!housingId) return
+            setIsDeleteActivityLoading(true)
+            try {
+                const { status } = await axios.delete(`${HOUSING_ACTIVITIES_API(housingId)}/${activityId}`)
+
+                if (status === 200) {
+                    await getActivitiesList()
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: DELETE_ACTIVITY_DEFAULT_ERROR_MESSAGE,
+                            defaultMessage: DELETE_ACTIVITY_SUCCESS_MESSAGE,
+                        }),
+                        { variant: 'success' },
+                    )
+                }
+            } catch (error: any) {
+                enqueueSnackbar(
+                    error?.response?.data?.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: DELETE_ACTIVITY_DEFAULT_ERROR_MESSAGE,
+                              defaultMessage: DELETE_ACTIVITY_DEFAULT_ERROR_MESSAGE,
+                          }),
+                    { variant: 'error' },
+                )
+            } finally {
+                setIsDeleteActivityLoading(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage, getActivitiesList, housingId],
+    )
+
     return {
-        isGetActivitiesLoading,
         activitiesList,
+        isGetActivitiesLoading,
         isAddActivityLoading,
+        isDeleteActivityLoading,
         getActivitiesList,
         addActivity,
+        deleteActivity,
     }
 }

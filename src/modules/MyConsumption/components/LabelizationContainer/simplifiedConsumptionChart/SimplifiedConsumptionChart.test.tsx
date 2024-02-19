@@ -73,7 +73,6 @@ let mockSetRange = jest.fn()
 
 let echartsConsumptionChartContainerProps: SimplifiedConsumptionChartContainerPropsType = {
     filters: mockFilters,
-    isSolarProductionConsentOff: false,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
     setRange: mockSetRange,
@@ -84,7 +83,11 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
-    targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
+    targets: [
+        metricTargetsEnum.consumptionByTariffComponent,
+        metricTargetsEnum.consumption,
+        metricTargetsEnum.eurosConsumption,
+    ],
 }
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({

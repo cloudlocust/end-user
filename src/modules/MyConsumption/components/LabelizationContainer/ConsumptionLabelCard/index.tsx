@@ -2,31 +2,61 @@ import { Card, CardContent, IconButton, Typography } from '@mui/material'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useTheme } from '@mui/material/styles'
+import { useConfirm } from 'material-ui-confirm'
+import { useIntl } from 'src/common/react-platform-translation'
 import { ConsumptionLabelCardProps } from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard/ConsumptionLabelCard.types'
 
 /**
  * Consumption Label Card Element.
  *
  * @param props N/A.
- * @param props.equipmentName The label equipment name.
- * @param props.day  The day of the label.
- * @param props.startTime The start time of the label time range.
- * @param props.endTime The end time of the label time range.
- * @param props.consumption Total consumption in the label time range (in Wh).
- * @param props.consumptionPrice Price of the total consumption.
- * @param props.useType The type of use for the equipment.
+ * @param props.labelData Label card data.
+ * @param props.deleteLabel Function to delete the label.
  * @returns JSX Element.
  */
-const ConsumptionLabelCard = ({
-    equipmentName,
-    day,
-    startTime,
-    endTime,
-    consumption,
-    consumptionPrice,
-    useType,
-}: ConsumptionLabelCardProps) => {
+const ConsumptionLabelCard = ({ labelData, deleteLabel }: ConsumptionLabelCardProps) => {
+    const { labelId, equipmentName, day, startTime, endTime, consumption, consumptionPrice, useType } = labelData
     const { value: consumptionValue, unit: consumptionUnit } = consumptionWattUnitConversion(consumption)
+    const theme = useTheme()
+    const { formatMessage } = useIntl()
+    const openMuiDialog = useConfirm()
+
+    /**
+     * Function for deleting the label.
+     */
+    const handleDeleteLabel = async () => {
+        await openMuiDialog({
+            title: '',
+            dialogProps: {
+                PaperProps: {
+                    style: {
+                        background: theme.palette.error.main,
+                    },
+                },
+            },
+            description: (
+                <TypographyFormatMessage className="text-16 md:text-20 text-center text-white">
+                    Vous êtes sur le point de supprimer le label. Êtes-vous sûr de vouloir continuer ?
+                </TypographyFormatMessage>
+            ),
+            confirmationText: formatMessage({
+                id: 'Continuer',
+                defaultMessage: 'Continuer',
+            }),
+            confirmationButtonProps: {
+                className: 'text-13 md:text-16 font-medium text-white',
+            },
+            cancellationText: formatMessage({
+                id: 'Annuler',
+                defaultMessage: 'Annuler',
+            }),
+            cancellationButtonProps: {
+                className: 'text-13 md:text-16 font-medium text-white',
+            },
+        })
+        await deleteLabel(labelId)
+    }
 
     return (
         <div>
@@ -46,7 +76,7 @@ const ConsumptionLabelCard = ({
                                 <span className="italic font-600">{endTime}</span>
                             </div>
                         </div>
-                        <IconButton aria-label="delete">
+                        <IconButton aria-label="delete" onClick={handleDeleteLabel}>
                             <DeleteOutlinedIcon color="error" />
                         </IconButton>
                     </div>
