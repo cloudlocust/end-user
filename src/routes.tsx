@@ -22,6 +22,7 @@ import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
 import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 import { MaintenanceConfig } from 'src/modules/Maintenance/MaintenanceConfig'
 import { DashboardConfig, URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { SolarSizingConfig } from 'src/modules/SolarSizing/SolarSizingConfig'
 
 /**
  *
@@ -49,6 +50,7 @@ export const routes = [
     ...AlertsConfig,
     ...MaintenanceConfig,
     ...DashboardConfig,
+    ...SolarSizingConfig,
     {
         /**
          * TODO Document.

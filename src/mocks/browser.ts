@@ -26,6 +26,7 @@ import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPrefe
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
 import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
+import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
 
 /**
  * Handlers to mock urls for tests.
@@ -68,6 +69,7 @@ export const handlers = [
     /****** Access rights endpiont. */
     ...accessRightsEndpoints,
     ...DashboardEndpoints,
+    ...solarSizingEndpoints,
 ]
 
 /**
