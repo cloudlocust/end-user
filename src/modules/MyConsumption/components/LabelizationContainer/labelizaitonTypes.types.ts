@@ -23,7 +23,7 @@ export type ConsumptionLabelDataType =
          */
         endDate: string
         /**
-         * Total consumption in that time range (in kWh).
+         * Total consumption in that time range (in Wh).
          */
         consumption: number
         /**
@@ -61,10 +61,6 @@ export type SimplifiedConsumptionChartContainerPropsType =
          */
         filters: metricFiltersType
         /**
-         * Is production consent off.
-         */
-        isSolarProductionConsentOff: boolean
-        /**
          * Enedis Sge consent.
          */
         enedisSgeConsent?: IEnedisSgeConsent
@@ -73,3 +69,41 @@ export type SimplifiedConsumptionChartContainerPropsType =
          */
         setRange: (range: metricRangeType) => void
     }
+
+/**
+ * Type for the fields of the add activity form.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type addActivityFormFieldsType = {
+    /**
+     * The label start date.
+     */
+    startDate: string
+    /**
+     * The label end date.
+     */
+    endDate: string
+    /**
+     * The type of use for the equipment.
+     */
+    useType?: string | null
+    /**
+     * The id of the housing equipment associated to the label.
+     */
+    housingEquipmentId: number
+}
+
+/**
+ * Type of the body object to be passed with the post request to add an activity.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type addActivityRequestBodyType = addActivityFormFieldsType & {
+    /**
+     * Total consumption in that time range (in Wh).
+     */
+    consumption: number
+    /**
+     * Price of the total consumption in that time range.
+     */
+    consumptionPrice: number
+}

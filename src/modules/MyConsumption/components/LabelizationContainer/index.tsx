@@ -152,7 +152,6 @@ const LablizationContainer = () => {
                         range={range}
                         setRange={setRange}
                         filters={filters}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
                         metricsInterval={metricsInterval}
                         enedisSgeConsent={enedisSgeConsent}
                     />

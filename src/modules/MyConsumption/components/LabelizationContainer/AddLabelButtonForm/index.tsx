@@ -1,12 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
+import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
 import { useTheme } from '@mui/material/styles'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { motion } from 'framer-motion'
@@ -14,8 +10,10 @@ import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 import SaveIcon from '@mui/icons-material/Save'
 import { AddLabelButtonFormProps } from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm/AddLabelButtonForm'
-import { ButtonLoader } from 'src/common/ui-kit'
+import { ButtonLoader, MuiTextField } from 'src/common/ui-kit'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useFormContext } from 'react-hook-form'
+import { requiredBuilder } from 'src/common/react-platform-components'
 
 /**
  * Button to add a label.
@@ -25,8 +23,8 @@ import CircularProgress from '@mui/material/CircularProgress'
  * @param root0.inputPeriodTime Input Period Time.
  * @param root0.setInputPeriodTime Set the input period time.
  * @param root0.equipments The equipments list.
- * @param root0.loadingEquipmentsInProgress Whether the equipments are loading.
- * @param root0.addNewLabel Function to add a new label.
+ * @param root0.addingLabelsIsDisabled Weather the creation of labels is disabled.
+ * @param root0.range The current range of the metrics.
  * @returns JSX Element.
  */
 const AddLabelButtonForm = ({
@@ -34,20 +32,19 @@ const AddLabelButtonForm = ({
     inputPeriodTime,
     setInputPeriodTime,
     equipments,
-    loadingEquipmentsInProgress,
-    addNewLabel,
+    addingLabelsIsDisabled,
+    range,
 }: AddLabelButtonFormProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+    const { setValue } = useFormContext()
     const [isSelectLabelActive, setIsSelectLabelActive] = useState(false)
-    const [selectedEquipmentId, setSelectedEquipmentId] = useState('')
-    const [equipmentUseType, setEquipmentUseType] = useState('')
 
     /**
      *  Handle the click on the button.
      */
     const handleBrushSelection = () => {
-        if (!chartRef.current || loadingEquipmentsInProgress) return
+        if (!chartRef.current || addingLabelsIsDisabled) return
         if (isSelectLabelActive) {
             setIsSelectLabelActive(false)
             // To Desactivate the cursor
@@ -61,11 +58,11 @@ const AddLabelButtonForm = ({
             })
             // Reset the states
             setInputPeriodTime({
-                startTime: '',
-                endTime: '',
+                startTime: undefined,
+                endTime: undefined,
             })
-            setSelectedEquipmentId('')
-            setEquipmentUseType('')
+            setValue('housingEquipmentId', '')
+            setValue('useType', '')
         } else {
             setIsSelectLabelActive(true)
             // Activate the cursor with a brush selection on lineX
@@ -79,48 +76,33 @@ const AddLabelButtonForm = ({
         }
     }
 
-    /**
-     *  Handle the click on the button.
-     */
-    const handleSaveLabel = () => {
-        addNewLabel(inputPeriodTime, selectedEquipmentId, equipmentUseType)
-    }
+    useEffect(() => {
+        setIsSelectLabelActive(false)
+    }, [range])
 
-    const equipmentLabel = 'Equipement'
-    const equipmentUseTypeLabel = "Type d'usage"
-    const startTimeLabel = 'De'
-    const endTimeLabel = 'À'
-
-    const formControlStyle = {
-        '& .MuiInputBase-input': {
-            paddingY: '10px',
-        },
-        '& label': {
-            top: '-4px',
-        },
-    }
+    useEffect(() => {
+        setValue('startDate', inputPeriodTime.startTime ?? '')
+        setValue('endDate', inputPeriodTime.endTime ?? '')
+        if (inputPeriodTime.startTime === undefined && inputPeriodTime.endTime === undefined) {
+            setValue('housingEquipmentId', '')
+            setValue('useType', '')
+        }
+    }, [inputPeriodTime.endTime, inputPeriodTime.startTime, setValue])
 
     return (
         <div className="flex justify-end items-center gap-24 mx-32">
             {isSelectLabelActive && (
                 <div className="flex-1 flex justify-start lg:justify-center pl-0 lg:pl-208">
-                    <div className="w-full md:max-w-640 flex flex-col md:flex-row justify-center items-center gap-x-10 gap-y-20">
+                    <div className="w-full md:max-w-640 flex flex-col md:flex-row justify-center items-start gap-x-10 gap-y-20">
                         {/* Equipment select */}
-                        <FormControl fullWidth className="flex-1" sx={formControlStyle}>
-                            <InputLabel id="equipment-select-label">
-                                {formatMessage({
-                                    id: equipmentLabel,
-                                    defaultMessage: equipmentLabel,
-                                })}
-                            </InputLabel>
+                        <div className="flex-1 w-full">
                             <Select
-                                labelId="equipment-select-label"
-                                value={selectedEquipmentId}
+                                name="housingEquipmentId"
                                 label={formatMessage({
-                                    id: equipmentLabel,
-                                    defaultMessage: equipmentLabel,
+                                    id: 'Equipement',
+                                    defaultMessage: 'Equipement',
                                 })}
-                                onChange={(event) => setSelectedEquipmentId(event.target.value)}
+                                validateFunctions={[requiredBuilder()]}
                             >
                                 {equipments.map((equipment) => (
                                     <MenuItem key={equipment.id} value={equipment.id}>
@@ -128,50 +110,54 @@ const AddLabelButtonForm = ({
                                     </MenuItem>
                                 ))}
                             </Select>
-                        </FormControl>
+                        </div>
 
                         {/* Equipment use type */}
-                        <FormControl fullWidth className="flex-1" sx={formControlStyle}>
-                            <TextField
-                                value={equipmentUseType}
+                        <div className="flex-1 w-full">
+                            <MuiTextField
+                                name="useType"
                                 label={formatMessage({
-                                    id: equipmentUseTypeLabel,
-                                    defaultMessage: equipmentUseTypeLabel,
+                                    id: "Type d'usage",
+                                    defaultMessage: "Type d'usage",
                                 })}
-                                onChange={(event) => {
-                                    setEquipmentUseType(event.target.value)
-                                }}
+                                className="w-full"
                             />
-                        </FormControl>
+                        </div>
 
-                        <div className="w-full flex-1 flex justify-center items-center gap-10">
+                        <div className="w-full flex-1 flex justify-center items-start gap-10">
                             {/* Start time */}
-                            <FormControl className="flex-1" sx={formControlStyle}>
-                                <TextField
-                                    value={inputPeriodTime?.startTime || ''}
+                            <div className="flex-1 w-full">
+                                <MuiTextField
+                                    name="startDate"
+                                    value={inputPeriodTime.startTime}
                                     label={formatMessage({
-                                        id: startTimeLabel,
-                                        defaultMessage: startTimeLabel,
+                                        id: 'De',
+                                        defaultMessage: 'De',
                                     })}
                                     inputProps={{
                                         readOnly: true,
                                     }}
+                                    validateFunctions={[requiredBuilder()]}
+                                    className="w-full"
                                 />
-                            </FormControl>
+                            </div>
 
                             {/* End time */}
-                            <FormControl className="flex-1" sx={formControlStyle}>
-                                <TextField
-                                    value={inputPeriodTime?.endTime || ''}
+                            <div className="flex-1 w-full">
+                                <MuiTextField
+                                    name="endDate"
+                                    value={inputPeriodTime.endTime}
                                     label={formatMessage({
-                                        id: endTimeLabel,
-                                        defaultMessage: endTimeLabel,
+                                        id: 'À',
+                                        defaultMessage: 'À',
                                     })}
                                     inputProps={{
                                         readOnly: true,
                                     }}
+                                    validateFunctions={[requiredBuilder()]}
+                                    className="w-full"
                                 />
-                            </FormControl>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -183,33 +169,43 @@ const AddLabelButtonForm = ({
             >
                 {isSelectLabelActive && (
                     <>
-                        <Button
+                        <ButtonLoader
+                            inProgress={addingLabelsIsDisabled}
                             className="whitespace-nowrap hidden sm:block w-full md:w-auto"
                             variant="contained"
                             color="primary"
                             sx={{ height: '38.7px', borderRadius: 100 }}
-                            onClick={() => handleSaveLabel()}
+                            type="submit"
                         >
                             <TypographyFormatMessage>Enregistrer</TypographyFormatMessage>
-                        </Button>
+                        </ButtonLoader>
                         <IconButton
                             className="flex sm:hidden justify-center items-center"
                             sx={{
                                 height: '38.7px',
                                 width: '38.7px',
-                                backgroundColor: theme.palette.primary.main,
+                                backgroundColor: addingLabelsIsDisabled
+                                    ? theme.palette.grey[300]
+                                    : theme.palette.primary.main,
                                 '&:hover': {
-                                    backgroundColor: theme.palette.primary.main,
+                                    backgroundColor: addingLabelsIsDisabled
+                                        ? theme.palette.grey[300]
+                                        : theme.palette.primary.main,
                                 },
+                                color: addingLabelsIsDisabled ? theme.palette.grey[500] : 'white',
                             }}
-                            onClick={() => handleSaveLabel()}
+                            type="submit"
                         >
-                            <SaveIcon sx={{ color: 'white' }} />
+                            {addingLabelsIsDisabled ? (
+                                <CircularProgress size={14} color="inherit" />
+                            ) : (
+                                <SaveIcon sx={{ color: 'white' }} />
+                            )}
                         </IconButton>
                     </>
                 )}
                 <ButtonLoader
-                    inProgress={loadingEquipmentsInProgress}
+                    inProgress={addingLabelsIsDisabled}
                     className="whitespace-nowrap hidden sm:block w-full md:w-auto"
                     variant="contained"
                     color="primary"
@@ -225,19 +221,17 @@ const AddLabelButtonForm = ({
                     sx={{
                         height: '38.7px',
                         width: '38.7px',
-                        backgroundColor: loadingEquipmentsInProgress
-                            ? theme.palette.grey[300]
-                            : theme.palette.primary.main,
+                        backgroundColor: addingLabelsIsDisabled ? theme.palette.grey[300] : theme.palette.primary.main,
                         '&:hover': {
-                            backgroundColor: loadingEquipmentsInProgress
+                            backgroundColor: addingLabelsIsDisabled
                                 ? theme.palette.grey[300]
                                 : theme.palette.primary.main,
                         },
-                        color: loadingEquipmentsInProgress ? theme.palette.grey[500] : 'white',
+                        color: addingLabelsIsDisabled ? theme.palette.grey[500] : 'white',
                     }}
                     onClick={() => handleBrushSelection()}
                 >
-                    {loadingEquipmentsInProgress ? (
+                    {addingLabelsIsDisabled ? (
                         <CircularProgress size={14} color="inherit" />
                     ) : isSelectLabelActive ? (
                         <ClearIcon sx={{ color: 'white' }} />

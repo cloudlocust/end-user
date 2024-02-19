@@ -1,6 +1,7 @@
 import { RefObject } from 'react'
 import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { ReactECharts } from 'echarts-for-react'
+import { metricRangeType } from 'src/modules/Metrics/Metrics'
 
 /**
  * Props of the AddLabelButtonForm component.
@@ -34,11 +35,11 @@ interface AddLabelButtonFormProps {
         name: string
     }[]
     /**
-     * Whether the equipments are loading.
+     * Weather the creation of labels is disabled.
      */
-    loadingEquipmentsInProgress: boolean
+    addingLabelsIsDisabled: boolean
     /**
-     * Function to add a new label.
+     * The current range of the metrics.
      */
-    addNewLabel: (inputPeriodTime: IPeriodTime, equipmentId: string, equipmentUseType: string) => void
+    range: metricRangeType
 }
