@@ -28,6 +28,9 @@ import {
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
+import { Button } from '@mui/material'
+import { useHistory } from 'react-router-dom'
+import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
@@ -58,6 +61,14 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
+    const history = useHistory()
+
+    /**
+     * Redirect to EcogestCard.
+     */
+    const handleClick = () => {
+        history.push(URL_CONSUMPTION_LABELIZATION)
+    }
     const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
@@ -66,6 +77,22 @@ export const ConsumptionChartContainer = ({
     )
     // const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
     const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
+
+    useEffect(() => {
+        const defaultTargets = getDefaultConsumptionTargets(consumptionToggleButton)
+        setTargets(defaultTargets)
+    }, [consumptionToggleButton])
+
+    // Switch consumption button should be reset to consumption when the other two are not shown.
+    useEffect(() => {
+        if (
+            (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) ||
+            (!isAutoConsumptionProductionShown &&
+                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
+        ) {
+            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
+        }
+    }, [consumptionToggleButton, isAutoConsumptionProductionShown, isIdleShown, setConsumptionToggleButton])
 
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -225,17 +252,6 @@ export const ConsumptionChartContainer = ({
         [getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
     )
 
-    // Switch consumption button should be reset to consumption when the other two are not shown.
-    useEffect(() => {
-        if (
-            (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) ||
-            (!isAutoConsumptionProductionShown &&
-                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
-        ) {
-            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
-        }
-    }, [consumptionToggleButton, isAutoConsumptionProductionShown, isIdleShown, setConsumptionToggleButton])
-
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
     useEffect(() => {
         if (isMetricRequestNotAllowed) {
@@ -290,12 +306,25 @@ export const ConsumptionChartContainer = ({
                         />
                     )}
                 </div>
-                <TargetMenuGroup
-                    removeTargets={() => onTemperatureOrPmaxMenuClick([])}
-                    addTargets={onTemperatureOrPmaxMenuClick}
-                    hidePmax={hidePmax}
-                    activeButton={targetMenuActiveButton}
-                />
+                <div className="flex flex-row">
+                    {period === 'daily' && (
+                        <div className="flex flex-row justify-end my-16">
+                            <Button
+                                style={{ color: theme.palette.common.white }}
+                                variant="outlined"
+                                onClick={handleClick}
+                            >
+                                Identifier mes appareils
+                            </Button>
+                        </div>
+                    )}
+                    <TargetMenuGroup
+                        removeTargets={() => onTemperatureOrPmaxMenuClick([])}
+                        addTargets={onTemperatureOrPmaxMenuClick}
+                        hidePmax={hidePmax}
+                        activeButton={targetMenuActiveButton}
+                    />
+                </div>
             </div>
 
             {isMetricsLoading ? (
@@ -303,7 +332,11 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart data={consumptionChartData} period={period} />
+                <MyConsumptionChart
+                    data={consumptionChartData}
+                    period={period}
+                    axisColor={theme.palette.primary.contrastText}
+                />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
