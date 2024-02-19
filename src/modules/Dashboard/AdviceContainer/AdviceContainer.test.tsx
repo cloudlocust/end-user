@@ -47,7 +47,7 @@ describe('AdviceContainer tests', () => {
         ).toBeInTheDocument()
 
         expect(
-            screen.queryAllByText('Consulter', {
+            screen.queryAllByText('Détails', {
                 exact: false,
             }),
         ).toHaveLength(mockEcogestes.length)

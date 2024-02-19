@@ -217,7 +217,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(1)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -366,6 +366,34 @@ describe('MyConsumptionContainer test', () => {
         mockManualContractFillingIsEnabled = true
     })
 
+    test('When daily period, no button idle', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText('Veille')).not.toBeInTheDocument()
+    })
+
+    test('When daily period, their is button for labelisation', async () => {
+        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText('Identifier mes appareils')).toBeInTheDocument()
+    })
+
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = 'weekly'
@@ -388,7 +416,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
             })
         }, 10000)
     })

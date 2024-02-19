@@ -301,6 +301,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: enduser-react
-              key: REACT_APP_DASHBOARD_FEATURE_STATE 
+              key: REACT_APP_DASHBOARD_FEATURE_STATE
+        - name: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
       imagePullSecrets:
       - name: dockersecret  
