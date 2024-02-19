@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
@@ -28,6 +28,7 @@ import {
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
+import { useContractList } from 'src/modules/Contracts/contractsHook'
 
 /**
  * MyConsumptionContainer.
@@ -43,6 +44,7 @@ export const MyConsumptionContainer = () => {
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
     const { consumptionToggleButton } = useMyConsumptionStore()
+    const { elementList: contractList } = useContractList(currentHousing?.id as number)
 
     // Load connected plug only when housing is defined
     const {
@@ -83,6 +85,12 @@ export const MyConsumptionContainer = () => {
     useEffect(() => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
+
+    // check if the user has a tempo contract
+    const hasTempoContract = useMemo(
+        () => contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false,
+        [contractList],
+    )
 
     if (consentsLoading)
         return (
@@ -173,7 +181,7 @@ export const MyConsumptionContainer = () => {
 
             {/* FAQ used to understand the charts  */}
             <div className="p-12 sm:p-24">
-                <ChartFAQ period={period} />
+                <ChartFAQ period={period} hasTempoContract={hasTempoContract} />
             </div>
 
             {/* Ecowatt Widget */}

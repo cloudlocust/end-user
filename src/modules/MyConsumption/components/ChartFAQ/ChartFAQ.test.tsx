@@ -1,31 +1,54 @@
-import { render, cleanup } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { ChartFAQ, faqForDailyPeriod, faqForTempo, faqTitleForDailyPeriod, faqTitleForTempo } from './index'
+import {
+    ChartFAQ,
+    faqForDailyPeriod,
+    faqForDailyPeriodTempo,
+    faqForPeriodicIntervals,
+    faqForPeriodicIntervalsTempo,
+    faqTitleForDailyPeriod,
+    faqTitleForDailyPeriodTempo,
+    faqTitleForPeriodicIntervals,
+    faqTitleForPeriodicIntervalsTempo,
+} from './index'
 
 describe('ChartFAQ', () => {
     test('renders FAQ component with correct props for daily period', () => {
-        const { getByText } = render(<ChartFAQ period={PeriodEnum.DAILY} />)
+        const { getByText, rerender } = render(<ChartFAQ period={PeriodEnum.DAILY} hasTempoContract={false} />)
 
         expect(getByText(faqTitleForDailyPeriod)).toBeInTheDocument()
         for (const faqItem of faqForDailyPeriod) {
             expect(getByText(faqItem.title)).toBeInTheDocument()
             expect(getByText(faqItem.content)).toBeInTheDocument()
         }
-        // Add more assertions for the rendered FAQ items specific to the daily period
+
+        rerender(<ChartFAQ period={PeriodEnum.DAILY} hasTempoContract={true} />)
+
+        expect(getByText(faqTitleForDailyPeriodTempo)).toBeInTheDocument()
+        for (const faqItem of faqForDailyPeriodTempo) {
+            expect(getByText(faqItem.title)).toBeInTheDocument()
+            expect(getByText(faqItem.content)).toBeInTheDocument()
+        }
     })
 
-    test('renders FAQ component with correct props for tempo period', () => {
-        // PeriodEnum.WEEKLY, PeriodEnum.YEARLY
-
+    test('renders FAQ component with correct props for periodic intervals', () => {
         for (const period of [PeriodEnum.MONTHLY, PeriodEnum.WEEKLY]) {
-            const { getByText } = render(<ChartFAQ period={period} />)
-            expect(getByText(faqTitleForTempo)).toBeInTheDocument()
+            const { getByText, rerender, unmount } = render(<ChartFAQ period={period} hasTempoContract={false} />)
+            expect(getByText(faqTitleForPeriodicIntervals)).toBeInTheDocument()
 
-            for (const faqItem of faqForTempo) {
+            for (const faqItem of faqForPeriodicIntervals) {
                 expect(getByText(faqItem.title)).toBeInTheDocument()
                 expect(getByText(faqItem.content)).toBeInTheDocument()
             }
-            cleanup()
+
+            rerender(<ChartFAQ period={period} hasTempoContract={true} />)
+
+            expect(getByText(faqTitleForPeriodicIntervalsTempo)).toBeInTheDocument()
+            for (const faqItem of faqForPeriodicIntervalsTempo) {
+                expect(getByText(faqItem.title)).toBeInTheDocument()
+                expect(getByText(faqItem.content)).toBeInTheDocument()
+            }
+            unmount()
         }
     })
 })
