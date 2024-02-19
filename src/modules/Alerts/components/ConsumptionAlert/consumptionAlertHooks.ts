@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import {
     ConsumptionAlertData,
@@ -35,7 +35,6 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
     const [isPricePerKwhLoadingInProgress, setIsPricePerKwhLoadingInProgress] = useState(false)
 
     const { formatMessage } = useIntl()
-    const isInitialMount = useRef(true)
     const [isConsumptionAlertsListEmpty, setIsConsumptionAlertsListEmpty] = useState(true)
 
     const NO_HOUSING_MESSAGE = 'Aucun logement.'
@@ -158,11 +157,10 @@ export function useConsumptionAlerts(housingId: number | null, disabledOnMunt?: 
             await loadConsumptionAlerts()
             await loadPricePerKwh()
         }
-        if (isInitialMount.current && housingId && !disabledOnMunt) {
-            isInitialMount.current = false
+        if (housingId && !disabledOnMunt) {
             loadEssentials()
         }
-    }, [loadConsumptionAlerts, housingId, disabledOnMunt, loadPricePerKwh])
+    }, [loadConsumptionAlerts, housingId, loadPricePerKwh, disabledOnMunt])
 
     return {
         isSavingInProgress,

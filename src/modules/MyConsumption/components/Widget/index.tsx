@@ -29,11 +29,22 @@ export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
  * @param props.infoIcons InfoIcon showed in top right of widgets.
  * @param props.targets Targets of the widget.
  * @param props.period Current Period.
+ * @param props.childrenPosition .
  * @returns Widget Component.
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(
-    ({ filters, range, infoIcons, metricsInterval, targets, period, enphaseOff, children }: IWidgetProps) => {
+    ({
+        filters,
+        range,
+        infoIcons,
+        metricsInterval,
+        targets,
+        period,
+        enphaseOff,
+        children,
+        childrenPosition = 'top',
+    }: // eslint-disable-next-line sonarjs/cognitive-complexity
+    IWidgetProps) => {
         const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
             range: getWidgetRange(range, period),
@@ -126,7 +137,7 @@ export const Widget = memo(
                             </div>
                         ) : (
                             <div className="h-full flex flex-col">
-                                {children}
+                                {childrenPosition === 'top' ? children : <></>}
                                 {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) => (
                                     <WidgetItem
                                         key={index}
@@ -144,6 +155,7 @@ export const Widget = memo(
                                         }
                                     />
                                 ))}
+                                {childrenPosition === 'bottom' ? children : <></>}
                             </div>
                         )}
                     </>
