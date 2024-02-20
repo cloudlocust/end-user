@@ -25,6 +25,7 @@ import { ecogestesEndpoints } from './handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
+import { activitiesEndpoints } from './handlers/labelization'
 import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
 import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 
@@ -68,6 +69,8 @@ export const handlers = [
     ...connectedPlugsEndpoints,
     /****** Access rights endpiont. */
     ...accessRightsEndpoints,
+    /****** Activities endpiont. */
+    ...activitiesEndpoints,
     ...DashboardEndpoints,
     /****** Alpiq Subscription Endpoints. */
     ...AlpiqSubscriptionEndpoints,
