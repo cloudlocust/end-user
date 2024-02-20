@@ -20,6 +20,7 @@ import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddres
 import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
 import { RevokeNrlinkConsent } from 'src/modules/MyHouse/components/RevokeNrlinkConsent'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
+import clsx from 'clsx'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -76,6 +77,9 @@ export const MeterStatus = () => {
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
+
+    const mdBorderRight = 'border-r-2'
+    const consentContainerClassses = 'w-full md:w-1/3 p-12'
 
     /**
      * This useEffect listen to changes in localStorage for enphaseConsentState.
@@ -353,12 +357,13 @@ export const MeterStatus = () => {
                         </NavLink>
                     </div>
                     <div
-                        className={`flex flex-col md:flex-row ${
-                            !isProductionActive ? 'justify-between' : 'justify-evenly'
-                        } items-center`}
+                        className={clsx(
+                            'flex flex-col md:flex-row items-stretch',
+                            isProductionActive ? 'justify-evenly' : 'justify-between',
+                        )}
                     >
                         {/* Nrlink Consent Status */}
-                        <div className="w-full md:w-1/3 p-12">
+                        <div className={clsx(consentContainerClassses, !mdDown && mdBorderRight)}>
                             {consentsLoading ? (
                                 <CircularProgress size={25} />
                             ) : (
@@ -372,7 +377,7 @@ export const MeterStatus = () => {
                                 </>
                             )}
                         </div>
-                        <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
+                        <Divider orientation={'horizontal'} flexItem variant="fullWidth" />
 
                         {/* Enedis Consent Status */}
                         <Tooltip
@@ -384,7 +389,13 @@ export const MeterStatus = () => {
                                 defaultMessage: `${sgeConsentFeatureStatePopup}`,
                             })}
                         >
-                            <div className={`w-full md:w-1/3 p-12 ${!sgeConsentFeatureState && 'cursor-not-allowed'}`}>
+                            <div
+                                className={clsx(
+                                    consentContainerClassses,
+                                    !sgeConsentFeatureState && 'cursor-not-allowed',
+                                    !mdDown && isProductionActive && mdBorderRight,
+                                )}
+                            >
                                 {consentsLoading ? (
                                     <CircularProgress size={25} />
                                 ) : (
@@ -400,17 +411,19 @@ export const MeterStatus = () => {
                             </div>
                         </Tooltip>
                         <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
-                        <SolarProductionConsentStatus
-                            solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
-                            solarProductionConsent={enphaseConsent}
-                            enphaseLink={enphaseLink}
-                            getEnphaseLink={getEnphaseLink}
-                            onRevokeEnphaseConsent={async () => {
-                                // When revoking enphase Consent means there is currentHousing!.meter.guid
-                                await revokeEnphaseConsent(currentHousing!.id)
-                                getConsents(currentHousing?.id)
-                            }}
-                        />
+                        <div className={clsx(consentContainerClassses, !isProductionActive && 'hidden')}>
+                            <SolarProductionConsentStatus
+                                solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
+                                solarProductionConsent={enphaseConsent}
+                                enphaseLink={enphaseLink}
+                                getEnphaseLink={getEnphaseLink}
+                                onRevokeEnphaseConsent={async () => {
+                                    // When revoking enphase Consent means there is currentHousing!.meter.guid
+                                    await revokeEnphaseConsent(currentHousing!.id)
+                                    getConsents(currentHousing?.id)
+                                }}
+                            />
+                        </div>
                     </div>
                 </MuiCardContent>
             </Card>
