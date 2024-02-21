@@ -4,11 +4,14 @@ import ShellyWindowInstructions, {
 } from 'src/modules/MyHouse/components/ConnectedPlugs/ShellyWindowInstructions'
 
 const SHELLY_WINDOW_INSTRUCTION_MESSAGE_TEXT = 'Veuillez fermer votre espace Shelly une fois votre traitement terminé.'
+const SHELLY_WINDOW_INSTRUCTION_MESSAGE_DESCRIPTION_TEXT =
+    'Actuellement, les prises Shelly peuvent être liées à l’application uniqument dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de visualiser la production solaire.'
 
 const mockShellyUrl = 'mockShellyUrl'
 describe('ShellyWindowInstructions Component', () => {
     const { getByText } = reduxedRender(<ShellyWindowInstructions />)
     expect(getByText(SHELLY_WINDOW_INSTRUCTION_MESSAGE_TEXT)).toBeTruthy()
+    expect(getByText(SHELLY_WINDOW_INSTRUCTION_MESSAGE_DESCRIPTION_TEXT)).toBeTruthy()
 })
 describe('Test getShellyWindowInstructionsHTML', () => {
     test('When calling getShellyWindowInstructionsHTML', async () => {
