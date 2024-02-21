@@ -40,9 +40,7 @@ export function WidgetItem({
                 {/* Widget title */}
                 <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">{title}</TypographyFormatMessage>
                 {/* Widget infoIcon */}
-                {target === metricTargetsEnum.injectedProduction
-                    ? (!value || period === PeriodEnum.DAILY) && infoIcon
-                    : infoIcon}
+                {infoIcon}
             </div>
             {!value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
                 <div className="text-center flex flex-1 justify-center items-center py-4">{noValueMessage}</div>
