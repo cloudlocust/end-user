@@ -3,7 +3,7 @@
  */
 export interface MicrowaveMeasurementProps {
     /**
-     * The global equipment id.
+     * The housing equipment id.
      */
     housingEquipmentId: number
     /**
