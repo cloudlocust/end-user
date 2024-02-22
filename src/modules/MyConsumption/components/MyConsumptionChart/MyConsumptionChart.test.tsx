@@ -13,8 +13,8 @@ const TEST_SUCCESS_WEEK_METRICS = applyCamelCase(MOCK_WEEK_METRICS([metricTarget
 // eslint-disable-next-line jsdoc/require-jsdoc
 const propsMyConsumptionChart = {
     data: TEST_SUCCESS_WEEK_METRICS,
-    isSolarProductionConsentOff: false,
     period: 'daily' as periodType,
+    axisColor: 'primary',
 } as ConsumptionChartProps
 
 describe('Test MyConsumptionChart', () => {

@@ -22,6 +22,7 @@ import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
 import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 import { MaintenanceConfig } from 'src/modules/Maintenance/MaintenanceConfig'
 import { DashboardConfig, URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { AlpiqSubscriptionConfig } from './modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 
 /**
  *
@@ -48,6 +49,7 @@ export const routes = [
     ...EcogestesConfig,
     ...AlertsConfig,
     ...MaintenanceConfig,
+    ...AlpiqSubscriptionConfig,
     ...DashboardConfig,
     {
         /**

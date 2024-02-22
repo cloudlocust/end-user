@@ -31,6 +31,10 @@ export interface EnedisSgePopupProps {
      * Create enedis sge loading state.
      */
     isCreateEnedisSgeConsentLoading: boolean
+    /**
+     * Is Element a Button or text.
+     */
+    isElementButton?: boolean
 }
 
 /**

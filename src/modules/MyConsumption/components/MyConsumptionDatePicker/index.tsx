@@ -33,6 +33,9 @@ import { useState } from 'react'
  * @param root0.range Range data.
  * @param root0.onDatePickerChange Callback function that overwrites the default handleDateChange for DatePicker used in MyConsumption modules.
  * @param root0.maxDate Max Date the DatePicker can go to..
+ * @param root0.color Color of the date picker.
+ * @param root0.isPreviousButtonDisabling Use it to disable previous button.
+ * @param root0.handleYears Use it to enable or disable a years in the calender.
  * @returns MyConsumptionDatePicker.
  */
 const MyConsumptionDatePicker = ({
@@ -41,10 +44,14 @@ const MyConsumptionDatePicker = ({
     range,
     onDatePickerChange,
     maxDate,
+    color,
+    isPreviousButtonDisabling = false,
+    handleYears,
 }: IMyConsumptionDatePicker) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const [isRangeLoading, setIsRangeLoading] = useState(false)
+    const DATE_PICKER_COLOR: string = color || theme.palette.common.white
 
     const rangeDateFormat = {
         from: getDateWithTimezoneOffset(range.from),
@@ -95,6 +102,8 @@ const MyConsumptionDatePicker = ({
         }
     }
 
+    const disablePreviousButton = isPreviousButtonDisabling || isRangeLoading
+
     return (
         <motion.div
             className="flex items-center justify-center wrapper"
@@ -105,8 +114,8 @@ const MyConsumptionDatePicker = ({
                 aria-label="Previous"
                 onClick={() => handleClick(subDays, rangeDateFormat.from, 'sub')}
                 size="large"
-                style={{ color: isRangeLoading ? theme.palette.grey[600] : theme.palette.common.white }}
-                disabled={isRangeLoading}
+                style={{ color: disablePreviousButton ? theme.palette.grey[600] : DATE_PICKER_COLOR }}
+                disabled={disablePreviousButton}
             >
                 <Icon>chevron_left </Icon>
             </IconButton>
@@ -133,7 +142,7 @@ const MyConsumptionDatePicker = ({
                                         {...params}
                                         sx={{
                                             input: {
-                                                color: theme.palette.common.white,
+                                                color: DATE_PICKER_COLOR,
                                                 textAlign: 'center',
                                                 width: item.width,
                                                 fontSize: '1.6rem',
@@ -141,6 +150,7 @@ const MyConsumptionDatePicker = ({
                                         }}
                                     />
                                 )}
+                                {...(handleYears && { shouldDisableYear: handleYears })}
                             />
                         ),
                 )}
@@ -151,7 +161,7 @@ const MyConsumptionDatePicker = ({
                 size="large"
                 disabled={isFutureDate || isRangeLoading}
                 style={{
-                    color: isFutureDate || isRangeLoading ? theme.palette.grey[600] : theme.palette.common.white,
+                    color: isFutureDate || isRangeLoading ? theme.palette.grey[600] : DATE_PICKER_COLOR,
                 }}
             >
                 <Icon>chevron_right</Icon>

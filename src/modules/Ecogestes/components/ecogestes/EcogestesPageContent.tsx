@@ -1,5 +1,5 @@
 import { IEcogestPageComponentProps } from 'src/modules/Ecogestes/components/ecogeste'
-import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
+import Ecogestes from 'src/modules/Ecogestes/components/ecogestes/Ecogestes'
 import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared/EcogestesLoadingSpinner'
 
 /**
@@ -9,16 +9,16 @@ import { EcogestesLoadingSpinner } from 'src/modules/Ecogestes/components/shared
  * @param root0.currentCategory Current Ecogeste Category.
  * @returns JSX.Element.
  */
-const EcogestesListPageContent = ({ currentCategory }: IEcogestPageComponentProps): JSX.Element => {
+const EcogestesPageContent = ({ currentCategory }: IEcogestPageComponentProps): JSX.Element => {
     if (!currentCategory) {
         return <EcogestesLoadingSpinner />
     }
 
     return (
         <div className="m-10 p-10">
-            <EcogestesList />
+            <Ecogestes />
         </div>
     )
 }
 
-export default EcogestesListPageContent
+export default EcogestesPageContent
