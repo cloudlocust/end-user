@@ -1,6 +1,6 @@
 import { BrowserRouter as Router } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics'
+import { metricFiltersType, metricIntervalType, IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsContainerProps } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/WidgetContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
@@ -8,6 +8,7 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfDay, startOfDay } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 const CONSOMMATION_TOTAL_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = 'Achetée'
@@ -60,15 +61,36 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess,
 }))
 
+// Convert metricTargetsEnum enum to array of values for we can set it in target (simulate the existing data).
+let metricsData: IMetric[] = Object.values(metricTargetsEnum).map(
+    (target) =>
+        ({
+            target,
+            datapoints: [[120, 1707435000000]],
+        } as IMetric),
+)
+
+let mockMetricsData: IMetric[] = JSON.parse(JSON.stringify(metricsData))
+
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useMetrics: () => ({
-        data: [],
+        data: mockMetricsData,
         isMetricsLoading: false,
         setRange: jest.fn(),
         setMetricsInterval: jest.fn(),
         setData: jest.fn(),
     }),
+}))
+
+let mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    /**
+     * Mock useMyConsumptionStore hook for we can change between tabs.
+     *
+     * @returns Current tab.
+     */
+    useMyConsumptionStore: () => ({ consumptionToggleButton: mockMyConsumptionTab }),
 }))
 
 describe('ConsumptionWidgetsContainer test', () => {
@@ -182,8 +204,32 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(PUISSANCE_MAXIMALE_TEXT)).not.toBeInTheDocument()
     })
 
+    test('when the metrics of injected production not available, the widgets of autoconsumption and injection should not be showing on AutoconsmptionProduction tab', async () => {
+        mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        mockMetricsData = mockMetricsData.map((metric) =>
+            metric.target === metricTargetsEnum.injectedProduction ? { ...metric, datapoints: [] } : metric,
+        )
+        const { container, getByText, queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionWidgetsMetricsProvider>
+                    <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
+                </ConsumptionWidgetsMetricsProvider>
+            </Router>,
+        )
+        expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(7)
+
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
+        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
+        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
+    })
     test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
         consumptionWidgetsContainerProps.enphaseOff = true
+        mockMetricsData = []
         const { container, getByText, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>
@@ -209,6 +255,7 @@ describe('ConsumptionWidgetsContainer test', () => {
     test('when the enphase feature is disabled, the widgets of production & autoconsumption should not be showing', async () => {
         mockGlobalProductionFeatureState = false // in tests no need for this since we mocked the hire function (IsProductionActiveAndHasHousingAccess)
         mockIsProductionActiveAndHousingHasAccess = false
+        mockMetricsData = []
         const { container, getByText, queryByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>

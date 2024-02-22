@@ -75,7 +75,6 @@ export const ConsumptionChartContainer = ({
     const [targets, setTargets] = useState<metricTargetType[]>(
         getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
     )
-    // const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
     const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
 
     useEffect(() => {
