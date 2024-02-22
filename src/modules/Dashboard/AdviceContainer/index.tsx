@@ -26,12 +26,17 @@ export const CardContentPaddingStyle = {
 }
 
 /**
+ * How many item we want to display on the dashboard.
+ */
+export const ECOGESTES_ITEMS_COUNT = 6
+
+/**
  * Advice wrapper component.
 
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true })
+    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true }, ECOGESTES_ITEMS_COUNT)
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {
