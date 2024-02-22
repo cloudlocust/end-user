@@ -13,6 +13,7 @@ import { useProfileManagement } from 'src/modules/User/ProfileManagement/Profile
 import { ChangePassword } from 'src/modules/User/ChangePassword/ChangePassword'
 import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
+import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 
 /**
  * Form used for modify user profile.
@@ -34,6 +35,7 @@ export const ProfileManagementForm = () => {
         email: user?.email,
         phone: user?.phone,
         address: user?.address,
+        birthdate: user?.birthdate,
     }
     /**
      * Handler function to setIsEdit.
@@ -110,6 +112,19 @@ export const ProfileManagementForm = () => {
                         name="address"
                         validateFunctions={[requiredBuilder()]}
                         disabled={disabledField}
+                    />
+                    <DatePicker
+                        name="birthdate"
+                        label={formatMessage({
+                            id: 'Date de naissance',
+                            defaultMessage: 'Date de naissance',
+                        })}
+                        disabled={disabledField}
+                        textFieldProps={{
+                            style: {
+                                margin: '0 0 2rem 0',
+                            },
+                        }}
                     />
                     <div className="flex flex-row justify-center sm:justify-between flex-wrap">
                         {isEdit ? (

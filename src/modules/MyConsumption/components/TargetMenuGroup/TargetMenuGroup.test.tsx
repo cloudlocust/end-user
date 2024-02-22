@@ -2,13 +2,14 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 
+const menuButtonLabelText = 'target-menu'
+const menuItemRole = 'menuitem'
+
 describe('Unit tests for TargetMenuGroup component', () => {
-    let mockAddTarget = jest.fn()
-    let mockRemoveTarget = jest.fn()
+    const mockAddTarget = jest.fn()
+    const mockRemoveTarget = jest.fn()
     let mockHidePMax = false
-    const resetButtonText = 'reset'
-    let mockActiveButton = resetButtonText
-    let buttonLabelText = 'target-menu'
+    const mockActiveButton = 'reset'
 
     afterEach(() => {
         mockHidePMax = false
@@ -24,9 +25,9 @@ describe('Unit tests for TargetMenuGroup component', () => {
             />,
         )
 
-        let button = getByLabelText(buttonLabelText)
+        let menuButton = getByLabelText(menuButtonLabelText)
 
-        expect(button).toBeInTheDocument()
+        expect(menuButton).toBeInTheDocument()
         expect(() => getByText('Ajouter un axe sur le graphique :')).toThrow()
     })
     test('when button is clicked, menu is shown with 3 items', async () => {
@@ -39,12 +40,11 @@ describe('Unit tests for TargetMenuGroup component', () => {
             />,
         )
 
-        let button = getByLabelText(buttonLabelText)
+        const menuButton = getByLabelText(menuButtonLabelText)
+        menuButton.focus()
+        menuButton.click()
 
-        button.focus()
-        button.click()
-
-        let menuItems = getAllByRole('menuitem')
+        let menuItems = getAllByRole(menuItemRole)
 
         expect(menuItems[0]).toHaveFocus()
         expect(menuItems).toHaveLength(4) // Including the first label that is used as a placeholder.
@@ -59,12 +59,11 @@ describe('Unit tests for TargetMenuGroup component', () => {
             />,
         )
 
-        let button = getByLabelText(buttonLabelText)
+        const menuButton = getByLabelText(menuButtonLabelText)
+        menuButton.focus()
+        menuButton.click()
 
-        button.focus()
-        button.click()
-
-        let menuItems = getAllByRole('menuitem')
+        let menuItems = getAllByRole(menuItemRole)
 
         menuItems.forEach((option) => {
             expect(option).toBeInTheDocument()
@@ -87,12 +86,11 @@ describe('Unit tests for TargetMenuGroup component', () => {
             />,
         )
 
-        let button = getByLabelText(buttonLabelText)
+        const menuButton = getByLabelText(menuButtonLabelText)
+        menuButton.focus()
+        menuButton.click()
 
-        button.focus()
-        button.click()
-
-        let menuItems = getAllByRole('menuitem')
+        let menuItems = getAllByRole(menuItemRole)
 
         menuItems[3].click()
 
@@ -108,21 +106,20 @@ describe('Unit tests for TargetMenuGroup component', () => {
             />,
         )
 
-        let button = getByLabelText(buttonLabelText)
+        const menuButton = getByLabelText(menuButtonLabelText)
+        menuButton.focus()
+        menuButton.click()
 
-        button.focus()
-        button.click()
-
-        let menuItems = getAllByRole('menuitem')
+        let menuItems = getAllByRole(menuItemRole)
 
         menuItems[1].click()
 
         expect(mockRemoveTarget).toBeCalled()
     })
-    test('when daily period is selecte, Pmax should be disabled', async () => {
+    test('When period is daily, Pmax should not be shown', async () => {
         mockHidePMax = true
 
-        const { getByLabelText, getAllByRole } = reduxedRender(
+        const { getByLabelText, getAllByRole, queryByText } = reduxedRender(
             <TargetMenuGroup
                 addTargets={mockAddTarget}
                 removeTargets={mockRemoveTarget}
@@ -131,14 +128,11 @@ describe('Unit tests for TargetMenuGroup component', () => {
             />,
         )
 
-        let button = getByLabelText(buttonLabelText)
+        const menuButton = getByLabelText(menuButtonLabelText)
+        menuButton.focus()
+        menuButton.click()
 
-        button.focus()
-        button.click()
-
-        let menuItems = getAllByRole('menuitem')
-
-        expect(menuItems[3].classList.contains('Mui-disabled')).toBeTruthy()
-        expect(menuItems[3]).toHaveAttribute('aria-disabled', 'true')
+        expect(getAllByRole(menuItemRole).length).toBe(3)
+        expect(queryByText('Pmax')).not.toBeInTheDocument()
     })
 })

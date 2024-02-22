@@ -27,7 +27,7 @@ export enum SwitchConsumptionButtonLabelEnum {
     /**
      * Label for Auto consumption & Production.
      */
-    AutoconsmptionProduction = 'Autoconso | Production',
+    AutoconsmptionProduction = 'Autoconso & Production',
     /**
      * Label for Idle.
      */
@@ -66,26 +66,18 @@ export type SwitchConsumpytionButtonType =
  */
 export interface SwitchConsumptionButtonProps {
     /**
-     * Indicate if IdleConsumptionTogglButton is disabled.
-     */
-    isIdleConsumptionButtonDisabled?: boolean
-    /**
-     * Callback when clicking the infoIcon on disabled idleConsumption button.
-     */
-    onClickIdleConsumptionDisabledInfoIcon: () => void
-    /**
-     * If user has NOT solar production.
-     */
-    isSolarProductionConsentOff: boolean
-    /**
-     * Switch consumption button type.
-     */
-    consumptionToggleButton: SwitchConsumptionButtonTypeEnum
-    /**
      * Handle the click event on the switch consumption button.
      *
-     * @param buttonType Indicates which button is currently active.
-     * @returns
+     * @param switchConsumptionButtonTypeEnum Indicates which button should will be active.
+     * @returns Void.
      */
-    onSwitchConsumptionButton: (buttonType: SwitchConsumptionButtonTypeEnum) => void
+    onSwitchConsumptionButton: (switchConsumptionButtonTypeEnum: SwitchConsumptionButtonTypeEnum) => void
+    /**
+     * Indicates if the veille is shown.
+     */
+    isIdleShown: boolean
+    /**
+     * Indicates if the auto consumption & production is shown.
+     */
+    isAutoConsumptionProductionShown: boolean
 }

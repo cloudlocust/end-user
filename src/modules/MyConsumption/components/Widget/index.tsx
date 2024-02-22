@@ -32,9 +32,9 @@ export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
  * @param props.infoIcons InfoIcon showed in top right of widgets.
  * @param props.targets Targets of the widget.
  * @param props.period Current Period.
+ * @param props.childrenPosition .
  * @returns Widget Component.
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(
     ({
         filters,
@@ -45,6 +45,7 @@ export const Widget = memo(
         period,
         enphaseOff,
         children,
+        childrenPosition = 'top',
     }: // eslint-disable-next-line sonarjs/cognitive-complexity
     IWidgetProps) => {
         const { consumptionToggleButton } = useMyConsumptionStore()
@@ -168,7 +169,7 @@ export const Widget = memo(
                             </div>
                         ) : (
                             <div className="h-full flex flex-col">
-                                {children}
+                                {childrenPosition === 'top' ? children : <></>}
                                 {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) => (
                                     <WidgetItem
                                         key={index}
@@ -193,6 +194,7 @@ export const Widget = memo(
                                         }
                                     />
                                 ))}
+                                {childrenPosition === 'bottom' ? children : <></>}
                             </div>
                         )}
                     </>

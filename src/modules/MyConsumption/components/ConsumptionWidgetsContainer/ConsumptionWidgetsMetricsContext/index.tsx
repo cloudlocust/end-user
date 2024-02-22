@@ -77,10 +77,11 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
      */
     const saveDataInCorrectArray = (setMetricsData: typeof setOldRangeMetricWidgetsData, data: IMetric[]) => {
         data.forEach((metric) => {
-            //* Save only the consumption metric & autoconsumption metric data.
+            //* Save only the consumption metric & autoconsumption metric data & euroconsumption.
             if (
                 metric.target === metricTargetsEnum.consumption ||
                 metric.target === metricTargetsEnum.autoconsumption ||
+                metric.target === metricTargetsEnum.eurosConsumption ||
                 metric.target === metricTargetsEnum.injectedProduction
             )
                 // Replace the old metric of target with the new one.

@@ -1,9 +1,6 @@
 import { MouseEvent } from 'react'
-import { ToggleButtonGroup, ToggleButton, capitalize, useTheme, useMediaQuery } from '@mui/material'
-import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
 import {
-    SwitchConsumptionButtonElement,
     SwitchConsumptionButtonLabelEnum,
     SwitchConsumptionButtonProps,
     SwitchConsumptionButtonTypeEnum,
@@ -30,20 +27,17 @@ const switchButtons: SwitchConsumpytionButtonType = [
  * Component for idle consumption switch button.
  *
  * @param props N/A.
- * @returns Switch Conssumption button.
+ * @param props.onSwitchConsumptionButton Function handling switch of ConsumptionButton.
+ * @param props.isIdleShown Boolean indicate if the veille element is shown.
+ * @param props.isAutoConsumptionProductionShown Boolean indicate if the autoconsumption-prod element is shown.
+ * @returns Switch Consumption button.
  */
-export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JSX.Element => {
-    const {
-        isIdleConsumptionButtonDisabled,
-        onClickIdleConsumptionDisabledInfoIcon,
-        isSolarProductionConsentOff,
-        consumptionToggleButton,
-        onSwitchConsumptionButton,
-    } = props
-    const theme = useTheme()
-    const smDown = useMediaQuery(theme.breakpoints.down('sm'))
-
-    const { setConsumptionToggleButton } = useMyConsumptionStore()
+export const SwitchConsumptionButton = ({
+    onSwitchConsumptionButton,
+    isIdleShown,
+    isAutoConsumptionProductionShown,
+}: SwitchConsumptionButtonProps): JSX.Element => {
+    const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
 
     /**
      * Function handling switch of idleConsumptionButton.
@@ -52,91 +46,49 @@ export const SwitchConsumptionButton = (props: SwitchConsumptionButtonProps): JS
      * @param value SwitchConsumptionButtonProps.
      */
     const onChange = (_event: MouseEvent<HTMLElement>, value: SwitchConsumptionButtonTypeEnum) => {
-        if (isIdleConsumptionButtonDisabled && value === SwitchConsumptionButtonTypeEnum.Idle) {
-            onClickIdleConsumptionDisabledInfoIcon()
-            return
-        }
-        onSwitchConsumptionButton(value)
+        if (value === null) return
         setConsumptionToggleButton(value)
-    }
-
-    /**
-     * Returns the button style based on the provided element and optional flag.
-     *
-     * @param element - The element type of the button.
-     * @param isIdleConsumptionButtonDisabled - Optional flag indicating whether the idle consumption button is disabled.
-     * @returns The button style object.
-     */
-    const getButtonStyle = (element: SwitchConsumptionButtonElement, isIdleConsumptionButtonDisabled?: boolean) => {
-        if (element.type === SwitchConsumptionButtonTypeEnum.Idle && isIdleConsumptionButtonDisabled) {
-            return {
-                '&, &:hover': {
-                    fontWeight: 500,
-                    backgroundColor: 'grey.600',
-                    color: 'common.white',
-                },
-            }
-        }
-
-        return {
-            backgroundColor: 'primary.main',
-            color: 'primary.contrastText',
-            fontWeight: 500,
-            '&.Mui-selected': {
-                backgroundColor: 'secondary.main',
-                color: 'secondary.contrastText',
-            },
-        }
+        onSwitchConsumptionButton(value)
     }
 
     return (
-        <>
-            <ToggleButtonGroup
-                color="secondary"
-                exclusive
-                size="small"
-                value={consumptionToggleButton}
-                onChange={onChange}
-                aria-label="toggle-consumption-button-group"
-                style={{
-                    height: smDown ? '40px' : 'auto',
-                }}
-            >
-                {switchButtons.map((element, index) => {
-                    // Hide the solar production button if the period is daily and the solar production consent is off.
-                    if (
-                        element.type === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
-                        isSolarProductionConsentOff
-                    ) {
-                        return null
-                    }
-                    return (
-                        <ToggleButton
-                            key={index}
-                            className="rounded-2xl"
-                            aria-label="toggle-consumption-button"
-                            value={element.type}
-                            sx={getButtonStyle(element, isIdleConsumptionButtonDisabled)}
-                        >
-                            <>
-                                {capitalize(element.label)}
-                                {element.type === SwitchConsumptionButtonTypeEnum.Idle &&
-                                    isIdleConsumptionButtonDisabled && (
-                                        <ErrorOutlineIcon
-                                            sx={{
-                                                color: linksColor || warningMainHashColor,
-                                                width: '20px',
-                                                height: '20px',
-                                                marginLeft: '4px',
-                                                cursor: 'pointer',
-                                            }}
-                                        />
-                                    )}
-                            </>
-                        </ToggleButton>
-                    )
-                })}
-            </ToggleButtonGroup>
-        </>
+        <ToggleButtonGroup
+            color="secondary"
+            exclusive
+            size="small"
+            value={consumptionToggleButton}
+            onChange={onChange}
+            aria-label="toggle-consumption-button-group"
+        >
+            {switchButtons.map((element) => {
+                const isIdleElementDisabled = !isIdleShown && element.type === SwitchConsumptionButtonTypeEnum.Idle
+                const isProductionElementDisabled =
+                    !isAutoConsumptionProductionShown &&
+                    element.type === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                const isElementExcluded = isIdleElementDisabled || isProductionElementDisabled
+
+                if (isElementExcluded) return null
+
+                return (
+                    <ToggleButton
+                        key={element.label}
+                        className="rounded-full text-12 md:text-13"
+                        aria-label="toggle-consumption-button"
+                        value={element.type}
+                        sx={{
+                            backgroundColor: 'primary.main',
+                            color: 'primary.contrastText',
+                            fontWeight: 500,
+                            '&.Mui-selected': {
+                                backgroundColor: 'secondary.main',
+                                color: 'secondary.contrastText',
+                            },
+                        }}
+                    >
+                        {capitalize(element.label)}
+                    </ToggleButton>
+                )
+            })}
+        </ToggleButtonGroup>
     )
 }

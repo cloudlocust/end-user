@@ -55,13 +55,21 @@ export const DetailAdviceDialog = (props: DetailAdviceDialogProps) => {
                         </span>
                     </div>
                 )}
-                <div className="mb-10">
-                    <Typography className="text-14 md:text-16" fontWeight={600}>
-                        Pour en savoir plus
-                    </Typography>
-                    <Typography className="text-14 md:text-16 text-justify">{`${currentEcogeste?.infos}`}</Typography>
-                </div>
-                <Button fullWidth component={Link} to="/advices" variant="contained" className="text-14 md:text-16">
+                {currentEcogeste?.infos && (
+                    <div className="mb-10">
+                        <Typography className="text-14 md:text-16" fontWeight={600}>
+                            Pour en savoir plus
+                        </Typography>
+                        <Typography className="text-14 md:text-16 text-justify">{`${currentEcogeste?.infos}`}</Typography>
+                    </div>
+                )}
+                <Button
+                    fullWidth
+                    component={Link}
+                    to="/advices"
+                    variant="contained"
+                    className="text-14 md:text-16 mt-10"
+                >
                     Plus de conseils
                 </Button>
             </DialogContent>
