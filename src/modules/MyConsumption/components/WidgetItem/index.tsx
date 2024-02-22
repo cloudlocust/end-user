@@ -3,7 +3,6 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { getWidgetIndicatorColor } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { IWidgetItemProps } from 'src/modules/MyConsumption/components/WidgetItem/WidgetItem'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * Widget Item Component.
@@ -40,11 +39,9 @@ export function WidgetItem({
                 {/* Widget title */}
                 <TypographyFormatMessage className="sm:text-16 font-medium md:text-17">{title}</TypographyFormatMessage>
                 {/* Widget infoIcon */}
-                {target === metricTargetsEnum.injectedProduction
-                    ? (!value || period === PeriodEnum.DAILY) && infoIcon
-                    : infoIcon}
+                {infoIcon}
             </div>
-            {!value || (target === metricTargetsEnum.injectedProduction && period === PeriodEnum.DAILY) ? (
+            {!value ? (
                 <div className="text-center flex flex-1 justify-center items-center py-4">{noValueMessage}</div>
             ) : (
                 <div className="flex flex-row justify-between items-center gap-3">
