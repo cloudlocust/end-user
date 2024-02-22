@@ -8,11 +8,13 @@ import { useIntl } from 'react-intl'
 import { FuseCard } from 'src/modules/shared/FuseCard'
 import SgeConsentStep from 'src/modules/User/AlpiqSubscription/SgeConsentStep'
 import ContractEstimation from '../ContractEstimation'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { FacturationForm } from '../FacturationForm'
 
 /**
  * Steps labels.
  */
-export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat']
+export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat', 'Facturation']
 
 /**
  * Energy Provider Subscription Stepper for Alpic.
@@ -22,7 +24,9 @@ export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat
 const AlpiqSubscriptionStepper = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+    // TODO start active step base on the user's state on the process
     const [activeStep, setActiveStep] = React.useState(AlpiqSubscriptionStepsEnum.firstStep)
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     /**
      * Next Step callback.
@@ -42,6 +46,7 @@ const AlpiqSubscriptionStepper = () => {
         <PdlVerificationForm handleNext={handleNext} />,
         <SgeConsentStep handleBack={handleBack} />,
         <ContractEstimation handleNext={handleNext} />,
+        <FacturationForm handleBack={handleBack} />,
     ]
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
@@ -62,7 +67,7 @@ const AlpiqSubscriptionStepper = () => {
                     },
                 }}
             >
-                {stepsLabels.map((label) => (
+                {stepsLabels.map((label, index) => (
                     <Step
                         key={label}
                         sx={{
@@ -87,10 +92,11 @@ const AlpiqSubscriptionStepper = () => {
                         }}
                     >
                         <StepLabel>
-                            {formatMessage({
-                                id: label,
-                                defaultMessage: label,
-                            })}
+                            {(index === activeStep || !isMobile) &&
+                                formatMessage({
+                                    id: label,
+                                    defaultMessage: label,
+                                })}
                         </StepLabel>
                     </Step>
                 ))}

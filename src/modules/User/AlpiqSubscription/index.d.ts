@@ -14,6 +14,10 @@ export enum AlpiqSubscriptionStepsEnum {
      * 3rd step, Get estimation for contract.
      */
     thridStep = 2,
+    /**
+     * Forth Step, Facturation.
+     */
+    forthStep = 3,
 }
 
 /**

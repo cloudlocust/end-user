@@ -100,14 +100,16 @@ const ContractEstimation = ({
             <div className="flex flex-col items-center justify-center w-full">
                 <div className="flex flex-col w-full items-center mb-20 mx-0 md:mx-20">
                     <div className="w-full flex-col mb-12 md:mb-24">
-                        <TypographyFormatMessage
-                            color={theme.palette.primary.main}
-                            textAlign="center"
-                            variant="body1"
-                            fontWeight={600}
-                        >
-                            Paramétrez votre contrat Alpiq:
-                        </TypographyFormatMessage>
+                        <div className={`flex w-full ${isMobile ? 'justify-center' : 'justify-start'} items-center`}>
+                            <TypographyFormatMessage
+                                color={theme.palette.primary.main}
+                                textAlign="center"
+                                variant="body1"
+                                fontWeight={600}
+                            >
+                                Paramétrez votre contrat Alpiq:
+                            </TypographyFormatMessage>
+                        </div>
                         <Form onSubmit={onSubmit}>
                             <div className="flex w-full flex-col md:flex-row items-center justify-start">
                                 <SelectAlpiqContractForm

@@ -33,7 +33,7 @@ const SgeConsentStep = ({
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     // TODO - in next story we might need to use enedisSgeConsent to check if it's valide or not to skip this step
     const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError } = useConsents()
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
         <div className="flex flex-col justify-center">
