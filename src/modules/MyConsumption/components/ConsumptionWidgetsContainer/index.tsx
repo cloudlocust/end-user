@@ -193,12 +193,6 @@ const ConsumptionWidgetsContainer = ({
                                         enphaseOff,
                                         enedisSgeOff: enedisOff,
                                     }),
-                                    [metricTargetsEnum.injectedProduction]: getWidgetInfoIcon({
-                                        widgetTarget: metricTargetsEnum.injectedProduction,
-                                        hasMissingContracts: hasMissingHousingContracts,
-                                        enphaseOff,
-                                        enedisSgeOff: enedisOff,
-                                    }),
                                 }}
                                 enphaseOff={enphaseOff}
                             />
