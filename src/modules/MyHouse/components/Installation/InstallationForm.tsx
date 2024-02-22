@@ -104,93 +104,99 @@ export const InstallationTab = () => {
         )
 
     return (
-        <Container>
-            <div className="flex flex-col justify-center w-full items-center">
-                {isEquiomentInfoConsentmentOpen && (
-                    <div
-                        className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
-                        style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
-                    >
-                        <TypographyFormatMessage>
-                            En renseignant vos équipements nous pourrons vous apporter une analyse plus précise de votre
-                            consommation
-                        </TypographyFormatMessage>
-                    </div>
-                )}
-                <Form
-                    style={{ width: '100%' }}
-                    defaultValues={defaultValues}
-                    onSubmit={async (formData: equipmentValuesType) => {
-                        let body: equipmentMeterType[] = []
-                        // Transform formData into body for saveEquipment Request, using the savedData.
-                        Object.keys(savedEquipmentList).forEach((equipmentName) => {
-                            if (
-                                formData[equipmentName as keyof equipmentValuesType] &&
-                                // Check that it's new values.
-                                savedEquipmentList[equipmentName].equipmentNumber !==
-                                    formData[equipmentName as keyof equipmentValuesType] &&
-                                savedEquipmentList[equipmentName].equipmentType !==
-                                    formData[equipmentName as keyof equipmentValuesType]
-                            ) {
-                                if (savedEquipmentList[equipmentName].isNumber)
-                                    savedEquipmentList[equipmentName].equipmentNumber = formData[
-                                        equipmentName as keyof equipmentValuesType
-                                    ] as number
-                                else
-                                    savedEquipmentList[equipmentName].equipmentType = formData[
-                                        equipmentName as keyof equipmentValuesType
-                                    ] as equipmentAllowedTypeT
-
-                                const { equipment, isNumber, ...rest } = savedEquipmentList[equipmentName]
-                                body.push(rest)
-                            }
-                        })
-
-                        if (solarPanelRadioValue) {
-                            body.push({ equipmentId: 14, equipmentType: solarPanelRadioValue })
-                        }
-
-                        if (body.length > 0) {
-                            await addHousingEquipment(body)
-                        }
-                        setIsEdit(false)
-                    }}
+        <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '600px !important' }}>
+            {isEquiomentInfoConsentmentOpen && (
+                <div
+                    className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
+                    style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
                 >
-                    <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
-                        {isEquipmentMeterListEmpty && (
-                            <MeterErrorIcon
-                                style={{
-                                    width: '24px',
-                                    height: '24px',
-                                    color: linksColor || theme.palette.primary.main,
-                                    marginLeft: '12px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
-                            />
-                        )}
-                    </div>
-                    <div className="flex flex-col justify-center w-full">
-                        <div className="text-13">
+                    <TypographyFormatMessage>
+                        En renseignant vos équipements nous pourrons vous apporter une analyse plus précise de votre
+                        consommation
+                    </TypographyFormatMessage>
+                </div>
+            )}
+            <Form
+                style={{ width: '100%' }}
+                defaultValues={defaultValues}
+                onSubmit={async (formData: equipmentValuesType) => {
+                    let body: equipmentMeterType[] = []
+                    // Transform formData into body for saveEquipment Request, using the savedData.
+                    Object.keys(savedEquipmentList).forEach((equipmentName) => {
+                        if (
+                            formData[equipmentName as keyof equipmentValuesType] &&
+                            // Check that it's new values.
+                            savedEquipmentList[equipmentName].equipmentNumber !==
+                                formData[equipmentName as keyof equipmentValuesType] &&
+                            savedEquipmentList[equipmentName].equipmentType !==
+                                formData[equipmentName as keyof equipmentValuesType]
+                        ) {
+                            if (savedEquipmentList[equipmentName].isNumber)
+                                savedEquipmentList[equipmentName].equipmentNumber = formData[
+                                    equipmentName as keyof equipmentValuesType
+                                ] as number
+                            else
+                                savedEquipmentList[equipmentName].equipmentType = formData[
+                                    equipmentName as keyof equipmentValuesType
+                                ] as equipmentAllowedTypeT
+
+                            const { equipment, isNumber, ...rest } = savedEquipmentList[equipmentName]
+                            body.push(rest)
+                        }
+                    })
+
+                    if (solarPanelRadioValue) {
+                        body.push({ equipmentId: 14, equipmentType: solarPanelRadioValue })
+                    }
+
+                    if (body.length > 0) {
+                        await addHousingEquipment(body)
+                    }
+                    setIsEdit(false)
+                }}
+            >
+                <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
+                    {isEquipmentMeterListEmpty && (
+                        <MeterErrorIcon
+                            style={{
+                                width: '24px',
+                                height: '24px',
+                                color: linksColor || theme.palette.primary.main,
+                                marginLeft: '12px',
+                                cursor: 'pointer',
+                            }}
+                            onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
+                        />
+                    )}
+                </div>
+                <div>
+                    <div className="mb-40">
+                        <TypographyFormatMessage className="text-14 font-600">
+                            Utilisation de l'énergie dans mon domicile
+                        </TypographyFormatMessage>
+                        <div className="text-13 mt-20">
                             <SelectButtons isDisabled={disabledField} {...heaterEquipment} />
                         </div>
-                        <div className="text-13">
+                        <div className="text-13 mt-20">
                             <SelectButtons isDisabled={disabledField} {...sanitaryEquipment} />
                         </div>
-                        <div className="text-13">
+                        <div className="text-13 mt-20">
                             <SelectButtons isDisabled={disabledField} {...hotPlateEquipment} />
                         </div>
-                        <div className="text-13 flex flex-row justify-around md:justify-center mt-8 md:mt-24">
-                            <TypographyFormatMessage className="flex flex-row items-center">
-                                Je dispose de panneaux solaires :
-                            </TypographyFormatMessage>
-                            <FormControl className="md:ml-8">
+                    </div>
+                    <div className="mb-32">
+                        <TypographyFormatMessage className="text-14 font-600">
+                            Ma production d'énergie
+                        </TypographyFormatMessage>
+                        <div className="text-13 mt-20 flex items-center justify-between gap-x-20 flex-wrap">
+                            <TypographyFormatMessage>Je dispose de panneaux solaires :</TypographyFormatMessage>
+                            <FormControl>
                                 <RadioGroup
                                     aria-labelledby="demo-controlled-radio-buttons-group"
                                     name="controlled-radio-buttons-group"
                                     value={solarPanelRadioValue}
                                     onChange={handleSolarPanelRadioChange}
-                                    className="flex flex-col md:flex-row ml-12"
+                                    className="w-full flex flex-row"
                                 >
                                     <FormControlLabel
                                         value="existant"
@@ -204,20 +210,26 @@ export const InstallationTab = () => {
                                         label="Non"
                                         disabled={disabledField}
                                     />
+                                    <FormControlLabel
+                                        value="nonexistant"
+                                        control={<Radio />}
+                                        label="J'y pense"
+                                        disabled={disabledField}
+                                    />
                                 </RadioGroup>
                             </FormControl>
                         </div>
                     </div>
+                </div>
 
-                    <EditButtonsGroup
-                        formInitialValues={defaultValues}
-                        isEdit={isEquipmentMeterListEmpty || isEdit}
-                        disableEdit={() => setIsEdit(false)}
-                        enableForm={() => setIsEdit(true)}
-                        inProgress={loadingEquipmentInProgress}
-                    />
-                </Form>
-            </div>
+                <EditButtonsGroup
+                    formInitialValues={defaultValues}
+                    isEdit={isEquipmentMeterListEmpty || isEdit}
+                    disableEdit={() => setIsEdit(false)}
+                    enableForm={() => setIsEdit(true)}
+                    inProgress={loadingEquipmentInProgress}
+                />
+            </Form>
         </Container>
     )
 }

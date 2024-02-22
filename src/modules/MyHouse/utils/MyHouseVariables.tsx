@@ -2,13 +2,11 @@ import { chunk, filter, zip } from 'lodash'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { SvgIcon, Theme } from '@mui/material'
-import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
-import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
 import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
 import { ReactComponent as FontElectrique } from 'src/assets/images/content/housing/FontElectrique.svg'
 import { API_RESOURCES_URL } from 'src/configs'
-import { Groups } from '@mui/icons-material'
+import { GroupsOutlined as Groups, Bolt as ElectricityIcon, MoreHoriz as OtherIcon } from '@mui/icons-material'
 import { EquipmentOptionsType } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { EquipmentIcon } from 'src/modules/MyHouse/components/Equipments/EquipmentIcon'
 
@@ -59,15 +57,14 @@ export const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
  */
 export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
-const buttonStyleLast = 'w-160 mt-16 mr-12 flex flex-col'
-const buttonStyle = `${buttonStyleLast}`
-const wrapperStyles = 'flex flex-row justify-center'
+const buttonStyle = 'p-16 w-full flex flex-col col-span-12 sm:col-span-4'
+const wrapperStyles = 'grid grid-cols-12 gap-14 mt-10'
 const iconStyles = 'my-5 h-56'
 const customSvgIconsStyling = {
     marginTop: '5px',
     marginBottom: '5px',
-    height: '56px',
-    width: '56px',
+    height: '50px',
+    width: '50px',
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -83,7 +80,7 @@ export const heaterEquipment: ISelectButtons = {
                     <Groups />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'collective',
         },
@@ -94,7 +91,7 @@ export const heaterEquipment: ISelectButtons = {
                     <ElectricityIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'individual',
         },
@@ -105,7 +102,7 @@ export const heaterEquipment: ISelectButtons = {
                     <OtherIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'other',
         },
@@ -125,7 +122,7 @@ export const sanitaryEquipment: ISelectButtons = {
                     <Groups />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'collective',
         },
@@ -136,7 +133,7 @@ export const sanitaryEquipment: ISelectButtons = {
                     <ElectricityIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'individual',
         },
@@ -147,7 +144,7 @@ export const sanitaryEquipment: ISelectButtons = {
                     <OtherIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'other',
         },
@@ -157,7 +154,7 @@ export const sanitaryEquipment: ISelectButtons = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const hotPlateEquipment: ISelectButtons = {
     name: 'hotplate',
-    wrapperStyles: `${wrapperStyles} flex-wrap`,
+    wrapperStyles,
     titleLabel: 'Type de plaques de cuisson :',
     formOptions: [
         {
@@ -167,7 +164,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <InductionIcon />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: `${buttonStyle} sm:col-span-7`,
             iconStyles,
             value: 'induction',
         },
@@ -178,7 +175,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <FontElectrique />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: `${buttonStyle} sm:col-span-5`,
             iconStyles,
             value: 'electricity',
         },
@@ -189,7 +186,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <VitroceramicIcon />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: `${buttonStyle} sm:col-span-5`,
             iconStyles,
             value: 'vitroceramic',
         },
@@ -200,7 +197,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <OtherIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle: `${buttonStyle} sm:col-span-7`,
             iconStyles,
             value: 'other',
         },
