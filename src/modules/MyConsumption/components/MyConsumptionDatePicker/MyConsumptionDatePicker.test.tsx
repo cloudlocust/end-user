@@ -206,4 +206,46 @@ describe('Load MyConsumptionDatePicker', () => {
         // Button Icon Increment
         expect(getByText(INCREMENT_DATE_ARROW_TEXT)!.parentElement!.classList.contains(disabledClass)).toBeTruthy()
     })
+
+    test('When isPreviousButtonDisabling given as true, the previous button should be disabled', async () => {
+        mockPeriod = PeriodEnum.YEARLY
+        const maxDate = new Date('2010-01-01 00:00:00:000')
+        const date = new Date('2023-01-01 00:00:00:000')
+        mockRange = getRange(mockPeriod, date, 'sub')
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker
+                    period={mockPeriod}
+                    setRange={mockSetRange}
+                    range={mockRange}
+                    maxDate={maxDate}
+                    isPreviousButtonDisabling={true}
+                />
+            </Router>,
+        )
+
+        expect(getByText(DECREMENT_DATE_ARROW_TEXT)!.parentElement!.classList.contains(disabledClass)).toBeTruthy()
+    })
+
+    test('Should disable only the years 2008 and 2010', async () => {
+        mockPeriod = PeriodEnum.YEARLY
+        const date = new Date('2019-01-01 00:00:00:000')
+        mockRange = getRange(mockPeriod, date, 'add')
+        mockSetRange = jest.fn()
+        const { container, getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionDatePicker
+                    period={mockPeriod}
+                    setRange={mockSetRange}
+                    range={mockRange}
+                    handleYears={(date: Date) => [2008, 2010].includes(date.getFullYear())}
+                />
+            </Router>,
+        )
+
+        userEvent.click(container.querySelector('input')!)
+        expect(getByText('2008')).toBeDisabled()
+        expect(getByText('2009')).not.toBeDisabled()
+        expect(getByText('2010')).toBeDisabled()
+    })
 })
