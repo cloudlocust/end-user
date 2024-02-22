@@ -113,33 +113,31 @@ const LablizationContainer = () => {
         <Root
             header={
                 <ThemeProvider theme={theme}>
-                    <div className="flex flex-col items-center ml-0 sm:ml-20">
-                        <Button
-                            className="flex justify-center items-center m-0 p-0"
-                            variant="text"
-                            onClick={() => history.goBack()}
-                        >
-                            <Icon sx={{ color: theme.palette.primary.contrastText }}>arrow_back</Icon>
-                            <TypographyFormatMessage
-                                sx={{ color: theme.palette.primary.contrastText }}
-                                className="text-16 font-medium hidden sm:flex"
+                    <div className="relative w-full flex justify-center">
+                        <div className="absolute left-0 sm:left-20 top-0 bottom-0 flex items-center">
+                            <Button
+                                className="flex justify-center items-center m-0 p-0"
+                                variant="text"
+                                onClick={() => history.goBack()}
                             >
-                                Retour
+                                <Icon sx={{ color: theme.palette.primary.contrastText }}>arrow_back</Icon>
+                                <TypographyFormatMessage
+                                    sx={{ color: theme.palette.primary.contrastText }}
+                                    className="text-16 font-medium hidden sm:block"
+                                >
+                                    Retour
+                                </TypographyFormatMessage>
+                            </Button>
+                        </div>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <TypographyFormatMessage
+                                className="text-center text-18 md:text-24 mx-52"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
+                                Identification des activités
                             </TypographyFormatMessage>
-                        </Button>
+                        </motion.div>
                     </div>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="w-full flex flex-col items-center"
-                    >
-                        <TypographyFormatMessage
-                            className="text-18 md:text-24"
-                            style={{ color: theme.palette.primary.contrastText }}
-                        >
-                            Labélisation des appareils
-                        </TypographyFormatMessage>
-                    </motion.div>
                 </ThemeProvider>
             }
             content={
@@ -154,7 +152,6 @@ const LablizationContainer = () => {
                         range={range}
                         setRange={setRange}
                         filters={filters}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
                         metricsInterval={metricsInterval}
                         enedisSgeConsent={enedisSgeConsent}
                     />

@@ -79,13 +79,17 @@ export type equipmentType = {
      */
     allowedType: equipmentAllowedTypeT[]
     /**
-     * Measurement modes for the Equipment.
-     */
-    measurementModes?: string[]
-    /**
      * Customer id related to the equipment.
      */
     customerId?: number | null
+    /**
+     * Measurement duration for the Equipment.
+     */
+    measurementDuration?: string | null
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes?: string[] | null
 }
 
 /**
