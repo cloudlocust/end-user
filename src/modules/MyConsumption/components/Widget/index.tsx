@@ -147,7 +147,6 @@ export const Widget = memo(
                                         value={targetsInfos[target].value}
                                         unit={targetsInfos[target].unit}
                                         percentageChange={targetsInfos[target].percentageChange}
-                                        period={period}
                                         noValueMessage={
                                             <TypographyFormatMessage>
                                                 {DEFAULT_NO_VALUE_MESSAGE}
