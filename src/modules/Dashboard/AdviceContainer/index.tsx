@@ -13,7 +13,7 @@ import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/compon
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { useState } from 'react'
 import { NewEcogesteCard } from 'src/modules/Ecogestes/components/NewEcogesteCard'
-import { orderListBy } from 'src/modules/utils'
+import map from 'lodash/map'
 
 /**
  * @see https://stackoverflow.com/a/60403040/14005627
@@ -29,6 +29,7 @@ export const CardContentPaddingStyle = {
  * How many item we want to display on the dashboard.
  */
 export const ECOGESTES_ITEMS_COUNT = 6
+const ECOGESTES_ITEMS_SORTED_BY = '-created_at'
 
 /**
  * Advice wrapper component.
@@ -36,7 +37,11 @@ export const ECOGESTES_ITEMS_COUNT = 6
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true }, ECOGESTES_ITEMS_COUNT)
+    const { elementList: ecogestes, loadingInProgress } = useEcogestes(
+        { highlighted: true },
+        ECOGESTES_ITEMS_COUNT,
+        ECOGESTES_ITEMS_SORTED_BY,
+    )
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {
@@ -46,7 +51,7 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
+    const cards = map(ecogestes, (ecogeste) => (
         <NewEcogesteCard
             ecogeste={ecogeste}
             showMoreDetails={() => {
