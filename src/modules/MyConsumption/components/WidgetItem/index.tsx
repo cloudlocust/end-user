@@ -3,7 +3,6 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { getWidgetIndicatorColor } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { IWidgetItemProps } from 'src/modules/MyConsumption/components/WidgetItem/WidgetItem'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * Widget Item Component.
@@ -15,7 +14,6 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
  * @param props.value Value of the widget.
  * @param props.unit Unit of the widget.
  * @param props.percentageChange Percentage change of the widget.
- * @param props.period Period of the Widget.
  * @param props.noValueMessage Message when no value exists.
  * @returns WidgetItem Component.
  */
@@ -26,7 +24,6 @@ export function WidgetItem({
     value,
     unit,
     percentageChange,
-    period,
     noValueMessage,
 }: IWidgetItemProps) {
     const isTrendingIndicatorShowing =
