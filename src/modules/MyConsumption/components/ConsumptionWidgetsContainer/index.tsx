@@ -15,6 +15,7 @@ import { RootState } from 'src/redux'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { endOfDay, startOfDay } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
+import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -47,25 +48,28 @@ const ConsumptionWidgetsContainer = ({
     )
 
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
-        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax]
+        let widgetsToRender: metricTargetType[] = []
 
-        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-        if (
-            period === 'daily' &&
-            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
-            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
-        ) {
-            widgetsToRender = [
-                ...widgetsToRender,
-                metricTargetsEnum.externalTemperature,
-                metricTargetsEnum.internalTemperature,
-            ]
+        if (period !== 'daily') {
+            // When the period is not daily we show the Pmax widget
+            widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
+        } else {
+            const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+            if (
+                range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
+                range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
+            ) {
+                // When the period is daily and the range is today we show the external and internal temperature widgets
+                widgetsToRender = [
+                    ...widgetsToRender,
+                    metricTargetsEnum.externalTemperature,
+                    metricTargetsEnum.internalTemperature,
+                ]
+            }
         }
 
         if (isProductionEnabled) {
             widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
-        } else {
-            widgetsToRender = [metricTargetsEnum.consumption, ...widgetsToRender]
         }
 
         return widgetsToRender
@@ -107,8 +111,26 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isProductionEnabled && (
+                    {isProductionEnabled ? (
                         <WidgetConsumption
+                            targets={[metricTargetsEnum.consumption]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={getMetricIntervalForWidget(metricTargetsEnum.consumption)}
+                            period={period}
+                            infoIcons={{
+                                [metricTargetsEnum.consumption]: getWidgetInfoIcon({
+                                    widgetTarget: metricTargetsEnum.consumption,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                    enphaseOff,
+                                    enedisSgeOff: enedisOff,
+                                }),
+                            }}
+                            enphaseOff={enphaseOff}
+                        />
+                    ) : (
+                        // to keep consumption widget always at the beginning, we render the consumption widget here with the normal widget component instead of ebder it inside the loop
+                        <Widget
                             targets={[metricTargetsEnum.consumption]}
                             range={range}
                             filters={filters}
@@ -138,6 +160,25 @@ const ConsumptionWidgetsContainer = ({
                                 hasMissingContracts: hasMissingHousingContracts,
                             }),
                         }}
+                    />
+
+                    <WidgetCost
+                        key={metricTargetsEnum.eurosConsumption}
+                        targets={[metricTargetsEnum.eurosConsumption]}
+                        range={range}
+                        filters={filters}
+                        metricsInterval={getMetricIntervalForWidget(metricTargetsEnum.eurosConsumption)}
+                        period={period}
+                        infoIcons={{
+                            [metricTargetsEnum.eurosConsumption]: getWidgetInfoIcon({
+                                widgetTarget: metricTargetsEnum.eurosConsumption,
+                                hasMissingContracts: hasMissingHousingContracts,
+                                enphaseOff,
+                                enedisSgeOff: enedisOff,
+                            }),
+                        }}
+                        enphaseOff={enphaseOff}
+                        childrenPosition="bottom"
                     />
 
                     {/** Display the other targets with Widget Component. */}

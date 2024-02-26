@@ -16,6 +16,22 @@ export type equipmentNameType =
     | 'laptop'
     | 'desktopcomputer'
     | 'solarpanel'
+    | 'freezer'
+    | 'kettle'
+    | 'coffee_machine'
+    | 'swimmingpool'
+    | 'heatpump'
+    | 'reversible_heatpump'
+    | 'swimmingpool_heatpump'
+    | 'electric_car'
+    | 'aquarium'
+    | 'ceramic_hob'
+    | 'iron_plate'
+    | 'induction_plate'
+    | 'radiator'
+    | 'air_conditioner'
+    | 'dry_towel'
+    | 'water_heater'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentAllowedTypeT =
@@ -63,13 +79,17 @@ export type equipmentType = {
      */
     allowedType: equipmentAllowedTypeT[]
     /**
-     * Measurement modes for the Equipment.
-     */
-    measurementModes?: string[]
-    /**
      * Customer id related to the equipment.
      */
     customerId?: number | null
+    /**
+     * Measurement duration for the Equipment.
+     */
+    measurementDuration?: string | null
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes?: string[] | null
 }
 
 /**

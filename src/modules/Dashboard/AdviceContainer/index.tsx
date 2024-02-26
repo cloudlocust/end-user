@@ -1,19 +1,18 @@
-import { CardContent, IconButton, useTheme, alpha, useMediaQuery } from '@mui/material'
+import { CardContent, IconButton, useTheme, useMediaQuery } from '@mui/material'
 import { FuseCard } from 'src/modules/shared/FuseCard'
 import { ReactComponent as AdviceIcon } from 'src/assets/images/navbarItems/advice.svg'
 import { iconStyle } from 'src/modules/Dashboard/StatusWrapper/components/EnergyStatusWidget/Index'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Link } from 'react-router-dom'
-import { truncate } from 'lodash'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/swiper-bundle.min.css'
 import 'swiper/swiper.min.css'
-import { SavingPercentage } from 'src/modules/Dashboard/AdviceContainer/components/SavingPercentage'
 import useEcogestes from 'src/modules/Ecogestes/hooks/ecogestesHook'
 import { useModal } from 'src/hooks/useModal'
 import { DetailAdviceDialog } from 'src/modules/Dashboard/AdviceContainer/components/DetailAdviceDialog'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { useState } from 'react'
+import { NewEcogesteCard } from 'src/modules/Ecogestes/components/NewEcogesteCard'
 import { orderListBy } from 'src/modules/utils'
 
 /**
@@ -27,12 +26,17 @@ export const CardContentPaddingStyle = {
 }
 
 /**
+ * How many item we want to display on the dashboard.
+ */
+export const ECOGESTES_ITEMS_COUNT = 6
+
+/**
  * Advice wrapper component.
 
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true })
+    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true }, ECOGESTES_ITEMS_COUNT)
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {
@@ -42,48 +46,14 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = orderListBy(ecogestesList ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
-        <FuseCard
-            className="flex flex-col p-20"
-            key={ecogeste.id}
-            sx={{ bgcolor: alpha(theme.palette.primary.light, 0.1) }}
-        >
-            <div className="flex items-center mb-10 w-full flex-1">
-                <div style={{ width: 25, height: 25 }} className="mr-10">
-                    <img
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main})`,
-                        }}
-                        src={ecogeste.urlIcon}
-                        alt={ecogeste.title}
-                    />
-                </div>
-                <div className="flex justify-between items-center w-full">
-                    <TypographyFormatMessage className="text-14 md:text-16 leading-none" fontWeight={600}>
-                        {ecogeste.title}
-                    </TypographyFormatMessage>
-                    <SavingPercentage percentageSaved={ecogeste.percentageSaved} />
-                </div>
-            </div>
-            <div className="flex flex-auto mb-10">
-                <TypographyFormatMessage className="text-14 md:text-16 text-justify">
-                    {truncate(ecogeste.description, { length: 150 })}
-                </TypographyFormatMessage>
-            </div>
-            <div
-                className="flex justify-end items-end flex-auto cursor-pointer"
-                onClick={() => {
-                    setCurrentEcogeste(ecogeste)
-                    onOpenDetailAdvicePopup()
-                }}
-            >
-                <TypographyFormatMessage className="text-12 md:text-14 leading-none underline text-grey-700">
-                    Consulter &gt;
-                </TypographyFormatMessage>
-            </div>
-        </FuseCard>
+    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
+        <NewEcogesteCard
+            ecogeste={ecogeste}
+            showMoreDetails={() => {
+                setCurrentEcogeste(ecogeste)
+                onOpenDetailAdvicePopup()
+            }}
+        />
     ))
 
     return (
@@ -138,6 +108,7 @@ export const AdviceContainer = () => {
                     isDetailAdvicePopupOpen={isDetailsAdviceDialogOpen}
                     onCloseDetailAdvicePopup={onCloseDetailAdvicePopup}
                     currentEcogeste={currentEcogeste}
+                    isDashboardAdvice
                 />
             )}
         </FuseCard>
