@@ -123,7 +123,6 @@ export type elementDetailsSnackBarMessage0verrideType<T, K> =
  * @param props N/A.
  * @param props.API_ENDPOINT Represent the endpoint for all request of the customer useElementList.
  * @param props.sizeParam Default SizeParam when instanciating useElementList.
- * @param props.sortParam Params used to sort data.
  * @param props.snackBarMessage0verride Function that returns Custom snackbar message for overriding the default useElementList messages.
  * @param props.immediate Indicates if the called on instantiation or not.
  * @returns Builder for implement useElementList hook.
@@ -131,7 +130,6 @@ export type elementDetailsSnackBarMessage0verrideType<T, K> =
 export function BuilderUseElementList<T, U, K>({
     API_ENDPOINT,
     sizeParam,
-    sortParam,
     snackBarMessage0verride,
     immediate = true,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
@@ -140,10 +138,6 @@ export function BuilderUseElementList<T, U, K>({
     API_ENDPOINT: string
     // eslint-disable-next-line jsdoc/require-jsdoc
     sizeParam?: number
-    /**
-     * We use the params to sort the data.
-     */
-    sortParam?: string
     // eslint-disable-next-line jsdoc/require-jsdoc
     snackBarMessage0verride?: snackBarMessage0verrideType<T>
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -184,10 +178,6 @@ export function BuilderUseElementList<T, U, K>({
             let endpointUrl = `${API_ENDPOINT}?size=${size.current}&page=${page}&${getQueryParamsFromFiltersObject(
                 filters.current,
             )}`
-
-            if (sortParam) {
-                endpointUrl = `${endpointUrl}&sort=${sortParam}`
-            }
 
             try {
                 const { data: responseData } = await axios.get<ILoadDataPagination<T[]>>(`${endpointUrl}`, {

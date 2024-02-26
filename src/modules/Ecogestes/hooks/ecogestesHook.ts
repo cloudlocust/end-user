@@ -36,11 +36,10 @@ export const addElementError = (_error: any, formatMessage: formatMessageType) =
  *
  * @param queryParams Query parameters to add to useElementList.
  * @param sizeParam Number of items per page.
- * @param sortParam Params to order the list items.
  * @returns A hook to get the ecogestes.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const useEcogestes = (queryParams?: {}, sizeParam = 100, sortParam: string | undefined = undefined) => {
+export const useEcogestes = (queryParams?: {}, sizeParam = 100) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
@@ -101,7 +100,6 @@ export const useEcogestes = (queryParams?: {}, sizeParam = 100, sortParam: strin
     >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
         sizeParam,
-        sortParam,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })(undefined, { viewed: EcogestViewedEnum.ALL, tag_id: parsedCategoryTargetted, ...queryParams })
 
