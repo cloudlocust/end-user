@@ -14,4 +14,11 @@ export const useMyConsumptionStore = create<IMyConsumptionStore>()((set) => ({
      * @returns New value of consumption toggle button.
      */
     setConsumptionToggleButton: (value) => set(() => ({ consumptionToggleButton: value })),
+
+    /**
+     * Function to reset consumption toggle button to default value.
+     *
+     * @returns Default value of consumption toggle button.
+     */
+    resetToDefault: () => set(() => ({ consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption })),
 }))
