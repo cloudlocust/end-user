@@ -18,7 +18,7 @@ import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetai
  *
  * @param root0 N/A.
  * @param root0.measurementModes The list of measurement modes for the equipment.
- * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.housingEquipmentId The housing equipment id.
  * @param root0.equipmentsNumber The number of equipments.
  * @param root0.equipmentNumber The equipment number.
  * @param root0.measurementResults The measurement result values.

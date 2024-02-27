@@ -35,6 +35,10 @@ export interface EquipmentCardProps {
      */
     onEquipmentChange: (body: postEquipmentInputType) => void
     /**
+     * Boolean indicating if adding equipment is in progress.
+     */
+    addingEquipmentInProgress?: boolean
+    /**
      * Icon Component.
      */
     iconComponent?: IconComponentType
