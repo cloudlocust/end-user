@@ -28,6 +28,7 @@ import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
  * @param props.hasMissingHousingContracts Flag HasMissingContracts.
  * @param props.enphaseOff Enphase Consent is inactive.
  * @param props.enedisOff EnedisSge Consent is not Connected.
+ * @param props.isIdleWidgetShown Boolean indicating whether the idle widget is shown or not.
  * @returns Consumption Widgets List Component.
  */
 const ConsumptionWidgetsContainer = ({
@@ -38,6 +39,7 @@ const ConsumptionWidgetsContainer = ({
     hasMissingHousingContracts,
     enphaseOff,
     enedisOff,
+    isIdleWidgetShown,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
@@ -143,19 +145,21 @@ const ConsumptionWidgetsContainer = ({
                         />
                     )}
 
-                    <WidgetIdleConsumption
-                        targets={[metricTargetsEnum.idleConsumption]}
-                        range={range}
-                        filters={filters}
-                        metricsInterval={metricsInterval}
-                        period={period}
-                        infoIcons={{
-                            [metricTargetsEnum.idleConsumption.toString()]: getWidgetInfoIcon({
-                                widgetTarget: metricTargetsEnum.idleConsumption,
-                                hasMissingContracts: hasMissingHousingContracts,
-                            }),
-                        }}
-                    />
+                    {isIdleWidgetShown && (
+                        <WidgetIdleConsumption
+                            targets={[metricTargetsEnum.idleConsumption]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcons={{
+                                [metricTargetsEnum.idleConsumption.toString()]: getWidgetInfoIcon({
+                                    widgetTarget: metricTargetsEnum.idleConsumption,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                }),
+                            }}
+                        />
+                    )}
 
                     <WidgetCost
                         key={metricTargetsEnum.eurosConsumption}
@@ -189,12 +193,6 @@ const ConsumptionWidgetsContainer = ({
                                 infoIcons={{
                                     [target]: getWidgetInfoIcon({
                                         widgetTarget: target,
-                                        hasMissingContracts: hasMissingHousingContracts,
-                                        enphaseOff,
-                                        enedisSgeOff: enedisOff,
-                                    }),
-                                    [metricTargetsEnum.injectedProduction]: getWidgetInfoIcon({
-                                        widgetTarget: metricTargetsEnum.injectedProduction,
                                         hasMissingContracts: hasMissingHousingContracts,
                                         enphaseOff,
                                         enedisSgeOff: enedisOff,
