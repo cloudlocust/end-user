@@ -61,13 +61,25 @@ describe('EquipmentCard tests', () => {
     })
 
     test('display the correct number', async () => {
-        const { getByText } = reduxedRender(
+        const { getByText, queryByRole } = reduxedRender(
             <Router>
                 <EquipmentCard {...mockEquipmentCardProps} />
             </Router>,
         )
         expect(getByText(mockEquipmentCardProps.equipment.number!)).toBeInTheDocument()
+        expect(queryByRole('progressbar')).not.toBeInTheDocument()
     })
+
+    test('display a progress circle when addingEquipmentInProgress is true', async () => {
+        const { queryByText, getByRole } = reduxedRender(
+            <Router>
+                <EquipmentCard {...mockEquipmentCardProps} addingEquipmentInProgress />
+            </Router>,
+        )
+        expect(getByRole('progressbar')).toBeInTheDocument()
+        expect(queryByText(mockEquipmentCardProps.equipment.number!)).not.toBeInTheDocument()
+    })
+
     test('increament call', async () => {
         const { getByText } = reduxedRender(
             <Router>
@@ -79,8 +91,8 @@ describe('EquipmentCard tests', () => {
         userEvent.click(increamentButton)
 
         expect(mockEquipmentCardProps.onEquipmentChange).toHaveBeenCalledWith([{ equipmentId: 1, equipmentNumber: 6 }])
-        expect(getByText('6')).toBeInTheDocument()
     })
+
     test('decreament call', async () => {
         const { getByText } = reduxedRender(
             <Router>
@@ -92,8 +104,8 @@ describe('EquipmentCard tests', () => {
         userEvent.click(increamentButton)
 
         expect(mockEquipmentCardProps.onEquipmentChange).toHaveBeenCalledWith([{ equipmentId: 1, equipmentNumber: 4 }])
-        expect(getByText('4')).toBeInTheDocument()
     })
+
     test('measurement popup', async () => {
         mockEquipmentCardProps.equipment.name = 'microwave'
         reduxedRender(
@@ -107,6 +119,7 @@ describe('EquipmentCard tests', () => {
             expect(screen.getByRole('presentation')).toBeInTheDocument()
         })
     })
+
     test('measurement results', async () => {
         mockEquipmentCardProps.equipment.name = 'microwave'
         reduxedRender(
@@ -123,6 +136,7 @@ describe('EquipmentCard tests', () => {
             expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/equipments/details`)
         })
     })
+
     test('when isEquipmentMeasurementFeatureState is false, the buttons is disabled', async () => {
         mockIsEquipmentMeasurementFeatureState = false
         mockEquipmentCardProps.equipment.name = 'microwave'

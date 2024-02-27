@@ -14,6 +14,9 @@ const config: CapacitorConfig = {
         androidScheme: 'https',
         url: 'https://particuliers.nrlink.fr/services',
     },
+    ios: {
+        contentInset: 'always',
+    },
 }
 
 export default config
