@@ -48,7 +48,7 @@ const Application: FC<any> = () => {
                     <Provider store={store}>
                         <PersistGate persistor={getPersistor()}>
                             <TranslatitonProvider>
-                                <Router basename={BASENAME_URL}>
+                                <Router basename={BASENAME_URL} getUserConfirmation={() => {}}>
                                     <SnackbarProvider>
                                         <App />
                                     </SnackbarProvider>

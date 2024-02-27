@@ -29,7 +29,7 @@ export type HousingEquipmentType =
         // eslint-disable-next-line jsdoc/require-jsdoc
         isNumber: boolean
         // eslint-disable-next-line jsdoc/require-jsdoc
-        measurementModes?: string[]
+        measurementModes?: string[] | null
         // eslint-disable-next-line jsdoc/require-jsdoc
         customerId?: number | null
     }

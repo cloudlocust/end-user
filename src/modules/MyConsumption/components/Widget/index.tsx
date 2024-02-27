@@ -12,7 +12,6 @@ import { computePercentageChange } from 'src/modules/Analysis/utils/computationF
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
@@ -181,16 +180,9 @@ export const Widget = memo(
                                         percentageChange={targetsInfos[target].percentageChange}
                                         period={period}
                                         noValueMessage={
-                                            target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
-                                                // maxWidth to have a more balanced text.
-                                                <TypographyFormatMessage style={{ maxWidth: '90%' }}>
-                                                    La puissance maximale n'est pas disponible sur la journée en cours
-                                                </TypographyFormatMessage>
-                                            ) : (
-                                                <TypographyFormatMessage>
-                                                    {DEFAULT_NO_VALUE_MESSAGE}
-                                                </TypographyFormatMessage>
-                                            )
+                                            <TypographyFormatMessage>
+                                                {DEFAULT_NO_VALUE_MESSAGE}
+                                            </TypographyFormatMessage>
                                         }
                                     />
                                 ))}
