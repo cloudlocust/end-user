@@ -87,21 +87,41 @@ export type getTargetsYAxisValueFormattersType = (
  * ConsumptionChartContainer Props.
  */
 export interface ConsumptionChartContainerProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
+     */
     period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Current range so that we handle the xAxis values according to period and range selected.
+     */
     range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean state to know whether the stacked option is true or false.
+     */
     metricsInterval: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Consumption or production chart type.
+     */
     filters: metricFiltersType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating if there are missing housing contracts.
+     */
     hasMissingHousingContracts: boolean | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Enedis SGE consent.
+     */
     enedisSgeConsent?: IEnedisSgeConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating if solar production consent is off.
+     */
     isSolarProductionConsentOff: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating whether the idle chart is shown or not.
+     */
+    isIdleShown: boolean
+    /**
+     * Set metrics interval.
+     */
     setMetricsInterval: Dispatch<SetStateAction<metricIntervalType>>
 }
 

@@ -151,6 +151,7 @@ const MyConsumptionDatePicker = ({
                                     />
                                 )}
                                 {...(handleYears && { shouldDisableYear: handleYears })}
+                                {...(handleYears && { shouldDisableYear: handleYears })}
                             />
                         ),
                 )}

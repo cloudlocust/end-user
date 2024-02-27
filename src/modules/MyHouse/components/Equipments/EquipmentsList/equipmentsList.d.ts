@@ -37,16 +37,22 @@ export type HousingEquipmentType =
 /**
  * Housing equipment list type.
  */
-type HousingEquipmentListType = HousingEquipmentType[]
+export type HousingEquipmentListType = HousingEquipmentType[]
 
 /**
  * EquipmentsList Props.
  */
 export interface EquipmentsListProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Equipments list containing all the equipments.
+     */
     housingEquipmentsList?: HousingEquipmentListType
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    loadingEquipmentInProgress: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * List of equipments ids with adding in progress.
+     */
+    addingInProgressEquipmentsIds: number[]
+    /**
+     * Saving the equipment.
+     */
     addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
 }
