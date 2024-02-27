@@ -287,16 +287,16 @@ export const ConsumptionChartContainer = ({
 
             <div className="my-16 flex justify-between gap-10 h-40">
                 {period !== 'daily' ? (
-                    <div className="flex justify-center items-center mr-10">
+                    <div className="flex justify-center items-center mr-28">
                         <EurosConsumptionButtonToggler
                             onEurosConsumptionButtonToggle={onEurosConsumptionButtonToggle}
                             isEurosButtonToggled={isEurosButtonToggled}
                         />
                     </div>
                 ) : (
-                    <div className="mr-20"></div>
+                    <div style={{ width: 209 }} />
                 )}
-                <div className="flex flex-auto justify-center">
+                <div className="flex flex-auto justify-center" style={{ minWidth: 170 }}>
                     {(isIdleShown || isAutoConsumptionProductionShown) && (
                         <SwitchConsumptionButton
                             onSwitchConsumptionButton={onSwitchConsumptionButton}
@@ -307,15 +307,19 @@ export const ConsumptionChartContainer = ({
                 </div>
                 <div className="flex flex-row">
                     {period === 'daily' && (
-                        <div className="flex flex-row justify-end my-16">
-                            <Button
-                                style={{ color: theme.palette.common.white }}
-                                variant="outlined"
-                                onClick={handleClick}
-                            >
-                                Identifier mes activités
-                            </Button>
-                        </div>
+                        <Button
+                            onClick={handleClick}
+                            sx={{
+                                backgroundColor: 'primary.main',
+                                color: 'primary.contrastText',
+                                fontWeight: 500,
+                                '&:hover': {
+                                    backgroundColor: 'primary.light',
+                                },
+                            }}
+                        >
+                            Identifier une&nbsp;conso
+                        </Button>
                     )}
                     <TargetMenuGroup
                         removeTargets={() => onTemperatureOrPmaxMenuClick([])}

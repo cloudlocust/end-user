@@ -132,6 +132,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
         expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
     })
+
     test('do not show the widget "veille" when isIdleWidgetShown is false', async () => {
         consumptionWidgetsContainerProps.isIdleWidgetShown = false
         const { container, getByText, queryByText } = reduxedRender(
@@ -217,7 +218,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(7)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
@@ -227,6 +228,7 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
         expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
     })
+
     test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
         consumptionWidgetsContainerProps.enphaseOff = true
         mockMetricsData = []
