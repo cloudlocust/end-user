@@ -1,12 +1,13 @@
-import { fireEvent } from '@testing-library/react'
+import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EXAMPLE_ICON, TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
 import { IEcogestCategory, IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
-import EcogestesList from 'src/modules/Ecogestes/components/ecogestesList/EcogestesList'
-import EcogestesListPageContent from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageContent'
-import EcogestesListPageHeader from 'src/modules/Ecogestes/components/ecogestesList/EcogestesListPageHeader'
+import Ecogestes from 'src/modules/Ecogestes/components/ecogestes/Ecogestes'
+import EcogestesPage from 'src/modules/Ecogestes/components/ecogestes/EcogestesPage'
+import EcogestesPageContent from 'src/modules/Ecogestes/components/ecogestes/EcogestesPageContent'
+import EcogestesPageHeader from 'src/modules/Ecogestes/components/ecogestes/EcogestesPageHeader'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 
 const TEST_ECOGESTES_ECO_CARD_LABEL = 'ecogeste-card'
@@ -18,6 +19,7 @@ let mockEcogesteCategory: IEcogestCategory = {
     icon: 'ECO_ICON',
     nbEcogeste: 7,
 }
+let mockEcogestesCategories: IEcogestCategory[] = [mockEcogesteCategory]
 
 let mockCurrentCategory: IEcogestCategory = {
     id: 1,
@@ -28,8 +30,6 @@ let mockCurrentCategory: IEcogestCategory = {
 
 const mockFilterFn = jest.fn()
 const mockHistoryBackFn = jest.fn()
-
-const MenuItemRoleSelector = '[role="menuitem"]'
 
 /**
  * Mocking the react-router-dom used in the list.
@@ -52,6 +52,7 @@ jest.mock('react-router-dom', () => ({
      */
     useHistory: () => ({
         goBack: mockHistoryBackFn,
+        listen: jest.fn(),
     }),
 }))
 
@@ -80,12 +81,32 @@ jest.mock('src/modules/Ecogestes/hooks/ecogestesHook', () => {
     }
 })
 
-describe('EcogestesList tests', () => {
+jest.mock('src/modules/Ecogestes/hooks/useEcogestesCategories', () => {
+    const og = jest.requireActual('src/modules/Ecogestes/hooks/useEcogestesCategories')
+    /**
+     * Mock the useEcogestesCategories hook.
+     *
+     * @returns EcogestesCategoriesHook-like props.
+     */
+    const mockUseEcogestesCategoriesFn = () => ({
+        elementList: mockEcogestesCategories,
+        loadingInProgress: false,
+    })
+
+    return {
+        __esModule: true,
+        ...og,
+        default: mockUseEcogestesCategoriesFn,
+        useEcogestesCategories: mockUseEcogestesCategoriesFn,
+    }
+})
+
+describe('Ecogestes tests', () => {
     describe('should render correctly component', () => {
         test('When loaded, should render correctly Ecogeste Header', async () => {
             const { queryByText } = reduxedRender(
                 <BrowserRouter>
-                    <EcogestesListPageHeader isLoading={false} currentCategory={mockEcogesteCategory} />
+                    <EcogestesPageHeader isLoading={false} currentCategory={mockEcogesteCategory} />
                 </BrowserRouter>,
             )
 
@@ -94,92 +115,69 @@ describe('EcogestesList tests', () => {
         test('When loaded, should render correctly Ecogeste Header with Loading State', async () => {
             const { queryByRole } = reduxedRender(
                 <BrowserRouter>
-                    <EcogestesListPageHeader isLoading={true} currentCategory={mockEcogesteCategory} />
+                    <EcogestesPageHeader isLoading={true} currentCategory={mockEcogesteCategory} />
                 </BrowserRouter>,
             )
 
             expect(queryByRole('progressbar')).toBeTruthy()
         })
     })
+
     describe('Test proper rendering for categories', () => {
         test('When rendering, should render correctly ecogestes', async () => {
             mockCategoryId = '2'
             mockEcogestes = TEST_ECOGESTES
-            const { queryByLabelText, queryAllByLabelText } = reduxedRender(
+            const { getByText, getByLabelText, queryAllByLabelText } = reduxedRender(
                 <BrowserRouter>
-                    <EcogestesList />
+                    <Ecogestes ecogestCategoryName="category name" ecogestCategoryIconUrl="category icon" />
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
+            expect(getByText('category name')).toBeInTheDocument()
+            expect(getByLabelText('ecogestCategoryIcon')).toBeInTheDocument()
             expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(TEST_ECOGESTES.length)
         })
 
         test('When loading fails, do not render list and give message', async () => {
             mockCategoryId = '-1'
             mockEcogestes = []
-            const { queryByLabelText, queryAllByLabelText, queryByText } = reduxedRender(
+            const { queryAllByLabelText, queryByText } = reduxedRender(
                 <BrowserRouter>
-                    <EcogestesList />
+                    <Ecogestes />
                 </BrowserRouter>,
             )
 
-            expect(queryByLabelText('list, ecogests, cards')).toBeTruthy()
             expect(queryAllByLabelText(TEST_ECOGESTES_ECO_CARD_LABEL)).toHaveLength(0)
-            expect(queryByText("Aucun écogeste n'est disponible pour le moment.")).toBeTruthy()
+            expect(queryByText("Aucun écogeste n'est disponible")).toBeTruthy()
         })
     })
 
-    describe('Test interactions with the filter button', () => {
-        test('When clicking dropdown, it displays, and clicking out, it hides', async () => {
-            mockCategoryId = '0'
-            mockEcogestes = [TEST_ECOGESTES[0]]
-            const { queryByLabelText, container } = reduxedRender(
+    describe('Test proper rendering for EcogestesPage', () => {
+        test('When rendering, should render correctly EcogestesPage', async () => {
+            mockCategoryId = mockEcogesteCategory.id.toString()
+            const { getByText, getAllByText, getByLabelText } = reduxedRender(
                 <BrowserRouter>
-                    <EcogestesList />
+                    <EcogestesPage />
                 </BrowserRouter>,
             )
 
-            const FilterButton = queryByLabelText('button, filter')
-            expect(FilterButton).toBeTruthy()
-
-            fireEvent(FilterButton!, new MouseEvent('click', { bubbles: true }))
-            expect(document.querySelectorAll(MenuItemRoleSelector)).toHaveLength(3)
-            fireEvent(FilterButton!, new MouseEvent('click'))
-            expect(container.querySelectorAll(MenuItemRoleSelector)).toHaveLength(0)
+            await waitFor(() => {
+                expect(getByText('Ecogestes')).toBeInTheDocument()
+                expect(getAllByText(mockEcogesteCategory.name)).toHaveLength(2)
+                expect(getByText('arrow_back')).toBeInTheDocument()
+                expect(getByText('Retour')).toBeInTheDocument()
+                expect(getByText('Nos conseils')).toBeInTheDocument()
+                expect(getByText('Réalisés')).toBeInTheDocument()
+                expect(getByLabelText('ecogestCategoryIcon')).toBeInTheDocument()
+            })
         })
 
-        test('When clicking dropdown, it displays, and clicking on read calls filterEcogests', async () => {
-            mockCategoryId = '0'
-            mockEcogestes = [TEST_ECOGESTES[0]]
-            const { queryByLabelText, container } = reduxedRender(
-                <BrowserRouter>
-                    <EcogestesList />
-                </BrowserRouter>,
-            )
-
-            const FilterButton = queryByLabelText('button, filter')
-            expect(FilterButton).toBeTruthy()
-
-            userEvent.click(FilterButton!, { bubbles: true })
-            const menuItems = document.querySelectorAll(MenuItemRoleSelector)
-            expect(menuItems).toHaveLength(3)
-
-            userEvent.click(menuItems[0]!, { bubbles: true })
-            expect(mockFilterFn).toHaveBeenCalled()
-
-            userEvent.click(FilterButton!, { bubbles: true })
-            expect(container.querySelectorAll(MenuItemRoleSelector)).toHaveLength(0)
-        })
-    })
-
-    describe('Test proper rendering for EcogestesListPage', () => {
         test('When rendering, should render correctly PageHeader', async () => {
             mockCategoryId = '2'
             mockEcogestes = TEST_ECOGESTES
             const { getByText, getByAltText, getByRole } = reduxedRender(
                 <BrowserRouter>
-                    <EcogestesListPageHeader isLoading={false} currentCategory={mockCurrentCategory} />
+                    <EcogestesPageHeader isLoading={false} currentCategory={mockCurrentCategory} />
                 </BrowserRouter>,
             )
 
@@ -193,7 +191,7 @@ describe('EcogestesList tests', () => {
             test('When category not existing', async () => {
                 const { getByRole } = reduxedRender(
                     <BrowserRouter>
-                        <EcogestesListPageContent currentCategory={null} />
+                        <EcogestesPageContent currentCategory={null} />
                     </BrowserRouter>,
                 )
 
@@ -206,7 +204,7 @@ describe('EcogestesList tests', () => {
 
                 const { queryAllByLabelText } = reduxedRender(
                     <BrowserRouter>
-                        <EcogestesListPageContent currentCategory={mockCurrentCategory} />
+                        <EcogestesPageContent currentCategory={mockCurrentCategory} />
                     </BrowserRouter>,
                 )
 

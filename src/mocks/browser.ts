@@ -25,7 +25,10 @@ import { ecogestesEndpoints } from './handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from './handlers/accessRights'
+import { activitiesEndpoints } from './handlers/labelization'
 import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
+import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
+import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 
 /**
  * Handlers to mock urls for tests.
@@ -67,7 +70,12 @@ export const handlers = [
     ...connectedPlugsEndpoints,
     /****** Access rights endpiont. */
     ...accessRightsEndpoints,
+    /****** Activities endpiont. */
+    ...activitiesEndpoints,
     ...DashboardEndpoints,
+    ...solarSizingEndpoints,
+    /****** Alpiq Subscription Endpoints. */
+    ...AlpiqSubscriptionEndpoints,
 ]
 
 /**

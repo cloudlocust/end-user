@@ -28,6 +28,7 @@ import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
  * @param props.hasMissingHousingContracts Flag HasMissingContracts.
  * @param props.enphaseOff Enphase Consent is inactive.
  * @param props.enedisOff EnedisSge Consent is not Connected.
+ * @param props.isIdleWidgetShown Boolean indicating whether the idle widget is shown or not.
  * @returns Consumption Widgets List Component.
  */
 const ConsumptionWidgetsContainer = ({
@@ -38,6 +39,7 @@ const ConsumptionWidgetsContainer = ({
     hasMissingHousingContracts,
     enphaseOff,
     enedisOff,
+    isIdleWidgetShown,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
@@ -48,19 +50,24 @@ const ConsumptionWidgetsContainer = ({
     )
 
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
-        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.pMax]
+        let widgetsToRender: metricTargetType[] = []
 
-        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-        if (
-            period === 'daily' &&
-            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
-            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
-        ) {
-            widgetsToRender = [
-                ...widgetsToRender,
-                metricTargetsEnum.externalTemperature,
-                metricTargetsEnum.internalTemperature,
-            ]
+        if (period !== 'daily') {
+            // When the period is not daily we show the Pmax widget
+            widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
+        } else {
+            const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+            if (
+                range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
+                range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
+            ) {
+                // When the period is daily and the range is today we show the external and internal temperature widgets
+                widgetsToRender = [
+                    ...widgetsToRender,
+                    metricTargetsEnum.externalTemperature,
+                    metricTargetsEnum.internalTemperature,
+                ]
+            }
         }
 
         if (isProductionEnabled) {
@@ -143,19 +150,21 @@ const ConsumptionWidgetsContainer = ({
                         />
                     )}
 
-                    <WidgetIdleConsumption
-                        targets={[metricTargetsEnum.idleConsumption]}
-                        range={range}
-                        filters={filters}
-                        metricsInterval={metricsInterval}
-                        period={period}
-                        infoIcons={{
-                            [metricTargetsEnum.idleConsumption.toString()]: getWidgetInfoIcon({
-                                widgetTarget: metricTargetsEnum.idleConsumption,
-                                hasMissingContracts: hasMissingHousingContracts,
-                            }),
-                        }}
-                    />
+                    {isIdleWidgetShown && (
+                        <WidgetIdleConsumption
+                            targets={[metricTargetsEnum.idleConsumption]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcons={{
+                                [metricTargetsEnum.idleConsumption.toString()]: getWidgetInfoIcon({
+                                    widgetTarget: metricTargetsEnum.idleConsumption,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                }),
+                            }}
+                        />
+                    )}
 
                     <WidgetCost
                         key={metricTargetsEnum.eurosConsumption}
@@ -189,12 +198,6 @@ const ConsumptionWidgetsContainer = ({
                                 infoIcons={{
                                     [target]: getWidgetInfoIcon({
                                         widgetTarget: target,
-                                        hasMissingContracts: hasMissingHousingContracts,
-                                        enphaseOff,
-                                        enedisSgeOff: enedisOff,
-                                    }),
-                                    [metricTargetsEnum.injectedProduction]: getWidgetInfoIcon({
-                                        widgetTarget: metricTargetsEnum.injectedProduction,
                                         hasMissingContracts: hasMissingHousingContracts,
                                         enphaseOff,
                                         enedisSgeOff: enedisOff,

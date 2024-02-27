@@ -1,5 +1,5 @@
 import { CSSProperties, SyntheticEvent, useState } from 'react'
-import { useHistory, useLocation } from 'react-router'
+import { useHistory, useLocation } from 'react-router-dom'
 import { styled, Theme } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import { useIntl } from 'src/common/react-platform-translation'
