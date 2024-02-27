@@ -35,10 +35,11 @@ export const addElementError = (_error: any, formatMessage: formatMessageType) =
  * Hook to get a list of ecogestes by category.
  *
  * @param queryParams Query parameters to add to useElementList.
+ * @param sizeParam Number of items per page.
  * @returns A hook to get the ecogestes.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const useEcogestes = (queryParams?: {}) => {
+export const useEcogestes = (queryParams?: {}, sizeParam = 100) => {
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
@@ -98,7 +99,7 @@ export const useEcogestes = (queryParams?: {}) => {
         IEcogestGetAllFilter
     >({
         API_ENDPOINT: ECOGESTES_ENDPOINT,
-        sizeParam: 100,
+        sizeParam,
         snackBarMessage0verride: { loadElementListError, addElementSuccess, addElementError },
     })(undefined, { viewed: EcogestViewedEnum.ALL, tag_id: parsedCategoryTargetted, ...queryParams })
 

@@ -1,7 +1,7 @@
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Button from '@mui/material/Button'
-import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/CustomRadioButton.d'
+import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/CustomRadioButton.types'
 
 /**
  * Custom radio button component.
@@ -11,7 +11,7 @@ import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/Cus
  * @param root0.label The descriptive text associated with the radio button.
  * @param root0.selectedValue The state that holds the value of the radio group.
  * @param root0.handleRadioBtnClick The radio button click handler function that update the selectedValue.
- * @returns Enedis Sge consent JSX.
+ * @returns CustomRadioButton.
  */
 export const CustomRadioButton = ({
     value,

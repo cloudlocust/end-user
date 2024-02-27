@@ -13,4 +13,9 @@ export interface IMyConsumptionStore {
      * @param value Switch consumption button type.
      */
     setConsumptionToggleButton: (value: SwitchConsumptionButtonTypeEnum) => void
+
+    /**
+     * Reset consumption toggle button to default value.
+     */
+    resetToDefault: () => void
 }
