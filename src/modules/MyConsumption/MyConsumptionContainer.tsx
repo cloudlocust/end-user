@@ -107,6 +107,11 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
+    const isIdleShown = useMemo(
+        () => isSolarProductionConsentOff && period !== 'daily',
+        [isSolarProductionConsentOff, period],
+    )
+
     /**
      * Handles the selection of years in the date picker.
      * In yearly view, only the n years are displayed if the enedis consent is active.
@@ -203,6 +208,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
                             metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                            isIdleShown={isIdleShown}
                             setMetricsInterval={setMetricsInterval}
                         />
                     </>
@@ -233,6 +239,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
                         enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
+                        isIdleWidgetShown={isIdleShown}
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}

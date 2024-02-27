@@ -103,6 +103,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             hasMissingHousingContracts: false,
             enedisOff: false,
             enphaseOff: false,
+            isIdleWidgetShown: true,
         }
     })
 
@@ -112,7 +113,7 @@ describe('ConsumptionWidgetsContainer test', () => {
     })
 
     test('show all widgets except the Pmax widget when the range is for today', async () => {
-        const { container, getByText, queryByText } = reduxedRender(
+        const { container, getByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>
                     <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
@@ -125,6 +126,28 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_VEILLE_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
+        expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
+        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
+        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
+    })
+
+    test('do not show the widget "veille" when isIdleWidgetShown is false', async () => {
+        consumptionWidgetsContainerProps.isIdleWidgetShown = false
+        const { container, getByText, queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionWidgetsMetricsProvider>
+                    <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
+                </ConsumptionWidgetsMetricsProvider>
+            </Router>,
+        )
+        expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
+
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(queryByText(CONSOMMATION_VEILLE_TEXT)).not.toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
@@ -180,6 +203,30 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(TEMPERATURE_EXTERIEURE_TEXT)).not.toBeInTheDocument()
         expect(queryByText(TEMPERATURE_EXTERIEURE_TEXT)).not.toBeInTheDocument()
         expect(queryByText(PUISSANCE_MAXIMALE_TEXT)).not.toBeInTheDocument()
+    })
+
+    test('when the metrics of injected production not available, the widgets of autoconsumption and injection should not be showing on AutoconsmptionProduction tab', async () => {
+        mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        mockMetricsData = mockMetricsData.map((metric) =>
+            metric.target === metricTargetsEnum.injectedProduction ? { ...metric, datapoints: [] } : metric,
+        )
+        const { container, getByText, queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionWidgetsMetricsProvider>
+                    <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
+                </ConsumptionWidgetsMetricsProvider>
+            </Router>,
+        )
+        expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
+
+        expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
+        expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
+        expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
+        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
+        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
     })
 
     test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
