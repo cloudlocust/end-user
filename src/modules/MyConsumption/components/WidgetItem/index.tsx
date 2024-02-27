@@ -14,7 +14,6 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
  * @param props.value Value of the widget.
  * @param props.unit Unit of the widget.
  * @param props.percentageChange Percentage change of the widget.
- * @param props.period Period of the Widget.
  * @param props.noValueMessage Message when no value exists.
  * @returns WidgetItem Component.
  */
@@ -25,7 +24,6 @@ export function WidgetItem({
     value,
     unit,
     percentageChange,
-    period,
     noValueMessage,
 }: IWidgetItemProps) {
     const isTrendingIndicatorShowing =

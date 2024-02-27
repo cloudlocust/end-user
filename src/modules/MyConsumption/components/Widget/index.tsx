@@ -179,7 +179,6 @@ export const Widget = memo(
                                         value={targetsInfos[target].value}
                                         unit={targetsInfos[target].unit}
                                         percentageChange={targetsInfos[target].percentageChange}
-                                        period={period}
                                         noValueMessage={
                                             target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
                                                 // maxWidth to have a more balanced text.
