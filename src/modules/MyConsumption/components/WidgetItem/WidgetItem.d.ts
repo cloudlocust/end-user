@@ -1,5 +1,4 @@
 import { metricTargetType } from 'src/modules/Metrics/Metrics'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
  * Interface WidgetItem Props.
@@ -29,10 +28,6 @@ export interface IWidgetItemProps {
      * Percentage.
      */
     percentageChange: number
-    /**
-     * Period of the Widget.
-     */
-    period?: periodType
     /**
      * Message when there is no value.
      */

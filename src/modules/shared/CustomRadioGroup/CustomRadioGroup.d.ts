@@ -26,4 +26,8 @@ export interface CustomRadioGroupProps extends BoxProps {
      * Props of the MUI Box component.
      */
     boxProps?: BoxProps
+    /**
+     * The class name of the MUI Box component.
+     */
+    boxClassName?: string
 }

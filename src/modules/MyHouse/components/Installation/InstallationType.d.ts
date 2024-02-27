@@ -51,7 +51,7 @@ export type equipmentMeterType = {
      */
     equipmentId: number
     /**
-     * The global equipment id.
+     * The housing equipment id.
      */
     id?: number
     /**
