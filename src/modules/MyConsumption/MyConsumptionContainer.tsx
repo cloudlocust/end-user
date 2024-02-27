@@ -53,7 +53,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { consumptionToggleButton } = useMyConsumptionStore()
+    const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -84,12 +84,26 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
+    const metricsIntervalWhenConsumptionButtonIsProduction = useMemo(() => {
+        if (
+            period === 'daily' &&
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        ) {
+            return '30m'
+        }
+        return metricsInterval
+    }, [consumptionToggleButton, metricsInterval, period])
+
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (!currentHousing?.id) return
         setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
-    }, [setFilters, getConsents, currentHousing?.id])
+
+        return () => {
+            resetToDefault()
+        }
+    }, [setFilters, getConsents, currentHousing?.id, resetToDefault])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -190,7 +204,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                             filters={filters}
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
-                            metricsInterval={metricsInterval}
+                            metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
                             setMetricsInterval={setMetricsInterval}
                         />
                     </>
@@ -204,7 +218,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         filters={filters}
                         isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                        metricsInterval={metricsInterval}
+                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
                     />
                 )}
             </div>
