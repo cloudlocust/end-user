@@ -1,6 +1,40 @@
-import { Dispatch, SetStateAction } from 'react'
+import { RefObject } from 'react'
 import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import { Dispatch, SetStateAction } from 'react'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import ReactECharts from 'echarts-for-react'
+
+/**
+ * Period of time type, with start and end time.
+ */
+export type IPeriodTime = /**
+ *
+ */ {
+    /**
+     * Start time.
+     */
+    startTime: string | undefined
+    /**
+     * End time.
+     */
+    endTime: string | undefined
+}
+
+/**
+ * Period of time type, with start and end time, but with indexes.
+ */
+export type IPeriodTimeIndexs = /**
+ *
+ */ {
+    /**
+     * Start time.
+     */
+    startTime: number | undefined
+    /**
+     * End time.
+     */
+    endTime: number | undefined
+}
 
 /**
  * Enum Indicating the different yAxisIndex, so that each yAxis has its own value formatting.
@@ -53,21 +87,41 @@ export type getTargetsYAxisValueFormattersType = (
  * ConsumptionChartContainer Props.
  */
 export interface ConsumptionChartContainerProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
+     */
     period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Current range so that we handle the xAxis values according to period and range selected.
+     */
     range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean state to know whether the stacked option is true or false.
+     */
     metricsInterval: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Consumption or production chart type.
+     */
     filters: metricFiltersType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating if there are missing housing contracts.
+     */
     hasMissingHousingContracts: boolean | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Enedis SGE consent.
+     */
     enedisSgeConsent?: IEnedisSgeConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating if solar production consent is off.
+     */
     isSolarProductionConsentOff: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating whether the idle chart is shown or not.
+     */
+    isIdleShown: boolean
+    /**
+     * Set metrics interval.
+     */
     setMetricsInterval: Dispatch<SetStateAction<metricIntervalType>>
 }
 
@@ -83,4 +137,20 @@ export interface ConsumptionChartProps {
      * Period Type.
      */
     period: periodType
+    /**
+     * Color used for axis (labels, lines, etc.).
+     */
+    axisColor: string
+    /**
+     * The time interval in the label selected by the user.
+     */
+    selectedLabelPeriod?: IPeriodTime
+    /**
+     * ChartRef.
+     */
+    chartRef?: RefObject<ReactECharts>
+    /**
+     * Set Input period Time.
+     */
+    setInputPeriodTime?: (periodTime: IPeriodTime) => void
 }

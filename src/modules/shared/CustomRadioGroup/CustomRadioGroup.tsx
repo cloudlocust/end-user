@@ -10,9 +10,15 @@ import { CustomRadioButton } from 'src/modules/shared/CustomRadioButton/CustomRa
  * @param root0.elements The parameters of the CustomRadioButton children components.
  * @param root0.onValueChange Function triggered when the radio group value change.
  * @param root0.boxProps Props of the MUI Box component.
+ * @param root0.boxClassName The class name of the MUI Box component.
  * @returns CustomRadioGroup component.
  */
-export const CustomRadioGroup = ({ elements, onValueChange, ...boxProps }: CustomRadioGroupProps): JSX.Element => {
+export const CustomRadioGroup = ({
+    elements,
+    onValueChange,
+    boxProps,
+    boxClassName,
+}: CustomRadioGroupProps): JSX.Element => {
     const [selectedValue, setSelectedValue] = useState('')
 
     /**
@@ -28,7 +34,7 @@ export const CustomRadioGroup = ({ elements, onValueChange, ...boxProps }: Custo
     }
 
     return (
-        <Box {...boxProps}>
+        <Box {...boxProps} className={boxClassName}>
             {elements?.map((element) => (
                 <CustomRadioButton
                     key={element.label}

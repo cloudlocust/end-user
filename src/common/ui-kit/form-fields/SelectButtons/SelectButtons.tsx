@@ -25,14 +25,14 @@ export const SelectButtons = ({
     isDisabled,
 }: ISelectButtons) => {
     const { formatMessage } = useIntl()
-    const { control, setValue, getValues } = useFormContext()
+    const { control } = useFormContext()
 
     return (
         <Controller
             name={name}
             control={control}
             defaultValue={initialValue}
-            render={() => (
+            render={({ field }) => (
                 <>
                     {titleLabel && (
                         <div className="mt-16">
@@ -46,12 +46,10 @@ export const SelectButtons = ({
                         {formOptions.map((option) => {
                             return (
                                 <Button
-                                    variant={
-                                        (getValues(name) || initialValue) === option.value ? 'contained' : 'outlined'
-                                    }
+                                    variant={(field.value || initialValue) === option.value ? 'contained' : 'outlined'}
                                     color="primary"
                                     className={option.buttonStyle}
-                                    onClick={() => setValue(name, option.value)}
+                                    onClick={() => field.onChange(option.value)}
                                     type="button"
                                     name={name}
                                     disabled={isDisabled}

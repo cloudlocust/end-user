@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
+import { useTheme, CircularProgress, Box } from '@mui/material'
 import {
     formatMetricFilter,
     getRangeV2,
     getDateWithTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
@@ -20,8 +20,6 @@ import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
@@ -108,6 +106,11 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     useEffect(() => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
+
+    const isIdleShown = useMemo(
+        () => isSolarProductionConsentOff && period !== 'daily',
+        [isSolarProductionConsentOff, period],
+    )
 
     /**
      * Handles the selection of years in the date picker.
@@ -205,6 +208,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
                             metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                            isIdleShown={isIdleShown}
                             setMetricsInterval={setMetricsInterval}
                         />
                     </>
@@ -235,6 +239,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
                         enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
+                        isIdleWidgetShown={isIdleShown}
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}
