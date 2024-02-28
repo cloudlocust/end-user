@@ -236,13 +236,16 @@ export function BuilderUseElementList<T, U, K>({
          *
          * @param newFilters New Filters represent the new value of one of the prevFilter or new values for all the previous filters.
          */
-        const updateFilters = (newFilters: K) => {
-            filters.current = {
-                ...filters.current,
-                ...newFilters,
-            }
-            reloadElements()
-        }
+        const updateFilters = useCallback(
+            (newFilters: K) => {
+                filters.current = {
+                    ...filters.current,
+                    ...newFilters,
+                }
+                reloadElements()
+            },
+            [reloadElements],
+        )
 
         // TODO Explain if we need to reload from the Hook (through ) or the component itself.
         /**

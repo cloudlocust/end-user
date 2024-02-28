@@ -101,6 +101,10 @@ export interface IMyConsumptionDatePicker {
      */
     maxDate?: Date
     /**
+     * Color of the date picker, by default is secondary.light.
+     */
+    color?: string
+    /**
      * Boolean used to enable or disable the previous button.
      */
     isPreviousButtonDisabling?: boolean
