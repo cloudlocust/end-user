@@ -37,7 +37,7 @@ export const ECOGESTES_ITEMS_COUNT = 6
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true }, ECOGESTES_ITEMS_COUNT)
+    const { elementList: ecogestesList, loadingInProgress } = useEcogestes({ highlighted: true })
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {
@@ -47,49 +47,51 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = orderListBy(ecogestesList ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
-        <FuseCard
-            className="flex flex-col p-20"
-            key={ecogeste.id}
-            sx={{ bgcolor: alpha(theme.palette.primary.light, 0.1) }}
-        >
-            <div className="flex items-center mb-10 w-full flex-1">
-                <div style={{ width: 25, height: 25 }} className="mr-10">
-                    <img
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main})`,
-                        }}
-                        src={ecogeste.urlIcon}
-                        alt={ecogeste.title}
-                    />
-                </div>
-                <div className="flex justify-between items-center w-full">
-                    <TypographyFormatMessage className="text-14 md:text-16 leading-none" fontWeight={600}>
-                        {ecogeste.title}
-                    </TypographyFormatMessage>
-                    <SavingPercentage percentageSaved={ecogeste.percentageSaved} />
-                </div>
-            </div>
-            <div className="flex flex-auto mb-10">
-                <TypographyFormatMessage className="text-14 md:text-16 text-justify">
-                    {truncate(ecogeste.description, { length: 150 })}
-                </TypographyFormatMessage>
-            </div>
-            <div
-                className="flex justify-end items-end flex-auto cursor-pointer"
-                onClick={() => {
-                    setCurrentEcogeste(ecogeste)
-                    onOpenDetailAdvicePopup()
-                }}
+    const cards = orderListBy(ecogestesList ?? [], (item) => item.createdAt ?? '', true)
+        .slice(0, ECOGESTES_ITEMS_COUNT)
+        .map((ecogeste) => (
+            <FuseCard
+                className="flex flex-col p-20"
+                key={ecogeste.id}
+                sx={{ bgcolor: alpha(theme.palette.primary.light, 0.1) }}
             >
-                <TypographyFormatMessage className="text-12 md:text-14 leading-none underline text-grey-700">
-                    Consulter &gt;
-                </TypographyFormatMessage>
-            </div>
-        </FuseCard>
-    ))
+                <div className="flex items-center mb-10 w-full flex-1">
+                    <div style={{ width: 25, height: 25 }} className="mr-10">
+                        <img
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                filter: `opacity(0.1) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main}) drop-shadow(0 0 0 ${theme.palette.primary.main})`,
+                            }}
+                            src={ecogeste.urlIcon}
+                            alt={ecogeste.title}
+                        />
+                    </div>
+                    <div className="flex justify-between items-center w-full">
+                        <TypographyFormatMessage className="text-14 md:text-16 leading-none" fontWeight={600}>
+                            {ecogeste.title}
+                        </TypographyFormatMessage>
+                        <SavingPercentage percentageSaved={ecogeste.percentageSaved} />
+                    </div>
+                </div>
+                <div className="flex flex-auto mb-10">
+                    <TypographyFormatMessage className="text-14 md:text-16 text-justify">
+                        {truncate(ecogeste.description, { length: 150 })}
+                    </TypographyFormatMessage>
+                </div>
+                <div
+                    className="flex justify-end items-end flex-auto cursor-pointer"
+                    onClick={() => {
+                        setCurrentEcogeste(ecogeste)
+                        onOpenDetailAdvicePopup()
+                    }}
+                >
+                    <TypographyFormatMessage className="text-12 md:text-14 leading-none underline text-grey-700">
+                        Consulter &gt;
+                    </TypographyFormatMessage>
+                </div>
+            </FuseCard>
+        ))
 
     return (
         <FuseCard
