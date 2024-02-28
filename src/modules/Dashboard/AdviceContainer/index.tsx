@@ -36,7 +36,7 @@ export const ECOGESTES_ITEMS_COUNT = 6
  * @returns Advice wrapper component.
  */
 export const AdviceContainer = () => {
-    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true }, ECOGESTES_ITEMS_COUNT)
+    const { elementList: ecogestes, loadingInProgress } = useEcogestes({ highlighted: true })
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down('sm'))
     const {
@@ -46,15 +46,17 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
-        <NewEcogesteCard
-            ecogeste={ecogeste}
-            showMoreDetails={() => {
-                setCurrentEcogeste(ecogeste)
-                onOpenDetailAdvicePopup()
-            }}
-        />
-    ))
+    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true)
+        .slice(0, ECOGESTES_ITEMS_COUNT)
+        .map((ecogeste) => (
+            <NewEcogesteCard
+                ecogeste={ecogeste}
+                showMoreDetails={() => {
+                    setCurrentEcogeste(ecogeste)
+                    onOpenDetailAdvicePopup()
+                }}
+            />
+        ))
 
     return (
         <FuseCard
