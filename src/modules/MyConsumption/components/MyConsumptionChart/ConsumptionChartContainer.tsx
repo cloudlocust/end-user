@@ -39,9 +39,10 @@ import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsump
  * @param props.range Current range so that we handle the xAxis values according to period and range selected.
  * @param props.metricsInterval Boolean state to know whether the stacked option is true or false.
  * @param props.filters Consumption or production chart type.
- * @param props.hasMissingHousingContracts Consumption or production chart type.
- * @param props.enedisSgeConsent Consumption or production chart type.
+ * @param props.hasMissingHousingContracts Boolean indicating if there are missing housing contracts.
+ * @param props.enedisSgeConsent Enedis SGE consent.
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
+ * @param props.isIdleShown Boolean indicating whether the idle chart is shown or not.
  * @param props.setMetricsInterval Set metrics interval.
  * @returns ConsumptionChartContainer Component.
  */
@@ -53,6 +54,7 @@ export const ConsumptionChartContainer = ({
     hasMissingHousingContracts,
     enedisSgeConsent,
     isSolarProductionConsentOff,
+    isIdleShown,
     setMetricsInterval,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
@@ -62,7 +64,6 @@ export const ConsumptionChartContainer = ({
     const [targets, setTargets] = useState<metricTargetType[]>(
         getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
     )
-    const isIdleShown = period !== 'daily' && isSolarProductionConsentOff
     const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
 
     // Indicates if enedisSgeConsent is not Connected

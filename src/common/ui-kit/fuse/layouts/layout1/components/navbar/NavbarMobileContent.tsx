@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip'
 
 const Root = styled(BottomNavigation)(({ theme }) => ({
     position: 'fixed',
-    bottom: 0,
+    bottom: 'var(--safe-area-inset-bottom)',
     zIndex: 99,
     overflow: 'hidden',
     wordWrap: 'break-word',
@@ -60,7 +60,7 @@ const StyledNavBarMobile = styled(SwipeableDrawer)(() => ({
     '& .MuiDrawer-paper': {
         '& #fuse-navbar-side-panel': {
             minWidth: 'auto',
-            wdith: 'auto',
+            width: 'auto',
         },
         '& #fuse-navbar-panel': {
             opacity: '1!important',
