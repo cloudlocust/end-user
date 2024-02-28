@@ -102,7 +102,7 @@ export const InstallationTab = () => {
         )
 
     return (
-        <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '600px !important' }}>
+        <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '700px !important' }}>
             {isEquiomentInfoConsentmentOpen && (
                 <div
                     className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
@@ -166,57 +166,48 @@ export const InstallationTab = () => {
                         />
                     )}
                 </div>
-                <div>
-                    <div className="mb-40">
-                        <TypographyFormatMessage className="text-14 font-600">
-                            Utilisation de l'énergie dans mon domicile
-                        </TypographyFormatMessage>
-                        <div className="text-13 mt-20">
-                            <SelectButtons {...heaterEquipment} />
-                        </div>
-                        <div className="text-13 mt-20">
-                            <SelectButtons {...sanitaryEquipment} />
-                        </div>
-                        <div className="text-13 mt-20">
-                            <SelectButtons {...hotPlateEquipment} />
-                        </div>
+
+                <div className="mb-40">
+                    <TypographyFormatMessage className="text-14 font-600">
+                        Utilisation de l'énergie dans mon domicile
+                    </TypographyFormatMessage>
+                    <div className="text-13 mt-20">
+                        <SelectButtons {...heaterEquipment} />
                     </div>
-                    <div className="mb-32">
-                        <TypographyFormatMessage className="text-14 font-600">
-                            Ma production d'énergie
-                        </TypographyFormatMessage>
-                        <div className="text-13 mt-20 flex items-center justify-between gap-x-20 flex-wrap">
-                            <TypographyFormatMessage>Je dispose de panneaux solaires :</TypographyFormatMessage>
-                            <FormControl>
-                                <RadioGroup
-                                    aria-labelledby="demo-controlled-radio-buttons-group"
-                                    name="controlled-radio-buttons-group"
-                                    value={solarPanelRadioValue}
-                                    onChange={handleSolarPanelRadioChange}
-                                    className="w-full flex flex-row"
-                                >
-                                    <FormControlLabel value="existant" control={<Radio />} label="Oui" />
-                                    <FormControlLabel value="nonexistant" control={<Radio />} label="Non" />
-                                    <FormControlLabel value="maybe" control={<Radio />} label="J'y pense" />
-                                </RadioGroup>
-                            </FormControl>
-                        </div>
+                    <div className="text-13 mt-20">
+                        <SelectButtons {...sanitaryEquipment} />
+                    </div>
+                    <div className="text-13 mt-20">
+                        <SelectButtons {...hotPlateEquipment} />
                     </div>
                 </div>
-
-                {/* <EditButtonsGroup
-                    formInitialValues={defaultValues}
-                    isEdit={isEquipmentMeterListEmpty || isEdit}
-                    disableEdit={() => setIsEdit(false)}
-                    enableForm={() => setIsEdit(true)}
-                    inProgress={loadingEquipmentInProgress}
-                /> */}
-
+                <div className="mb-40">
+                    <TypographyFormatMessage className="text-14 font-600">
+                        Ma production d'énergie
+                    </TypographyFormatMessage>
+                    <div className="text-13 mt-20 flex items-center justify-between gap-x-20 flex-wrap">
+                        <TypographyFormatMessage>Je dispose de panneaux solaires :</TypographyFormatMessage>
+                        <FormControl>
+                            <RadioGroup
+                                aria-labelledby="demo-controlled-radio-buttons-group"
+                                name="controlled-radio-buttons-group"
+                                value={solarPanelRadioValue}
+                                onChange={handleSolarPanelRadioChange}
+                                className="w-full flex flex-row"
+                            >
+                                <FormControlLabel value="existant" control={<Radio />} label="Oui" />
+                                <FormControlLabel value="nonexistant" control={<Radio />} label="Non" />
+                                <FormControlLabel value="maybe" control={<Radio />} label="J'y pense" />
+                            </RadioGroup>
+                        </FormControl>
+                    </div>
+                </div>
                 <div className="flex justify-end item-center">
                     <ButtonLoader
                         type="submit"
                         inProgress={loadingEquipmentInProgress}
                         disabled={loadingEquipmentInProgress}
+                        className="w-full sm:w-auto"
                     >
                         <TypographyFormatMessage>Enregistrer mes modification</TypographyFormatMessage>
                     </ButtonLoader>
