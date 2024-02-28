@@ -27,6 +27,7 @@ import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
 import { accessRightsEndpoints } from 'src/mocks/handlers/accessRights'
 import { activitiesEndpoints } from 'src/mocks/handlers/labelization'
 import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
+import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
 import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 import { installationEndpoints } from 'src/mocks/handlers/installation'
 
@@ -74,6 +75,8 @@ export const handlers = [
     ...activitiesEndpoints,
     /***** Dashboard endpoints. *****/
     ...DashboardEndpoints,
+    /***** SolarSizing endpoints. *****/
+    ...solarSizingEndpoints,
     /***** Alpiq Subscription Endpoints. *****/
     ...AlpiqSubscriptionEndpoints,
     /***** Installation informations Endpoints. *****/

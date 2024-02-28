@@ -41,6 +41,7 @@ export type equipmentAllowedTypeT =
     | 'vitroceramic'
     | 'existant'
     | 'nonexistant'
+    | 'maybe'
     | 'collective'
     | 'individual'
 
@@ -51,7 +52,7 @@ export type equipmentMeterType = {
      */
     equipmentId: number
     /**
-     * The global equipment id.
+     * The housing equipment id.
      */
     id?: number
     /**

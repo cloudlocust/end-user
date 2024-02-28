@@ -1,7 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
-import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { useTheme } from '@mui/material'
+import { useTheme, CircularProgress, Box } from '@mui/material'
+import {
+    formatMetricFilter,
+    getRangeV2,
+    getDateWithTimezoneOffset,
+} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
@@ -16,8 +20,6 @@ import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
@@ -27,21 +29,29 @@ import {
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+
+/**
+ * Const represent how many years we want to display on the calender in the yearly view.
+ */
+export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
 
 /**
  * MyConsumptionContainer.
  * Parent component.
  *
+ * @param root0 MyConsumptionContainer props.
+ * @param root0.defaultPeriod The default period will be displayed on the page.
  * @returns MyConsumptionContainer and its children.
  */
-export const MyConsumptionContainer = () => {
+export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyConsumptionContainerProps) => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
-    const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
+    const [period, setPeriod] = useState<PeriodEnum>(defaultPeriod)
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { consumptionToggleButton } = useMyConsumptionStore()
+    const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -72,16 +82,72 @@ export const MyConsumptionContainer = () => {
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
+    const metricsIntervalWhenConsumptionButtonIsProduction = useMemo(() => {
+        if (
+            period === 'daily' &&
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        ) {
+            return '30m'
+        }
+        return metricsInterval
+    }, [consumptionToggleButton, metricsInterval, period])
+
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (!currentHousing?.id) return
         setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
-    }, [setFilters, getConsents, currentHousing?.id])
+
+        return () => {
+            resetToDefault()
+        }
+    }, [setFilters, getConsents, currentHousing?.id, resetToDefault])
 
     useEffect(() => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
+
+    const isIdleShown = useMemo(
+        () => isSolarProductionConsentOff && period !== 'daily',
+        [isSolarProductionConsentOff, period],
+    )
+
+    /**
+     * Handles the selection of years in the date picker.
+     * In yearly view, only the n years are displayed if the enedis consent is active.
+     *
+     * @param {Date} date - The selected date.
+     * @returns {boolean} - True if the date should be displayed in the date picker, false otherwise.
+     */
+    const handleYearsOfDatePicker = useCallback(
+        (date: Date) => {
+            // in yearly view display only the last n years if the enedis consent is active.
+            return (
+                period === PeriodEnum.YEARLY &&
+                !enedisOff &&
+                date.getFullYear() <
+                    new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
+            )
+        },
+        [enedisOff, period],
+    )
+
+    /**
+     * Determines whether the previous year navigation button should be disabled in the yearly view.
+     * The button is disabled if the enedis consent is active and the range is within the last n years.
+     *
+     * @returns {boolean} True if the previous year navigation button should be disabled, false otherwise.
+     */
+    const disablePreviousYearOfNavigationButton = useMemo(() => {
+        // in yearly view display only the previous button for the last n years if the enedis consent is active.
+        return (
+            period === PeriodEnum.YEARLY &&
+            !enedisOff &&
+            range &&
+            getDateWithTimezoneOffset(range.from).getFullYear() <=
+                new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
+        )
+    }, [enedisOff, period, range])
 
     if (consentsLoading)
         return (
@@ -125,7 +191,13 @@ export const MyConsumptionContainer = () => {
                                 period={period}
                                 range={range}
                             />
-                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
+                            <MyConsumptionDatePicker
+                                period={period}
+                                setRange={setRange}
+                                range={range}
+                                handleYears={handleYearsOfDatePicker}
+                                isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
+                            />
                         </div>
 
                         <ConsumptionChartContainer
@@ -135,7 +207,8 @@ export const MyConsumptionContainer = () => {
                             filters={filters}
                             isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
-                            metricsInterval={metricsInterval}
+                            metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                            isIdleShown={isIdleShown}
                             setMetricsInterval={setMetricsInterval}
                         />
                     </>
@@ -149,7 +222,7 @@ export const MyConsumptionContainer = () => {
                         filters={filters}
                         isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                        metricsInterval={metricsInterval}
+                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
                     />
                 )}
             </div>
@@ -166,6 +239,7 @@ export const MyConsumptionContainer = () => {
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
                         enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
+                        isIdleWidgetShown={isIdleShown}
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}

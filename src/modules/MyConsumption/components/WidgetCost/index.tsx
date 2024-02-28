@@ -80,7 +80,7 @@ export const WidgetCost = (props: IWidgetProps) => {
         <Widget {...props}>
             {totalEurosWithSubscription ? (
                 <div className="px-16 pb-10 font-semibold text-sm text-grey-600">
-                    {`Coût total abonnements compris ${totalEurosWithSubscription} ${unit}`}
+                    {`Coût total abonnement compris ${totalEurosWithSubscription} ${unit}`}
                 </div>
             ) : (
                 <></>

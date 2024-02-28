@@ -57,7 +57,7 @@ describe('EquipmentHooks test', () => {
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             // Element is added at the beginning of the equipmentList.
             act(async () => {
                 try {
@@ -69,14 +69,14 @@ describe('EquipmentHooks test', () => {
                     ])
                 } catch (err) {}
             })
-            expect(result.current.loadingEquipmentInProgress).toBe(true)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([TEST_ERROR_SAVE_EQUIPMENT_ID])
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingEquipmentInProgress
+                    return result.current.addingInProgressEquipmentsIds
                 },
                 { timeout: 2000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -92,7 +92,7 @@ describe('EquipmentHooks test', () => {
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             // Element is added at the beginning of the equipmentList.
             act(async () => {
                 try {
@@ -104,14 +104,14 @@ describe('EquipmentHooks test', () => {
                     ])
                 } catch (err) {}
             })
-            expect(result.current.loadingEquipmentInProgress).toBe(true)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([TEST_SAVE_EQUIPMENT.equipment_id + 1])
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingEquipmentInProgress
+                    return result.current.addingInProgressEquipmentsIds
                 },
                 { timeout: 2000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_DEFAULT_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -127,21 +127,26 @@ describe('EquipmentHooks test', () => {
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             // Element is added.
             act(async () => {
                 try {
-                    await result.current.addHousingEquipment([{ ...TEST_SAVE_EQUIPMENT }])
+                    await result.current.addHousingEquipment([
+                        {
+                            ...TEST_SAVE_EQUIPMENT,
+                            equipmentId: TEST_SAVE_EQUIPMENT.equipment_id,
+                        },
+                    ])
                 } catch (err) {}
             })
-            expect(result.current.loadingEquipmentInProgress).toBe(true)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([TEST_SAVE_EQUIPMENT.equipment_id])
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingEquipmentInProgress
+                    return result.current.addingInProgressEquipmentsIds
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_SUCCESS_MESSAGE, {
                 variant: 'success',
             })

@@ -81,7 +81,8 @@ export const ConsumptionWidgetsMetricsProvider = ({ children }: ConsumptionWidge
             if (
                 metric.target === metricTargetsEnum.consumption ||
                 metric.target === metricTargetsEnum.autoconsumption ||
-                metric.target === metricTargetsEnum.eurosConsumption
+                metric.target === metricTargetsEnum.eurosConsumption ||
+                metric.target === metricTargetsEnum.injectedProduction
             )
                 // Replace the old metric of target with the new one.
                 setMetricsData((prevMetrics) => [
