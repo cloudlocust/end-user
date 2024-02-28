@@ -1,4 +1,4 @@
-import { addEquipmentType } from './InstallationType.d'
+import { addEquipmentType, installationInfosType } from './InstallationType.d'
 import {
     equipmentType,
     IEquipmentMeter,
@@ -181,5 +181,114 @@ export const useEquipmentList = (housingId?: number) => {
         loadEquipmentList,
         addEquipment,
         isaAdEquipmentLoading,
+    }
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const INSTALLATION_API = (housingId: number) => `${HOUSING_API}/${housingId}/installation`
+/**
+ * Default error message for getting installations informations.
+ */
+export const GET_INSTALLATION_DEFAULT_ERROR_MESSAGE = "Erreur lors du chargement de vos informations d'installation"
+/**
+ * Default error message for adding or updating installations informations.
+ */
+export const ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE =
+    "Erreur lors de l'enregistrement de vos infos d'installation"
+/**
+ * Success message for adding or updating installations informations.
+ */
+export const ADD_UPDATE_INSTALLATION_SUCCESS_MESSAGE = "Succès lors de l'enregistrement de vos infos d'installation"
+
+/**
+ * Hooks for installation informations.
+ *
+ * @param housingId The id of the meter.
+ * @returns The useInstallation Hook.
+ */
+export const useInstallation = (housingId?: number) => {
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
+    const [installationInfos, setInstallationInfos] = useState<installationInfosType | null>(null)
+    const [getInstallationInfosInProgress, setGetInstallationInfosInProgress] = useState(false)
+    const [addUpdateInstallationInfosInProgress, setAddUpdateInstallationInfosInProgress] = useState(false)
+
+    /**
+     * Getting the installation informations for the housing.
+     */
+    const getInstallationInfos = useCallback(async () => {
+        if (!housingId) return
+        setGetInstallationInfosInProgress(true)
+        try {
+            const { data } = await axios.get<installationInfosType>(INSTALLATION_API(housingId))
+            setInstallationInfos(data)
+        } catch (error: any) {
+            enqueueSnackbar(
+                error?.response?.data?.detail
+                    ? formatMessage({
+                          id: error.response.data.detail,
+                          defaultMessage: error.response.data.detail,
+                      })
+                    : formatMessage({
+                          id: GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                          defaultMessage: GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                      }),
+                { variant: 'error' },
+            )
+        }
+        setGetInstallationInfosInProgress(false)
+    }, [enqueueSnackbar, formatMessage, housingId])
+
+    /**
+     * Save installation informations function.
+     *
+     * @param body Installation informations to save.
+     */
+    const addUpdateInstallationInfos = useCallback(
+        async (body: installationInfosType) => {
+            if (!housingId) return
+            setAddUpdateInstallationInfosInProgress(true)
+
+            try {
+                const { data } = await axios.post<installationInfosType, AxiosResponse<installationInfosType>>(
+                    INSTALLATION_API(housingId),
+                    body,
+                )
+                if (data) {
+                    setInstallationInfos(data)
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: ADD_UPDATE_INSTALLATION_SUCCESS_MESSAGE,
+                            defaultMessage: ADD_UPDATE_INSTALLATION_SUCCESS_MESSAGE,
+                        }),
+                        { variant: 'success' },
+                    )
+                }
+            } catch (error: any) {
+                enqueueSnackbar(
+                    error?.response?.data?.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                              defaultMessage: ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                          }),
+                    { variant: 'error' },
+                )
+            } finally {
+                setAddUpdateInstallationInfosInProgress(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage, housingId],
+    )
+
+    return {
+        installationInfos,
+        getInstallationInfosInProgress,
+        addUpdateInstallationInfosInProgress,
+        getInstallationInfos,
+        addUpdateInstallationInfos,
     }
 }
