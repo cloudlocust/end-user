@@ -18,7 +18,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * MicrowaveMeasurement component.
  *
  * @param root0 N/A.
- * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.housingEquipmentId The housing equipment id.
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.

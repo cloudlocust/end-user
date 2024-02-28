@@ -15,7 +15,7 @@ import {
 /**
  * Microwave measurement hook.
  *
- * @param housingEquipmentId The global equipment id.
+ * @param housingEquipmentId The housing equipment id.
  * @param measurementMode The selected measurement mode.
  * @param equipmentNumber The number of the equipment to test.
  * @param measurementMaxDuration Estimated value for the maximum duration of the measurement process (in seconds).
