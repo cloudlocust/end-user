@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { CircularProgress, Radio, RadioGroup, FormControlLabel, FormControl, useTheme, Container } from '@mui/material'
 import { Form } from 'src/common/react-platform-components'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
-import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import {
     heaterEquipment,
     sanitaryEquipment,
@@ -22,6 +21,7 @@ import { RootState } from 'src/redux'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
+import { ButtonLoader } from 'src/common/ui-kit'
 
 /**
  * EquipmentForm Component.
@@ -51,8 +51,6 @@ export const InstallationTab = () => {
     const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'nonexistant')
     }
-    const [isEdit, setIsEdit] = useState(false)
-    const disabledField = !isEquipmentMeterListEmpty && !isEdit
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -105,7 +103,7 @@ export const InstallationTab = () => {
 
     return (
         <Container>
-            <div className="flex flex-col justify-center w-full items-center">
+            <div className="flex flex-col justify-center w-full items-center pb-40">
                 {isEquiomentInfoConsentmentOpen && (
                     <div
                         className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
@@ -153,7 +151,6 @@ export const InstallationTab = () => {
                         if (body.length > 0) {
                             await addHousingEquipment(body)
                         }
-                        setIsEdit(false)
                     }}
                 >
                     <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
@@ -172,13 +169,13 @@ export const InstallationTab = () => {
                     </div>
                     <div className="flex flex-col justify-center w-full">
                         <div className="text-13">
-                            <SelectButtons isDisabled={disabledField} {...heaterEquipment} />
+                            <SelectButtons {...heaterEquipment} />
                         </div>
                         <div className="text-13">
-                            <SelectButtons isDisabled={disabledField} {...sanitaryEquipment} />
+                            <SelectButtons {...sanitaryEquipment} />
                         </div>
                         <div className="text-13">
-                            <SelectButtons isDisabled={disabledField} {...hotPlateEquipment} />
+                            <SelectButtons {...hotPlateEquipment} />
                         </div>
                         <div className="text-13 flex flex-row justify-around md:justify-center mt-8 md:mt-24">
                             <TypographyFormatMessage className="flex flex-row items-center">
@@ -192,30 +189,22 @@ export const InstallationTab = () => {
                                     onChange={handleSolarPanelRadioChange}
                                     className="flex flex-col md:flex-row ml-12"
                                 >
-                                    <FormControlLabel
-                                        value="existant"
-                                        control={<Radio />}
-                                        label="Oui"
-                                        disabled={disabledField}
-                                    />
-                                    <FormControlLabel
-                                        value="nonexistant"
-                                        control={<Radio />}
-                                        label="Non"
-                                        disabled={disabledField}
-                                    />
+                                    <FormControlLabel value="existant" control={<Radio />} label="Oui" />
+                                    <FormControlLabel value="nonexistant" control={<Radio />} label="Non" />
                                 </RadioGroup>
                             </FormControl>
                         </div>
                     </div>
 
-                    <EditButtonsGroup
-                        formInitialValues={defaultValues}
-                        isEdit={isEquipmentMeterListEmpty || isEdit}
-                        disableEdit={() => setIsEdit(false)}
-                        enableForm={() => setIsEdit(true)}
-                        inProgress={loadingEquipmentInProgress}
-                    />
+                    <div className="flex justify-end item-center">
+                        <ButtonLoader
+                            type="submit"
+                            inProgress={loadingEquipmentInProgress}
+                            disabled={loadingEquipmentInProgress}
+                        >
+                            <TypographyFormatMessage>Enregistrer mes modification</TypographyFormatMessage>
+                        </ButtonLoader>
+                    </div>
                 </Form>
             </div>
         </Container>

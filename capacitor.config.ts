@@ -15,7 +15,7 @@ const config: CapacitorConfig = {
         url: 'https://particuliers.nrlink.fr/services',
     },
     ios: {
-        contentInset: 'always',
+        contentInset: 'automatic',
     },
 }
 
