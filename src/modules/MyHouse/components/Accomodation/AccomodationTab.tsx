@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useIntl } from 'src/common/react-platform-translation'
-import {
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    MenuItem,
-    Container,
-    CircularProgress,
-    Tooltip,
-    useTheme,
-} from '@mui/material'
+import { Radio, RadioGroup, FormControlLabel, MenuItem, CircularProgress, Tooltip, useTheme } from '@mui/material'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
@@ -121,7 +112,7 @@ export const AccomodationTab = () => {
         )
 
     return (
-        <Container>
+        <>
             <RouterPrompt
                 when={methods.formState.isDirty}
                 content="Attention si vous n’enregistrez pas, vos données risques d’être perdues, souhaitez-vous enregistrer vos modifications"
@@ -160,7 +151,7 @@ export const AccomodationTab = () => {
                 )}
                 <div className="flex flex-col justify-center w-full items-center">
                     <FormProvider {...methods}>
-                        <form onSubmit={methods.handleSubmit(handleFormSubmit)} noValidate>
+                        <form onSubmit={methods.handleSubmit(handleFormSubmit)} noValidate className="w-full">
                             <div className="flex justify-center font-semibold text-sm mb-4 mt-16 flex-wrap w-full">
                                 {isAccomodationMeterListEmpty && (
                                     <MeterErrorIcon
@@ -369,6 +360,6 @@ export const AccomodationTab = () => {
                     </FormProvider>
                 </div>
             </div>
-        </Container>
+        </>
     )
 }
