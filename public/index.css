@@ -5,6 +5,13 @@ body.no-animate *::after {
     animation: none !important;
 }
 
+:root {
+    --safe-area-inset-top: max(env(safe-area-inset-top), 0px);
+    --safe-area-inset-right: max(env(safe-area-inset-right), 0px);
+    --safe-area-inset-bottom: max(env(safe-area-inset-bottom), 0px);
+    --safe-area-inset-left: max(env(safe-area-inset-left), 0px);
+}
+
 html,
 body,
 #root {
@@ -71,11 +78,4 @@ input:-webkit-autofill {
 
 :focus {
     outline-color: transparent;
-}
-
-:root {
-    --safe-area-inset-top: env(safe-area-inset-top);
-    --safe-area-inset-right: env(safe-area-inset-right);
-    --safe-area-inset-bottom: env(safe-area-inset-bottom);
-    --safe-area-inset-left: env(safe-area-inset-left);
 }
