@@ -14,8 +14,8 @@
 }
 
 /**
- * Custom base styles, applied after the tailwind-base classes
- */
+  * Custom base styles, applied after the tailwind-base classes
+  */
 
 html {
     font-size: 62.5%;
@@ -29,15 +29,13 @@ body {
     font-size: 13px;
     line-height: 1.4;
     overflow-x: hidden;
-    padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
+padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
 }
 
 html, body, #root {
-    width: 100%;
-    height: calc(100vh - var(--safe-area-inset-bottom));
-    overflow: hidden;
     position: relative;
     margin: 0;
+    height: calc(100vh - var(--safe-area-inset-bottom));
 }
 
 h1, .h1 {
