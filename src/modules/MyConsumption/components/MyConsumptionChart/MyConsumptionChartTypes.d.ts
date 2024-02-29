@@ -1,6 +1,40 @@
-import { Dispatch, SetStateAction } from 'react'
+import { RefObject } from 'react'
 import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import { Dispatch, SetStateAction } from 'react'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import ReactECharts from 'echarts-for-react'
+
+/**
+ * Period of time type, with start and end time.
+ */
+export type IPeriodTime = /**
+ *
+ */ {
+    /**
+     * Start time.
+     */
+    startTime: string | undefined
+    /**
+     * End time.
+     */
+    endTime: string | undefined
+}
+
+/**
+ * Period of time type, with start and end time, but with indexes.
+ */
+export type IPeriodTimeIndexs = /**
+ *
+ */ {
+    /**
+     * Start time.
+     */
+    startTime: number | undefined
+    /**
+     * End time.
+     */
+    endTime: number | undefined
+}
 
 /**
  * Enum Indicating the different yAxisIndex, so that each yAxis has its own value formatting.
@@ -103,4 +137,20 @@ export interface ConsumptionChartProps {
      * Period Type.
      */
     period: periodType
+    /**
+     * Color used for axis (labels, lines, etc.).
+     */
+    axisColor: string
+    /**
+     * The time interval in the label selected by the user.
+     */
+    selectedLabelPeriod?: IPeriodTime
+    /**
+     * ChartRef.
+     */
+    chartRef?: RefObject<ReactECharts>
+    /**
+     * Set Input period Time.
+     */
+    setInputPeriodTime?: (periodTime: IPeriodTime) => void
 }

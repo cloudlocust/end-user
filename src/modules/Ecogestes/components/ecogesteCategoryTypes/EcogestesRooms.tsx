@@ -1,5 +1,5 @@
 import { IEcogesteCategoryTypes } from 'src/modules/Ecogestes/EcogestesConfig'
-import { EcogesteCategoriesList } from 'src/modules/Ecogestes/components/ecogesteCategories/EcogesteCategoriesList'
+import { EcogesteCategories } from 'src/modules/Ecogestes/components/ecogesteCategories'
 import useEcogestesCategories from 'src/modules/Ecogestes/hooks/useEcogestesCategories'
 
 /**.
@@ -13,7 +13,7 @@ export const EcogestesRooms = () => {
     )
 
     return (
-        <EcogesteCategoriesList
+        <EcogesteCategories
             aria-label="ecogestsRooms"
             loadingInProgress={loadingInProgress}
             categoryType={IEcogesteCategoryTypes.ROOMS}

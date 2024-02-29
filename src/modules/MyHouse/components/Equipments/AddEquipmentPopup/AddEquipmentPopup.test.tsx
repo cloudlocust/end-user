@@ -1,7 +1,11 @@
+import { within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
+import { TEST_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
 import { AddEquipmentPopupProps } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup/addEquipmentPopup'
+import { equipmentType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
 let mockAddEquipmentPopupProps: AddEquipmentPopupProps
 
@@ -20,13 +24,25 @@ beforeEach(() => {
 })
 
 describe('AddEquipmentsPopup', () => {
-    test('Popup is open', async () => {
+    test('Popup is open and user click on select', async () => {
         mockAddEquipmentPopupProps.isOpen = true
+        mockAddEquipmentPopupProps.equipmentsList = applyCamelCase(TEST_EQUIPMENTS) as equipmentType[]
 
-        const { getByText } = reduxedRender(<AddEquipmentPopup {...mockAddEquipmentPopupProps} />)
+        const { getByText, getByTestId, getAllByTestId } = reduxedRender(
+            <AddEquipmentPopup {...mockAddEquipmentPopupProps} />,
+        )
 
         expect(getByText(TITLE_TEXT)).toBeInTheDocument()
         expect(getByText(EQUIPMENT_TYPE_TEXT)).toBeInTheDocument()
+
+        const selectElement = getByTestId('equipments-select')
+
+        const selectButton = within(selectElement).getByRole('button')
+
+        userEvent.click(selectButton)
+        const options = getAllByTestId('equipment-option')
+
+        expect(options).toHaveLength(TEST_EQUIPMENTS.length - 2)
     })
     test('Popup is closed when clicked on close button', async () => {
         mockAddEquipmentPopupProps.isOpen = true

@@ -192,15 +192,3 @@ export const FAQ_REDIRECT_LINK = window._env_.REACT_APP_FAQ_REDIRECT_LINK
  * All routes should be inaccessible.
  */
 export const isMaintenanceMode = window._env_.REACT_APP_IS_MAINTENANCE_MODE === 'true'
-
-/**
- * The Sentry DSN (Data Source Name) for error tracking.
- * It is retrieved from the environment variable REACT_APP_SENTRY_DSN.
- */
-export const SENTRY_DSN = window._env_.REACT_APP_SENTRY_DSN
-
-/**
- * The client environment variable.
- * This variable contains the client environment information.
- */
-export const CLIENT_ENVIRONNEMENT = window._env_.REACT_APP_CLIENT_ENVIRONNEMENT

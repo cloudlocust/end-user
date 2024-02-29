@@ -1,9 +1,19 @@
 import { useModal } from 'src/hooks/useModal'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
-import { Card, CardContent, Button, useTheme, Typography, Icon, Tooltip } from '@mui/material'
+import {
+    Card,
+    CardContent,
+    Button,
+    useTheme,
+    Typography,
+    Icon,
+    Tooltip,
+    IconButton,
+    CircularProgress,
+} from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import { useIntl } from 'src/common/react-platform-translation'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
@@ -21,12 +31,18 @@ import { DashboardCustomizeOutlined } from '@mui/icons-material'
  * @param root0.equipment The equipment details object.
  * @param root0.label Equipment label.
  * @param root0.onEquipmentChange Function that handle the equipment number.
+ * @param root0.addingEquipmentInProgress Boolean indicating if adding equipment is in progress.
  * @param root0.iconComponent Icon component.
  * @returns EquipmentCard JSX.
  */
-export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconComponent }: EquipmentCardProps) => {
+export const EquipmentCard = ({
+    equipment,
+    label,
+    onEquipmentChange,
+    addingEquipmentInProgress,
+    iconComponent,
+}: EquipmentCardProps) => {
     const theme = useTheme()
-    const [equipmentNumber, setEquipmentNumber] = useState<number>(equipment.number || 0)
     const { formatMessage } = useIntl()
     const {
         isOpen: isMeasurementModalOpen,
@@ -75,17 +91,13 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
     return (
         <>
             <Card className="rounded-16 border border-slate-600 w-full" data-testid="equipment-item">
-                <CardContent className="flex flex-row space-x-14" sx={{ p: '1rem', '&:last-child': { pb: '1rem' } }}>
+                <CardContent
+                    className="flex self-stretch space-x-14"
+                    sx={{ p: '1rem', '&:last-child': { pb: '1rem' } }}
+                >
                     <div
-                        className={`flex justify-center items-center rounded-16 border-2 ${
-                            isEquipmentMeasurementFeatureState && isMicrowaveMeasurementButtonShown
-                                ? 'cursor-pointer'
-                                : ''
-                        }`}
-                        style={{ borderColor: theme.palette.primary.main, width: '75px', height: '75px' }}
-                        {...(isEquipmentMeasurementFeatureState && isMicrowaveMeasurementButtonShown
-                            ? { onClick: navigateToEquipmentDetailsPage }
-                            : {})}
+                        className="flex justify-center items-center rounded-16 border-2"
+                        style={{ borderColor: theme.palette.primary.main, width: '75px', minHeight: '75px' }}
                     >
                         {iconComponent ? (
                             iconComponent(theme)
@@ -94,77 +106,91 @@ export const EquipmentCard = ({ equipment, label, onEquipmentChange, iconCompone
                         )}
                     </div>
 
-                    <div className="flex flex-row w-full justify-between">
-                        <Typography className="text-16 md:text-17 font-medium">
-                            {formatMessage({
-                                id: label,
-                                defaultMessage: label,
-                            })}
-                        </Typography>
-                        <div className="flex flex-col justify-between items-end">
-                            <div className="flex flex-row items-center space-x-8">
-                                <Icon
-                                    color="disabled"
-                                    className="cursor-pointer"
+                    <div className="flex w-full flex-col justify-between items-end gap-10">
+                        <div className="flex w-full justify-between">
+                            <Typography className="text-16 md:text-17 font-medium">
+                                {formatMessage({
+                                    id: label,
+                                    defaultMessage: label,
+                                })}
+                            </Typography>
+                            <div className="flex flex-row items-center gap-4">
+                                <IconButton
+                                    color="inherit"
+                                    className="p-5"
                                     onClick={() => {
-                                        if (equipmentNumber > 0) {
-                                            setEquipmentNumber((prevv) => {
-                                                onEquipmentChange([
-                                                    { equipmentId: equipment.id, equipmentNumber: prevv - 1 },
-                                                ])
-                                                return prevv - 1
-                                            })
+                                        if (equipment.number && equipment.number > 0) {
+                                            onEquipmentChange([
+                                                {
+                                                    equipmentId: equipment.id,
+                                                    equipmentNumber: equipment.number - 1,
+                                                },
+                                            ])
                                         }
                                     }}
+                                    disabled={addingEquipmentInProgress}
                                 >
-                                    remove_circle_outlined
-                                </Icon>
-                                <div className="text-14 font-medium">{equipmentNumber}</div>
-                                <Icon
-                                    color="disabled"
-                                    className="cursor-pointer"
+                                    <Icon>remove_circle_outlined</Icon>
+                                </IconButton>
+                                <div className="w-20 flex items-center justify-center">
+                                    {addingEquipmentInProgress ? (
+                                        <CircularProgress className="text-gray-400" size={15} />
+                                    ) : (
+                                        <Typography className="text-15 font-medium">{equipment.number}</Typography>
+                                    )}
+                                </div>
+                                <IconButton
+                                    color="inherit"
+                                    className="p-5"
                                     onClick={() => {
-                                        setEquipmentNumber((prevv) => {
+                                        if (equipment.number) {
                                             onEquipmentChange([
-                                                { equipmentId: equipment.id, equipmentNumber: prevv + 1 },
+                                                { equipmentId: equipment.id, equipmentNumber: equipment.number + 1 },
                                             ])
-                                            return prevv + 1
-                                        })
+                                        }
                                     }}
+                                    disabled={addingEquipmentInProgress}
                                 >
-                                    add_circle_outlined
-                                </Icon>
+                                    <Icon>add_circle_outlined</Icon>
+                                </IconButton>
                             </div>
+                        </div>
+
+                        {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
+                        {isMicrowaveMeasurementButtonShown ? (
                             <Tooltip
                                 disableHoverListener={isEquipmentMeasurementFeatureState}
                                 title={<TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>}
                                 placement="top"
                                 arrow
                             >
-                                {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
-                                {isMicrowaveMeasurementButtonShown ? (
-                                    <div className="inline-block">
-                                        <Button
-                                            className="px-20 py-3"
-                                            variant="contained"
-                                            onClick={onOpenMeasurementModal}
-                                            disabled={!isEquipmentMeasurementFeatureState}
-                                        >
-                                            Mesurer
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    <></>
-                                )}
+                                <div className="flex justify-end gap-7 flex-wrap-reverse">
+                                    <Button
+                                        sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
+                                        variant="contained"
+                                        onClick={navigateToEquipmentDetailsPage}
+                                        disabled={!isEquipmentMeasurementFeatureState}
+                                    >
+                                        Mes mesures
+                                    </Button>
+                                    <Button
+                                        sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
+                                        variant="contained"
+                                        onClick={onOpenMeasurementModal}
+                                        disabled={!isEquipmentMeasurementFeatureState}
+                                    >
+                                        Mesurer
+                                    </Button>
+                                </div>
                             </Tooltip>
-                        </div>
+                        ) : null}
                     </div>
                 </CardContent>
             </Card>
-            {isMicrowaveMeasurementButtonShown && (
+            {isMicrowaveMeasurementButtonShown && equipment.number && (
                 <MicrowaveMeasurement
                     housingEquipmentId={equipment.housingEquipmentId!}
-                    equipmentsNumber={equipmentNumber}
+                    equipmentsNumber={equipment.number}
                     measurementModes={equipment.measurementModes!}
                     isMeasurementModalOpen={isMeasurementModalOpen}
                     onCloseMeasurementModal={onCloseMeasurementModal}
