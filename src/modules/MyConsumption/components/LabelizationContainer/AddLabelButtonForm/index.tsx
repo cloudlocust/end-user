@@ -103,7 +103,6 @@ const AddLabelButtonForm = ({
                                     defaultMessage: 'Equipement',
                                 })}
                                 validateFunctions={[requiredBuilder()]}
-                                noMargin
                             >
                                 {equipments.map((equipment) => (
                                     <MenuItem key={equipment.id} value={equipment.id}>
