@@ -33,6 +33,10 @@ export interface SelectFieldProps extends SelectProps {
      * and we remove children from the props because we use label of the selelct.
      */
     inputLabelProps?: Omit<InputLabelProps, 'children'>
+    /**
+     * If true, we remove the margin from the FormControl.
+     */
+    noMargin?: boolean
 }
 /**
  * Select component wrapped by react-hook-form.
@@ -45,6 +49,7 @@ export interface SelectFieldProps extends SelectProps {
  * @param param0.defaultValue The default value of the field.
  * @param param0.formControlProps The props of the FormControl.
  * @param param0.inputLabelProps The props of the InputLabel.
+ * @param param0.noMargin If true, we remove the margin from the FormControl.
  * @returns Material UI Select field wrapped.
  */
 export const Select: FC<SelectFieldProps> = function ({
@@ -55,6 +60,7 @@ export const Select: FC<SelectFieldProps> = function ({
     defaultValue = '',
     formControlProps,
     inputLabelProps,
+    noMargin,
     ...otherProps
 }) {
     const { control } = useFormContext()
@@ -74,6 +80,7 @@ export const Select: FC<SelectFieldProps> = function ({
                     error={fieldState.invalid}
                     {...formControlProps}
                     required={Boolean(find(validateFunctions, { name: 'required' }))}
+                    {...(!noMargin && { margin: 'normal' })}
                 >
                     <InputLabel id={`${name}-label`} {...inputLabelProps}>
                         {label}
