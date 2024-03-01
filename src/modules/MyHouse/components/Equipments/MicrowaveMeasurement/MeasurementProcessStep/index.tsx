@@ -91,7 +91,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status === measurementStatusEnum.FAILED && (
                     <ResponseMessage
                         title="La mesure a échoué"
-                        content={measurementStatus.failureMessage!}
+                        content={measurementStatus.failureReason!}
                         theme={theme}
                     />
                 )}
