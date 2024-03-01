@@ -140,14 +140,7 @@ export const ConfigurationStep = ({
                     <CustomRadioGroup
                         elements={measurementModesOptions || defaultMicrowaveMeasurementModesOptions}
                         onValueChange={handleRadioGroupChange}
-                        display="flex"
-                        justifyContent="space-between"
-                        flexWrap="wrap"
-                        sx={{
-                            '& > *': {
-                                width: 'calc((100% - 10px) / 3)',
-                            },
-                        }}
+                        boxClassName="w-full flex justify-between gap-10"
                     />
                 </div>
 
