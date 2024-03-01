@@ -11,7 +11,8 @@ import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadi
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { floor, round } from 'lodash'
+import round from 'lodash/round'
+import floor from 'lodash/floor'
 import convert from 'convert-units'
 
 /**
@@ -58,9 +59,9 @@ export const SolarSizing = () => {
     const onSubmit = async (data: ISolarSizing) => {
         const dataToSubmit = { ...data, orientation: orientationValue, inclination: inclinationValue }
         const { surface } = data
+        setLatestSurface(surface)
         await addSolarSizing.mutateAsync({ ...dataToSubmit, surface: parseInt(surface as unknown as string) })
         await refetch()
-        setLatestSurface(surface)
     }
 
     useEffect(() => {
