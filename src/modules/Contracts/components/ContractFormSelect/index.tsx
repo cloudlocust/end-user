@@ -69,7 +69,7 @@ const ContractFormSelect = <T extends unknown>({
                     defaultMessage: `${label}`,
                 })}
                 defaultValue=""
-                disabled={!manualContractFillingIsEnabled || (optionList?.length === 1 && !otherOptionLabel)}
+                disabled={!manualContractFillingIsEnabled || (optionList.length === 1 && !otherOptionLabel)}
                 validateFunctions={validateFunctions}
                 {...otherSelectProps}
             >

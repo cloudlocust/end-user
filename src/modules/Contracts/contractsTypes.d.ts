@@ -226,7 +226,7 @@ export interface ContractFormSelectProps<T> extends SelectFieldProps {
     /**
      * Option List.
      */
-    optionList?: T[] | null
+    optionList: T[] | null
     /**
      * Function to format the option value.
      */
