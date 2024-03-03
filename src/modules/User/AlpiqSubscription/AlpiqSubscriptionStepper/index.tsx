@@ -44,7 +44,7 @@ const AlpiqSubscriptionStepper = () => {
 
     const stepsContent = [
         <PdlVerificationForm handleNext={handleNext} />,
-        <SgeConsentStep handleBack={handleBack} />,
+        <SgeConsentStep handleBack={handleBack} handleNext={handleNext} />,
         <ContractEstimation handleNext={handleNext} />,
         <FacturationForm handleBack={handleBack} />,
     ]

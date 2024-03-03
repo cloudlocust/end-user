@@ -15,10 +15,12 @@ import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastSte
  *
  * @param props Props.
  * @param props.handleBack Handle back button callback.
+ * @param props.handleNext Handle next callback.
  * @returns JSX Element.
  */
 const SgeConsentStep = ({
     handleBack,
+    handleNext,
 }: /**
  *
  */
@@ -27,6 +29,10 @@ const SgeConsentStep = ({
      * Handle back.
      */
     handleBack: () => void
+    /**
+     * Handle next.
+     */
+    handleNext: () => void
 }) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
@@ -78,6 +84,7 @@ const SgeConsentStep = ({
                     createEnedisSgeConsentError={createEnedisSgeConsentError}
                     isCreateEnedisSgeConsentLoading={isCreateEnedisSgeConsentLoading}
                     isElementButton={true}
+                    onAfterCreateEnedisConsent={handleNext}
                 />
             </div>
             <TypographyFormatMessage

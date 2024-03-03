@@ -43,10 +43,10 @@ export const FacturationForm = ({
     const { formatMessage } = useIntl()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [isNewFacturationAddress, setIsNewFacturationAddress] = useState(false)
-    const tomorrow = addDays(new Date(), 1) // Get tomorrow's date
-    const formattedTomorrow = format(tomorrow, 'yyyy-MM-dd')
+    const afterTomorrow = addDays(new Date(), 2) // Get the day after tomorrow
+    const formattedAfterTomorrow = format(afterTomorrow, 'yyyy-MM-dd')
     const IBAN_REGEX_TEXT = 'Format IBAN invalide'
-    const ibanRegex = /^FR\d{2}\s?\d{4}\s?\d{4}\s?\d{4}(?:\s?\d{2}){2}\s?$/.source
+    const ibanRegex = /^([A-Za-z]{2})\d{2}\s?\d{4}\s?\d{4}\s?\d{4}(?:\s?\d{2}){2}\s?$/.source
 
     /**
      * Handle Open CGV.
@@ -69,10 +69,11 @@ export const FacturationForm = ({
                 //eslint-disable-next-line
                 onSubmit={(data) => console.log(data)}
                 defaultValues={{
-                    datePrelevement: 27,
                     modeFacturation: 'MENS',
+                    jourDePrelevement: 27,
                     addressFacturation: currentHousing?.address,
-                    startPrelevementDate: formattedTomorrow,
+                    dateDebutContrat: formattedAfterTomorrow,
+                    iban: 'FR',
                 }}
                 style={{
                     overflowY: 'auto',
@@ -123,7 +124,7 @@ export const FacturationForm = ({
                         <div className="flex items-center justify-start w-full">
                             <SectionText text="Je souhaite être prélevé le :" className="mr-10" />
                             <div className="w-120">
-                                <Select name="datePrelevement" label="">
+                                <Select name="jourDePrelevement" label="">
                                     {datePrelevementOptions.map((option, _index) => (
                                         <MenuItem key={_index} value={option.value}>
                                             {formatMessage({
@@ -160,7 +161,7 @@ export const FacturationForm = ({
                         <SectionTitle title="Date de début de fourniture" />
                         <div className="w-full flex flex-col items-start justify-center">
                             <div className="w-5/6 md:w-2/3">
-                                <DatePicker name="startPrelevementDate" minDate={formattedTomorrow} />
+                                <DatePicker name="dateDebutContrat" minDate={formattedAfterTomorrow} />
                             </div>
                             <SectionText text="Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable dees frais de l'électricité consommée dans mon logement." />
                         </div>
@@ -179,7 +180,12 @@ export const FacturationForm = ({
                             />
                             <TextField
                                 name="nomAssocieIban"
-                                label="Nom Complet du titulaire"
+                                label="Nom du titulaire"
+                                validateFunctions={[requiredBuilder()]}
+                            />
+                            <TextField
+                                name="prenomAssocieIban"
+                                label="Prenom du titulaire"
                                 validateFunctions={[requiredBuilder()]}
                             />
                         </div>
