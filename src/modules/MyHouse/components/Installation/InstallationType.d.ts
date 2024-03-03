@@ -193,3 +193,70 @@ export type installationInfosType = {
      */
     solarInstallation?: solarInstallationInfosType
 }
+
+/**
+ * Solar installation informations type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type installationFormFieldsType = {
+    /**
+     * The heater status.
+     */
+    heater?: string
+    /**
+     * The hotplate status.
+     */
+    hotplate?: string
+    /**
+     * The sanitary status.
+     */
+    sanitary?: string
+    /**
+     * The solarpanel status.
+     */
+    solarpanel?: string
+    /**
+     * The title of the installation.
+     */
+    title?: string
+    /**
+     * The date of the installation.
+     */
+    installationDate?: string
+    /**
+     * The type of the solar panel.
+     */
+    solarPanelType?: string
+    /**
+     * The custom value for the solar panel type.
+     */
+    otherSolarPanelType?: string
+    /**
+     * The orientation value for the solar panel.
+     */
+    orientation?: string
+    /**
+     * The power value for the solar panel.
+     */
+    power?: string
+    /**
+     * The brand of the inverter.
+     */
+    inverterBrand?: string
+    /**
+     * The inclination value for the solar panel.
+     */
+    inclination?: string
+    /**
+     * Boolean indicating if the customer has a resale contract.
+     */
+    hasResaleContract?: string
+    /**
+     * The resale tariff value.
+     */
+    resaleTariff?: string
+    /**
+     * The status of the consumer when wanting a solar panel.
+     */
+    statusWhenWantingSolarPanel?: string
+}
