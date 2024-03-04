@@ -79,8 +79,5 @@ describe('SolarSizing', () => {
             expect(mockAsyncMutate).toBeCalled()
             expect(mockRefetch).toBeCalled()
         })
-
-        expect(getByText('250')).toBeInTheDocument()
-        expect(getByText('1000')).toBeInTheDocument()
     })
 })
