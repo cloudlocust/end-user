@@ -41,6 +41,10 @@ export type IOffer =
          * Name of offer.
          */
         name: string
+        /**
+         * Whether the offer is deprecated or not.
+         */
+        isDeprecated?: boolean
     }
 
 /**
