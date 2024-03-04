@@ -1,26 +1,53 @@
-import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { TEST_HOUSING_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { EquipmentsList } from 'src/modules/MyHouse/components/Equipments/EquipmentsList'
-import { EquipmentsListProps } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
+import {
+    EquipmentsListProps,
+    HousingEquipmentListType,
+} from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
+
+const mockHousingEquipmentsList: HousingEquipmentListType = [
+    {
+        id: 1,
+        equipmentLabel: 'equipment 1 label',
+        name: 'equipment 1 name',
+        allowedType: ['electricity', 'other'],
+        isNumber: true,
+    },
+    {
+        id: 2,
+        equipmentLabel: 'equipment 2 label',
+        name: 'equipment 2 name',
+        allowedType: ['other'],
+        isNumber: true,
+    },
+    {
+        id: 3,
+        equipmentLabel: 'equipment 3 label',
+        name: 'equipment 3 name',
+        allowedType: ['electricity'],
+        isNumber: true,
+    },
+]
 
 let equipmentsListProps: EquipmentsListProps = {
-    housingEquipmentsList: [],
-    loadingEquipmentInProgress: false,
+    housingEquipmentsList: mockHousingEquipmentsList,
+    addingInProgressEquipmentsIds: [],
     addHousingEquipment: jest.fn(),
 }
 
 describe('EquipmentsList tests', () => {
-    afterEach(() => {
-        equipmentsListProps.housingEquipmentsList = applyCamelCase(TEST_HOUSING_EQUIPMENTS)
-        equipmentsListProps.loadingEquipmentInProgress = false
+    test("renders correctly when housingEquipmentsList isn't empty", () => {
+        const { getByText } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
+
+        mockHousingEquipmentsList.forEach((housingEquipment) => {
+            expect(getByText(housingEquipment.equipmentLabel!)).toBeInTheDocument()
+        })
     })
 
-    test('when loadingEquipmentInProgress is true', async () => {
-        equipmentsListProps.loadingEquipmentInProgress = true
+    test('when addingInProgressEquipmentsIds is not empty, renders progress circles', async () => {
+        equipmentsListProps.addingInProgressEquipmentsIds = [1, 3]
+        const { getAllByRole } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
 
-        const { getByRole } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
-
-        expect(getByRole('progressbar')).toBeInTheDocument()
+        expect(getAllByRole('progressbar')).toHaveLength(2)
     })
 })

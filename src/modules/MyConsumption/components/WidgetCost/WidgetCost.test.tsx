@@ -8,7 +8,7 @@ import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/com
 import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 
 const TOTAL_COST_TEXT = 'Coût Total'
-const TOTAL_COST_INCLUDING_SUBSCRIPTIONS_TEXT = 'Coût total abonnements compris'
+const TOTAL_COST_INCLUDING_SUBSCRIPTIONS_TEXT = 'Coût total abonnement compris'
 const EURO_UNIT_TEXT = '€'
 const MESSING_DATA_TEXT = 'sur la base des données disponibles'
 

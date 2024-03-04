@@ -24,4 +24,9 @@ export interface IMyConsumptionStore {
      * @param value The new value of isPartiallyYearlyDataExist.
      */
     setPartiallyYearlyDataExist: (value: boolean) => void
+
+    /**
+     * Reset consumption toggle button to default value.
+     */
+    resetToDefault: () => void
 }

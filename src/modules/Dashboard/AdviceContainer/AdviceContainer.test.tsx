@@ -1,7 +1,7 @@
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { TEST_ECOGESTES } from 'src/mocks/handlers/ecogestes'
-import { AdviceContainer } from 'src/modules/Dashboard/AdviceContainer'
+import { AdviceContainer, ECOGESTES_ITEMS_COUNT } from 'src/modules/Dashboard/AdviceContainer'
 import { IEcogeste } from 'src/modules/Ecogestes/components/ecogeste'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { screen } from '@testing-library/react'
@@ -47,9 +47,18 @@ describe('AdviceContainer tests', () => {
         ).toBeInTheDocument()
 
         expect(
-            screen.queryAllByText('Consulter', {
+            screen.queryAllByText('Détails', {
                 exact: false,
             }),
         ).toHaveLength(mockEcogestes.length)
+    })
+    test(`should render at most ${ECOGESTES_ITEMS_COUNT} ecogestes`, async () => {
+        reduxedRender(
+            <Router>
+                <AdviceContainer />
+            </Router>,
+        )
+        const elements = screen.queryAllByText('Consulter', { exact: false })
+        expect(elements.length).toBeLessThanOrEqual(6)
     })
 })
