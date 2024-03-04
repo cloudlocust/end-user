@@ -17,6 +17,7 @@ import {
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
+    MissingDataWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
@@ -33,6 +34,7 @@ import { useHistory } from 'react-router-dom'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -69,7 +71,8 @@ export const ConsumptionChartContainer = ({
     const handleClick = () => {
         history.push(URL_CONSUMPTION_LABELIZATION)
     }
-    const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
+
+    const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -263,6 +266,34 @@ export const ConsumptionChartContainer = ({
         getMetrics()
     }, [getMetrics])
 
+    /**
+     * Checks if all yearly consumption data is available.
+     *
+     * @returns {boolean} True if all yearly data is available, false otherwise.
+     */
+    const checkIfAllYearlyDataExist = useCallback(() => {
+        return (
+            consumptionChartData.length > 0 &&
+            Array.from({ length: 12 }).every((_element, index) => {
+                return consumptionChartData.some((item) => {
+                    return item.datapoints[index] && !!item.datapoints[index][0]
+                })
+            })
+        )
+    }, [consumptionChartData])
+
+    /**
+     * We use this hook to check if the data is partially available for yearly period.
+     */
+    useEffect(() => {
+        if (period === PeriodEnum.YEARLY) {
+            setPartiallyYearlyDataExist(consumptionChartData.length > 0)
+        }
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist])
+
+    const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
+    const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
+
     return (
         <div className="mb-12">
             <div className="relative flex flex-col md:flex-row items-center justify-center">
@@ -341,8 +372,13 @@ export const ConsumptionChartContainer = ({
                     axisColor={theme.palette.primary.contrastText}
                 />
             )}
-            <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
-            <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
+            {period === PeriodEnum.YEARLY &&
+                !isDefaultContractWarningShown &&
+                !isConsumptionEnedisSgeWarningShown &&
+                !isMetricsLoading &&
+                !checkIfAllYearlyDataExist() && <MissingDataWarning />}
+            <DefaultContractWarning isShowWarning={isDefaultContractWarningShown} />
+            <ConsumptionEnedisSgeWarning isShowWarning={isConsumptionEnedisSgeWarningShown} />
         </div>
     )
 }
