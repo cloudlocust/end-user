@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { dayjsUTC, requiredBuilder } from 'src/common/react-platform-components'
 import {
@@ -16,7 +16,7 @@ import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSel
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { isNull, orderBy, pick } from 'lodash'
+import { isNil, isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
 import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
 import { useParams } from 'react-router-dom'
@@ -123,6 +123,22 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         isTariffTypesLoading,
     } = useCommercialOffer()
     const { formatMessage } = useIntl()
+    // Track if the user originally had a deprecated offer.
+    const [isUserHasDeprecatedOffer, setIsUserHasDeprecatedOffer] = useState(false)
+
+    // When loading the offers, check if the user's current offer is deprecated.
+    useEffect(() => {
+        if (!isNil(offerList)) {
+            const userCurrentOffer = offerList.find((offer) => offer.id === formData.offerId)
+            if (userCurrentOffer && userCurrentOffer.isDeprecated) {
+                setIsUserHasDeprecatedOffer(true)
+            }
+        }
+    }, [offerList, formData.offerId])
+
+    const offersListWithoutDeprecated = useMemo(() => {
+        return offerList?.filter((offer) => isUserHasDeprecatedOffer || !offer?.isDeprecated)
+    }, [offerList, isUserHasDeprecatedOffer])
 
     // Check that offPeakHours tariff type is selected.
     const isOffpeakHoursSelected = useMemo(
@@ -215,7 +231,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         isOptionsInProgress={isOffersLoading}
                         loadOptions={loadOfferOptions}
                         otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
-                        optionList={orderBy(offerList, 'name', 'asc')}
+                        optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
                         name="offerId"
                         label="Offre"
                         validateFunctions={[requiredBuilder()]}
