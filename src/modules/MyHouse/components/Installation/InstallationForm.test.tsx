@@ -17,7 +17,7 @@ const mockSaveEquipment = jest.fn()
 const mockLoadEquipmentList = jest.fn()
 let mockEquipmentList: equipmentType[] | null = applyCamelCase(TEST_EQUIPMENTS)
 let mockHousingEquipmentList: IEquipmentMeter[] | null = applyCamelCase(TEST_HOUSING_EQUIPMENTS)
-const MODIFIER_BUTTON_TEXT = 'Modifier'
+const MODIFIER_BUTTON_TEXT = 'Enregistrer mes modification'
 const HOUSING_POWER_USE_TITLE_TEXT = "Utilisation de l'énergie dans mon domicile"
 const HEATER_TEXT = 'Type de chauffage :'
 const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
@@ -34,8 +34,6 @@ const YES_VALUE_TEXT = 'Oui'
 const NO_VALUE_TEXT = 'Non'
 const MAYBE_VALUE_TEXT = "J'y pense"
 // const DISABLED_CLASS = 'Mui-disabled'
-const ANNULER_BUTTON_TEXT = 'Annuler'
-const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
 const mockEnqueueSnackbar = jest.fn()
 
 /**
@@ -192,13 +190,11 @@ describe('Test InstallationForm', () => {
     // })
     test('When loading equipmentList, Circular progress should be shown', async () => {
         mockIsLoadingInProgress = true
-        const { getByText } = reduxedRender(
+        const { getByRole } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
             </BrowserRouter>,
         )
-        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
-        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
-        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
+        expect(getByRole('progressbar')).toBeInTheDocument()
     })
 })

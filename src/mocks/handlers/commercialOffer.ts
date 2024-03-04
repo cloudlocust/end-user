@@ -32,18 +32,22 @@ export var TEST_OFFERS: SnakeCasedPropertiesDeep<IOffer>[] = [
     {
         id: 1,
         name: 'Bleu',
+        is_deprecated: true,
     },
     {
         id: 2,
         name: 'Tarif réglementé',
+        is_deprecated: false,
     },
     {
         id: 3,
         name: 'Classique',
+        is_deprecated: false,
     },
     {
         id: 4,
         name: 'Digiwatt*',
+        is_deprecated: false,
     },
 ]
 

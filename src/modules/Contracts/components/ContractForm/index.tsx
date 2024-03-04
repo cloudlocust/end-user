@@ -124,6 +124,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
     } = useCommercialOffer()
     const { formatMessage } = useIntl()
 
+    const offersListWithoutDeprecated = offerList?.filter((offer) => !offer?.isDeprecated)
+
     // Check that offPeakHours tariff type is selected.
     const isOffpeakHoursSelected = useMemo(
         () =>
@@ -215,7 +217,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         isOptionsInProgress={isOffersLoading}
                         loadOptions={loadOfferOptions}
                         otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
-                        optionList={orderBy(offerList, 'name', 'asc')}
+                        optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
                         name="offerId"
                         label="Offre"
                         validateFunctions={[requiredBuilder()]}
