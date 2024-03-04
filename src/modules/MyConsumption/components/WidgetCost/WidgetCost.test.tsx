@@ -10,6 +10,7 @@ import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 const TOTAL_COST_TEXT = 'Coût Total'
 const TOTAL_COST_INCLUDING_SUBSCRIPTIONS_TEXT = 'Coût total abonnements compris'
 const EURO_UNIT_TEXT = '€'
+const MESSING_DATA_TEXT = 'sur la base des données disponibles'
 
 const circularProgressClassname = '	.MuiCircularProgress-root'
 
@@ -115,5 +116,28 @@ describe('WidgetCost test', () => {
                 `${TOTAL_COST_INCLUDING_SUBSCRIPTIONS_TEXT} ${totalCostIncludingSubscriptions} ${EURO_UNIT_TEXT}`,
             ),
         ).toBeInTheDocument()
+    })
+
+    test('When the data metrics is partially exist in yearly period, a missing data text is shown', async () => {
+        mockIsMetricsLoading = false
+        mockPeriod = 'yearly'
+        mockData[0].datapoints = [
+            [40, 1651406400],
+            [40, 1651406400],
+        ]
+        mockData[1].datapoints = [
+            [10, 1651406400],
+            [10, 1651406400],
+        ]
+        const { getByText } = renderTestComponent()
+        expect(getByText(MESSING_DATA_TEXT)).toBeInTheDocument()
+    })
+
+    test('When the data metrics is not exist in yearly period, a missing data text must be not shown', async () => {
+        mockIsMetricsLoading = false
+        mockPeriod = 'yearly'
+        mockData = []
+        const { queryByText } = renderTestComponent()
+        expect(queryByText(MESSING_DATA_TEXT)).not.toBeInTheDocument()
     })
 })

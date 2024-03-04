@@ -8,6 +8,7 @@ import {
     getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -21,6 +22,7 @@ export const WidgetCost = (props: IWidgetProps) => {
     const { metricsInterval, range, period, filters } = props
 
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
+    const { isPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     const euroConsumptionData = useMemo(
         () => getMetricsWidgetsData([props.targets[0]]),
@@ -81,6 +83,11 @@ export const WidgetCost = (props: IWidgetProps) => {
             {totalEurosWithSubscription ? (
                 <div className="px-16 pb-10 font-semibold text-sm text-grey-600">
                     {`Coût total abonnements compris ${totalEurosWithSubscription} ${unit}`}
+                    {isPartiallyYearlyDataExist && (
+                        <span>
+                            <br /> sur la base des données disponibles
+                        </span>
+                    )}
                 </div>
             ) : (
                 <></>

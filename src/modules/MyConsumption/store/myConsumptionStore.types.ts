@@ -9,8 +9,19 @@ export interface IMyConsumptionStore {
      */
     consumptionToggleButton: SwitchConsumptionButtonTypeEnum
     /**
+     * Indicates whether partially yearly data exists.
+     */
+    isPartiallyYearlyDataExist: boolean
+    /**
      *
      * @param value Switch consumption button type.
      */
     setConsumptionToggleButton: (value: SwitchConsumptionButtonTypeEnum) => void
+
+    /**
+     * Set the value of isPartiallyYearlyDataExist.
+     *
+     * @param value The new value of isPartiallyYearlyDataExist.
+     */
+    setPartiallyYearlyDataExist: (value: boolean) => void
 }

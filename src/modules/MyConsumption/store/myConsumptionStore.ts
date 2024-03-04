@@ -7,6 +7,7 @@ import { IMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumpti
  */
 export const useMyConsumptionStore = create<IMyConsumptionStore>()((set) => ({
     consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption,
+    isPartiallyYearlyDataExist: true,
     /**
      * Function to set consumption toggle button.
      *
@@ -14,4 +15,11 @@ export const useMyConsumptionStore = create<IMyConsumptionStore>()((set) => ({
      * @returns New value of consumption toggle button.
      */
     setConsumptionToggleButton: (value) => set(() => ({ consumptionToggleButton: value })),
+    /**
+     * Function to set the existence of partially yearly data.
+     *
+     * @param value New value indicating if partially yearly data exists.
+     * @returns Void.
+     */
+    setPartiallyYearlyDataExist: (value) => set(() => ({ isPartiallyYearlyDataExist: value })),
 }))
