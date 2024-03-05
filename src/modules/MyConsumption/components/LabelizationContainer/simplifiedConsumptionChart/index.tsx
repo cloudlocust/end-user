@@ -264,6 +264,7 @@ const SimplifiedConsumptionChartContainer = ({
                         selectedLabelPeriod={inputPeriodTime}
                         chartRef={chartRef}
                         setInputPeriodTime={setInputPeriodTime}
+                        isLabelizationChart
                     />
                 )}
                 <div className="mx-32 mt-32">
