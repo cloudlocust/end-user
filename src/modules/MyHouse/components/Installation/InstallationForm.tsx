@@ -43,7 +43,7 @@ export const InstallationTab = () => {
     const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'nonexistant' | 'possibly'>(
         'existant',
     )
-    const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
+    const [isEquipmentInfoConsentmentOpen, setIsEquipmentInfoConsentmentOpen] = useState(false)
 
     /**
      * Handler for solar panel radio button.
@@ -105,7 +105,7 @@ export const InstallationTab = () => {
 
     return (
         <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '700px !important' }}>
-            {isEquiomentInfoConsentmentOpen && (
+            {isEquipmentInfoConsentmentOpen && (
                 <div
                     className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
                     style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
@@ -164,7 +164,7 @@ export const InstallationTab = () => {
                                 marginLeft: '12px',
                                 cursor: 'pointer',
                             }}
-                            onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
+                            onClick={() => setIsEquipmentInfoConsentmentOpen(!isEquipmentInfoConsentmentOpen)}
                         />
                     )}
                 </div>
