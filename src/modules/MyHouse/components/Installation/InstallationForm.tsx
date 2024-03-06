@@ -40,8 +40,10 @@ export const InstallationTab = () => {
         loadEquipmentList,
     } = useEquipmentList(currentHousing?.id)
 
-    const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'nonexistant' | 'maybe'>('existant')
-    const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
+    const [solarPanelRadioValue, setSolarPanelRadioValue] = useState<'existant' | 'nonexistant' | 'possibly'>(
+        'existant',
+    )
+    const [isEquipmentInfoConsentmentOpen, setIsEquipmentInfoConsentmentOpen] = useState(false)
 
     /**
      * Handler for solar panel radio button.
@@ -49,7 +51,7 @@ export const InstallationTab = () => {
      * @param event React change event.
      */
     const handleSolarPanelRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'nonexistant' | 'maybe')
+        setSolarPanelRadioValue((event.target as HTMLInputElement).value as 'existant' | 'nonexistant' | 'possibly')
     }
 
     // It'll have the following format an object of all equipment, name is the key, for example: {"heater": {equipment_id, equipment_type, equipment_number, isNumber, equipment: {id, name, allowed_type} } }.
@@ -103,7 +105,7 @@ export const InstallationTab = () => {
 
     return (
         <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '700px !important' }}>
-            {isEquiomentInfoConsentmentOpen && (
+            {isEquipmentInfoConsentmentOpen && (
                 <div
                     className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
                     style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
@@ -162,7 +164,7 @@ export const InstallationTab = () => {
                                 marginLeft: '12px',
                                 cursor: 'pointer',
                             }}
-                            onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
+                            onClick={() => setIsEquipmentInfoConsentmentOpen(!isEquipmentInfoConsentmentOpen)}
                         />
                     )}
                 </div>
@@ -197,7 +199,7 @@ export const InstallationTab = () => {
                             >
                                 <FormControlLabel value="existant" control={<Radio />} label="Oui" />
                                 <FormControlLabel value="nonexistant" control={<Radio />} label="Non" />
-                                <FormControlLabel value="maybe" control={<Radio />} label="J'y pense" />
+                                <FormControlLabel value="possibly" control={<Radio />} label="J'y pense" />
                             </RadioGroup>
                         </FormControl>
                     </div>

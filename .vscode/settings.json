@@ -1,5 +1,12 @@
 {
     "jest.jestCommandLine": "yarn test",
     "jest.autoRun": "off",
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "testing.openTesting": "neverOpen",
+    "jest.outputConfig": {
+        "revealOn": "run",
+        "revealWithFocus": "none",
+        "clearOnRun": "none"
+    },
+    "jest.runMode": "on-demand"
 }
