@@ -32,7 +32,7 @@ const POWER_PRODUCTION_TITLE_TEXT = "Ma production d'énergie"
 const SOLAR_PANEL_TEXT = 'Je dispose de panneaux solaires :'
 const YES_VALUE_TEXT = 'Oui'
 const NO_VALUE_TEXT = 'Non'
-const MAYBE_VALUE_TEXT = "J'y pense"
+const POSSIBLY_VALUE_TEXT = "J'y pense"
 // const DISABLED_CLASS = 'Mui-disabled'
 const mockEnqueueSnackbar = jest.fn()
 
@@ -100,7 +100,7 @@ describe('Test InstallationForm', () => {
         expect(getByText(SOLAR_PANEL_TEXT)).toBeTruthy()
         expect(getByText(YES_VALUE_TEXT)).toBeTruthy()
         expect(getByText(NO_VALUE_TEXT)).toBeTruthy()
-        expect(getByText(MAYBE_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(POSSIBLY_VALUE_TEXT)).toBeTruthy()
         expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
     })
 
