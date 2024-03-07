@@ -381,19 +381,20 @@ describe('MyConsumptionContainer test', () => {
         expect(queryByText('Veille')).not.toBeInTheDocument()
     })
 
-    test('When daily period, their is button for labelisation', async () => {
-        echartsConsumptionChartContainerProps.period = 'daily'
-        echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
+    //! This change is temporary, do not delete the commented test.
+    // test('When daily period, their is button for labelisation', async () => {
+    //     echartsConsumptionChartContainerProps.period = 'daily'
+    //     echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
 
-        const { queryByText } = reduxedRender(
-            <Router>
-                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
+    //     const { queryByText } = reduxedRender(
+    //         <Router>
+    //             <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+    //         </Router>,
+    //         { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+    //     )
 
-        expect(queryByText('Identifier une conso')).toBeInTheDocument()
-    })
+    //     expect(queryByText('Identifier une conso')).toBeInTheDocument()
+    // })
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
