@@ -195,8 +195,7 @@ export interface installationInfosType {
 /**
  * Solar installation informations type.
  */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type installationFormFieldsType = {
+export interface installationFormFieldsType {
     /**
      * The heater status.
      */
@@ -232,11 +231,11 @@ export type installationFormFieldsType = {
     /**
      * The orientation value for the solar panel.
      */
-    orientation?: string
+    orientation?: number
     /**
      * The power value for the solar panel.
      */
-    power?: string
+    power?: number
     /**
      * The brand of the inverter.
      */
@@ -244,15 +243,15 @@ export type installationFormFieldsType = {
     /**
      * The inclination value for the solar panel.
      */
-    inclination?: string
+    inclination?: number
     /**
      * Boolean indicating if the customer has a resale contract.
      */
-    hasResaleContract?: string
+    hasResaleContract?: boolean
     /**
      * The resale tariff value.
      */
-    resaleTariff?: string
+    resaleTariff?: number
     /**
      * The status of the consumer when wanting a solar panel.
      */

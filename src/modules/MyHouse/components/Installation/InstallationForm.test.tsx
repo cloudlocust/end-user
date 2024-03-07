@@ -2,12 +2,13 @@ import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { InstallationTab, SOLAR_PANEL_TYPES } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { installationInfosType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
+import { equipmentType, installationInfosType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
 import { TEST_NEW_INSTALLATION } from 'src/mocks/handlers/installation'
+import { TEST_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 
 /**
  * Mocking the useParams used in "InstallationForm" to get the house id based on url /houses/:houseId/equipements {houseId} params.
@@ -47,6 +48,8 @@ jest.mock('notistack', () => ({
 /**
  * Mocking the useEquipmentList and useInstallation hooks.
  */
+const CAMEL_CASED_TEST_EQUIPMENTS = applyCamelCase(TEST_EQUIPMENTS)
+let mockEquipmentsList: equipmentType[] = CAMEL_CASED_TEST_EQUIPMENTS
 const CAMEL_CASED_TEST_INSTALLATION = applyCamelCase(TEST_NEW_INSTALLATION)
 let mockIsEquipmentMeterListEmpty = false
 let mockInstallationInfos: installationInfosType = CAMEL_CASED_TEST_INSTALLATION
@@ -60,6 +63,7 @@ jest.mock('src/modules/MyHouse/components/Installation/installationHook', () => 
     // eslint-disable-next-line jsdoc/require-jsdoc
     useEquipmentList: () => ({
         isEquipmentMeterListEmpty: mockIsEquipmentMeterListEmpty,
+        equipmentsList: mockEquipmentsList,
     }),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useInstallation: () => ({
@@ -104,6 +108,7 @@ const SAVE_AND_MODIFY_BUTTON_TEXT = 'Enregistrer mes modification'
 
 describe('Test InstallationForm', () => {
     beforeEach(() => {
+        mockEquipmentsList = CAMEL_CASED_TEST_EQUIPMENTS
         mockInstallationInfos = CAMEL_CASED_TEST_INSTALLATION
         mockGetInstallationInfosInProgress = false
         mockAddUpdateInstallationInfosInProgress = false
@@ -175,7 +180,7 @@ describe('Test InstallationForm', () => {
         expect(queryByText(STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_2)).not.toBeInTheDocument()
     })
 
-    test("should render 'InstallationForm' correctly when solarpanel type is maybe", async () => {
+    test("should render 'InstallationForm' correctly when solarpanel type is possibly", async () => {
         mockInstallationInfos.housingEquipments.find((equipment) => equipment.equipmentId === 14)!.equipmentType =
             'possibly'
         const { getByText, queryByText } = reduxedRender(

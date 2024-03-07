@@ -16,7 +16,7 @@ import {
     equipmentMeterType,
     installationFormFieldsType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const SOLAR_PANEL_TYPES = {
@@ -35,7 +35,7 @@ export const InstallationTab = () => {
     const { formatMessage } = useIntl()
     const theme = useTheme()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { isEquipmentMeterListEmpty } = useEquipmentList(currentHousing?.id)
+    const { equipmentsList, isEquipmentMeterListEmpty } = useEquipmentList(currentHousing?.id)
     const {
         installationInfos,
         getInstallationInfosInProgress,
@@ -52,47 +52,64 @@ export const InstallationTab = () => {
     }, [getInstallationInfos])
 
     /**
-     * The default form fields values that cames from backend.
+     * Function to get the values of the fields solarPanelType and otherSolarPanelType
+     * from the solarPanelType value cames from the backend.
+     *
+     * @param solarPanelType The solar panel type.
+     * @returns The solarPanelType and otherSolarPanelType form fields values.
      */
-    const defaultFormFieldsValues: installationFormFieldsType = useMemo(() => {
-        const fieldsNames: Record<string, string> = {
-            _1: 'heater',
-            _2: 'hotplate',
-            _13: 'sanitary',
-            _14: 'solarpanel',
+    const getSolarPanelTypeFieldsValues = (solarPanelType?: string) => {
+        let solarPanelTypeField: string | undefined
+        let otherSolarPanelTypeField: string | undefined
+        if (solarPanelType) {
+            if ([SOLAR_PANEL_TYPES.onRoof, SOLAR_PANEL_TYPES.plugAndPlay].includes(solarPanelType)) {
+                solarPanelTypeField = solarPanelType
+                otherSolarPanelTypeField = undefined
+            } else {
+                solarPanelTypeField = SOLAR_PANEL_TYPES.other
+                otherSolarPanelTypeField = solarPanelType
+            }
+        } else {
+            solarPanelTypeField = undefined
+            otherSolarPanelTypeField = undefined
         }
+        return [solarPanelTypeField, otherSolarPanelTypeField]
+    }
+
+    /**
+     * Form field values based on current housing installation information.
+     */
+    const formFieldsValuesAccordingToCurrentInstallation: installationFormFieldsType = useMemo(() => {
         const housingEquipmentsFields: Record<string, string> = {}
         installationInfos?.housingEquipments?.forEach((equipment) => {
-            if (equipment.equipmentType)
-                housingEquipmentsFields[fieldsNames[`_${equipment.equipmentId}`]] = equipment.equipmentType
+            if (equipment.equipmentType) {
+                const equipmentName = equipmentsList?.find((e) => e.id === equipment.equipmentId)?.name
+                if (equipmentName) {
+                    housingEquipmentsFields[equipmentName] = equipment.equipmentType
+                }
+            }
         })
+
+        const [solarPanelType, otherSolarPanelType] = getSolarPanelTypeFieldsValues(
+            installationInfos?.solarInstallation?.solarPanelType,
+        )
+
         return {
             ...housingEquipmentsFields,
             title: installationInfos?.solarInstallation?.title,
             installationDate: installationInfos?.solarInstallation?.installationDate,
-            solarPanelType: installationInfos?.solarInstallation?.solarPanelType
-                ? [SOLAR_PANEL_TYPES.onRoof, SOLAR_PANEL_TYPES.plugAndPlay].includes(
-                      installationInfos?.solarInstallation?.solarPanelType,
-                  )
-                    ? installationInfos?.solarInstallation?.solarPanelType
-                    : SOLAR_PANEL_TYPES.other
-                : undefined,
-            otherSolarPanelType:
-                installationInfos?.solarInstallation?.solarPanelType &&
-                ![SOLAR_PANEL_TYPES.onRoof, SOLAR_PANEL_TYPES.plugAndPlay].includes(
-                    installationInfos?.solarInstallation?.solarPanelType,
-                )
-                    ? installationInfos?.solarInstallation?.solarPanelType
-                    : undefined,
-            orientation: installationInfos?.solarInstallation?.orientation?.toString(),
-            power: installationInfos?.solarInstallation?.power?.toString(),
+            solarPanelType,
+            otherSolarPanelType,
+            orientation: installationInfos?.solarInstallation?.orientation,
+            power: installationInfos?.solarInstallation?.power,
             inverterBrand: installationInfos?.solarInstallation?.inverterBrand,
-            inclination: installationInfos?.solarInstallation?.inclination?.toString(),
-            hasResaleContract: installationInfos?.solarInstallation?.hasResaleContract?.toString(),
-            resaleTariff: installationInfos?.solarInstallation?.resaleTariff?.toString(),
+            inclination: installationInfos?.solarInstallation?.inclination,
+            hasResaleContract: installationInfos?.solarInstallation?.hasResaleContract,
+            resaleTariff: installationInfos?.solarInstallation?.resaleTariff,
             statusWhenWantingSolarPanel: installationInfos?.solarInstallation?.statusWhenWantingSolarPanel,
         }
     }, [
+        equipmentsList,
         installationInfos?.housingEquipments,
         installationInfos?.solarInstallation?.hasResaleContract,
         installationInfos?.solarInstallation?.inclination,
@@ -107,8 +124,8 @@ export const InstallationTab = () => {
     ])
 
     useEffect(() => {
-        reset(defaultFormFieldsValues)
-    }, [defaultFormFieldsValues, reset])
+        reset(formFieldsValuesAccordingToCurrentInstallation)
+    }, [formFieldsValuesAccordingToCurrentInstallation, reset])
 
     /**
      * Function to handle form submit.
@@ -117,19 +134,28 @@ export const InstallationTab = () => {
      * @returns N/A.
      */
     const handleFormSubmit = async (data: any) => {
-        let housingEquipments: equipmentMeterType[] = [
-            { equipment: 'heater', id: 1 },
-            { equipment: 'hotplate', id: 2 },
-            { equipment: 'sanitary', id: 13 },
-            { equipment: 'solarpanel', id: 14 },
-        ].reduce(
-            (prev, curr) =>
-                data[curr.equipment] !==
-                defaultFormFieldsValues[curr.equipment as 'heater' | 'hotplate' | 'sanitary' | 'solarpanel']
-                    ? [...prev, { equipmentId: curr.id, equipmentType: data[curr.equipment] }]
-                    : [...prev],
-            [] as equipmentMeterType[],
-        )
+        /**
+         * Generate the housingEquipments object to pass with the body of the request
+         * to add or update the installation infos.
+         */
+        const housingEquipments: equipmentMeterType[] =
+            equipmentsList
+                ?.filter((e) => ['heater', 'hotplate', 'sanitary', 'solarpanel'].includes(e.name))
+                .reduce(
+                    (prev, curr) =>
+                        /**
+                         * Check if the value of the equipment is different from the default value,
+                         * if yes, add it to the array of data to send to the backend.
+                         */
+                        data[curr.name] !==
+                        formFieldsValuesAccordingToCurrentInstallation[
+                            curr.name as 'heater' | 'hotplate' | 'sanitary' | 'solarpanel'
+                        ]
+                            ? [...prev, { equipmentId: curr.id, equipmentType: data[curr.name] }]
+                            : [...prev],
+                    [] as equipmentMeterType[],
+                ) ?? []
+
         addUpdateInstallationInfos({
             housingEquipments,
             solarInstallation: {
@@ -230,7 +256,7 @@ export const InstallationTab = () => {
                                             switch (value) {
                                                 case 'existant':
                                                     reset({
-                                                        ...defaultFormFieldsValues,
+                                                        ...formFieldsValuesAccordingToCurrentInstallation,
                                                         heater: getValues('heater'),
                                                         sanitary: getValues('sanitary'),
                                                         hotplate: getValues('hotplate'),
@@ -240,7 +266,7 @@ export const InstallationTab = () => {
                                                     break
                                                 case 'nonexistant':
                                                     reset({
-                                                        ...defaultFormFieldsValues,
+                                                        ...formFieldsValuesAccordingToCurrentInstallation,
                                                         heater: getValues('heater'),
                                                         sanitary: getValues('sanitary'),
                                                         hotplate: getValues('hotplate'),
@@ -258,13 +284,13 @@ export const InstallationTab = () => {
                                                         statusWhenWantingSolarPanel: undefined,
                                                     })
                                                     break
-                                                case 'maybe':
+                                                case 'possibly':
                                                     reset({
-                                                        ...defaultFormFieldsValues,
+                                                        ...formFieldsValuesAccordingToCurrentInstallation,
                                                         heater: getValues('heater'),
                                                         sanitary: getValues('sanitary'),
                                                         hotplate: getValues('hotplate'),
-                                                        solarpanel: 'maybe',
+                                                        solarpanel: 'possibly',
                                                         title: undefined,
                                                         installationDate: undefined,
                                                         solarPanelType: undefined,
@@ -283,7 +309,7 @@ export const InstallationTab = () => {
                                     >
                                         <FormControlLabel value="existant" label="Oui" control={<Radio />} />
                                         <FormControlLabel value="nonexistant" label="Non" control={<Radio />} />
-                                        <FormControlLabel value="maybe" label="J'y pense" control={<Radio />} />
+                                        <FormControlLabel value="possibly" label="J'y pense" control={<Radio />} />
                                     </RadioGroup>
                                 )}
                             />
@@ -344,7 +370,10 @@ export const InstallationTab = () => {
                                                     setValue(field.name, value)
                                                     switch (value) {
                                                         case SOLAR_PANEL_TYPES.onRoof:
-                                                            setValue('orientation', defaultFormFieldsValues.orientation)
+                                                            setValue(
+                                                                'orientation',
+                                                                formFieldsValuesAccordingToCurrentInstallation.orientation,
+                                                            )
                                                             setValue('otherSolarPanelType', '')
                                                             break
                                                         case SOLAR_PANEL_TYPES.plugAndPlay:
@@ -355,7 +384,7 @@ export const InstallationTab = () => {
                                                             setValue('orientation', undefined)
                                                             setValue(
                                                                 'otherSolarPanelType',
-                                                                defaultFormFieldsValues.otherSolarPanelType,
+                                                                formFieldsValuesAccordingToCurrentInstallation.otherSolarPanelType,
                                                             )
                                                             break
                                                     }
@@ -405,7 +434,7 @@ export const InstallationTab = () => {
                                             render={({ field }) => (
                                                 <RadioGroup
                                                     value={watch(field.name)}
-                                                    onChange={(_, value) => setValue(field.name, value)}
+                                                    onChange={(_, value) => setValue(field.name, parseInt(value))}
                                                     className="flex-1 grid grid-cols-2 sm:grid-cols-3 sm:max-w-400"
                                                 >
                                                     {[
@@ -505,16 +534,16 @@ export const InstallationTab = () => {
                                             <RadioGroup
                                                 value={watch(field.name)}
                                                 onChange={(_, value) => {
-                                                    setValue(field.name, value)
+                                                    setValue(field.name, value === 'true')
                                                     switch (value) {
                                                         case 'true':
                                                             setValue(
                                                                 'resaleTariff',
-                                                                defaultFormFieldsValues.resaleTariff,
+                                                                formFieldsValuesAccordingToCurrentInstallation.resaleTariff,
                                                             )
                                                             break
                                                         case 'false':
-                                                            setValue('resaleTariff', '')
+                                                            setValue('resaleTariff', undefined)
                                                             break
                                                     }
                                                 }}
@@ -528,7 +557,7 @@ export const InstallationTab = () => {
                                 </div>
 
                                 {/***** The resale tariff *****/}
-                                {watch('hasResaleContract') === 'true' && (
+                                {watch('hasResaleContract') && (
                                     <div className="text-13 mt-32 flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-x-20 gap-y-10">
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
                                             <Typography>
@@ -585,7 +614,10 @@ export const InstallationTab = () => {
                         <ButtonLoader
                             type="submit"
                             inProgress={addUpdateInstallationInfosInProgress}
-                            disabled={addUpdateInstallationInfosInProgress || isEqual(watch(), defaultFormFieldsValues)}
+                            disabled={
+                                addUpdateInstallationInfosInProgress ||
+                                isEqual(watch(), formFieldsValuesAccordingToCurrentInstallation)
+                            }
                             className="w-full sm:w-auto"
                         >
                             <TypographyFormatMessage>Enregistrer mes modification</TypographyFormatMessage>
