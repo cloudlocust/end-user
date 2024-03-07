@@ -76,7 +76,7 @@ const ContractFormSelect = <T extends unknown>({
                 }}
                 {...otherSelectProps}
             >
-                {optionList.map((option, _index) => (
+                {optionList?.map((option, _index) => (
                     <MenuItem key={formatOptionValue(option)} value={formatOptionValue(option)}>
                         {formatOptionLabel(option)}
                     </MenuItem>

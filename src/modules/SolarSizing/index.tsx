@@ -11,7 +11,7 @@ import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadi
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { floor, round } from 'lodash'
+import floor from 'lodash/floor'
 import convert from 'convert-units'
 
 /**
@@ -19,7 +19,7 @@ import convert from 'convert-units'
  *
  * @returns Solar sizing page.
  */
-export const SolarSizing = () => {
+export default function SolarSizing() {
     const currentHousing = useCurrentHousing()
     const [orientationValue, setOrientationValue] = useState<number>(0)
     const [inclinationValue, setInclinationValue] = useState<number>(0)
@@ -58,14 +58,14 @@ export const SolarSizing = () => {
     const onSubmit = async (data: ISolarSizing) => {
         const dataToSubmit = { ...data, orientation: orientationValue, inclination: inclinationValue }
         const { surface } = data
+        setLatestSurface(surface)
         await addSolarSizing.mutateAsync({ ...dataToSubmit, surface: parseInt(surface as unknown as string) })
         await refetch()
-        setLatestSurface(surface)
     }
 
     useEffect(() => {
         if (latestSurface) {
-            setPotentialSolarPanelPerSurface(round(latestSurface / oneSolarPanelSurface))
+            setPotentialSolarPanelPerSurface(floor(latestSurface / oneSolarPanelSurface))
         }
     }, [latestSurface])
 
@@ -83,6 +83,24 @@ export const SolarSizing = () => {
         () => floor((annualProduction * autoProductionPercentage) / 100, 1),
         [annualProduction, autoProductionPercentage],
     )
+
+    const isDataReadyToBeShown = useMemo(() => {
+        return (
+            addSolarSizing.isSuccess &&
+            Number(annualProduction) &&
+            Number(autoConsumptionPercentage) &&
+            Number(averageConsumptionFromAnualProduction) &&
+            Number(autoProductionPercentage) &&
+            Number(averageProducationFromAnualProduction)
+        )
+    }, [
+        addSolarSizing.isSuccess,
+        annualProduction,
+        autoConsumptionPercentage,
+        autoProductionPercentage,
+        averageConsumptionFromAnualProduction,
+        averageProducationFromAnualProduction,
+    ])
 
     return (
         <PageSimple
@@ -178,7 +196,7 @@ export const SolarSizing = () => {
                                     </ButtonLoader>
                                 </Form>
                             </div>
-                            {addSolarSizing.isSuccess && (
+                            {isDataReadyToBeShown && (
                                 <div className="col-span-2">
                                     <Typography className="mb-10 text-14">
                                         Votre maison peut être équipée de{' '}
