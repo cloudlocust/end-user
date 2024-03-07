@@ -41,6 +41,7 @@ export type equipmentAllowedTypeT =
     | 'vitroceramic'
     | 'existant'
     | 'nonexistant'
+    | 'possibly'
     | 'collective'
     | 'individual'
 

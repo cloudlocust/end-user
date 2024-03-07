@@ -2,30 +2,38 @@
 import { BrowserRouter } from 'react-router-dom'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
-import { TEST_HOUSING_EQUIPMENTS as MOCK_EQUIPMENTS } from 'src/mocks/handlers/equipments'
+import { TEST_HOUSING_EQUIPMENTS, TEST_EQUIPMENTS } from 'src/mocks/handlers/equipments'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
+import { IEquipmentMeter, equipmentType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 // import userEvent from '@testing-library/user-event'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
-const TEST_METER_EQUIPMENTS = applyCamelCase(MOCK_EQUIPMENTS)
 const TEST_MOCKED_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
-
 let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockIsLoadingInProgress = false
 let mockIsEquipmentMeterListEmpty = false
 const mockSaveEquipment = jest.fn()
 const mockLoadEquipmentList = jest.fn()
-let mockEquipmentList: IEquipmentMeter[] | null = TEST_METER_EQUIPMENTS
-const MODIFIER_BUTTON_TEXT = 'Modifier'
-// const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
-// const HEATER_TEXT = 'Type de chauffage :'
-// const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
-// const INDUCTION_VALUE_TEXT = 'Induction'
+let mockEquipmentList: equipmentType[] | null = applyCamelCase(TEST_EQUIPMENTS)
+let mockHousingEquipmentList: IEquipmentMeter[] | null = applyCamelCase(TEST_HOUSING_EQUIPMENTS)
+const MODIFIER_BUTTON_TEXT = 'Enregistrer mes modification'
+const HOUSING_POWER_USE_TITLE_TEXT = "Utilisation de l'énergie dans mon domicile"
+const HEATER_TEXT = 'Type de chauffage :'
+const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
+const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
+const COLLECTIF_VALUE_TEXT = 'Collectif'
+const ELECTRIQUE_INDIVIDUEL_VALUE_TEXT = 'Individuel Electrique'
+const AUTRE_VALUE_TEXT = 'Autre'
+const INDUCTION_VALUE_TEXT = 'Induction'
+const ELECTRIQUE_FONTE_VALUE_TEXT = 'Électrique (fonte)'
+const VITROCERAMIQUE_VALUE_TEXT = 'Vitrocéramique'
+const POWER_PRODUCTION_TITLE_TEXT = "Ma production d'énergie"
+const SOLAR_PANEL_TEXT = 'Je dispose de panneaux solaires :'
+const YES_VALUE_TEXT = 'Oui'
+const NO_VALUE_TEXT = 'Non'
+const POSSIBLY_VALUE_TEXT = "J'y pense"
 // const DISABLED_CLASS = 'Mui-disabled'
-const ANNULER_BUTTON_TEXT = 'Annuler'
-const ENREGISTRER_BUTTON_TEXT = 'Enregistrer'
 const mockEnqueueSnackbar = jest.fn()
 
 /**
@@ -50,6 +58,7 @@ jest.mock('src/modules/MyHouse/components/Installation/installationHook', () => 
         loadingEquipmentInProgress: mockIsLoadingInProgress,
         saveEquipment: mockSaveEquipment,
         equipmentList: mockEquipmentList,
+        housingEquipmentsList: mockHousingEquipmentList,
         isEquipmentMeterListEmpty: mockIsEquipmentMeterListEmpty,
     }),
 }))
@@ -70,6 +79,31 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('Test InstallationForm', () => {
+    test("should render 'InstallationForm' correctly", async () => {
+        const { getByText, getAllByText } = reduxedRender(
+            <BrowserRouter>
+                <InstallationTab />
+            </BrowserRouter>,
+        )
+
+        expect(getByText(HOUSING_POWER_USE_TITLE_TEXT)).toBeTruthy()
+        expect(getByText(HEATER_TEXT)).toBeTruthy()
+        expect(getByText(SANITARY_INFO_TEXT)).toBeTruthy()
+        expect(getByText(HOTPLATE_INFO_TEXT)).toBeTruthy()
+        expect(getAllByText(COLLECTIF_VALUE_TEXT)).toHaveLength(2)
+        expect(getAllByText(ELECTRIQUE_INDIVIDUEL_VALUE_TEXT)).toHaveLength(2)
+        expect(getAllByText(AUTRE_VALUE_TEXT)).toHaveLength(3)
+        expect(getByText(INDUCTION_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(ELECTRIQUE_FONTE_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(VITROCERAMIQUE_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(POWER_PRODUCTION_TITLE_TEXT)).toBeTruthy()
+        expect(getByText(SOLAR_PANEL_TEXT)).toBeTruthy()
+        expect(getByText(YES_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(NO_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(POSSIBLY_VALUE_TEXT)).toBeTruthy()
+        expect(getByText(MODIFIER_BUTTON_TEXT)).toBeTruthy()
+    })
+
     // test('When equipmentForm mount, with equipmentMeterList form should be disabled, clicking on Modifier form should not be disabled', async () => {
     //     const { getByText } = reduxedRender(
     //         <BrowserRouter>
@@ -156,13 +190,11 @@ describe('Test InstallationForm', () => {
     // })
     test('When loading equipmentList, Circular progress should be shown', async () => {
         mockIsLoadingInProgress = true
-        const { getByText } = reduxedRender(
+        const { getByRole } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
             </BrowserRouter>,
         )
-        expect(() => getByText(MODIFIER_BUTTON_TEXT)).toThrow()
-        expect(() => getByText(ANNULER_BUTTON_TEXT)).toThrow()
-        expect(() => getByText(ENREGISTRER_BUTTON_TEXT)).toThrow()
+        expect(getByRole('progressbar')).toBeInTheDocument()
     })
 })
