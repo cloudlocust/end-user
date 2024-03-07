@@ -15,6 +15,8 @@ import { addDays, format } from 'date-fns'
 import { ButtonLoader, TextField, Checkbox, Typography } from 'src/common/ui-kit'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import Button from '@mui/material/Button'
+import { AlpiqFacturationDataType } from '..'
+import { useAlpiqProvider } from '../alpiqSubscriptionHooks'
 
 //eslint-disable-next-line
 export const datePrelevementOptions: { value: number, label: string}[] = Array.from({length: 28}, (_, index) => ({
@@ -41,8 +43,9 @@ export const FacturationForm = ({
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
     const { formatMessage } = useIntl()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
     const [isNewFacturationAddress, setIsNewFacturationAddress] = useState(false)
+    const { createAlpiqSubscription } = useAlpiqProvider()
     const afterTomorrow = addDays(new Date(), 2) // Get the day after tomorrow
     const formattedAfterTomorrow = format(afterTomorrow, 'yyyy-MM-dd')
     const IBAN_REGEX_TEXT = 'Format IBAN invalide'
@@ -63,14 +66,25 @@ export const FacturationForm = ({
         // doing it static because it's only a feature for bowatt
         window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire-aout-2023.pdf', '_blank')
     }
+
+    /**
+     * On submit button.
+     *
+     * @param data Data.
+     */
+    const onSubmit = (data: AlpiqFacturationDataType) => {
+        // technicly can't have this case if he did the steps right and the stepper does his job on load
+        if (!alpiqSubscriptionSpecs) return
+        createAlpiqSubscription({ ...data, ...alpiqSubscriptionSpecs }, currentHousing?.id)
+    }
+
     return (
         <div className="flex w-full flex-col justify-center">
             <Form
-                //eslint-disable-next-line
-                onSubmit={(data) => console.log(data)}
+                onSubmit={onSubmit}
                 defaultValues={{
                     modeFacturation: 'MENS',
-                    jourDePrelevement: 27,
+                    jourPrelevement: 27,
                     addressFacturation: currentHousing?.address,
                     dateDebutContrat: formattedAfterTomorrow,
                     iban: 'FR',
@@ -124,7 +138,7 @@ export const FacturationForm = ({
                         <div className="flex items-center justify-start w-full">
                             <SectionText text="Je souhaite être prélevé le :" className="mr-10" />
                             <div className="w-120">
-                                <Select name="jourDePrelevement" label="">
+                                <Select name="jourPrelevement" label="">
                                     {datePrelevementOptions.map((option, _index) => (
                                         <MenuItem key={_index} value={option.value}>
                                             {formatMessage({

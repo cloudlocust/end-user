@@ -15,8 +15,8 @@ import { ButtonLoader } from 'src/common/ui-kit'
 import { NavigateNext } from '@mui/icons-material'
 import { useState } from 'react'
 import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
 
 /**
  * ContractEstimation step in alpiq.
@@ -38,6 +38,7 @@ const ContractEstimation = ({
     handleNext: () => void
 }) => {
     const theme = useTheme()
+    const dispatch = useDispatch<Dispatch>()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const { formatMessage } = useIntl()
     const [monthlyEstimation, setMonthlyEstimation] = useState<number | undefined>(undefined)
@@ -72,6 +73,12 @@ const ContractEstimation = ({
 
         if (monthlyEstimationResponse) {
             setMonthlyEstimation(monthlyEstimationResponse)
+            // save them for next step
+            dispatch.housingModel.setAlpiqSubscriptionSpecs({
+                puissanceSouscrite: data.power,
+                optionTarifaire: data.contractType,
+                mensualite: monthlyEstimationResponse,
+            })
         }
     }
 

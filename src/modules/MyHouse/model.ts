@@ -7,7 +7,7 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 import { ScopesAccessRightsType, ScopesTypesEnum } from './utils/MyHouseCommonTypes'
 import { isAccessRightsActive } from 'src/configs'
 import { ACCESS_RIGHTS_API } from './utils/MyHouseVariables'
-// import { store } from 'src/redux'
+import { AlpiqSubscriptionSpecsType } from 'src/modules/User/AlpiqSubscription/index.d'
 
 /**
  * Default state of housing state.
@@ -16,6 +16,7 @@ export const defaultState: IHousingState = {
     housingList: [],
     currentHousing: null,
     currentHousingScopes: [],
+    alpiqSubscriptionSpecs: null, // for when user has alpiq pipeline to save the contract he chose for payement.
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -103,6 +104,22 @@ export const housingModel = createModel<RootModel>()({
             return {
                 ...state,
                 currentHousingScopes: currentHousingScopes,
+            }
+        },
+        /**
+         * Set Alpiq subscription state.
+         *
+         * @param state Current State.
+         * @param alpiqSubscriptionSpecs The specs to save for the contract.
+         * @returns New State updated.
+         */
+        setAlpiqSubscriptionSpecs(
+            state: IHousingState,
+            alpiqSubscriptionSpecs: AlpiqSubscriptionSpecsType | null,
+        ): IHousingState {
+            return {
+                ...state,
+                alpiqSubscriptionSpecs: alpiqSubscriptionSpecs,
             }
         },
     },

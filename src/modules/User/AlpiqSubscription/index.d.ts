@@ -1,3 +1,5 @@
+import { UserAddressType } from '../model'
+
 /**
  * Enum for Energy Provider Subscription connection steps.
  */
@@ -38,4 +40,77 @@ export interface IApliqMonthlySubscriptionEstimationResponse {
      * Monthly subscription estimation.
      */
     monthlySubscriptionEstimation: number
+}
+
+/**
+ * Facturation Data.
+ */
+export type AlpiqFacturationDataType = /**
+ */ {
+    /**
+     * Mode facturation.
+     */
+    modeFacturation: string
+    /**
+     * Jour prelevement.
+     */
+    jourPrelevement: number
+    /**
+     * Date debut de contrat.
+     */
+    dateDebutContrat: string
+    /**
+     * Address facturation.
+     */
+    addressFacturation: UserAddressType
+    /**
+     * Iban.
+     */
+    iban: string
+    /**
+     * Nom iban.
+     */
+    nomAssocieIban: string
+    /**
+     * Prenom iban.
+     */
+    prenomAssocieIban: string
+}
+
+/**
+ * Alpiq subscription specs.
+ */
+export type AlpiqSubscriptionSpecsType = /**
+ */ {
+    /**
+     * Puissance.
+     */
+    puissanceSouscrite: number
+    /**
+     * Option Tarifaire.
+     */
+    optionTarifaire: 'BASE' | 'HPHC'
+    /**
+     * Mensualite.
+     */
+    mensualite: number
+}
+
+/**
+ * ICreate Alpiq subscription data.
+ */
+export type CreateAlpiqSubscriptionDataType = AlpiqFacturationDataType & AlpiqSubscriptionSpecsType
+
+/**
+ * Alpiq Subscription creation response.
+ */
+export interface ICreateAlpiqSubscriptionResponse {
+    /**
+     * Token.
+     */
+    token: string
+    /**
+     * Status Message.
+     */
+    message: string
 }

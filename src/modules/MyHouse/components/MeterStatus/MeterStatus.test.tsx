@@ -153,6 +153,7 @@ let mockHousingModelState: IHousingState = {
     housingList: LIST_OF_HOUSES,
     currentHousing: CURRENT_HOUSING,
     currentHousingScopes: [],
+    alpiqSubscriptionSpecs: null,
 }
 
 /**
