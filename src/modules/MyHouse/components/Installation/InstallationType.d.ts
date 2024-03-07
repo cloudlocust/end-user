@@ -41,7 +41,7 @@ export type equipmentAllowedTypeT =
     | 'vitroceramic'
     | 'existant'
     | 'nonexistant'
-    | 'maybe'
+    | 'possibly'
     | 'collective'
     | 'individual'
 
@@ -135,8 +135,7 @@ export type addEquipmentType = {
 /**
  * Solar installation informations type.
  */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type solarInstallationInfosType = {
+export interface solarInstallationInfosType {
     /**
      * The title of the installation.
      */
@@ -182,8 +181,7 @@ export type solarInstallationInfosType = {
 /**
  * Installation informations type.
  */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type installationInfosType = {
+export interface installationInfosType {
     /**
      * The list of housing equipments.
      */

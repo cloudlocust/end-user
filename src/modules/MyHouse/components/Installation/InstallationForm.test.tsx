@@ -85,7 +85,7 @@ const POWER_PRODUCTION_TITLE_TEXT = "Ma production d'énergie"
 const SOLAR_PANEL_TEXT = 'Je dispose de panneaux solaires :'
 const YES_VALUE_TEXT = 'Oui'
 const NO_VALUE_TEXT = 'Non'
-const MAYBE_VALUE_TEXT = "J'y pense"
+const POSSIBLY_VALUE_TEXT = "J'y pense"
 const TITLE_FIELD_TEXT = 'Titre :'
 const INSTALLATION_DATE_FIELD_TEXT = 'Date d’installation :'
 const SOLAR_PANEL_TYPE_FIELD_TEXT = 'Type de panneaux :'
@@ -130,7 +130,7 @@ describe('Test InstallationForm', () => {
         expect(getByText(SOLAR_PANEL_TEXT)).toBeInTheDocument()
         expect(getByText(YES_VALUE_TEXT)).toBeInTheDocument()
         expect(getByText(NO_VALUE_TEXT)).toBeInTheDocument()
-        expect(getByText(MAYBE_VALUE_TEXT)).toBeInTheDocument()
+        expect(getByText(POSSIBLY_VALUE_TEXT)).toBeInTheDocument()
         expect(queryByText(TITLE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INSTALLATION_DATE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).not.toBeInTheDocument()
@@ -177,7 +177,7 @@ describe('Test InstallationForm', () => {
 
     test("should render 'InstallationForm' correctly when solarpanel type is maybe", async () => {
         mockInstallationInfos.housingEquipments.find((equipment) => equipment.equipmentId === 14)!.equipmentType =
-            'maybe'
+            'possibly'
         const { getByText, queryByText } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
@@ -208,7 +208,7 @@ describe('Test InstallationForm', () => {
         const saveButton = getByRole('button', { name: SAVE_AND_MODIFY_BUTTON_TEXT })
         expect(saveButton).toBeDisabled()
         // Change the solar panel type to enable the save button
-        userEvent.click(getByText(MAYBE_VALUE_TEXT))
+        userEvent.click(getByText(POSSIBLY_VALUE_TEXT))
         await waitFor(async () => {
             expect(saveButton).toBeEnabled()
             // Click on the save button

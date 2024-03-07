@@ -212,7 +212,12 @@ export const useEquipmentList = (housingId?: number) => {
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Function to generate the installation API.
+ *
+ * @param housingId The housing id.
+ * @returns The installation API.
+ */
 export const INSTALLATION_API = (housingId: number) => `${HOUSING_API}/${housingId}/installation`
 /**
  * Default error message for getting installations informations.
@@ -248,23 +253,21 @@ export const useInstallation = (housingId?: number) => {
         if (!housingId) return
         setGetInstallationInfosInProgress(true)
         try {
-            const { data } = await axios.get<installationInfosType>(INSTALLATION_API(housingId))
-            setInstallationInfos(data)
+            const { data, status } = await axios.get<installationInfosType>(INSTALLATION_API(housingId))
+            if (status === 200) {
+                setInstallationInfos(data)
+            }
         } catch (error: any) {
             enqueueSnackbar(
-                error?.response?.data?.detail
-                    ? formatMessage({
-                          id: error.response.data.detail,
-                          defaultMessage: error.response.data.detail,
-                      })
-                    : formatMessage({
-                          id: GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
-                          defaultMessage: GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
-                      }),
+                formatMessage({
+                    id: error?.response?.data?.detail ?? GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                    defaultMessage: error?.response?.data?.detail ?? GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                }),
                 { variant: 'error' },
             )
+        } finally {
+            setGetInstallationInfosInProgress(false)
         }
-        setGetInstallationInfosInProgress(false)
     }, [enqueueSnackbar, formatMessage, housingId])
 
     /**
@@ -278,11 +281,11 @@ export const useInstallation = (housingId?: number) => {
             setAddUpdateInstallationInfosInProgress(true)
 
             try {
-                const { data } = await axios.post<installationInfosType, AxiosResponse<installationInfosType>>(
+                const { data, status } = await axios.post<installationInfosType, AxiosResponse<installationInfosType>>(
                     INSTALLATION_API(housingId),
                     body,
                 )
-                if (data) {
+                if (status === 200) {
                     setInstallationInfos(data)
                     enqueueSnackbar(
                         formatMessage({
@@ -294,15 +297,10 @@ export const useInstallation = (housingId?: number) => {
                 }
             } catch (error: any) {
                 enqueueSnackbar(
-                    error?.response?.data?.detail
-                        ? formatMessage({
-                              id: error.response.data.detail,
-                              defaultMessage: error.response.data.detail,
-                          })
-                        : formatMessage({
-                              id: ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
-                              defaultMessage: ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
-                          }),
+                    formatMessage({
+                        id: error?.response?.data?.detail ?? ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                        defaultMessage: error?.response?.data?.detail ?? ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+                    }),
                     { variant: 'error' },
                 )
             } finally {

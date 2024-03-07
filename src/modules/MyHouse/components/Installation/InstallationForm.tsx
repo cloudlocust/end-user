@@ -45,7 +45,7 @@ export const InstallationTab = () => {
     } = useInstallation(currentHousing?.id)
     const methods = useForm<installationFormFieldsType>({ mode: 'all' })
     const { reset, handleSubmit, setValue, watch, getValues } = methods
-    const [isEquiomentInfoConsentmentOpen, setIsEquiomentInfoConsentmentOpen] = useState(false)
+    const [isEquipmentInfoConsentmentOpen, setIsEquipmentInfoConsentmentOpen] = useState(false)
 
     useEffect(() => {
         getInstallationInfos()
@@ -159,7 +159,7 @@ export const InstallationTab = () => {
 
     return (
         <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '650px !important' }}>
-            {isEquiomentInfoConsentmentOpen && (
+            {isEquipmentInfoConsentmentOpen && (
                 <div
                     className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
                     style={{ background: theme.palette.primary.main, color: theme.palette.primary.contrastText }}
@@ -182,7 +182,7 @@ export const InstallationTab = () => {
                                     marginLeft: '12px',
                                     cursor: 'pointer',
                                 }}
-                                onClick={() => setIsEquiomentInfoConsentmentOpen(!isEquiomentInfoConsentmentOpen)}
+                                onClick={() => setIsEquipmentInfoConsentmentOpen(!isEquipmentInfoConsentmentOpen)}
                             />
                         )}
                     </div>
@@ -557,7 +557,7 @@ export const InstallationTab = () => {
                             </>
                         )}
 
-                        {watch('solarpanel') === 'maybe' && (
+                        {watch('solarpanel') === 'possibly' && (
                             <Controller
                                 name="statusWhenWantingSolarPanel"
                                 render={({ field }) => (
