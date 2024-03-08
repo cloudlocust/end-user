@@ -62,7 +62,10 @@ pipeline{
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
-            }            
+            }
+            environment {
+                SENTRY_AUTH_TOKEN = credentials('SENTRY_AUTH_TOKEN')
+            }
             steps{
                sh 'yarn build'
             }
