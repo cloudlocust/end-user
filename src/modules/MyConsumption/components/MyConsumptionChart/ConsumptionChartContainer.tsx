@@ -28,9 +28,6 @@ import {
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { Button } from '@mui/material'
-import { useHistory } from 'react-router-dom'
-import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 
@@ -61,14 +58,16 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    const history = useHistory()
 
-    /**
-     * Redirect to EcogestCard.
-     */
-    const handleClick = () => {
-        history.push(URL_CONSUMPTION_LABELIZATION)
-    }
+    //! This change is temporary, do not delete the commented code.
+    // const history = useHistory()
+    // /**
+    //  * Redirect to Labelization page.
+    //  */
+    // const handleClick = () => {
+    //     history.push(URL_CONSUMPTION_LABELIZATION)
+    // }
+
     const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
@@ -294,7 +293,9 @@ export const ConsumptionChartContainer = ({
                         />
                     </div>
                 ) : (
-                    <div style={{ width: 209 }} />
+                    //! This change is temporary, do not delete the commented code.
+                    // <div style={{ width: 209 }} />
+                    <div style={{ width: 64 }} />
                 )}
                 <div className="flex flex-auto justify-center" style={{ minWidth: 170 }}>
                     {(isIdleShown || isAutoConsumptionProductionShown) && (
@@ -306,7 +307,9 @@ export const ConsumptionChartContainer = ({
                     )}
                 </div>
                 <div className="flex flex-row">
-                    {period === 'daily' && (
+                    {/* 
+                        //! This change is temporary, do not delete the commented code.
+                        {period === 'daily' && (
                         <Button
                             onClick={handleClick}
                             sx={{
@@ -320,7 +323,7 @@ export const ConsumptionChartContainer = ({
                         >
                             Identifier une&nbsp;conso
                         </Button>
-                    )}
+                    )} */}
                     <TargetMenuGroup
                         removeTargets={() => onTemperatureOrPmaxMenuClick([])}
                         addTargets={onTemperatureOrPmaxMenuClick}
