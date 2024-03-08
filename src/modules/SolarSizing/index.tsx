@@ -11,22 +11,26 @@ import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadi
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { round } from 'lodash'
+import floor from 'lodash/floor'
+import convert from 'convert-units'
 
 /**
  * Solar sizing page.
  *
  * @returns Solar sizing page.
  */
-export const SolarSizing = () => {
+export default function SolarSizing() {
     const currentHousing = useCurrentHousing()
     const [orientationValue, setOrientationValue] = useState<number>(0)
     const [inclinationValue, setInclinationValue] = useState<number>(0)
     const { addSolarSizing, refetch, solarSizingData } = useSolarSizing(currentHousing?.id)
     const history = useHistory()
     const [latestSurface, setLatestSurface] = useState<number>(0)
+    const [potentialSolarPanelPerSurface, setPotentialSolarPanelPerSurface] = useState<number>(0)
 
-    const solarSizingDefaultValuess = {}
+    const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
+
+    const solarSizingDefaultValues = {}
 
     /**
      * On change handler for the Orientation value.
@@ -54,34 +58,49 @@ export const SolarSizing = () => {
     const onSubmit = async (data: ISolarSizing) => {
         const dataToSubmit = { ...data, orientation: orientationValue, inclination: inclinationValue }
         const { surface } = data
+        setLatestSurface(surface)
         await addSolarSizing.mutateAsync({ ...dataToSubmit, surface: parseInt(surface as unknown as string) })
         await refetch()
     }
 
-    // Retrieve surface from the latest solar sizing data
     useEffect(() => {
-        if (solarSizingData?.data?.solarSizing.length) {
-            const { surface } = solarSizingData?.data?.solarSizing?.slice(-1)[0]!
-            setLatestSurface(surface)
+        if (latestSurface) {
+            setPotentialSolarPanelPerSurface(floor(latestSurface / oneSolarPanelSurface))
         }
-    }, [solarSizingData?.data?.solarSizing])
+    }, [latestSurface])
 
-    const annualProduction = solarSizingData?.data['annualProduction']
-    const autoConsumptionPercentage = solarSizingData?.data['autoConsumptionPercentage']
-    const autoProductionPercentage = solarSizingData?.data['autoProductionPercentage']
+    const annualProduction = floor(convert(solarSizingData?.data['annualProduction']).from('kWh').to('MWh'), 1)
 
-    const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
-    const potentialSolarPanelPerSurface = round(latestSurface / oneSolarPanelSurface)
+    const autoConsumptionPercentage = floor(solarSizingData?.data['autoConsumptionPercentage']!, 1)
+    const autoProductionPercentage = floor(solarSizingData?.data['autoProductionPercentage']!, 1)
 
     const averageConsumptionFromAnualProduction = useMemo(
-        () => (annualProduction! * autoConsumptionPercentage!) / 100,
+        () => floor((annualProduction * autoConsumptionPercentage) / 100, 1),
         [annualProduction, autoConsumptionPercentage],
-    ).toFixed(2)
+    )
 
     const averageProducationFromAnualProduction = useMemo(
-        () => (annualProduction! * autoProductionPercentage!) / 100,
+        () => floor((annualProduction * autoProductionPercentage) / 100, 1),
         [annualProduction, autoProductionPercentage],
-    ).toFixed(2)
+    )
+
+    const isDataReadyToBeShown = useMemo(() => {
+        return (
+            addSolarSizing.isSuccess &&
+            Number(annualProduction) &&
+            Number(autoConsumptionPercentage) &&
+            Number(averageConsumptionFromAnualProduction) &&
+            Number(autoProductionPercentage) &&
+            Number(averageProducationFromAnualProduction)
+        )
+    }, [
+        addSolarSizing.isSuccess,
+        annualProduction,
+        autoConsumptionPercentage,
+        autoProductionPercentage,
+        averageConsumptionFromAnualProduction,
+        averageProducationFromAnualProduction,
+    ])
 
     return (
         <PageSimple
@@ -122,7 +141,7 @@ export const SolarSizing = () => {
                             )}
                         >
                             <div className={clsx(addSolarSizing.isSuccess ? 'col-span-6' : 'col-span-8')}>
-                                <Form onSubmit={onSubmit} defaultValues={solarSizingDefaultValuess}>
+                                <Form onSubmit={onSubmit} defaultValues={solarSizingDefaultValues}>
                                     {/* Surface */}
                                     <TextField
                                         className="mb-10"
@@ -177,19 +196,19 @@ export const SolarSizing = () => {
                                     </ButtonLoader>
                                 </Form>
                             </div>
-                            {addSolarSizing.isSuccess && (
+                            {isDataReadyToBeShown && (
                                 <div className="col-span-2">
                                     <Typography className="mb-10 text-14">
                                         Votre maison peut être équipée de{' '}
                                         <strong>{potentialSolarPanelPerSurface}</strong> panneaux solaires, cela
-                                        représente un potentiel <strong>{annualProduction}</strong> kwh / an avec
+                                        représente un potentiel <strong>{annualProduction}</strong> MWh / an avec
                                         l'ensoleillement de l'année passée dans votre ville. En fonction de la
                                         répartition de votre consommation dans la journée, vous pourriez alors
-                                        autoconsommer <strong>{averageConsumptionFromAnualProduction}</strong> kwh soit{' '}
+                                        autoconsommer <strong>{averageConsumptionFromAnualProduction}</strong> MWh soit{' '}
                                         <strong>{autoConsumptionPercentage}</strong> % de votre consommation totale.{' '}
                                         {''}
                                         <strong>{autoProductionPercentage}</strong> % de votre production soit{' '}
-                                        <strong>{averageProducationFromAnualProduction}</strong> kwh
+                                        <strong>{averageProducationFromAnualProduction}</strong> MWh
                                     </Typography>
                                 </div>
                             )}

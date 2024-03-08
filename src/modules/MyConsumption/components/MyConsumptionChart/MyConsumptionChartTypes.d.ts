@@ -153,4 +153,8 @@ export interface ConsumptionChartProps {
      * Set Input period Time.
      */
     setInputPeriodTime?: (periodTime: IPeriodTime) => void
+    /**
+     * Indicates if the chart is for the labelization.
+     */
+    isLabelizationChart?: boolean
 }

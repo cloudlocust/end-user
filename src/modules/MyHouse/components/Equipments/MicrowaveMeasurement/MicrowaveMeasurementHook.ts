@@ -8,7 +8,6 @@ import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import {
     MeasurementResultApiResponse,
-    MeasurementStatusApiResponse,
     MeasurementStatusStateType,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
@@ -52,7 +51,7 @@ export function useMicrowaveMeasurement(
         } catch (error: any) {
             setMeasurementStatus({
                 status: measurementStatusEnum.FAILED,
-                failureMessage: error?.response?.data?.detail as string,
+                failureReason: error?.response?.data?.detail as string,
             })
             return 0
         }
@@ -72,14 +71,14 @@ export function useMicrowaveMeasurement(
     const getMeasurementStatus = useCallback<() => Promise<MeasurementStatusStateType | null>>(async () => {
         if (!equipmentNumber || !housingEquipmentId || !measurementMode) return null
         try {
-            const { data } = await axios.get<MeasurementStatusApiResponse>(
+            const { data } = await axios.get<MeasurementStatusStateType>(
                 `${HOUSING_API}/equipments/${housingEquipmentId}/measurement/${measurementMode}/status/${equipmentNumber}`,
             )
             return data
         } catch (error: any) {
             return {
                 status: measurementStatusEnum.FAILED,
-                failureMessage: error?.response?.data?.detail as string,
+                failureReason: error?.response?.data?.detail as string,
             }
         }
     }, [equipmentNumber, housingEquipmentId, measurementMode])
@@ -98,9 +97,11 @@ export function useMicrowaveMeasurement(
                           updatedAt: newStatus.updatedAt,
                       }
                     : {}),
-                ...(newStatus.status === measurementStatusEnum.FAILED && !newStatus?.failureMessage
+                ...(newStatus.status === measurementStatusEnum.FAILED
                     ? {
-                          failureMessage: 'Zut ! Votre nrLINK n’a pas détecté la mise en route de votre micro-onde…',
+                          failureReason:
+                              newStatus?.failureReason ??
+                              'Zut ! Votre nrLINK n’a pas détecté la mise en route de votre micro-onde…',
                       }
                     : {}),
             })
@@ -138,7 +139,7 @@ export function useMicrowaveMeasurement(
             } else {
                 setMeasurementStatus({
                     status: measurementStatusEnum.FAILED,
-                    failureMessage: error?.response?.data?.detail as string,
+                    failureReason: error?.response?.data?.detail as string,
                 })
             }
         }
@@ -152,7 +153,8 @@ export function useMicrowaveMeasurement(
         return measurementStatus?.updatedAt
             ? differenceInSeconds(currentUtcDate, parseISO(measurementStatus.updatedAt))
             : 0
-    }, [measurementStatus])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [measurementStatus?.status])
 
     /**
      * Function that cleared the interval used to update the measurement status.
