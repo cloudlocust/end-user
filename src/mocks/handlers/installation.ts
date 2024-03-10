@@ -33,13 +33,11 @@ export const TEST_INSTALLATION: SnakeCasedPropertiesDeep<installationInfosType> 
         title: 'Installation solaire',
         installation_date: '2024-02-01T08:00:00.000Z',
         solar_panel_type: 'Monocristallin',
-        orientation: 0,
         power: 100,
         inverter_brand: 'SolarEdge',
         inclination: 20,
         has_resale_contract: true,
         resale_tariff: 0.2,
-        status_when_wanting_solar_panel: 'Propriétaire',
     },
 }
 
