@@ -208,6 +208,8 @@ describe('Test InstallationForm', () => {
     })
 
     test('should call the function addUpdateInstallationInfos when clicking on the save button', async () => {
+        mockInstallationInfos.housingEquipments.find((equipment) => equipment.equipmentId === 14)!.equipmentType =
+            'existant'
         const { getByText, getByRole } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
