@@ -115,7 +115,7 @@ describe('Test InstallationForm', () => {
     })
 
     test("should render 'InstallationForm' correctly when solarpanel type is nonexistant", async () => {
-        const { getByText, getAllByText, queryByText, getByRole } = reduxedRender(
+        const { getByText, getAllByText, queryByText, getByRole, container } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
             </BrowserRouter>,
@@ -151,6 +151,10 @@ describe('Test InstallationForm', () => {
         const saveButton = getByRole('button', { name: SAVE_AND_MODIFY_BUTTON_TEXT })
         expect(saveButton).toBeInTheDocument()
         expect(saveButton).toBeDisabled()
+        expect(
+            getByText('Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?'),
+        ).toBeInTheDocument()
+        expect(container.getElementsByTagName('a')[0].href).toContain('https://www.myem.fr/')
     })
 
     test("should render 'InstallationForm' correctly when solarpanel type is existant", async () => {

@@ -165,12 +165,12 @@ export const InstallationTab = () => {
                     (data.solarPanelType === SOLAR_PANEL_TYPES.other
                         ? data.otherSolarPanelType
                         : data.solarPanelType) || undefined,
-                orientation: data.orientation || undefined,
-                power: data.power || undefined,
+                orientation: data.orientation,
+                power: data.power,
                 inverterBrand: data.inverterBrand || undefined,
-                inclination: data.inclination || undefined,
-                hasResaleContract: data.hasResaleContract || undefined,
-                resaleTariff: data.resaleTariff || undefined,
+                inclination: data.inclination,
+                hasResaleContract: data.hasResaleContract,
+                resaleTariff: data.resaleTariff,
                 statusWhenWantingSolarPanel: data.statusWhenWantingSolarPanel || undefined,
             },
         })
@@ -307,9 +307,21 @@ export const InstallationTab = () => {
                                         }}
                                         className="flex flex-row"
                                     >
-                                        <FormControlLabel value="existant" label="Oui" control={<Radio />} />
-                                        <FormControlLabel value="nonexistant" label="Non" control={<Radio />} />
-                                        <FormControlLabel value="possibly" label="J'y pense" control={<Radio />} />
+                                        <FormControlLabel
+                                            value="existant"
+                                            label="Oui"
+                                            control={<Radio checked={watch('solarpanel') === 'existant'} />}
+                                        />
+                                        <FormControlLabel
+                                            value="nonexistant"
+                                            label="Non"
+                                            control={<Radio checked={watch('solarpanel') === 'nonexistant'} />}
+                                        />
+                                        <FormControlLabel
+                                            value="possibly"
+                                            label="J'y pense"
+                                            control={<Radio checked={watch('solarpanel') === 'possibly'} />}
+                                        />
                                     </RadioGroup>
                                 )}
                             />
@@ -394,17 +406,36 @@ export const InstallationTab = () => {
                                                 <FormControlLabel
                                                     value={SOLAR_PANEL_TYPES.onRoof}
                                                     label={SOLAR_PANEL_TYPES.onRoof}
-                                                    control={<Radio />}
+                                                    control={
+                                                        <Radio
+                                                            checked={
+                                                                watch('solarPanelType') === SOLAR_PANEL_TYPES.onRoof
+                                                            }
+                                                        />
+                                                    }
                                                 />
                                                 <FormControlLabel
                                                     value={SOLAR_PANEL_TYPES.plugAndPlay}
                                                     label={SOLAR_PANEL_TYPES.plugAndPlay}
-                                                    control={<Radio />}
+                                                    control={
+                                                        <Radio
+                                                            checked={
+                                                                watch('solarPanelType') ===
+                                                                SOLAR_PANEL_TYPES.plugAndPlay
+                                                            }
+                                                        />
+                                                    }
                                                 />
                                                 <FormControlLabel
                                                     value={SOLAR_PANEL_TYPES.other}
                                                     label={SOLAR_PANEL_TYPES.other}
-                                                    control={<Radio />}
+                                                    control={
+                                                        <Radio
+                                                            checked={
+                                                                watch('solarPanelType') === SOLAR_PANEL_TYPES.other
+                                                            }
+                                                        />
+                                                    }
                                                 />
                                                 <TextField
                                                     name="otherSolarPanelType"
@@ -453,7 +484,9 @@ export const InstallationTab = () => {
                                                                 key={value}
                                                                 value={value}
                                                                 label={label}
-                                                                control={<Radio />}
+                                                                control={
+                                                                    <Radio checked={watch('orientation') === value} />
+                                                                }
                                                                 className="min-w-128"
                                                             />
                                                         ) : (
@@ -549,8 +582,16 @@ export const InstallationTab = () => {
                                                 }}
                                                 className="flex flex-row"
                                             >
-                                                <FormControlLabel value={true} label="Oui" control={<Radio />} />
-                                                <FormControlLabel value={false} label="Non" control={<Radio />} />
+                                                <FormControlLabel
+                                                    value={true}
+                                                    label="Oui"
+                                                    control={<Radio checked={watch('hasResaleContract')} />}
+                                                />
+                                                <FormControlLabel
+                                                    value={false}
+                                                    label="Non"
+                                                    control={<Radio checked={watch('hasResaleContract') === false} />}
+                                                />
                                             </RadioGroup>
                                         )}
                                     />
@@ -598,12 +639,26 @@ export const InstallationTab = () => {
                                         <FormControlLabel
                                             value="J’ai déjà des devis, je n’ai besoin de rien"
                                             label="J’ai déjà des devis, je n’ai besoin de rien"
-                                            control={<Radio />}
+                                            control={
+                                                <Radio
+                                                    checked={
+                                                        watch('statusWhenWantingSolarPanel') ===
+                                                        'J’ai déjà des devis, je n’ai besoin de rien'
+                                                    }
+                                                />
+                                            }
                                         />
                                         <FormControlLabel
                                             value="Je souhaite être mis en relation avec un partenaire de confiance nrLINK"
                                             label="Je souhaite être mis en relation avec un partenaire de confiance nrLINK"
-                                            control={<Radio />}
+                                            control={
+                                                <Radio
+                                                    checked={
+                                                        watch('statusWhenWantingSolarPanel') ===
+                                                        'Je souhaite être mis en relation avec un partenaire de confiance nrLINK'
+                                                    }
+                                                />
+                                            }
                                         />
                                     </RadioGroup>
                                 )}
@@ -623,6 +678,24 @@ export const InstallationTab = () => {
                             <TypographyFormatMessage>Enregistrer mes modification</TypographyFormatMessage>
                         </ButtonLoader>
                     </div>
+                    <a
+                        href="https://www.myem.fr/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            color: theme.palette.primary.main,
+                            display: 'inline-block',
+                            marginTop: '20px',
+                            backgroundColor: 'transparent',
+                            border: 0,
+                        }}
+                    >
+                        {formatMessage({
+                            id: 'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?',
+                            defaultMessage:
+                                'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?',
+                        })}
+                    </a>
                 </form>
             </FormProvider>
         </Container>
