@@ -6,11 +6,24 @@ import {
     useAlpiqProvider,
 } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
+import { CreateAlpiqSubscriptionDataType } from 'src/modules/User/AlpiqSubscription/index.d'
+import { applyCamelCase } from 'src/common/react-platform-components'
 
 const mockEnqueueSnackbar = jest.fn()
 const TEST_SNACKBAR_ERROR = 'snackbar_error'
 const mockOnAfterValidation = jest.fn()
-
+let mockCreateSubscriptionBody: CreateAlpiqSubscriptionDataType = {
+    modeFacturation: 'REEL',
+    jourPrelevement: 27,
+    dateDebutContrat: '23-03-2026',
+    addressFacturation: applyCamelCase(TEST_HOUSES[0].address),
+    iban: 'FR7493938387299828278',
+    nomAssocieIban: 'Dupont',
+    prenomAssocieIban: 'Jean',
+    puissanceSouscrite: 6,
+    optionTarifaire: 'BASE',
+    mensualite: 120,
+}
 /**
  * Mocking the useSnackbar.
  */
@@ -111,6 +124,47 @@ describe('Test useAlpiqProvider functions', () => {
                 variant: 'error',
             })
             await store.dispatch.userModel.setAuthenticationToken('') // reset
+        }, 8000)
+    })
+    describe('Test create alpiq subscription', () => {
+        test('When request performed successfully, enqueue snackbar with success message apprears.', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useAlpiqProvider())
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody, TEST_HOUSES[0].id)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 6000 },
+            )
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Souscription reçue', {
+                variant: 'success',
+            })
+        }, 8000)
+        test('When request performed with error, enqueue snackbar with error message apprears.', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useAlpiqProvider())
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody, TEST_HOUSES[1].id)
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 6000 },
+            )
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la souscription au contract Alpiq', {
+                variant: 'error',
+            })
+        }, 8000)
+        test('When missing housing Id, enqueue snackbar with error message apprears.', async () => {
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useAlpiqProvider())
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Aucun logement renseigné', {
+                variant: 'error',
+            })
         }, 8000)
     })
 })
