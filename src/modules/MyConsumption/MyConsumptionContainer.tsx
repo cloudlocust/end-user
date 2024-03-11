@@ -174,7 +174,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     return (
         <>
-            <div style={{ background: theme.palette.primary.dark }} className="p-12 sm:p-24">
+            <div className="p-12 sm:p-24">
                 {nrlinkOff && enedisOff ? (
                     <ChartErrorMessage
                         nrLinkEnedisOff={nrlinkOff && enedisOff}
@@ -197,6 +197,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                                 range={range}
                                 handleYears={handleYearsOfDatePicker}
                                 isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
+                                color={theme.palette.primary.main}
                             />
                         </div>
 
@@ -223,6 +224,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
                         metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                        // axisColor={theme.palette.common.black}
                     />
                 )}
             </div>
