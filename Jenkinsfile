@@ -68,6 +68,7 @@ pipeline{
             }
             steps{
                sh 'yarn build'
+               sh 'yarn sentry:sourcemaps && yarn rm-source-maps'
             }
         }
         stage("Publish") {

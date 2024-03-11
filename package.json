@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "NODE_OPTIONS=--max-old-space-size=7900 craco build && yarn sentry:sourcemaps && yarn rm-source-maps",
+    "build": "NODE_OPTIONS=--max-old-space-size=7900 craco build",
     "test": "craco test --silent",
     "eject": "react-scripts eject",
     "lint-autofix": "eslint '*/**/*.{ts,tsx}' --fix",
