@@ -9,7 +9,7 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 /*
  * We will test This component if he render and switch content correctly.
  */
-const SELECTED_CLASSNAME = 'Mui-selected'
+const SELECTED_CLASSNAME = 'selected'
 let mockSetMetricsInterval = jest.fn()
 let mockSetPeriod = jest.fn()
 let mockSetRange = jest.fn()

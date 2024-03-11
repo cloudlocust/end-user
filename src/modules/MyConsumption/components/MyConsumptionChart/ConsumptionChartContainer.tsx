@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useTheme } from '@mui/material'
+import { useTheme, useMediaQuery } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
@@ -13,6 +11,7 @@ import {
     getDefaultConsumptionTargets,
     showPerPeriodText,
     nullifyTodayIdleConsumptionValue,
+    getDateWithTimezoneOffset,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -28,11 +27,18 @@ import {
     temperatureOrPmaxTargets,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
-import { Button } from '@mui/material'
-import { useHistory } from 'react-router-dom'
-import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
+import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
+import { Title } from 'src/modules/MyConsumption/components/Title'
+
+/**
+ * Const represent how many years we want to display on the calender in the yearly view.
+ */
+export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
 
 /**
  * MyConsumptionChartContainer Component.
@@ -47,6 +53,8 @@ import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsump
  * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.isIdleShown Boolean indicating whether the idle chart is shown or not.
  * @param props.setMetricsInterval Set metrics interval.
+ * @param props.onPeriodChange Callback function for period change.
+ * @param props.onRangeChange Callback function for range change.
  * @returns ConsumptionChartContainer Component.
  */
 export const ConsumptionChartContainer = ({
@@ -59,16 +67,12 @@ export const ConsumptionChartContainer = ({
     isSolarProductionConsentOff,
     isIdleShown,
     setMetricsInterval,
+    onPeriodChange,
+    onRangeChange,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-    const history = useHistory()
 
-    /**
-     * Redirect to EcogestCard.
-     */
-    const handleClick = () => {
-        history.push(URL_CONSUMPTION_LABELIZATION)
-    }
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
@@ -258,76 +262,102 @@ export const ConsumptionChartContainer = ({
         }
     }, [isMetricRequestNotAllowed])
 
-    // Happens everytime getMetrics dependencies change, and doesn't execute when hook is instanciated.
+    // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
     useEffect(() => {
         getMetrics()
     }, [getMetrics])
 
+    /**
+     * Handles the selection of years in the date picker.
+     * In yearly view, only the n years are displayed if the enedis consent is active.
+     *
+     * @param {Date} date - The selected date.
+     * @returns {boolean} - True if the date should be displayed in the date picker, false otherwise.
+     */
+    const handleYearsOfDatePicker = useCallback(
+        (date: Date) => {
+            // in yearly view display only the last n years if the enedis consent is active.
+            return (
+                period === PeriodEnum.YEARLY &&
+                !enedisSgeOff &&
+                date.getFullYear() <
+                    new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
+            )
+        },
+        [enedisSgeOff, period],
+    )
+
+    /**
+     * Determines whether the previous year navigation button should be disabled in the yearly view.
+     * The button is disabled if the enedis consent is active and the range is within the last n years.
+     *
+     * @returns {boolean} True if the previous year navigation button should be disabled, false otherwise.
+     */
+    const disablePreviousYearOfNavigationButton = useMemo(() => {
+        // in yearly view display only the previous button for the last n years if the enedis consent is active.
+        return (
+            period === PeriodEnum.YEARLY &&
+            !enedisSgeOff &&
+            range &&
+            getDateWithTimezoneOffset(range.from).getFullYear() <=
+                new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
+        )
+    }, [enedisSgeOff, period, range])
+
     return (
         <div className="mb-12">
-            <div className="relative flex flex-col md:flex-row items-center justify-center">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mb-10 md:mb-0 flex flex-col items-center md:flex-row text-center"
-                >
-                    <TypographyFormatMessage
-                        variant="h5"
-                        className="sm:mr-8"
-                        style={{ color: theme.palette.primary.contrastText }}
-                    >
-                        {period === 'daily' ? 'Ma puissance' : 'Ma consommation'}
-                    </TypographyFormatMessage>
-                    {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
-                        {showPerPeriodText('consumption', period, isEurosButtonToggled)}
-                    </TypographyFormatMessage>
-                </motion.div>
-            </div>
-
-            <div className="my-16 flex justify-between gap-10 h-40">
-                {period !== 'daily' ? (
-                    <div className="flex justify-center items-center mr-28">
-                        <EurosConsumptionButtonToggler
-                            onEurosConsumptionButtonToggle={onEurosConsumptionButtonToggle}
-                            isEurosButtonToggled={isEurosButtonToggled}
-                        />
-                    </div>
-                ) : (
-                    <div style={{ width: 209 }} />
-                )}
-                <div className="flex flex-auto justify-center" style={{ minWidth: 170 }}>
-                    {(isIdleShown || isAutoConsumptionProductionShown) && (
-                        <SwitchConsumptionButton
-                            onSwitchConsumptionButton={onSwitchConsumptionButton}
-                            isIdleShown={isIdleShown}
-                            isAutoConsumptionProductionShown={isAutoConsumptionProductionShown}
-                        />
-                    )}
-                </div>
-                <div className="flex flex-row">
-                    {period === 'daily' && (
-                        <Button
-                            onClick={handleClick}
-                            sx={{
-                                backgroundColor: 'primary.main',
-                                color: 'primary.contrastText',
-                                fontWeight: 500,
-                                '&:hover': {
-                                    backgroundColor: 'primary.light',
-                                },
-                            }}
-                        >
-                            Identifier une&nbsp;conso
-                        </Button>
-                    )}
-                    <TargetMenuGroup
-                        removeTargets={() => onTemperatureOrPmaxMenuClick([])}
-                        addTargets={onTemperatureOrPmaxMenuClick}
-                        hidePmax={hidePmax}
-                        activeButton={targetMenuActiveButton}
+            {(isIdleShown || isAutoConsumptionProductionShown) && (
+                <div className="pb-16 w-full flex justify-center">
+                    <SwitchConsumptionButton
+                        onSwitchConsumptionButton={onSwitchConsumptionButton}
+                        isIdleShown={isIdleShown}
+                        isAutoConsumptionProductionShown={isAutoConsumptionProductionShown}
                     />
                 </div>
+            )}
+
+            <div className="px-16 sm:py-16 flex justify-center">
+                <Title>
+                    {period === 'daily' ? 'Ma puissance' : 'Ma consommation'}&nbsp;
+                    {showPerPeriodText('consumption', period, isEurosButtonToggled)}
+                </Title>
+            </div>
+            <div
+                className="px-16 mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
+                style={{ marginTop: 22 }}
+            >
+                {period !== 'daily' && (
+                    <EurosConsumptionButtonToggler
+                        onChange={() => onEurosConsumptionButtonToggle(!isEurosButtonToggled)}
+                        checked={isEurosButtonToggled}
+                        inputProps={{ 'aria-label': 'euros-consumption-switcher' }}
+                    />
+                )}
+                <div style={{ height: 28 }}>
+                    <MyConsumptionPeriod
+                        setPeriod={onPeriodChange}
+                        setRange={onRangeChange}
+                        setMetricsInterval={setMetricsInterval}
+                        period={period}
+                        range={range}
+                    />
+                </div>
+                <TargetMenuGroup
+                    removeTargets={() => onTemperatureOrPmaxMenuClick([])}
+                    addTargets={onTemperatureOrPmaxMenuClick}
+                    hidePmax={hidePmax}
+                    activeButton={targetMenuActiveButton}
+                />
+                {!mdDown && period === 'daily' && <ConsumptionIdentifierButton size="small" className="px-16" />}
+            </div>
+            <div>
+                <MyConsumptionDatePicker
+                    period={period}
+                    setRange={onRangeChange}
+                    range={range}
+                    handleYears={handleYearsOfDatePicker}
+                    isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
+                />
             </div>
 
             {isMetricsLoading ? (
@@ -338,11 +368,16 @@ export const ConsumptionChartContainer = ({
                 <MyConsumptionChart
                     data={consumptionChartData}
                     period={period}
-                    axisColor={theme.palette.primary.contrastText}
+                    axisColor={theme.palette.common.black}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
+            {mdDown && period === 'daily' && (
+                <div className="flex justify-center px-24 py-8">
+                    <ConsumptionIdentifierButton fullWidth />
+                </div>
+            )}
         </div>
     )
 }

@@ -51,7 +51,7 @@ const MyConsumptionDatePicker = ({
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const [isRangeLoading, setIsRangeLoading] = useState(false)
-    const DATE_PICKER_COLOR: string = color || theme.palette.common.white
+    const DATE_PICKER_COLOR: string = color || theme.palette.primary.main
 
     const rangeDateFormat = {
         from: getDateWithTimezoneOffset(range.from),
@@ -106,9 +106,10 @@ const MyConsumptionDatePicker = ({
 
     return (
         <motion.div
-            className="flex items-center justify-center wrapper"
+            className="flex items-center justify-around wrapper md:justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.3 } }}
+            style={{ height: 40 }}
         >
             <IconButton
                 aria-label="Previous"
@@ -142,15 +143,18 @@ const MyConsumptionDatePicker = ({
                                         {...params}
                                         sx={{
                                             input: {
-                                                color: DATE_PICKER_COLOR,
                                                 textAlign: 'center',
                                                 width: item.width,
-                                                fontSize: '1.6rem',
+                                                fontSize: '14px',
+                                                fontWeight: 400,
+                                                fontFamily: 'poppins',
+                                                lineHeight: 'normal',
+                                                fontStyle: 'normal',
                                             },
                                         }}
+                                        inputProps={{ ...params.inputProps, 'data-testid': 'date-picker-input' }}
                                     />
                                 )}
-                                {...(handleYears && { shouldDisableYear: handleYears })}
                                 {...(handleYears && { shouldDisableYear: handleYears })}
                             />
                         ),
