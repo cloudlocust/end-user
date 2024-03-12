@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useTheme } from '@mui/material'
+import { useTheme, Typography } from '@mui/material'
+import { isSameDay } from 'date-fns'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
@@ -33,6 +34,9 @@ import { useHistory } from 'react-router-dom'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { useIntl } from 'src/common/react-platform-translation'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 
 /**
  * MyConsumptionChartContainer Component.
@@ -62,7 +66,7 @@ export const ConsumptionChartContainer = ({
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const history = useHistory()
-
+    const { formatMessage } = useIntl()
     /**
      * Redirect to EcogestCard.
      */
@@ -263,6 +267,37 @@ export const ConsumptionChartContainer = ({
         getMetrics()
     }, [getMetrics])
 
+    const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
+        // check if we are in current day and the view is daily.
+        if (consumptionChartData.length && period === PeriodEnum.DAILY && isSameDay(new Date(range.from), new Date())) {
+            const currentTime = Date.now()
+            const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
+                datapoints.filter(([_value, time]) => time <= currentTime),
+            )
+            const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetrics)
+            if (time >= 10) {
+                return formatMessage(
+                    {
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                        defaultMessage:
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                    },
+                    { break: <br /> },
+                )
+            } else if (time >= 5) {
+                return formatMessage(
+                    {
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                        defaultMessage:
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                    },
+                    { break: <br /> },
+                )
+            }
+            return null
+        }
+    }, [consumptionChartData, period, range, formatMessage])
+
     return (
         <div className="mb-12">
             <div className="relative flex flex-col md:flex-row items-center justify-center">
@@ -335,11 +370,23 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart
-                    data={consumptionChartData}
-                    period={period}
-                    axisColor={theme.palette.primary.contrastText}
-                />
+                <>
+                    {messageOfSuccessiveMissingDataOfCurrentDay && (
+                        <div className="flex justify-center mt-32">
+                            <Typography
+                                className="max-w-screen-md text-center"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
+                                {messageOfSuccessiveMissingDataOfCurrentDay}
+                            </Typography>
+                        </div>
+                    )}
+                    <MyConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        axisColor={theme.palette.primary.contrastText}
+                    />
+                </>
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
