@@ -224,7 +224,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
                         metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
-                        // axisColor={theme.palette.common.black}
                     />
                 )}
             </div>
