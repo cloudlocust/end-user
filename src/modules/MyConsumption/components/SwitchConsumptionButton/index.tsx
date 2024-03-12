@@ -78,6 +78,9 @@ export const SwitchConsumptionButton = ({
                         sx={{
                             backgroundColor: 'primary.main',
                             color: 'primary.contrastText',
+                            '&:hover': {
+                                color: 'secondary.contrastText',
+                            },
                             fontWeight: 500,
                             '&.Mui-selected': {
                                 backgroundColor: 'secondary.main',

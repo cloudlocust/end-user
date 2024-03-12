@@ -408,22 +408,24 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.onlyEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
-            return '#BEECDB'
+            return '#039DE0'
         case metricTargetsEnum.idleConsumption:
         case metricTargetsEnum.eurosIdleConsumption:
             return '#8191B2'
         case metricTargetsEnum.subscriptionPrices:
             return '#CCDCDD'
         case metricTargetsEnum.peakHourConsumption:
-            return '#CC9121'
+            return '#039DE0'
         case metricTargetsEnum.offPeakHourConsumption:
-            return '#CCAB1D'
+            return '#9BE1FD'
         case metricTargetsEnum.totalOffIdleConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
             return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
                 ? TRANSPARENT_COLOR
-                : theme.palette.secondary.main
+                : '#039DE0'
+        case metricTargetsEnum.baseConsumption:
+            return '#039DE0'
         case metricTargetsEnum.euroPeakHourConsumption:
             return '#6BCBFF'
         case metricTargetsEnum.euroOffPeakConsumption:
@@ -432,22 +434,24 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
             return theme.palette.secondary.main
         case metricTargetsEnum.peakHourBlueTempoConsumption:
         case metricTargetsEnum.euroPeakHourBlueTempoConsumption:
-            return '#6CCBFD'
+            return '#039DE0'
         case metricTargetsEnum.offPeakHourBlueTempoConsumption:
         case metricTargetsEnum.euroOffPeakHourBlueTempoConsumption:
-            return '#BEE8FE'
+            return '#9BE1FD'
         case metricTargetsEnum.peakHourRedTempoConsumption:
         case metricTargetsEnum.euroPeakHourRedTempoConsumption:
-            return '#FF7065'
+            return '#DE6B68'
         case metricTargetsEnum.offPeakHourRedTempoConsumption:
         case metricTargetsEnum.euroOffPeakHourRedTempoConsumption:
-            return '#FFC3BE'
+            return '#FBC6C4'
         case metricTargetsEnum.peakHourWhiteTempoConsumption:
         case metricTargetsEnum.euroPeakHourWhiteTempoConsumption:
-            return '#7A7A7A'
+            return '#809DB0'
         case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
         case metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption:
-            return '#B8B8B8'
+            return '#C8D9E5'
+        case metricTargetsEnum.injectedProduction:
+            return '#039DE0'
         default:
             return theme.palette.secondary.main
     }
