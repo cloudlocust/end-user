@@ -12,9 +12,6 @@ import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetId
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { endOfDay, startOfDay } from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
 import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 
 /**
@@ -55,19 +52,6 @@ const ConsumptionWidgetsContainer = ({
         if (period !== 'daily') {
             // When the period is not daily we show the Pmax widget
             widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
-        } else {
-            const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-            if (
-                range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
-                range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
-            ) {
-                // When the period is daily and the range is today we show the external and internal temperature widgets
-                widgetsToRender = [
-                    ...widgetsToRender,
-                    metricTargetsEnum.externalTemperature,
-                    metricTargetsEnum.internalTemperature,
-                ]
-            }
         }
 
         if (isProductionEnabled) {
@@ -75,7 +59,7 @@ const ConsumptionWidgetsContainer = ({
         }
 
         return widgetsToRender
-    }, [isProductionEnabled, period, range.from, range.to])
+    }, [isProductionEnabled, period])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
