@@ -274,10 +274,6 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
                 : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
-        case metricTargetsEnum.externalTemperature:
-            return 'Température Extérieure'
-        case metricTargetsEnum.internalTemperature:
-            return 'Température Intérieure'
         case metricTargetsEnum.eurosConsumption:
             return 'Coût Total'
         case metricTargetsEnum.totalProduction:
