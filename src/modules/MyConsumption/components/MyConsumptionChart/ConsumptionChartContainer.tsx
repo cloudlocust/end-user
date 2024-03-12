@@ -273,12 +273,12 @@ export const ConsumptionChartContainer = ({
                     <TypographyFormatMessage
                         variant="h5"
                         className="sm:mr-8"
-                        style={{ color: theme.palette.primary.contrastText }}
+                        style={{ color: theme.palette.common.black }}
                     >
                         {period === 'daily' ? 'Ma puissance' : 'Ma consommation'}
                     </TypographyFormatMessage>
                     {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.common.black }}>
                         {showPerPeriodText('consumption', period, isEurosButtonToggled)}
                     </TypographyFormatMessage>
                 </motion.div>
@@ -341,7 +341,7 @@ export const ConsumptionChartContainer = ({
                 <MyConsumptionChart
                     data={consumptionChartData}
                     period={period}
-                    axisColor={theme.palette.primary.contrastText}
+                    axisColor={theme.palette.common.black}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
