@@ -14,10 +14,9 @@ import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
  * @param param0.setPeriod SetPeriod function.
  * @param param0.setRange SetRange function.
  * @param param0.setMetricsInterval SetMetricsInterval function.
- * @param param0.period Current Period.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, period }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }: IMyConsumptionPeriod) => {
     const theme = useTheme()
     /**
      * Handle select of the period.

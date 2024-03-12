@@ -338,7 +338,6 @@ export const ConsumptionChartContainer = ({
                         setPeriod={onPeriodChange}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
-                        period={period}
                         range={range}
                     />
                 </div>
