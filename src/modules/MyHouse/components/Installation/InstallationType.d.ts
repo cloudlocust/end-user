@@ -153,9 +153,9 @@ export interface solarInstallationInfosType {
      */
     orientation?: number
     /**
-     * The power value for the solar panel.
+     * The brand of the solar panel.
      */
-    power?: number
+    solarPanelBrand?: string
     /**
      * The brand of the inverter.
      */
@@ -164,6 +164,10 @@ export interface solarInstallationInfosType {
      * The inclination value for the solar panel.
      */
     inclination?: number
+    /**
+     * The power value for the solar panel.
+     */
+    power?: number
     /**
      * Boolean indicating if the customer has a resale contract.
      */
@@ -233,9 +237,9 @@ export interface installationFormFieldsType {
      */
     orientation?: number
     /**
-     * The power value for the solar panel.
+     * The brand of the solar panel.
      */
-    power?: number
+    solarPanelBrand?: string
     /**
      * The brand of the inverter.
      */
@@ -244,6 +248,10 @@ export interface installationFormFieldsType {
      * The inclination value for the solar panel.
      */
     inclination?: number
+    /**
+     * The power value for the solar panel.
+     */
+    power?: number
     /**
      * Boolean indicating if the customer has a resale contract.
      */

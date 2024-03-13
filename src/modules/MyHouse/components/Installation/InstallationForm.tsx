@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { CircularProgress, Radio, RadioGroup, FormControlLabel, useTheme, Container, Typography } from '@mui/material'
 import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+import { Select } from 'src/common/ui-kit/form-fields/Select'
+import MenuItem from '@mui/material/MenuItem'
 import { heaterEquipment, sanitaryEquipment, hotPlateEquipment } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { useEquipmentList, useInstallation } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { useSelector } from 'react-redux'
@@ -24,6 +26,51 @@ export const SOLAR_PANEL_TYPES = {
     plugAndPlay: 'Plug & Play',
     other: 'Autre',
 }
+
+const SOLAR_PANEL_BRANDS = [
+    'Dualsun',
+    'Sunpower',
+    'Trina Solar',
+    'Longi',
+    'Systovi',
+    'Voltec Solar',
+    'Qcells',
+    'Photowatt',
+    'SolarWatt',
+    'Axitec',
+    'JA solar',
+    'LG',
+    'Panasonic',
+    'Silfab',
+    'JinkoSolar',
+    'REC Solar',
+    'Meyer Burger',
+    'Recom',
+    'Schuco',
+    'Autres',
+]
+
+const INVERTER_BRANDS = [
+    'SMA',
+    'Fronius',
+    'Enphase',
+    'Huawei',
+    'Growatt',
+    'AP Systems',
+    'Solaredge',
+    'Ginlong Solis',
+    'Sungrow',
+    'Power Electronis',
+    'Delta',
+    'Abb',
+    'Omron',
+    'Goodwe',
+    'Panasonic',
+    'Recom',
+    'Schuco',
+    'Hoymiles',
+    'Autres',
+]
 
 /**
  * EquipmentForm Component.
@@ -101,9 +148,10 @@ export const InstallationTab = () => {
             solarPanelType,
             otherSolarPanelType,
             orientation: installationInfos?.solarInstallation?.orientation,
-            power: installationInfos?.solarInstallation?.power,
+            solarPanelBrand: installationInfos?.solarInstallation?.solarPanelBrand,
             inverterBrand: installationInfos?.solarInstallation?.inverterBrand,
             inclination: installationInfos?.solarInstallation?.inclination,
+            power: installationInfos?.solarInstallation?.power,
             hasResaleContract: installationInfos?.solarInstallation?.hasResaleContract,
             resaleTariff: installationInfos?.solarInstallation?.resaleTariff,
             statusWhenWantingSolarPanel: installationInfos?.solarInstallation?.statusWhenWantingSolarPanel,
@@ -118,6 +166,7 @@ export const InstallationTab = () => {
         installationInfos?.solarInstallation?.orientation,
         installationInfos?.solarInstallation?.power,
         installationInfos?.solarInstallation?.resaleTariff,
+        installationInfos?.solarInstallation?.solarPanelBrand,
         installationInfos?.solarInstallation?.solarPanelType,
         installationInfos?.solarInstallation?.statusWhenWantingSolarPanel,
         installationInfos?.solarInstallation?.title,
@@ -166,9 +215,10 @@ export const InstallationTab = () => {
                         ? data.otherSolarPanelType
                         : data.solarPanelType) || undefined,
                 orientation: data.orientation,
-                power: data.power,
+                solarPanelBrand: data.solarPanelBrand || undefined,
                 inverterBrand: data.inverterBrand || undefined,
                 inclination: data.inclination,
+                power: data.power,
                 hasResaleContract: data.hasResaleContract,
                 resaleTariff: data.resaleTariff,
                 statusWhenWantingSolarPanel: data.statusWhenWantingSolarPanel || undefined,
@@ -184,7 +234,7 @@ export const InstallationTab = () => {
         )
 
     return (
-        <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '650px !important' }}>
+        <Container sx={{ paddingBottom: '30px', width: '100%', maxWidth: '660px !important' }}>
             {isEquipmentInfoConsentmentOpen && (
                 <div
                     className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
@@ -276,9 +326,10 @@ export const InstallationTab = () => {
                                                         solarPanelType: undefined,
                                                         otherSolarPanelType: undefined,
                                                         orientation: undefined,
-                                                        power: undefined,
+                                                        solarPanelBrand: undefined,
                                                         inverterBrand: undefined,
                                                         inclination: undefined,
+                                                        power: undefined,
                                                         hasResaleContract: undefined,
                                                         resaleTariff: undefined,
                                                         statusWhenWantingSolarPanel: undefined,
@@ -296,9 +347,10 @@ export const InstallationTab = () => {
                                                         solarPanelType: undefined,
                                                         otherSolarPanelType: undefined,
                                                         orientation: undefined,
-                                                        power: undefined,
+                                                        solarPanelBrand: undefined,
                                                         inverterBrand: undefined,
                                                         inclination: undefined,
+                                                        power: undefined,
                                                         hasResaleContract: undefined,
                                                         resaleTariff: undefined,
                                                     })
@@ -500,6 +552,33 @@ export const InstallationTab = () => {
                                 )}
 
                                 <div className="text-13 mt-32 flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-x-20 gap-y-32">
+                                    {/***** The solar panel brand *****/}
+                                    <div className="flex flex-1 flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
+                                        <Typography className="whitespace-nowrap">
+                                            {formatMessage({
+                                                id: 'Marque de panneaux',
+                                                defaultMessage: 'Marque de panneaux',
+                                            })}
+                                            &nbsp;:
+                                        </Typography>
+                                        <div className="w-full sm:w-auto sm:max-w-160">
+                                            <Select
+                                                name="solarPanelBrand"
+                                                label={formatMessage({
+                                                    id: 'Marque',
+                                                    defaultMessage: 'Marque',
+                                                })}
+                                                sx={{ minWidth: '160px' }}
+                                            >
+                                                {SOLAR_PANEL_BRANDS.map((panelBrand) => (
+                                                    <MenuItem key={panelBrand} value={panelBrand}>
+                                                        {panelBrand}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                    </div>
+
                                     {/***** The power *****/}
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
                                         <Typography>
@@ -512,44 +591,58 @@ export const InstallationTab = () => {
                                         <TextField
                                             name="power"
                                             label="Puissance"
+                                            type="number"
                                             style={{ marginBottom: 0 }}
                                             className="w-full sm:w-auto sm:max-w-128"
                                         />
                                     </div>
+                                </div>
 
+                                <div className="text-13 mt-32 flex flex-col sm:flex-row sm:items-center sm:justify-between flex-wrap gap-x-20 gap-y-32">
                                     {/***** The inverter brand *****/}
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
-                                        <Typography>
+                                        <Typography className="whitespace-nowrap">
                                             {formatMessage({
                                                 id: 'Marque de l’onduleur',
                                                 defaultMessage: 'Marque de l’onduleur',
                                             })}
                                             &nbsp;:
                                         </Typography>
+                                        <div className="w-full sm:w-auto sm:max-w-160">
+                                            <Select
+                                                name="inverterBrand"
+                                                label={formatMessage({
+                                                    id: 'Marque',
+                                                    defaultMessage: 'Marque',
+                                                })}
+                                                sx={{ minWidth: '160px' }}
+                                            >
+                                                {INVERTER_BRANDS.map((inverterBrand) => (
+                                                    <MenuItem key={inverterBrand} value={inverterBrand}>
+                                                        {inverterBrand}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    {/***** The inclination *****/}
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
+                                        <Typography>
+                                            {formatMessage({
+                                                id: 'Inclinaison (%)',
+                                                defaultMessage: 'Inclinaison (%)',
+                                            })}
+                                            &nbsp;:
+                                        </Typography>
                                         <TextField
-                                            name="inverterBrand"
-                                            label="Marque"
+                                            name="inclination"
+                                            label="Inclinaison"
+                                            type="number"
                                             style={{ marginBottom: 0 }}
-                                            className="w-full sm:w-auto sm:max-w-160"
+                                            className="w-full sm:w-auto sm:max-w-128"
                                         />
                                     </div>
-                                </div>
-
-                                {/***** The inclination *****/}
-                                <div className="text-13 mt-32 flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
-                                    <Typography>
-                                        {formatMessage({
-                                            id: 'Inclinaison (%)',
-                                            defaultMessage: 'Inclinaison (%)',
-                                        })}
-                                        &nbsp;:
-                                    </Typography>
-                                    <TextField
-                                        name="inclination"
-                                        label="Inclinaison"
-                                        style={{ marginBottom: 0 }}
-                                        className="w-full sm:w-auto sm:max-w-128"
-                                    />
                                 </div>
 
                                 {/***** The resale contract possession status *****/}
@@ -611,6 +704,7 @@ export const InstallationTab = () => {
                                             <TextField
                                                 name="resaleTariff"
                                                 label="Tarif"
+                                                type="number"
                                                 style={{ marginBottom: 0 }}
                                                 className="w-full sm:w-auto sm:max-w-128"
                                             />
@@ -659,6 +753,7 @@ export const InstallationTab = () => {
                                                     }
                                                 />
                                             }
+                                            className="mt-5"
                                         />
                                     </RadioGroup>
                                 )}

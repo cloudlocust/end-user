@@ -94,6 +94,7 @@ const TITLE_FIELD_TEXT = 'Titre :'
 const INSTALLATION_DATE_FIELD_TEXT = 'Date d’installation :'
 const SOLAR_PANEL_TYPE_FIELD_TEXT = 'Type de panneaux :'
 const ORIENTATION_FIELD_TEXT = 'Orientation :'
+const PANEL_BRAND_FIELD_TEXT = 'Marque de panneaux :'
 const POWER_FIELD_TEXT = 'Puissance (W) :'
 const INVERTER_BRAND_FIELD_TEXT = 'Marque de l’onduleur :'
 const INCLINATION_FIELD_TEXT = 'Inclinaison (%) :'
@@ -140,6 +141,7 @@ describe('Test InstallationForm', () => {
         expect(queryByText(INSTALLATION_DATE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(ORIENTATION_FIELD_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(PANEL_BRAND_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(POWER_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INVERTER_BRAND_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INCLINATION_FIELD_TEXT)).not.toBeInTheDocument()
@@ -174,6 +176,7 @@ describe('Test InstallationForm', () => {
         expect(getByText(INSTALLATION_DATE_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(ORIENTATION_FIELD_TEXT)).toBeInTheDocument()
+        expect(getByText(PANEL_BRAND_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(POWER_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(INVERTER_BRAND_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(INCLINATION_FIELD_TEXT)).toBeInTheDocument()
@@ -199,6 +202,7 @@ describe('Test InstallationForm', () => {
         expect(queryByText(INSTALLATION_DATE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(ORIENTATION_FIELD_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(PANEL_BRAND_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(POWER_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INVERTER_BRAND_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INCLINATION_FIELD_TEXT)).not.toBeInTheDocument()
