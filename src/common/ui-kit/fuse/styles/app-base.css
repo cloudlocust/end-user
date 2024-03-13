@@ -6,12 +6,6 @@
 
 @import 'tailwindcss/base';
 
-:root {
-    --safe-area-inset-top: max(env(safe-area-inset-top), 0px);
-    --safe-area-inset-right: max(env(safe-area-inset-right), 0px);
-    --safe-area-inset-bottom: max(env(safe-area-inset-bottom), 0px);
-    --safe-area-inset-left: max(env(safe-area-inset-left), 0px);
-}
 
 /**
   * Custom base styles, applied after the tailwind-base classes
@@ -29,13 +23,12 @@ body {
     font-size: 13px;
     line-height: 1.4;
     overflow-x: hidden;
-padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
 }
 
 html, body, #root {
     position: relative;
     margin: 0;
-    height: calc(100vh - var(--safe-area-inset-bottom));
+    height: 100%;
 }
 
 h1, .h1 {
