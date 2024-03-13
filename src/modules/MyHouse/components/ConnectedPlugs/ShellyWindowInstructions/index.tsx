@@ -34,7 +34,7 @@ const ShellyWindowInstructions = ({ shellyUrl }: { shellyUrl?: string }) => {
 
                 <p className="description">
                     <WarningIcon className="warning-icon" /> &nbsp; Actuellement, les prises Shelly peuvent être liées à
-                    l’application uniqeument dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de
+                    l’application uniquement dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de
                     visualiser la production solaire.
                 </p>
 
