@@ -7,7 +7,7 @@ import {
     metricIntervalType,
     metricTargetsEnum,
 } from 'src/modules/Metrics/Metrics.d'
-import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
+import { TEST_SUCCESS_WEEK_METRICS, TEST_SUCCESS_YEAR_METRICS } from 'src/mocks/handlers/metrics'
 import { cleanup, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
@@ -64,6 +64,8 @@ const HAS_MISSING_CONTRACTS_WARNING_TEXT =
     "Ce graphe est un exemple basé sur un tarif Bleu EDF Base. Vos données contractuelles de fourniture d'énergie ne sont pas disponibles sur toute la période."
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const CONSUMPTION_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
+const MESSING_DATA_WARNING_TEXT =
+    'Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat déclaré ou sans Linky ou encore si la période est antérieur à 3 ans.'
 const CONSUMPTION_TITLE_DAILY = 'Ma puissance'
 const CONSUMPTION_TITLE_NOT_DAILY = 'Ma consommation'
 const CONSUMPTION_PERIOD_TITLE_DAILY = 'en Watt par jour'
@@ -285,6 +287,61 @@ describe('MyConsumptionContainer test', () => {
         })
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     }, 20000)
+
+    test('When the data metrics not exist in yearly period, a warning message is shown', async () => {
+        echartsConsumptionChartContainerProps.period = 'yearly'
+        echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
+        echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+        mockEnedisConsent = mockEnedisSgeConsentConnected
+        mockData = []
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(getByText(MESSING_DATA_WARNING_TEXT)).toBeInTheDocument()
+    })
+    test('When the data metrics is partially exist in yearly period, a warning message is shown', async () => {
+        echartsConsumptionChartContainerProps.period = 'yearly'
+        echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
+        echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+        mockEnedisConsent = mockEnedisSgeConsentConnected
+        const yearlyDataMetrics = TEST_SUCCESS_YEAR_METRICS([metricTargetsEnum.consumption])
+        // remove some data points for we can test partially existing data.
+        mockData = [
+            {
+                target: yearlyDataMetrics[0].target,
+                datapoints: yearlyDataMetrics[0].datapoints.slice(0, 2),
+            },
+        ]
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(getByText(MESSING_DATA_WARNING_TEXT)).toBeInTheDocument()
+    })
+
+    test('When the all data metrics is exist in yearly period, a warning message must be not shown', async () => {
+        echartsConsumptionChartContainerProps.period = 'yearly'
+        echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
+        echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+        mockEnedisConsent = mockEnedisSgeConsentConnected
+        mockData = TEST_SUCCESS_YEAR_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption])
+        const { queryByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        expect(queryByText(MESSING_DATA_WARNING_TEXT)).not.toBeInTheDocument()
+    })
+
     test('When period is daily, EurosConsumption and pMax buttons should not be shown', async () => {
         echartsConsumptionChartContainerProps.period = 'daily'
         echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType

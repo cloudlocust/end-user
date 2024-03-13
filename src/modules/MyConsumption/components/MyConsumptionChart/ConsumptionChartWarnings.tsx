@@ -98,3 +98,32 @@ export const ConsumptionEnedisSgeWarning = ({ isShowWarning }: DefaultContractWa
         </div>
     )
 }
+
+/**
+ * Component for displaying a warning message when data is missing.
+ *
+ * @returns Jsx.element.
+ */
+export const MissingDataWarning = () => {
+    return (
+        <div className="flex items-center justify-center mt-12 gap-8">
+            <ErrorOutlineIcon
+                sx={{
+                    color: linksColor || warningMainHashColor,
+                    width: { xs: '24px', md: '32px' },
+                    height: { xs: '24px', md: '32px' },
+                }}
+            />
+
+            <div>
+                <TypographyFormatMessage
+                    sx={{ color: linksColor || warningMainHashColor }}
+                    className="text-13 md:text-16 text-center"
+                >
+                    Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat
+                    déclaré ou sans Linky ou encore si la période est antérieur à 3 ans.
+                </TypographyFormatMessage>
+            </div>
+        </div>
+    )
+}
