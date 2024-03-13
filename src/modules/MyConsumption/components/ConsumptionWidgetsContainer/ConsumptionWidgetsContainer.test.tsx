@@ -18,8 +18,6 @@ const PRODUCTION_INJECTED_TEXT = 'Injectée'
 const AUTOCONSOMMATION_TEXT = 'Autoconsommation'
 const COUT_TOTAL_TEXT = 'Coût Total'
 const PUISSANCE_MAXIMALE_TEXT = 'Puissance Maximale'
-const TEMPERATURE_EXTERIEURE_TEXT = 'Température Extérieure'
-const TEMPERATURE_INTERIEURE_TEXT = 'Température Intérieure'
 
 const widgetClassnameSelector = ' .MuiGrid-root .MuiGrid-item'
 // const numbersOfWidgets = WidgetTargets.length
@@ -121,7 +119,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(7)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(5)
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
@@ -129,8 +127,6 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
     })
 
     test('do not show the widget "veille" when isIdleWidgetShown is false', async () => {
@@ -143,7 +139,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(4)
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
@@ -152,14 +148,12 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
         expect(getByText(COUT_TOTAL_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
         expect(queryByText(PUISSANCE_MAXIMALE_TEXT)).not.toBeInTheDocument()
     })
 
     test('when the period is not daily, show the Pmax widget and do not show the widgets externalTemperature and internalTemperature', async () => {
         consumptionWidgetsContainerProps.period = 'monthly'
-        const { container, getByText, queryByText } = reduxedRender(
+        const { container, getByText } = reduxedRender(
             <Router>
                 <ConsumptionWidgetsMetricsProvider>
                     <ConsumptionWidgetsContainer {...consumptionWidgetsContainerProps} />
@@ -177,8 +171,6 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
         expect(getByText(COUT_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(PUISSANCE_MAXIMALE_TEXT)).toBeInTheDocument()
-        expect(queryByText(TEMPERATURE_EXTERIEURE_TEXT)).not.toBeInTheDocument()
-        expect(queryByText(TEMPERATURE_INTERIEURE_TEXT)).not.toBeInTheDocument()
     })
 
     test('when the range is not for today, do not show the widgets externalTemperature, internalTemperature and Pmax', async () => {
@@ -200,8 +192,6 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(getByText(PRODUCTION_INJECTED_TEXT)).toBeInTheDocument()
         expect(getByText(AUTOCONSOMMATION_TEXT)).toBeInTheDocument()
         expect(getByText(COUT_TOTAL_TEXT)).toBeInTheDocument()
-        expect(queryByText(TEMPERATURE_EXTERIEURE_TEXT)).not.toBeInTheDocument()
-        expect(queryByText(TEMPERATURE_EXTERIEURE_TEXT)).not.toBeInTheDocument()
         expect(queryByText(PUISSANCE_MAXIMALE_TEXT)).not.toBeInTheDocument()
     })
 
@@ -218,15 +208,13 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(6)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(4)
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(getByText(CONSOMMATION_PURCHASED_TEXT)).toBeInTheDocument()
         expect(getByText(PRODUCTION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
-        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
     })
 
     test('when the enphase consent is not active, the widgets of production & autoconsumption should not be showing', async () => {
@@ -240,7 +228,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(5)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(3)
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
@@ -249,8 +237,6 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
         expect(getByText(COUT_TOTAL_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
         expect(queryByText(PUISSANCE_MAXIMALE_TEXT)).not.toBeInTheDocument()
     })
 
@@ -266,7 +252,7 @@ describe('ConsumptionWidgetsContainer test', () => {
             </Router>,
         )
         expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
-        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(5)
+        expect(container.querySelectorAll(widgetClassnameSelector).length).toBe(3)
 
         expect(getByText(CONSOMMATION_TOTAL_TEXT)).toBeInTheDocument()
         expect(queryByText(CONSOMMATION_PURCHASED_TEXT)).not.toBeInTheDocument()
@@ -275,8 +261,6 @@ describe('ConsumptionWidgetsContainer test', () => {
         expect(queryByText(PRODUCTION_INJECTED_TEXT)).not.toBeInTheDocument()
         expect(queryByText(AUTOCONSOMMATION_TEXT)).not.toBeInTheDocument()
         expect(getByText(COUT_TOTAL_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_EXTERIEURE_TEXT)).toBeInTheDocument()
-        expect(getByText(TEMPERATURE_INTERIEURE_TEXT)).toBeInTheDocument()
         expect(queryByText(PUISSANCE_MAXIMALE_TEXT)).not.toBeInTheDocument()
     })
 })

@@ -109,12 +109,12 @@ export const ProductionChartContainer = ({
                     <TypographyFormatMessage
                         variant="h5"
                         className="sm:mr-8"
-                        style={{ color: theme.palette.primary.contrastText }}
+                        style={{ color: theme.palette.common.black }}
                     >
                         Ma production
                     </TypographyFormatMessage>
                     {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.primary.contrastText }}>
+                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.common.black }}>
                         {showPerPeriodText('production', period)}
                     </TypographyFormatMessage>
                 </motion.div>
