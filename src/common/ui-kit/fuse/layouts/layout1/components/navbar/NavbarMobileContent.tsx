@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip'
 
 const Root = styled(BottomNavigation)(({ theme }) => ({
     position: 'fixed',
-    bottom: 'var(--safe-area-inset-bottom)',
+    bottom: 0,
     zIndex: 99,
     overflow: 'hidden',
     wordWrap: 'break-word',
