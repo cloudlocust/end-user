@@ -5,7 +5,7 @@ import ShellyWindowInstructions, {
 
 const SHELLY_WINDOW_INSTRUCTION_MESSAGE_TEXT = 'Veuillez fermer votre espace Shelly une fois votre liaison terminé.'
 const SHELLY_WINDOW_INSTRUCTION_MESSAGE_DESCRIPTION_TEXT =
-    'Actuellement, les prises Shelly peuvent être liées à l’application uniqeument dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de visualiser la production solaire.'
+    'Actuellement, les prises Shelly peuvent être liées à l’application uniquement dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de visualiser la production solaire.'
 
 const mockShellyUrl = 'mockShellyUrl'
 describe('ShellyWindowInstructions Component', () => {
