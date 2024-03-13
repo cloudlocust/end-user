@@ -264,7 +264,7 @@ export const InstallationTab = () => {
                     </div>
 
                     <div className="mb-40">
-                        <TypographyFormatMessage className="text-14 font-600">
+                        <TypographyFormatMessage className="text-15 font-600">
                             Utilisation de l'énergie dans mon domicile
                         </TypographyFormatMessage>
 
@@ -284,7 +284,7 @@ export const InstallationTab = () => {
                         </div>
                     </div>
                     <div className="mb-40">
-                        <TypographyFormatMessage className="text-14 font-600">
+                        <TypographyFormatMessage className="text-15 font-600">
                             Ma production d'énergie
                         </TypographyFormatMessage>
 
@@ -381,20 +381,25 @@ export const InstallationTab = () => {
 
                         {watch('solarpanel') === 'existant' && (
                             <>
-                                {/***** The title *****/}
+                                <TypographyFormatMessage className="text-14 font-600 mt-32">
+                                    Détail de votre installation
+                                </TypographyFormatMessage>
+
+                                {/***** The title of the installation *****/}
                                 <div className="text-13 mt-32 flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
                                     <Typography>
                                         {formatMessage({
-                                            id: 'Titre',
-                                            defaultMessage: 'Titre',
+                                            id: 'Nommez votre installation',
+                                            defaultMessage: 'Nommez votre installation',
                                         })}
                                         &nbsp;:
                                     </Typography>
                                     <TextField
                                         name="title"
-                                        label="Titre"
+                                        label="Nom d'installation"
                                         style={{ marginBottom: 0 }}
                                         className="w-full sm:w-auto"
+                                        placeholder="mon installation 3kwc sur le toit"
                                     />
                                 </div>
 
@@ -583,8 +588,8 @@ export const InstallationTab = () => {
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
                                         <Typography>
                                             {formatMessage({
-                                                id: 'Puissance (W)',
-                                                defaultMessage: 'Puissance (W)',
+                                                id: 'Puissance (kwc)',
+                                                defaultMessage: 'Puissance (kwc)',
                                             })}
                                             &nbsp;:
                                         </Typography>
@@ -774,7 +779,7 @@ export const InstallationTab = () => {
                         </ButtonLoader>
                     </div>
                     <a
-                        href="https://www.myem.fr/"
+                        href="https://e0vzc8h9q32.typeform.com/to/pNFEjfzU"
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{

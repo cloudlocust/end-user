@@ -90,12 +90,13 @@ const SOLAR_PANEL_TEXT = 'Je dispose de panneaux solaires :'
 const YES_VALUE_TEXT = 'Oui'
 const NO_VALUE_TEXT = 'Non'
 const POSSIBLY_VALUE_TEXT = "J'y pense"
-const TITLE_FIELD_TEXT = 'Titre :'
+const SOLAR_INSTALLATION_DETAILS_TITLE_TEXT = 'Détail de votre installation'
+const TITLE_FIELD_TEXT = 'Nommez votre installation :'
 const INSTALLATION_DATE_FIELD_TEXT = 'Date d’installation :'
 const SOLAR_PANEL_TYPE_FIELD_TEXT = 'Type de panneaux :'
 const ORIENTATION_FIELD_TEXT = 'Orientation :'
 const PANEL_BRAND_FIELD_TEXT = 'Marque de panneaux :'
-const POWER_FIELD_TEXT = 'Puissance (W) :'
+const POWER_FIELD_TEXT = 'Puissance (kwc) :'
 const INVERTER_BRAND_FIELD_TEXT = 'Marque de l’onduleur :'
 const INCLINATION_FIELD_TEXT = 'Inclinaison (%) :'
 const HAS_RESALE_CONTRACT_FIELD_TEXT = 'Avez-vous un contrat de revente :'
@@ -137,6 +138,7 @@ describe('Test InstallationForm', () => {
         expect(getByText(YES_VALUE_TEXT)).toBeInTheDocument()
         expect(getByText(NO_VALUE_TEXT)).toBeInTheDocument()
         expect(getByText(POSSIBLY_VALUE_TEXT)).toBeInTheDocument()
+        expect(queryByText(SOLAR_INSTALLATION_DETAILS_TITLE_TEXT)).not.toBeInTheDocument()
         expect(queryByText(TITLE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INSTALLATION_DATE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).not.toBeInTheDocument()
@@ -156,7 +158,7 @@ describe('Test InstallationForm', () => {
         expect(
             getByText('Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?'),
         ).toBeInTheDocument()
-        expect(container.getElementsByTagName('a')[0].href).toContain('https://www.myem.fr/')
+        expect(container.getElementsByTagName('a')[0].href).toContain('https://e0vzc8h9q32.typeform.com/to/pNFEjfzU')
     })
 
     test("should render 'InstallationForm' correctly when solarpanel type is existant", async () => {
@@ -172,6 +174,7 @@ describe('Test InstallationForm', () => {
             </BrowserRouter>,
         )
 
+        expect(getByText(SOLAR_INSTALLATION_DETAILS_TITLE_TEXT)).toBeInTheDocument()
         expect(getByText(TITLE_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(INSTALLATION_DATE_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).toBeInTheDocument()
@@ -198,6 +201,7 @@ describe('Test InstallationForm', () => {
 
         expect(getByText(STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_1)).toBeInTheDocument()
         expect(getByText(STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_2)).toBeInTheDocument()
+        expect(queryByText(SOLAR_INSTALLATION_DETAILS_TITLE_TEXT)).not.toBeInTheDocument()
         expect(queryByText(TITLE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(INSTALLATION_DATE_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(SOLAR_PANEL_TYPE_FIELD_TEXT)).not.toBeInTheDocument()
