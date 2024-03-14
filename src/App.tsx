@@ -136,7 +136,13 @@ const Routes = () => {
         }
     }, [history, location])
 
-    if (!isMaintenanceMode && location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
+    if (
+        !isMaintenanceMode &&
+        user &&
+        !user.isProviderSubscriptionCompleted &&
+        location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM &&
+        isApplicationBlocked.current
+    ) {
         return (
             <ThemingProvider>
                 <AlpiqSubscriptionStepper />

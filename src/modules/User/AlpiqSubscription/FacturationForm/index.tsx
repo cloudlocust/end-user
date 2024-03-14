@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { useIntl } from 'react-intl'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { Dispatch, RootState } from 'src/redux'
 import { useState } from 'react'
 import { Checkbox as CheckboxMui } from '@mui/material'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
@@ -17,6 +17,11 @@ import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastSte
 import Button from '@mui/material/Button'
 import { AlpiqFacturationDataType } from '..'
 import { useAlpiqProvider } from '../alpiqSubscriptionHooks'
+import { SectionText, SectionTitle } from './utils'
+import { useModal } from 'src/hooks/useModal'
+import { SuccessPopupModal } from './SuccessPopupModal'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 //eslint-disable-next-line
 export const datePrelevementOptions: { value: number, label: string}[] = Array.from({length: 28}, (_, index) => ({
@@ -43,13 +48,18 @@ export const FacturationForm = ({
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
     const { formatMessage } = useIntl()
+    const history = useHistory()
+    const dispatch = useDispatch<Dispatch>()
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
     const [isNewFacturationAddress, setIsNewFacturationAddress] = useState(false)
-    const { createAlpiqSubscription } = useAlpiqProvider()
+    const { createAlpiqSubscription, loadingInProgress } = useAlpiqProvider()
     const afterTomorrow = addDays(new Date(), 2) // Get the day after tomorrow
     const formattedAfterTomorrow = format(afterTomorrow, 'yyyy-MM-dd')
     const IBAN_REGEX_TEXT = 'Format IBAN invalide'
     const ibanRegex = /^([A-Za-z]{2})\d{2}\s?\d{4}\s?\d{4}\s?\d{4}(?:\s?\d{2}){2}\s?$/.source
+
+    const { isOpen: isFinishFacturationOpen, openModal: onOpenFinishFacturationPopup } = useModal()
 
     /**
      * Handle Open CGV.
@@ -74,8 +84,21 @@ export const FacturationForm = ({
      */
     const onSubmit = (data: AlpiqFacturationDataType) => {
         // technicly can't have this case if he did the steps right and the stepper does his job on load
-        if (!alpiqSubscriptionSpecs) return
-        createAlpiqSubscription({ ...data, ...alpiqSubscriptionSpecs }, currentHousing?.id)
+        if (!alpiqSubscriptionSpecs || !user) return
+        createAlpiqSubscription(
+            user,
+            { ...data, ...alpiqSubscriptionSpecs },
+            currentHousing?.id,
+            onOpenFinishFacturationPopup,
+        )
+    }
+
+    /**
+     * What happens after we click on finish after the subscription is done.
+     */
+    const onClickFinishAlpiqProcess = () => {
+        dispatch.housingModel.setAlpiqSubscriptionSpecs(null)
+        history.replace(`/nrlink-connection-steps/${currentHousing?.id}`)
     }
 
     return (
@@ -250,7 +273,7 @@ export const FacturationForm = ({
                                 defaultMessage: 'Retour',
                             })}
                         </Button>
-                        <ButtonLoader className="mr-20" color="primary" type="submit">
+                        <ButtonLoader inProgress={loadingInProgress} className="mr-20" color="primary" type="submit">
                             {formatMessage({
                                 id: 'Souscrire',
                                 defaultMessage: 'Souscrire',
@@ -259,71 +282,7 @@ export const FacturationForm = ({
                     </div>
                 </div>
             </Form>
+            <SuccessPopupModal modalOpen={isFinishFacturationOpen} onClickNext={onClickFinishAlpiqProcess} />
         </div>
-    )
-}
-
-/**
- * Section Title To avoir repetition.
- *
- * @param props Props.
- * @param props.title Title.
- * @returns JSX Element.
- */
-const SectionTitle = ({
-    title,
-}: /**
- */ {
-    /**
-     * Title.
-     */
-    title: string
-}) => {
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
-    return (
-        <TypographyFormatMessage
-            color={theme.palette.primary.main}
-            textAlign="center"
-            variant={isMobile ? 'h6' : 'h5'}
-            fontWeight={600}
-        >
-            {title}
-        </TypographyFormatMessage>
-    )
-}
-
-/**
- * Section Text to avoid repetition.
- *
- * @param props Props.
- * @param props.text Text.
- * @param props.className Class Name.
- * @returns JSX Element.
- */
-const SectionText = ({
-    text,
-    className,
-}: /**
- */ {
-    /**
-     * Text.
-     */
-    text: string
-    /**
-     * ClassName.
-     */
-    className?: string
-}) => {
-    const theme = useTheme()
-    return (
-        <TypographyFormatMessage
-            className={className ?? ''}
-            color={theme.palette.text.primary}
-            variant="body1"
-            fontWeight={400}
-        >
-            {text}
-        </TypographyFormatMessage>
     )
 }
