@@ -170,7 +170,6 @@ export const useAlpiqProvider = () => {
                     defaultMessage: 'Erreur lors de la souscription au contract Alpiq',
                 }),
                 {
-                    autoHideDuration: 5000,
                     variant: 'error',
                 },
             )
