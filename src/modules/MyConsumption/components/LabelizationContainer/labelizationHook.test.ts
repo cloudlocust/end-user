@@ -35,9 +35,9 @@ jest.mock('notistack', () => ({
 describe('useLabelization Hook test', () => {
     describe('getActivitiesList function test', () => {
         // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars
-        const callGetActivitiesList = async (result: any) => {
+        const callGetActivitiesList = async (result: any, date?: Date) => {
             try {
-                await result.current.getActivitiesList()
+                await result.current.getActivitiesList(date)
             } catch (err) {}
         }
 
@@ -90,6 +90,21 @@ describe('useLabelization Hook test', () => {
             await waitForValueToChange(() => result.current.isGetActivitiesLoading, { timeout: 2000 })
             expect(result.current.isGetActivitiesLoading).toBe(false)
             expect(result.current.activitiesList).toHaveLength(3)
+        }, 5000)
+
+        test('get the activities of specific date', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(null)
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useLabelization(1))
+
+            act(async () => callGetActivitiesList(result, new Date()))
+            expect(result.current.isGetActivitiesLoading).toBe(true)
+            await waitForValueToChange(() => result.current.isGetActivitiesLoading, { timeout: 2000 })
+            expect(result.current.isGetActivitiesLoading).toBe(false)
+            expect(result.current.activitiesList).toHaveLength(1)
         }, 5000)
     })
 
@@ -157,7 +172,6 @@ describe('useLabelization Hook test', () => {
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ADD_ACTIVITY_SUCCESS_MESSAGE, {
                 variant: 'success',
             })
-            // TODO: Assert that getActivitiesList is called
         }, 5000)
     })
 
@@ -218,7 +232,6 @@ describe('useLabelization Hook test', () => {
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(DELETE_ACTIVITY_SUCCESS_MESSAGE, {
                 variant: 'success',
             })
-            // TODO: Assert that getActivitiesList is called
         }, 5000)
     })
 })
