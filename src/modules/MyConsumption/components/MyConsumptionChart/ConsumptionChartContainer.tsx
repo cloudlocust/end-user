@@ -280,14 +280,19 @@ export const ConsumptionChartContainer = ({
         )
     }, [consumptionChartData])
 
+    // Callback to check if the range is in the current year.
+    const isRangeInCurrentYear = useCallback(() => {
+        return new Date(range.from).getFullYear() === new Date().getFullYear()
+    }, [range])
+
     /**
      * We use this hook to check if the data is partially available for yearly period.
      */
     useEffect(() => {
-        if (period === PeriodEnum.YEARLY) {
+        if (period === PeriodEnum.YEARLY && !isRangeInCurrentYear()) {
             setPartiallyYearlyDataExist(consumptionChartData.length > 0)
         }
-    }, [consumptionChartData, period, setPartiallyYearlyDataExist])
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist, isRangeInCurrentYear, range])
 
     const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
     const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
