@@ -73,8 +73,10 @@ const SimplifiedConsumptionChartContainer = ({
     } = useLabelization(currentHousing?.id)
 
     useEffect(() => {
-        getActivitiesList()
-    }, [getActivitiesList])
+        if (!isAddActivityLoading && !isDeleteActivityLoading) {
+            getActivitiesList(new Date(range.from))
+        }
+    }, [getActivitiesList, isAddActivityLoading, isDeleteActivityLoading, range.from])
 
     const { housingEquipmentsList, loadingEquipmentInProgress } = useEquipmentList(currentHousing?.id)
 
