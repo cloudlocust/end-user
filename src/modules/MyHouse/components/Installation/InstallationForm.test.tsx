@@ -107,6 +107,8 @@ const STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_1 = 'J’ai déjà des devis, je n�
 const STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_2 =
     'Je souhaite être mis en relation avec un partenaire de confiance nrLINK'
 const SAVE_AND_MODIFY_BUTTON_TEXT = 'Enregistrer mes modification'
+const RECOMMEND_INSTALLER_LINK_TEXT =
+    'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?'
 
 describe('Test InstallationForm', () => {
     beforeEach(() => {
@@ -117,7 +119,7 @@ describe('Test InstallationForm', () => {
     })
 
     test("should render 'InstallationForm' correctly when solarpanel type is nonexistant", async () => {
-        const { getByText, getAllByText, queryByText, getByRole, container } = reduxedRender(
+        const { getByText, getAllByText, queryByText, getByRole } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
             </BrowserRouter>,
@@ -155,10 +157,7 @@ describe('Test InstallationForm', () => {
         const saveButton = getByRole('button', { name: SAVE_AND_MODIFY_BUTTON_TEXT })
         expect(saveButton).toBeInTheDocument()
         expect(saveButton).toBeDisabled()
-        expect(
-            getByText('Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?'),
-        ).toBeInTheDocument()
-        expect(container.getElementsByTagName('a')[0].href).toContain('https://e0vzc8h9q32.typeform.com/to/pNFEjfzU')
+        expect(queryByText(RECOMMEND_INSTALLER_LINK_TEXT)).not.toBeInTheDocument()
     })
 
     test("should render 'InstallationForm' correctly when solarpanel type is existant", async () => {
@@ -168,7 +167,7 @@ describe('Test InstallationForm', () => {
             solarPanelType: SOLAR_PANEL_TYPES.onRoof,
             hasResaleContract: true,
         }
-        const { getByText, queryByText } = reduxedRender(
+        const { getByText, queryByText, container } = reduxedRender(
             <BrowserRouter>
                 <InstallationTab />
             </BrowserRouter>,
@@ -186,6 +185,8 @@ describe('Test InstallationForm', () => {
         expect(getByText(HAS_RESALE_CONTRACT_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(RESALE_TARIFF_FIELD_TEXT)).toBeInTheDocument()
         expect(getByText(RESALE_TARIFF_NOTE_TEXT)).toBeInTheDocument()
+        expect(getByText(RECOMMEND_INSTALLER_LINK_TEXT)).toBeInTheDocument()
+        expect(container.getElementsByTagName('a')[0].href).toContain('https://e0vzc8h9q32.typeform.com/to/pNFEjfzU')
         expect(queryByText(STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_1)).not.toBeInTheDocument()
         expect(queryByText(STATUS_WHEN_WANTING_SOLAR_PANEL_VALUE_2)).not.toBeInTheDocument()
     })
@@ -213,6 +214,7 @@ describe('Test InstallationForm', () => {
         expect(queryByText(HAS_RESALE_CONTRACT_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(RESALE_TARIFF_FIELD_TEXT)).not.toBeInTheDocument()
         expect(queryByText(RESALE_TARIFF_NOTE_TEXT)).not.toBeInTheDocument()
+        expect(queryByText(RECOMMEND_INSTALLER_LINK_TEXT)).not.toBeInTheDocument()
     })
 
     test('should call the function addUpdateInstallationInfos when clicking on the save button', async () => {
