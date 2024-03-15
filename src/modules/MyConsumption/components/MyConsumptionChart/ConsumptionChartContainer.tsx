@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useTheme, useMediaQuery } from '@mui/material'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -34,6 +34,7 @@ import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyCons
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
 import { Title } from 'src/modules/MyConsumption/components/Title'
+import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -102,6 +103,17 @@ export const ConsumptionChartContainer = ({
     const hidePmax = period === 'daily' || enedisSgeOff
 
     const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
+        interval: metricsInterval,
+        range: range,
+        targets: [],
+        filters,
+    })
+    // now we used this hooks to get some data used to calculate total cost + total consumption.
+    const {
+        data: additionalMetricsData,
+        getMetricsWithParams: getAdditionalMetricsWithParams,
+        isMetricsLoading: isAdditionalMetricsLoading,
+    } = useAdditionalMetrics({
         interval: metricsInterval,
         range: range,
         targets: [],
@@ -266,6 +278,57 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         getMetrics()
     }, [getMetrics])
+    // Callback use to fetch the some metrics
+    const getAdditionalMetrics = useCallback(async () => {
+        await getAdditionalMetricsWithParams({
+            interval: metricsInterval,
+            range,
+            targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+            filters,
+        })
+    }, [getAdditionalMetricsWithParams, metricsInterval, range, filters])
+
+    const shouldDisplayTotalsOnChartTooltip =
+        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Consumption && period !== 'daily'
+    // Effect used to get additional metrics.
+    useEffect(() => {
+        if (shouldDisplayTotalsOnChartTooltip) {
+            getAdditionalMetrics()
+        }
+    }, [getAdditionalMetrics, shouldDisplayTotalsOnChartTooltip])
+    /**
+     * Calculates the total consumption based on the additional metrics data.
+     * If `shouldDisplayTotalsOnChartTooltip` is true and `additionalMetricsData` has items,
+     * the total consumption is computed using the `computeTotalConsumption` function.
+     * Otherwise, it returns undefined.
+     *
+     * @param additionalMetricsData - The additional metrics data used to calculate the total consumption.
+     * @param shouldDisplayTotalsOnChartTooltip - A flag indicating whether to display the total consumption on the chart tooltip.
+     * @returns The total consumption or undefined.
+     */
+    const totalConsumption = useMemo(() => {
+        if (shouldDisplayTotalsOnChartTooltip && additionalMetricsData.length > 0) {
+            return computeTotalConsumption(additionalMetricsData)
+        }
+        return undefined
+    }, [additionalMetricsData, shouldDisplayTotalsOnChartTooltip])
+
+    /**
+     * Calculates the total cost in euros based on the additional metrics data.
+     * If shouldDisplayTotalsOnChartTooltip is true and additionalMetricsData has at least one item,
+     * the total cost is computed using the computeTotalEuros function.
+     * Otherwise, the total cost is undefined.
+     *
+     * @param additionalMetricsData - The additional metrics data used to calculate the total cost.
+     * @param shouldDisplayTotalsOnChartTooltip - A flag indicating whether to display the total cost on the chart tooltip.
+     * @returns The total cost in euros or undefined.
+     */
+    const totalCost = useMemo(() => {
+        if (shouldDisplayTotalsOnChartTooltip && additionalMetricsData.length > 0) {
+            return computeTotalEuros(additionalMetricsData)
+        }
+        return undefined
+    }, [additionalMetricsData, shouldDisplayTotalsOnChartTooltip])
 
     /**
      * Handles the selection of years in the date picker.
@@ -359,7 +422,7 @@ export const ConsumptionChartContainer = ({
                 />
             </div>
 
-            {isMetricsLoading ? (
+            {isMetricsLoading || isAdditionalMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
@@ -368,6 +431,8 @@ export const ConsumptionChartContainer = ({
                     data={consumptionChartData}
                     period={period}
                     axisColor={theme.palette.common.black}
+                    totalConsumption={totalConsumption}
+                    totalCost={totalCost}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />

@@ -26,6 +26,8 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.selectedLabelPeriod Selected Label Period.
  * @param props.chartRef ChartRef.
  * @param props.setInputPeriodTime SetInputPeriodTime.
+ * @param props.totalConsumption Total Consumption.
+ * @param props.totalCost Total Cost.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -35,6 +37,8 @@ const MyConsumptionChart = ({
     selectedLabelPeriod,
     chartRef,
     setInputPeriodTime,
+    totalConsumption,
+    totalCost,
 }: ConsumptionChartProps) => {
     const theme = useTheme()
     const { consumptionToggleButton } = useMyConsumptionStore()
@@ -61,9 +65,22 @@ const MyConsumptionChart = ({
             isMobile,
             period,
             axisColor,
+            totalConsumption,
+            totalCost,
             selectedLabelPeriod,
         )
-    }, [timestamps, values, theme, consumptionToggleButton, isMobile, period, axisColor, selectedLabelPeriod])
+    }, [
+        timestamps,
+        values,
+        theme,
+        consumptionToggleButton,
+        isMobile,
+        period,
+        axisColor,
+        selectedLabelPeriod,
+        totalConsumption,
+        totalCost,
+    ])
 
     const handleBrushSelected = useCallback(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

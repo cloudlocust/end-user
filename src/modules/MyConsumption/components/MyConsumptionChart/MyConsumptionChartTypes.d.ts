@@ -140,6 +140,24 @@ export interface ConsumptionChartContainerProps {
 }
 
 /**
+ * Represents the total measurement value and unit.
+ */
+type TotalMeasurement =
+    /**
+     * TotalMeasurement.
+     */
+    {
+        /**
+         * The numeric value of the measurement.
+         */
+        value: number
+        /**
+         * The unit of the measurement.
+         */
+        unit: string
+    }
+
+/**
  * ConsumptionChart Props.
  */
 export interface ConsumptionChartProps {
@@ -167,4 +185,12 @@ export interface ConsumptionChartProps {
      * Set Input period Time.
      */
     setInputPeriodTime?: (periodTime: IPeriodTime) => void
+    /**
+     * Total Consumption used to display on the tooltip.
+     */
+    totalConsumption?: TotalMeasurement
+    /**
+     * Total Cost used to display on the tooltip.
+     */
+    totalCost?: TotalMeasurement
 }
