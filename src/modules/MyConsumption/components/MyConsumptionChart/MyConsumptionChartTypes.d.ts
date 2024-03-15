@@ -3,6 +3,7 @@ import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Me
 import { Dispatch, SetStateAction } from 'react'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import ReactECharts from 'echarts-for-react'
+import { DisplayTooltipLabelConditionFunction } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
 
 /**
  * Period of time type, with start and end time.
@@ -193,4 +194,8 @@ export interface ConsumptionChartProps {
      * Total Cost used to display on the tooltip.
      */
     totalCost?: TotalMeasurement
+    /**
+     * Callback to determines whether to display the tooltip label.
+     */
+    displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction
 }

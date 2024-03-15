@@ -4,17 +4,22 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 
 /**
- * Params of formatter function  of echart tooltip.
+ * Represents the value of a label in EChart tooltip.
  */
-export type EChartTooltipFormatterParams =
+export type EChartTooltipLabelValue = number | undefined
+
+/**
+ * Param item of formatter function  of echart tooltip.
+ */
+export type EChartTooltipFormatterParamsItem =
     /**
-     * EChartTooltipFormatterParams.
+     * EChartTooltipFormatterParamItem.
      */
     {
         /**
          *  Value of the data item.
          */
-        value: string | number
+        value: EChartTooltipLabelValue
         /**
          * Name of the series.
          */
@@ -31,8 +36,20 @@ export type EChartTooltipFormatterParams =
          * Html string represent symbol for series, used in labels for color or shape identification.
          */
         marker: string
-    }[]
+    }
 
+/**
+ * Represents the parameters for the EChart tooltip formatter.
+ */
+export type EChartTooltipFormatterParams = EChartTooltipFormatterParamsItem[]
+
+/**
+ * Function that determines whether to display the tooltip label.
+ *
+ * @param item - The item of the EChartTooltipFormatterParams.
+ * @returns A boolean indicating whether to display the tooltip label.
+ */
+export type DisplayTooltipLabelConditionFunction = (item: EChartTooltipFormatterParamsItem) => boolean
 /**
  * Props for the ConsumptionChartTooltip component.
  */
@@ -51,7 +68,7 @@ export type ConsumptionChartTooltipProps =
          * @param index - The index of the chart.
          * @returns The formatted value.
          */
-        valueFormatter: (index: number) => axisValueFormatterType
+        valueFormatter?: (index: number) => axisValueFormatterType
         /**
          * Total cost measurement.
          */
@@ -60,4 +77,8 @@ export type ConsumptionChartTooltipProps =
          * Total consumption measurement.
          */
         totalConsumption?: TotalMeasurement
+        /**
+         * Callback to determines whether to display the tooltip label.
+         */
+        displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction
     }

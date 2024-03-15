@@ -28,6 +28,7 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.setInputPeriodTime SetInputPeriodTime.
  * @param props.totalConsumption Total Consumption.
  * @param props.totalCost Total Cost.
+ * @param props.displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -39,6 +40,7 @@ const MyConsumptionChart = ({
     setInputPeriodTime,
     totalConsumption,
     totalCost,
+    displayTooltipLabelCondition,
 }: ConsumptionChartProps) => {
     const theme = useTheme()
     const { consumptionToggleButton } = useMyConsumptionStore()
@@ -67,6 +69,7 @@ const MyConsumptionChart = ({
             axisColor,
             totalConsumption,
             totalCost,
+            displayTooltipLabelCondition,
             selectedLabelPeriod,
         )
     }, [
@@ -80,6 +83,7 @@ const MyConsumptionChart = ({
         selectedLabelPeriod,
         totalConsumption,
         totalCost,
+        displayTooltipLabelCondition,
     ])
 
     const handleBrushSelected = useCallback(

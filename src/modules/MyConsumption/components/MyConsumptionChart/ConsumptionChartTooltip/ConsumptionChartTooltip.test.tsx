@@ -61,4 +61,28 @@ describe('ConsumptionChartTooltip', () => {
         expect(queryByText('30 kWh')).toBeNull()
         expect(queryByText('50 USD')).toBeNull()
     })
+    test('should not show labels if displayTooltipLabelCondition makes theme falsy', () => {
+        const { queryByText, getByText } = reduxedRender(
+            <ConsumptionChartTooltip
+                params={params}
+                displayTooltipLabelCondition={(item) => {
+                    return item.seriesName === firstChartTooltipParam.seriesName ? false : true
+                }}
+            />,
+        )
+
+        expect(queryByText(firstChartTooltipParam.marker)).not.toBeInTheDocument()
+        expect(queryByText(firstChartTooltipParam.seriesName)).not.toBeInTheDocument()
+
+        expect(getByText(secondChartTooltipParam.name)).toBeInTheDocument()
+        expect(getByText(secondChartTooltipParam.marker)).toBeInTheDocument()
+        expect(getByText(secondChartTooltipParam.seriesName)).toBeInTheDocument()
+    })
+
+    test('should the tooltip component return null when all labels not showing', () => {
+        const { container } = reduxedRender(
+            <ConsumptionChartTooltip params={params} displayTooltipLabelCondition={() => false} />,
+        )
+        expect(container.firstChild).toBeNull()
+    })
 })
