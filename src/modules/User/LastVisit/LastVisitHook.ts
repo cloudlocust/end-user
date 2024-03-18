@@ -13,21 +13,23 @@ export const LAST_VISIT_ENDPOINT = `${API_RESOURCES_URL}/users/last-visit`
 /**
  * Hook that performs request about user's last visit.
  *
- * @param currentTime Current time.
  * @returns UseLastVisit hook.
  */
-export const useLastVisit = (currentTime: string) => {
+export const useLastVisit = () => {
     const { axios, isCancel } = useAxios()
 
-    const updateLastVisitTime = useCallback(async () => {
-        try {
-            await axios.patch(LAST_VISIT_ENDPOINT, { lastVisitedAt: currentTime })
-        } catch (error) {
-            if (isCancel(error)) return
-            // A snackbar isn't necessary because this request is being performed at every page load.
-            // throw Error('Erreur during last visit request')
-        }
-    }, [axios, currentTime, isCancel])
+    const updateLastVisitTime = useCallback(
+        async (currentTime: string) => {
+            try {
+                await axios.patch(LAST_VISIT_ENDPOINT, { lastVisitedAt: currentTime })
+            } catch (error) {
+                if (isCancel(error)) return
+                // A snackbar isn't necessary because this request is being performed at every page load.
+                // throw Error('Erreur during last visit request')
+            }
+        },
+        [axios, isCancel],
+    )
 
     return { updateLastVisitTime }
 }
