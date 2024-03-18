@@ -778,24 +778,26 @@ export const InstallationTab = () => {
                             <TypographyFormatMessage>Enregistrer mes modification</TypographyFormatMessage>
                         </ButtonLoader>
                     </div>
-                    <a
-                        href="https://e0vzc8h9q32.typeform.com/to/pNFEjfzU"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            color: theme.palette.primary.main,
-                            display: 'inline-block',
-                            marginTop: '20px',
-                            backgroundColor: 'transparent',
-                            border: 0,
-                        }}
-                    >
-                        {formatMessage({
-                            id: 'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?',
-                            defaultMessage:
-                                'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?',
-                        })}
-                    </a>
+                    {watch('solarpanel') === 'existant' && (
+                        <a
+                            href="https://e0vzc8h9q32.typeform.com/to/pNFEjfzU"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                color: theme.palette.primary.main,
+                                display: 'inline-block',
+                                marginTop: '20px',
+                                backgroundColor: 'transparent',
+                                border: 0,
+                            }}
+                        >
+                            {formatMessage({
+                                id: 'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?',
+                                defaultMessage:
+                                    'Souhaitez-vous nous faire part de votre expérience et recommander votre installateur ?',
+                            })}
+                        </a>
+                    )}
                 </form>
             </FormProvider>
         </Container>
