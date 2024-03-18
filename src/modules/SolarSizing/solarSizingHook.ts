@@ -45,22 +45,22 @@ export const useSolarSizing = (housingId?: number) => {
             return postSolarSizing(solarSizingUrl, newSolarSizing)
         },
         {
-            /**
-             * On success callback.
-             *
-             * @param response Axios response.
-             */
-            onSuccess: (response) => {
-                if (response.status === 201) {
-                    enqueueSnackbar(
-                        formatMessage({
-                            id: ADD_SOLAR_SIZING_SUCCESS_MESSAGE,
-                            defaultMessage: ADD_SOLAR_SIZING_SUCCESS_MESSAGE,
-                        }),
-                        { variant: 'success' },
-                    )
-                }
-            },
+            // /**
+            //  * On success callback.
+            //  *
+            //  * @param response Axios response.
+            //  */
+            // onSuccess: (response) => {
+            //     if (response.status === 201) {
+            //         enqueueSnackbar(
+            //             formatMessage({
+            //                 id: ADD_SOLAR_SIZING_SUCCESS_MESSAGE,
+            //                 defaultMessage: ADD_SOLAR_SIZING_SUCCESS_MESSAGE,
+            //             }),
+            //             { variant: 'success' },
+            //         )
+            //     }
+            // },
             /**
              * On error callback.
              */
@@ -82,20 +82,20 @@ export const useSolarSizing = (housingId?: number) => {
             return await axios.get<HousingSolarSizing>(solarSizingUrl)
         },
         {
-            /**
-             * On error callback.
-             */
-            onError: () => {
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération des données des potentiel solaire',
-                        defaultMessage: 'Erreur lors de la récupération des potentiel solaire',
-                    }),
-                    { variant: 'error' },
-                )
-            },
+            // /**
+            //  * On error callback.
+            //  */
+            // onError: () => {
+            //     enqueueSnackbar(
+            //         formatMessage({
+            //             id: 'Erreur lors de la récupération des données des potentiel solaire',
+            //             defaultMessage: 'Erreur lors de la récupération des potentiel solaire',
+            //         }),
+            //         { variant: 'error' },
+            //     )
+            // },
             // Only fetch the data if the housingId is defined
-            enabled: !!housingId,
+            enabled: Boolean(housingId),
             cacheTime: 1000 * 60 * 1,
         },
     )

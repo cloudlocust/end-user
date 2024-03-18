@@ -400,14 +400,6 @@ describe('Test widget functions', () => {
                     value: 'Achetée',
                 },
                 {
-                    target: metricTargetsEnum.internalTemperature,
-                    value: 'Température Intérieure',
-                },
-                {
-                    target: metricTargetsEnum.externalTemperature,
-                    value: 'Température Extérieure',
-                },
-                {
                     target: metricTargetsEnum.pMax,
                     value: 'Puissance Maximale',
                 },

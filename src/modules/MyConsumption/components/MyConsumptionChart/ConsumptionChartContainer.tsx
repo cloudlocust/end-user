@@ -16,6 +16,7 @@ import {
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
+    MissingDataWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
@@ -73,7 +74,7 @@ export const ConsumptionChartContainer = ({
     const theme = useTheme()
 
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
-    const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
+    const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -268,6 +269,22 @@ export const ConsumptionChartContainer = ({
     }, [getMetrics])
 
     /**
+     * Checks if all yearly consumption data is available.
+     *
+     * @returns {boolean} True if all yearly data is available, false otherwise.
+     */
+    const checkIfAllYearlyDataExist = useCallback(() => {
+        return (
+            consumptionChartData.length > 0 &&
+            Array.from({ length: 12 }).every((_element, index) => {
+                return consumptionChartData.some((item) => {
+                    return item.datapoints[index] && !!item.datapoints[index][0]
+                })
+            })
+        )
+    }, [consumptionChartData])
+
+    /**
      * Handles the selection of years in the date picker.
      * In yearly view, only the n years are displayed if the enedis consent is active.
      *
@@ -288,6 +305,15 @@ export const ConsumptionChartContainer = ({
     )
 
     /**
+     * We use this hook to check if the data is partially available for yearly period.
+     */
+    useEffect(() => {
+        if (period === PeriodEnum.YEARLY) {
+            setPartiallyYearlyDataExist(consumptionChartData.length > 0)
+        }
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist])
+
+    /**
      * Determines whether the previous year navigation button should be disabled in the yearly view.
      * The button is disabled if the enedis consent is active and the range is within the last n years.
      *
@@ -303,6 +329,11 @@ export const ConsumptionChartContainer = ({
                 new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
         )
     }, [enedisSgeOff, period, range])
+
+    const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
+    const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
+    // We disable the consumption identifier button temporarily, must remove this const when you enable it.
+    const isConsumptionIdentifierButtonDisablingTemporarily = true
 
     return (
         <div className="mb-12">
@@ -347,7 +378,9 @@ export const ConsumptionChartContainer = ({
                     hidePmax={hidePmax}
                     activeButton={targetMenuActiveButton}
                 />
-                {!mdDown && period === 'daily' && <ConsumptionIdentifierButton size="small" className="px-16" />}
+                {!isConsumptionIdentifierButtonDisablingTemporarily && !mdDown && period === 'daily' && (
+                    <ConsumptionIdentifierButton size="small" className="px-16" />
+                )}
             </div>
             <div>
                 <MyConsumptionDatePicker
@@ -370,9 +403,14 @@ export const ConsumptionChartContainer = ({
                     axisColor={theme.palette.common.black}
                 />
             )}
+            {period === PeriodEnum.YEARLY &&
+                !isDefaultContractWarningShown &&
+                !isConsumptionEnedisSgeWarningShown &&
+                !isMetricsLoading &&
+                !checkIfAllYearlyDataExist() && <MissingDataWarning />}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-            {mdDown && period === 'daily' && (
+            {!isConsumptionIdentifierButtonDisablingTemporarily && mdDown && period === 'daily' && (
                 <div className="flex justify-center px-24 py-8">
                     <ConsumptionIdentifierButton fullWidth />
                 </div>
