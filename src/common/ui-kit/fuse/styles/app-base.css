@@ -31,6 +31,10 @@ html, body, #root {
     height: 100%;
 }
 
+#root {
+    overflow-y: auto;
+}
+
 h1, .h1 {
     font-size: 24px;
 }
