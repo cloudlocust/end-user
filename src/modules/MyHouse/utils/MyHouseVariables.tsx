@@ -24,9 +24,6 @@ export const ACCESS_RIGHTS_API = (housingId: number) => `${API_RESOURCES_URL}/ac
 export const accomodationLabelOptions = {
     house: 'Maison',
     apartment: 'Appartement',
-    before1950: 'Avant 1950',
-    from1950to1975: '1950 - 1975',
-    after1975: 'Après 1975',
     main: 'Principale',
     secondary: 'Secondaire',
     energeticPerformance: 'Performance énergétique',
@@ -39,15 +36,82 @@ export const accomodationLabelOptions = {
  */
 export const accomodationNames = {
     houseType: 'houseType',
+    houseLocation: 'houseLocation',
+    numberOfLevels: 'numberOfLevels',
     houseYear: 'houseYear',
     residenceType: 'residenceType',
     energyPerformanceIndex: 'energyPerformanceIndex',
     isolationLevel: 'isolationLevel',
     numberOfInhabitants: 'numberOfInhabitants',
     houseArea: 'houseArea',
+    numberOfWindows: 'numberOfWindows',
+    doubleOrTripleGlazedWindows: 'doubleOrTripleGlazedWindows',
     meterId: 'meterId',
     ownershipStatus: 'ownershipStatus',
 }
+/**
+ * Number of levels options.
+ */
+export const numberOfLevelsOptions = [
+    {
+        label: '1 niveau',
+        value: 1,
+    },
+    {
+        label: '2 niveaux',
+        value: 2,
+    },
+    {
+        label: '3 niveaux',
+        value: 3,
+    },
+]
+/**
+ * House location options.
+ */
+export const houseLocationOptions = [
+    {
+        label: 'Isolée',
+        value: 'isolée',
+    },
+    {
+        label: 'Mitoyenne 1 côté',
+        value: 'Mitoyenne_1_Cote',
+    },
+    {
+        label: 'Mitoyenne 2 côtés',
+        value: 'Mitoyenne_2_Cotes',
+    },
+]
+/**
+ * House year options.
+ */
+export const houseYearOptions = [
+    {
+        label: 'Ne sais pas',
+        value: 'NeSaisPas',
+    },
+    {
+        label: 'Avant 1950',
+        value: 'Avant_1950',
+    },
+    {
+        label: '1950 - 1975',
+        value: 'Entre_1950_1975',
+    },
+    {
+        label: '1976 - 1995',
+        value: 'Entre_1976_1995',
+    },
+    {
+        label: '1996 - 2005',
+        value: 'Entre_1996_2005',
+    },
+    {
+        label: 'Après 2005',
+        value: 'Apres_2005',
+    },
+]
 /**
  * Performance options.
  */
