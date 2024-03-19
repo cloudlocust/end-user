@@ -11,7 +11,7 @@ import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadi
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { floor, round } from 'lodash'
+import floor from 'lodash/floor'
 import convert from 'convert-units'
 
 /**
@@ -19,7 +19,7 @@ import convert from 'convert-units'
  *
  * @returns Solar sizing page.
  */
-export const SolarSizing = () => {
+export default function SolarSizing() {
     const currentHousing = useCurrentHousing()
     const [orientationValue, setOrientationValue] = useState<number>(0)
     const [inclinationValue, setInclinationValue] = useState<number>(0)
@@ -58,18 +58,20 @@ export const SolarSizing = () => {
     const onSubmit = async (data: ISolarSizing) => {
         const dataToSubmit = { ...data, orientation: orientationValue, inclination: inclinationValue }
         const { surface } = data
+        setLatestSurface(surface)
         await addSolarSizing.mutateAsync({ ...dataToSubmit, surface: parseInt(surface as unknown as string) })
         await refetch()
-        setLatestSurface(surface)
     }
 
     useEffect(() => {
         if (latestSurface) {
-            setPotentialSolarPanelPerSurface(round(latestSurface / oneSolarPanelSurface))
+            setPotentialSolarPanelPerSurface(floor(latestSurface / oneSolarPanelSurface))
         }
     }, [latestSurface])
 
     const annualProduction = floor(convert(solarSizingData?.data['annualProduction']).from('kWh').to('MWh'), 1)
+    // Kilowatt crête (kWc)
+    const nominalPower = floor(solarSizingData?.data['nominalPower']!, 1)
 
     const autoConsumptionPercentage = floor(solarSizingData?.data['autoConsumptionPercentage']!, 1)
     const autoProductionPercentage = floor(solarSizingData?.data['autoProductionPercentage']!, 1)
@@ -83,6 +85,24 @@ export const SolarSizing = () => {
         () => floor((annualProduction * autoProductionPercentage) / 100, 1),
         [annualProduction, autoProductionPercentage],
     )
+
+    const isDataReadyToBeShown = useMemo(() => {
+        return (
+            addSolarSizing.isSuccess &&
+            Number(annualProduction) &&
+            Number(autoConsumptionPercentage) &&
+            Number(averageConsumptionFromAnualProduction) &&
+            Number(autoProductionPercentage) &&
+            Number(averageProducationFromAnualProduction)
+        )
+    }, [
+        addSolarSizing.isSuccess,
+        annualProduction,
+        autoConsumptionPercentage,
+        autoProductionPercentage,
+        averageConsumptionFromAnualProduction,
+        averageProducationFromAnualProduction,
+    ])
 
     return (
         <PageSimple
@@ -178,18 +198,17 @@ export const SolarSizing = () => {
                                     </ButtonLoader>
                                 </Form>
                             </div>
-                            {addSolarSizing.isSuccess && (
+                            {Boolean(isDataReadyToBeShown) && (
                                 <div className="col-span-2">
-                                    <Typography className="mb-10 text-14">
+                                    <Typography paragraph className="mb-10 text-14">
                                         Votre maison peut être équipée de{' '}
                                         <strong>{potentialSolarPanelPerSurface}</strong> panneaux solaires, cela
-                                        représente un potentiel <strong>{annualProduction}</strong> MWh / an avec
+                                        représente un potentiel <strong>{nominalPower}</strong> kWc / an avec
                                         l'ensoleillement de l'année passée dans votre ville. En fonction de la
                                         répartition de votre consommation dans la journée, vous pourriez alors
-                                        autoconsommer <strong>{averageConsumptionFromAnualProduction}</strong> MWh soit{' '}
-                                        <strong>{autoConsumptionPercentage}</strong> % de votre consommation totale.{' '}
-                                        {''}
-                                        <strong>{autoProductionPercentage}</strong> % de votre production soit{' '}
+                                        autoconsommer <strong>{averageConsumptionFromAnualProduction}</strong> MWh soit
+                                        <strong>{autoConsumptionPercentage}</strong>% de votre consommation totale.
+                                        <strong>{autoProductionPercentage}</strong> % de votre production soit
                                         <strong>{averageProducationFromAnualProduction}</strong> MWh
                                     </Typography>
                                 </div>

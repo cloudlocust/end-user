@@ -12,3 +12,7 @@ export type textFieldCommonTypes =
     | 'inputRef'
     | 'variant'
     | 'inputProps'
+    | 'className'
+    | 'onChange'
+    | 'ref'
+    | 'value'
