@@ -1,5 +1,5 @@
 import {
-    checkMissingData,
+    checkMissingDataList,
     getMaxTimeBetweenSuccessiveMissingValue,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 
@@ -27,18 +27,18 @@ let datapointsOfMetrics = [
 describe('ConsumptionChartFunctions test', () => {
     // Should return an array of tuples with the same length as the input array
     it('should return an array of tuples with the same length as the input array when given a non-empty input array', () => {
-        const result = checkMissingData(datapointsOfMetrics)
+        const result = checkMissingDataList(datapointsOfMetrics)
         expect(result.length).toBe(datapointsOfMetrics[0].length)
     })
 
     it('should return an empty array when given an empty input array', () => {
         const datapointsOfMetrics: number[][][] = []
-        const result = checkMissingData(datapointsOfMetrics)
+        const result = checkMissingDataList(datapointsOfMetrics)
         expect(result.length).toBe(0)
     })
 
     it('should return the correct data', () => {
-        const result = checkMissingData(datapointsOfMetrics)
+        const result = checkMissingDataList(datapointsOfMetrics)
         expect(result).toStrictEqual([
             [true, 1709856000000],
             [false, 1709856060000],
