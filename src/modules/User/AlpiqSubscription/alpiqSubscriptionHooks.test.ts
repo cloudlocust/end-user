@@ -8,13 +8,7 @@ import {
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { CreateAlpiqSubscriptionDataType } from 'src/modules/User/AlpiqSubscription/index.d'
 import { applyCamelCase } from 'src/common/react-platform-components'
-import { IUser } from 'src/modules/User/model'
-import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 
-/**
- * Mock user model state.
- */
-const mockUser: IUser = applyCamelCase(TEST_SUCCESS_USER)
 const mockEnqueueSnackbar = jest.fn()
 const mockOnAfterCreation = jest.fn()
 const TEST_SNACKBAR_ERROR = 'snackbar_error'
@@ -138,12 +132,7 @@ describe('Test useAlpiqProvider functions', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useAlpiqProvider())
-            result.current.createAlpiqSubscription(
-                mockUser,
-                mockCreateSubscriptionBody,
-                TEST_HOUSES[0].id,
-                mockOnAfterCreation,
-            )
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody, TEST_HOUSES[0].id, mockOnAfterCreation)
             await waitForValueToChange(
                 () => {
                     return result.current.loadingInProgress
@@ -159,7 +148,7 @@ describe('Test useAlpiqProvider functions', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useAlpiqProvider())
-            result.current.createAlpiqSubscription(mockUser, mockCreateSubscriptionBody, TEST_HOUSES[1].id)
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody, TEST_HOUSES[1].id)
             await waitForValueToChange(
                 () => {
                     return result.current.loadingInProgress
@@ -174,7 +163,7 @@ describe('Test useAlpiqProvider functions', () => {
             const {
                 renderedHook: { result },
             } = reduxedRenderHook(() => useAlpiqProvider())
-            result.current.createAlpiqSubscription(mockUser, mockCreateSubscriptionBody)
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody)
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Aucun logement renseigné', {
                 variant: 'error',
             })

@@ -38,8 +38,8 @@ export const SuccessPopupModal = ({
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
-        <ThemeProvider theme>
-            <Modal open={modalOpen}>
+        <Modal open={modalOpen}>
+            <ThemeProvider theme>
                 <Box
                     sx={{
                         position: 'absolute' as 'absolute',
@@ -115,7 +115,7 @@ export const SuccessPopupModal = ({
                         </div>
                     </div>
                 </Box>
-            </Modal>
-        </ThemeProvider>
+            </ThemeProvider>
+        </Modal>
     )
 }

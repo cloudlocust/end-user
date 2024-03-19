@@ -10,9 +10,6 @@ import {
     ICreateAlpiqSubscriptionResponse,
 } from 'src/modules/User/AlpiqSubscription/index.d'
 import { AxiosResponse } from 'axios'
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
-import { IUser } from '../model'
 
 /**
  * Errror message when testing meter eligibility.
@@ -38,7 +35,6 @@ export const useAlpiqProvider = () => {
     const [loadingInProgress, setLoadingInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
-    const dispatch = useDispatch<Dispatch>()
 
     /**
      * Function that verify meter eligibility for alpiq provider.
@@ -126,15 +122,12 @@ export const useAlpiqProvider = () => {
     /**
      * Hook for alpiq subscription.
      *
-     * @param user User.
      * @param body Data for alpiq subscription.
      * @param housingId Housing Id.
      * @param onAfterCreation On after creation success.
      * @returns Void.
      */
     const createAlpiqSubscription = async (
-        //eslint-disable-next-line
-        user: IUser & { password?: string }, 
         body: CreateAlpiqSubscriptionDataType,
         housingId?: number,
         onAfterCreation?: () => void,
@@ -175,20 +168,6 @@ export const useAlpiqProvider = () => {
             )
         }
 
-        try {
-            await dispatch.userModel.updateCurrentUser({ data: { ...user, isProviderSubscriptionCompleted: true } })
-        } catch (error: any) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: 'Erreur lors de la sauvegarde de votre profil, contactez le service client',
-                    defaultMessage: 'Erreur lors de la sauvegarde de votre profil, contactez le service client',
-                }),
-                {
-                    autoHideDuration: 5000,
-                    variant: 'error',
-                },
-            )
-        }
         if (onAfterCreation) onAfterCreation()
 
         setLoadingInProgress(false)

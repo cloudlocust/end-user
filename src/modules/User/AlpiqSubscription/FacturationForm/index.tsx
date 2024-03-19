@@ -22,6 +22,7 @@ import { useModal } from 'src/hooks/useModal'
 import { SuccessPopupModal } from './SuccessPopupModal'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 
 //eslint-disable-next-line
 export const datePrelevementOptions: { value: number, label: string}[] = Array.from({length: 28}, (_, index) => ({
@@ -59,6 +60,7 @@ export const FacturationForm = ({
     const IBAN_REGEX_TEXT = 'Format IBAN invalide'
     const ibanRegex = /^([A-Za-z]{2})\d{2}\s?\d{4}\s?\d{4}\s?\d{4}(?:\s?\d{2}){2}\s?$/.source
 
+    const { enqueueSnackbar } = useSnackbar()
     const { isOpen: isFinishFacturationOpen, openModal: onOpenFinishFacturationPopup } = useModal()
 
     /**
@@ -86,7 +88,6 @@ export const FacturationForm = ({
         // technicly can't have this case if he did the steps right and the stepper does his job on load
         if (!alpiqSubscriptionSpecs || !user) return
         createAlpiqSubscription(
-            user,
             { ...data, ...alpiqSubscriptionSpecs },
             currentHousing?.id,
             onOpenFinishFacturationPopup,
@@ -96,7 +97,22 @@ export const FacturationForm = ({
     /**
      * What happens after we click on finish after the subscription is done.
      */
-    const onClickFinishAlpiqProcess = () => {
+    const onClickFinishAlpiqProcess = async () => {
+        try {
+            if (!user) return
+            await dispatch.userModel.updateCurrentUser({ data: { ...user, isProviderSubscriptionCompleted: true } })
+        } catch (error: any) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Erreur lors de la sauvegarde de votre profil, contactez le service client',
+                    defaultMessage: 'Erreur lors de la sauvegarde de votre profil, contactez le service client',
+                }),
+                {
+                    autoHideDuration: 5000,
+                    variant: 'error',
+                },
+            )
+        }
         dispatch.housingModel.setAlpiqSubscriptionSpecs(null)
         history.replace(`/nrlink-connection-steps/${currentHousing?.id}`)
     }
