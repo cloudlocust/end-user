@@ -49,32 +49,37 @@ export const useLabelization = (housingId?: number) => {
     /**
      * Get activities function.
      */
-    const getActivitiesList = useCallback(async () => {
-        if (!housingId) return
-        setIsGetActivitiesLoading(true)
-        try {
-            const { data: activitiesList, status } = await axios.get<ConsumptionLabelDataType[]>(
-                HOUSING_ACTIVITIES_API(housingId),
-            )
-            if (status === 200) {
-                setActivitiesList(activitiesList)
+    const getActivitiesList = useCallback(
+        async (date?: Date) => {
+            if (!housingId) return
+            setIsGetActivitiesLoading(true)
+            try {
+                let activityApi = HOUSING_ACTIVITIES_API(housingId)
+                if (date) {
+                    activityApi += `?activity_date=${date?.toISOString().split('T')[0]}`
+                }
+                const { data: activitiesList, status } = await axios.get<ConsumptionLabelDataType[]>(activityApi)
+                if (status === 200) {
+                    setActivitiesList(activitiesList)
+                }
+            } catch (error: any) {
+                enqueueSnackbar(
+                    error?.response?.data?.detail
+                        ? formatMessage({
+                              id: error.response.data.detail,
+                              defaultMessage: error.response.data.detail,
+                          })
+                        : formatMessage({
+                              id: GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
+                              defaultMessage: GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
+                          }),
+                    { variant: 'error' },
+                )
             }
-        } catch (error: any) {
-            enqueueSnackbar(
-                error?.response?.data?.detail
-                    ? formatMessage({
-                          id: error.response.data.detail,
-                          defaultMessage: error.response.data.detail,
-                      })
-                    : formatMessage({
-                          id: GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
-                          defaultMessage: GET_ACTIVITIES_DEFAULT_ERROR_MESSAGE,
-                      }),
-                { variant: 'error' },
-            )
-        }
-        setIsGetActivitiesLoading(false)
-    }, [enqueueSnackbar, formatMessage, housingId])
+            setIsGetActivitiesLoading(false)
+        },
+        [enqueueSnackbar, formatMessage, housingId],
+    )
 
     /**
      * Add activity function.
@@ -92,7 +97,6 @@ export const useLabelization = (housingId?: number) => {
                 >(HOUSING_ACTIVITIES_API(housingId), body)
 
                 if (status === 201) {
-                    await getActivitiesList()
                     enqueueSnackbar(
                         formatMessage({
                             id: ADD_ACTIVITY_SUCCESS_MESSAGE,
@@ -119,7 +123,7 @@ export const useLabelization = (housingId?: number) => {
                 setIsAddActivityLoading(false)
             }
         },
-        [enqueueSnackbar, formatMessage, getActivitiesList, housingId],
+        [enqueueSnackbar, formatMessage, housingId],
     )
 
     /**
@@ -133,7 +137,6 @@ export const useLabelization = (housingId?: number) => {
                 const { status } = await axios.delete(`${HOUSING_ACTIVITIES_API(housingId)}/${activityId}`)
 
                 if (status === 200) {
-                    await getActivitiesList()
                     enqueueSnackbar(
                         formatMessage({
                             id: DELETE_ACTIVITY_DEFAULT_ERROR_MESSAGE,
@@ -159,7 +162,7 @@ export const useLabelization = (housingId?: number) => {
                 setIsDeleteActivityLoading(false)
             }
         },
-        [enqueueSnackbar, formatMessage, getActivitiesList, housingId],
+        [enqueueSnackbar, formatMessage, housingId],
     )
 
     return {

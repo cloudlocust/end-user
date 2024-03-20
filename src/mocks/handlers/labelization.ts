@@ -118,6 +118,10 @@ export const activitiesEndpoints = [
                 }),
             )
         }
+        const activityDate = req.url.searchParams.get('activity_date')
+        if (activityDate) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json([TEST_ACTIVITIES[0]]))
+        }
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ACTIVITIES))
     }),
 

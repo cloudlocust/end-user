@@ -173,7 +173,7 @@ export const getXAxisOptionEchartsProductionChart = (xAxisTimestamps: number[], 
                     // Important to put onZero so that bar charts don't overflow with yAxis.
                     onZero: true,
                     lineStyle: {
-                        color: theme.palette.primary.contrastText,
+                        color: theme.palette.common.black,
                         type: 'solid',
                         opacity: 1,
                     },
@@ -187,7 +187,7 @@ export const getXAxisOptionEchartsProductionChart = (xAxisTimestamps: number[], 
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: theme.palette.primary.contrastText,
+                        color: theme.palette.common.black,
                         type: 'dashed',
                         opacity: 0.4,
                     },
@@ -376,7 +376,7 @@ export const getYAxisOptionEchartsProductionChart = (
                 onZero: true,
                 show: true,
                 lineStyle: {
-                    color: theme.palette.primary.contrastText,
+                    color: theme.palette.common.black,
                     type: 'solid',
                     opacity: 1,
                 },
@@ -387,7 +387,7 @@ export const getYAxisOptionEchartsProductionChart = (
             splitLine: {
                 show: true,
                 lineStyle: {
-                    color: theme.palette.primary.contrastText,
+                    color: theme.palette.common.black,
                     type: 'dashed',
                     opacity: 0.4,
                 },

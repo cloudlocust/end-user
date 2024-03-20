@@ -22,53 +22,58 @@ import { activitiesEndpoints } from './handlers/labelization'
 import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
 import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
 import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
+import { installationEndpoints } from 'src/mocks/handlers/installation'
 
 /**
  * Handlers to mock urls for tests.
  */
 const handlers = [
-    /******User REQUESTS*****/
+    /***** User endpoints *****/
     ...userEndpoints,
-    /******Meters REQUESTS*****/
+    /***** Meters endpoints *****/
     ...metersEndpoints,
-    /******NrLink REQUESTS*****/
+    /***** NrLink endpoints *****/
     ...nrlinkEndpoints,
-    /******Equipments REQUESTS*****/
+    /***** Equipments endpoints *****/
     ...equipmentsEndpoints,
-    /******accomodation REQUESTS*****/
+    /***** accomodation endpoints *****/
     ...accomodationEndpoints,
-    /******Metrics REQUESTS*****/
+    /***** Metrics endpoints *****/
     ...metricsEndpoints,
-    /******Consents REQUESTS*****/
+    /***** Consents endpoints *****/
     ...consentsEndpoints,
-    /******Consents REQUESTS*****/
+    /***** Housing endpoints *****/
     ...housingEndpoints,
-    /******Contracts REQUESTS*****/
+    /***** Contracts endpoints *****/
     ...contractsEndpoints,
-    /******Commercial Offer REQUEST*****/
+    /***** Commercial Offer endpoints *****/
     ...commercialOfferEndpoints,
-    /******Installation Requests *****/
+    /***** Installation endpoints *****/
     ...installationRequestsEndpoints,
-    /*** Solar Equipment requets */
+    /***** Solar Equipment endpoints *****/
     ...solarEquipmentsEndpoints,
-    /** Ecowatt requests. */
+    /***** Ecowatt endpoints. *****/
     ...ecowattEndpoints,
-    /** Consumption Alerts. */
+    /***** Consumption Alerts endpoints. *****/
     ...consumptionAlertsEndpoints,
-    /** Ecogestes and categories. */
+    /***** Ecogestes and categories endpoints. *****/
     ...ecogestesEndpoints,
-    /***** Novu Alert Preferences endpoint. */
+    /***** Novu Alert Preferences endpoints. *****/
     ...novuALertPreferencesEndpoints,
-    /***** Connected Plug Consent State endpoint. */
+    /***** Connected Plug Consent State endpoints. *****/
     ...connectedPlugsEndpoints,
-    /****** Access rights endpoint. */
+    /***** Access rights endpoints. *****/
     ...accessRightsEndpoints,
-    /****** Activities endpoint. */
+    /***** Activities endpoints. *****/
     ...activitiesEndpoints,
+    /***** Dashboard endpoints. *****/
     ...DashboardEndpoints,
+    /***** SolarSizing endpoints. *****/
     ...solarSizingEndpoints,
-    /****** Alpiq Subscription Endpoints. */
+    /***** Alpiq Subscription Endpoints. *****/
     ...AlpiqSubscriptionEndpoints,
+    /***** Installation informations Endpoints. *****/
+    ...installationEndpoints,
 ]
 
 // This configures a request mocking server with the given request handlers.
