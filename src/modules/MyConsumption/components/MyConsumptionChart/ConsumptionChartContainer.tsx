@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useTheme, useMediaQuery } from '@mui/material'
+import { useTheme, useMediaQuery, Typography } from '@mui/material'
+import { isSameDay } from 'date-fns'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
@@ -30,9 +31,11 @@ import {
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { useIntl } from 'src/common/react-platform-translation'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
 import { Title } from 'src/modules/MyConsumption/components/Title'
 
@@ -72,7 +75,7 @@ export const ConsumptionChartContainer = ({
     onRangeChange,
 }: ConsumptionChartContainerProps) => {
     const theme = useTheme()
-
+    const { formatMessage } = useIntl()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
@@ -268,6 +271,36 @@ export const ConsumptionChartContainer = ({
         getMetrics()
     }, [getMetrics])
 
+    const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
+        // check if we are in current day and the view is daily.
+        if (consumptionChartData.length && period === PeriodEnum.DAILY && isSameDay(new Date(range.from), new Date())) {
+            const currentTime = Date.now()
+            const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
+                datapoints.filter(([_value, time]) => time <= currentTime),
+            )
+            const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetrics)
+            if (time >= 10) {
+                return formatMessage(
+                    {
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                        defaultMessage:
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                    },
+                    { break: <br /> },
+                )
+            } else if (time >= 5) {
+                return formatMessage(
+                    {
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                        defaultMessage:
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                    },
+                    { break: <br /> },
+                )
+            }
+            return null
+        }
+    }, [consumptionChartData, period, range, formatMessage])
     /**
      * Checks if all yearly consumption data is available.
      *
@@ -397,11 +430,23 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart
-                    data={consumptionChartData}
-                    period={period}
-                    axisColor={theme.palette.common.black}
-                />
+                <>
+                    {messageOfSuccessiveMissingDataOfCurrentDay && (
+                        <div className="flex justify-center mt-32">
+                            <Typography
+                                className="max-w-screen-md text-center"
+                                style={{ color: theme.palette.common.black }}
+                            >
+                                {messageOfSuccessiveMissingDataOfCurrentDay}
+                            </Typography>
+                        </div>
+                    )}
+                    <MyConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        axisColor={theme.palette.common.black}
+                    />
+                </>
             )}
             {period === PeriodEnum.YEARLY &&
                 !isDefaultContractWarningShown &&
