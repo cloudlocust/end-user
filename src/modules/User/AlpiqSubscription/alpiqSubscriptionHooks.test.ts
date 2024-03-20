@@ -10,6 +10,7 @@ import { CreateAlpiqSubscriptionDataType } from 'src/modules/User/AlpiqSubscript
 import { applyCamelCase } from 'src/common/react-platform-components'
 
 const mockEnqueueSnackbar = jest.fn()
+const mockOnAfterCreation = jest.fn()
 const TEST_SNACKBAR_ERROR = 'snackbar_error'
 const mockOnAfterValidation = jest.fn()
 let mockCreateSubscriptionBody: CreateAlpiqSubscriptionDataType = {
@@ -131,7 +132,7 @@ describe('Test useAlpiqProvider functions', () => {
             const {
                 renderedHook: { result, waitForValueToChange },
             } = reduxedRenderHook(() => useAlpiqProvider())
-            result.current.createAlpiqSubscription(mockCreateSubscriptionBody, TEST_HOUSES[0].id)
+            result.current.createAlpiqSubscription(mockCreateSubscriptionBody, TEST_HOUSES[0].id, mockOnAfterCreation)
             await waitForValueToChange(
                 () => {
                     return result.current.loadingInProgress
@@ -141,6 +142,7 @@ describe('Test useAlpiqProvider functions', () => {
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Souscription reçue', {
                 variant: 'success',
             })
+            expect(mockOnAfterCreation).toHaveBeenCalledTimes(1)
         }, 8000)
         test('When request performed with error, enqueue snackbar with error message apprears.', async () => {
             const {

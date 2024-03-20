@@ -124,9 +124,14 @@ export const useAlpiqProvider = () => {
      *
      * @param body Data for alpiq subscription.
      * @param housingId Housing Id.
+     * @param onAfterCreation On after creation success.
      * @returns Void.
      */
-    const createAlpiqSubscription = async (body: CreateAlpiqSubscriptionDataType, housingId?: number) => {
+    const createAlpiqSubscription = async (
+        body: CreateAlpiqSubscriptionDataType,
+        housingId?: number,
+        onAfterCreation?: () => void,
+    ) => {
         if (!housingId) {
             enqueueSnackbar(
                 formatMessage({
@@ -151,6 +156,7 @@ export const useAlpiqProvider = () => {
                 }),
                 { variant: 'success' },
             )
+            if (onAfterCreation) onAfterCreation()
         } catch (error: any) {
             enqueueSnackbar(
                 formatMessage({
@@ -162,6 +168,7 @@ export const useAlpiqProvider = () => {
                 },
             )
         }
+
         setLoadingInProgress(false)
     }
 

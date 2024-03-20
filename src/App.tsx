@@ -139,6 +139,7 @@ const Routes = () => {
     if (
         !isMaintenanceMode &&
         user &&
+        !user.isProviderSubscriptionCompleted &&
         location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM &&
         isApplicationBlocked.current
     ) {
