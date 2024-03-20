@@ -71,7 +71,7 @@ describe('Testing useRegister hooks', () => {
         } = reduxedRenderHook(() => useRegister(), { initialState: {} })
         expect(result.current.isRegisterInProgress).toBe(false)
         act(() => {
-            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456' })
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456', address: { zipCode: '7200' } })
         })
         expect(result.current.isRegisterInProgress).toBe(true)
         await waitForValueToChange(
@@ -99,6 +99,59 @@ describe('Testing useRegister hooks', () => {
         )
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.anything(), {
             variant: 'error',
+        })
+    })
+    test('When activate allowedZipCodes and the zipCode does not fit, show error', async () => {
+        const {
+            renderedHook: { result },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456', address: { zipCode: '72000' } }, [
+                '69007',
+            ])
+        })
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Votre Région ne bénéficie pas de l'offre Bôwatts", {
+            variant: 'error',
+        })
+    })
+    test('When activate allowedZipCodes and the zipCode fit, register successfully', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456', address: { zipCode: '69007' } }, [
+                '69007',
+            ])
+        })
+        expect(result.current.isRegisterInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isRegisterInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE, {
+            autoHideDuration: 8000,
+            variant: 'success',
+        })
+    })
+    test('When activate allowedZipCodes and the zipCode does not exist, continue the process and ignore the zipCode block', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456' }, ['69007'])
+        })
+        expect(result.current.isRegisterInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isRegisterInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE, {
+            autoHideDuration: 8000,
+            variant: 'success',
         })
     })
 })

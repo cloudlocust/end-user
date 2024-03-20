@@ -1,5 +1,5 @@
 import { Stepper, Step, StepLabel } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { AlpiqSubscriptionStepsEnum } from 'src/modules/User/AlpiqSubscription/index.d'
 import { alpha, useTheme } from '@mui/material/styles'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
@@ -10,6 +10,9 @@ import SgeConsentStep from 'src/modules/User/AlpiqSubscription/SgeConsentStep'
 import ContractEstimation from '../ContractEstimation'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { FacturationForm } from '../FacturationForm'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import { RootState } from 'src/redux'
+import { useSelector } from 'react-redux'
 
 /**
  * Steps labels.
@@ -24,9 +27,25 @@ export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat
 const AlpiqSubscriptionStepper = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+    const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
+    const initialMount = useRef(true)
     // TODO start active step base on the user's state on the process
     const [activeStep, setActiveStep] = React.useState(AlpiqSubscriptionStepsEnum.firstStep)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
+    const { enedisSgeConsent } = useConsents()
+
+    // to set the step based on the levels of infos we have.
+    // TODO - add tests for this part like the one in App.test.tsx
+    useEffect(() => {
+        if (initialMount.current) {
+            if (alpiqSubscriptionSpecs) setActiveStep(AlpiqSubscriptionStepsEnum.forthStep)
+            else if (enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED')
+                setActiveStep(AlpiqSubscriptionStepsEnum.thridStep)
+            else if (currentHousing?.meter?.guid) setActiveStep(AlpiqSubscriptionStepsEnum.secondStep)
+            initialMount.current = false
+        }
+    }, [currentHousing, enedisSgeConsent, alpiqSubscriptionSpecs])
 
     /**
      * Next Step callback.

@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { useIntl } from 'react-intl'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { Dispatch, RootState } from 'src/redux'
 import { useState } from 'react'
 import { Checkbox as CheckboxMui } from '@mui/material'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
@@ -15,6 +15,14 @@ import { addDays, format } from 'date-fns'
 import { ButtonLoader, TextField, Checkbox, Typography } from 'src/common/ui-kit'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import Button from '@mui/material/Button'
+import { AlpiqFacturationDataType } from '..'
+import { useAlpiqProvider } from '../alpiqSubscriptionHooks'
+import { SectionText, SectionTitle } from './utils'
+import { useModal } from 'src/hooks/useModal'
+import { SuccessPopupModal } from './SuccessPopupModal'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { useSnackbar } from 'notistack'
 
 //eslint-disable-next-line
 export const datePrelevementOptions: { value: number, label: string}[] = Array.from({length: 28}, (_, index) => ({
@@ -41,12 +49,19 @@ export const FacturationForm = ({
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
     const { formatMessage } = useIntl()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const history = useHistory()
+    const dispatch = useDispatch<Dispatch>()
+    const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { user } = useSelector(({ userModel }: RootState) => userModel)
     const [isNewFacturationAddress, setIsNewFacturationAddress] = useState(false)
+    const { createAlpiqSubscription, loadingInProgress } = useAlpiqProvider()
     const afterTomorrow = addDays(new Date(), 2) // Get the day after tomorrow
     const formattedAfterTomorrow = format(afterTomorrow, 'yyyy-MM-dd')
     const IBAN_REGEX_TEXT = 'Format IBAN invalide'
     const ibanRegex = /^([A-Za-z]{2})\d{2}\s?\d{4}\s?\d{4}\s?\d{4}(?:\s?\d{2}){2}\s?$/.source
+
+    const { enqueueSnackbar } = useSnackbar()
+    const { isOpen: isFinishFacturationOpen, openModal: onOpenFinishFacturationPopup } = useModal()
 
     /**
      * Handle Open CGV.
@@ -63,14 +78,52 @@ export const FacturationForm = ({
         // doing it static because it's only a feature for bowatt
         window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire-aout-2023.pdf', '_blank')
     }
+
+    /**
+     * On submit button.
+     *
+     * @param data Data.
+     */
+    const onSubmit = (data: AlpiqFacturationDataType) => {
+        // technicly can't have this case if he did the steps right and the stepper does his job on load
+        if (!alpiqSubscriptionSpecs || !user) return
+        createAlpiqSubscription(
+            { ...data, ...alpiqSubscriptionSpecs },
+            currentHousing?.id,
+            onOpenFinishFacturationPopup,
+        )
+    }
+
+    /**
+     * What happens after we click on finish after the subscription is done.
+     */
+    const onClickFinishAlpiqProcess = async () => {
+        try {
+            if (!user) return
+            await dispatch.userModel.updateCurrentUser({ data: { ...user, isProviderSubscriptionCompleted: true } })
+        } catch (error: any) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Erreur lors de la sauvegarde de votre profil, contactez le service client',
+                    defaultMessage: 'Erreur lors de la sauvegarde de votre profil, contactez le service client',
+                }),
+                {
+                    autoHideDuration: 5000,
+                    variant: 'error',
+                },
+            )
+        }
+        dispatch.housingModel.setAlpiqSubscriptionSpecs(null)
+        history.replace(`/nrlink-connection-steps/${currentHousing?.id}`)
+    }
+
     return (
         <div className="flex w-full flex-col justify-center">
             <Form
-                //eslint-disable-next-line
-                onSubmit={(data) => console.log(data)}
+                onSubmit={onSubmit}
                 defaultValues={{
                     modeFacturation: 'MENS',
-                    jourDePrelevement: 27,
+                    jourPrelevement: 27,
                     addressFacturation: currentHousing?.address,
                     dateDebutContrat: formattedAfterTomorrow,
                     iban: 'FR',
@@ -124,7 +177,7 @@ export const FacturationForm = ({
                         <div className="flex items-center justify-start w-full">
                             <SectionText text="Je souhaite être prélevé le :" className="mr-10" />
                             <div className="w-120">
-                                <Select name="jourDePrelevement" label="">
+                                <Select name="jourPrelevement" label="">
                                     {datePrelevementOptions.map((option, _index) => (
                                         <MenuItem key={_index} value={option.value}>
                                             {formatMessage({
@@ -236,7 +289,7 @@ export const FacturationForm = ({
                                 defaultMessage: 'Retour',
                             })}
                         </Button>
-                        <ButtonLoader className="mr-20" color="primary" type="submit">
+                        <ButtonLoader inProgress={loadingInProgress} className="mr-20" color="primary" type="submit">
                             {formatMessage({
                                 id: 'Souscrire',
                                 defaultMessage: 'Souscrire',
@@ -245,71 +298,7 @@ export const FacturationForm = ({
                     </div>
                 </div>
             </Form>
+            <SuccessPopupModal modalOpen={isFinishFacturationOpen} onClickNext={onClickFinishAlpiqProcess} />
         </div>
-    )
-}
-
-/**
- * Section Title To avoir repetition.
- *
- * @param props Props.
- * @param props.title Title.
- * @returns JSX Element.
- */
-const SectionTitle = ({
-    title,
-}: /**
- */ {
-    /**
-     * Title.
-     */
-    title: string
-}) => {
-    const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
-    return (
-        <TypographyFormatMessage
-            color={theme.palette.primary.main}
-            textAlign="center"
-            variant={isMobile ? 'h6' : 'h5'}
-            fontWeight={600}
-        >
-            {title}
-        </TypographyFormatMessage>
-    )
-}
-
-/**
- * Section Text to avoid repetition.
- *
- * @param props Props.
- * @param props.text Text.
- * @param props.className Class Name.
- * @returns JSX Element.
- */
-const SectionText = ({
-    text,
-    className,
-}: /**
- */ {
-    /**
-     * Text.
-     */
-    text: string
-    /**
-     * ClassName.
-     */
-    className?: string
-}) => {
-    const theme = useTheme()
-    return (
-        <TypographyFormatMessage
-            className={className ?? ''}
-            color={theme.palette.text.primary}
-            variant="body1"
-            fontWeight={400}
-        >
-            {text}
-        </TypographyFormatMessage>
     )
 }

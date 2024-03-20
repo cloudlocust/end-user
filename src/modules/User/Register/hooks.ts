@@ -11,6 +11,7 @@ import {
 } from 'src/modules/User/Register/RegisterConfig'
 import { USER_REGISTRATION_AUTO_VALIDATE } from 'src/modules/User/configs'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
+import { useIntl } from 'src/common/react-platform-translation'
 
 /**
  * Builder to create userRegister hooks. We use a build to easily modify redirect url after register. This function returns a function.
@@ -33,11 +34,13 @@ export const BuilderUseRegister = ({
      *
      * @returns UseRegister hook.
      */
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     function useRegister() {
         const dispatch = useDispatch<Dispatch>()
         const [isRegisterInProgress, setIsRegisterInProgress] = useToggle(false)
         const history = useHistory()
         const { enqueueSnackbar } = useSnackbar()
+        const { formatMessage } = useIntl()
 
         /**
          * Function that handles what comes after when user has succesfully registered.
@@ -45,6 +48,7 @@ export const BuilderUseRegister = ({
          * @param data User registration data.
          */
         function handleOnAfterSubmit(data: IUserRegister) {
+            // TODO - remove this isPopupAfterRegistration because it's for bowatt and it's will probably not be used anymore since we did an alpiq funnel integration.
             if (isPopupAfterRegistration) {
                 history.push({
                     pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
@@ -61,8 +65,19 @@ export const BuilderUseRegister = ({
          * Submit function.
          *
          * @param data User registration data from form.
+         * @param allowedZipCodes Allowed zipCode for submition.
          */
-        const onSubmit = async (data: IUserRegister) => {
+        const onSubmit = async (data: IUserRegister, allowedZipCodes?: string[]) => {
+            if (data.address?.zipCode && allowedZipCodes && !allowedZipCodes?.includes(data.address.zipCode)) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Votre Région ne bénéficie pas de l'offre Bôwatts",
+                        defaultMessage: "Votre Région ne bénéficie pas de l'offre Bôwatts",
+                    }),
+                    { variant: 'error' },
+                )
+                return
+            }
             setIsRegisterInProgress(true)
             try {
                 const { user: userResponse } = await dispatch.userModel.register({ data })
