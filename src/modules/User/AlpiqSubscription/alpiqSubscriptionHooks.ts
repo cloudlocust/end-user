@@ -156,6 +156,7 @@ export const useAlpiqProvider = () => {
                 }),
                 { variant: 'success' },
             )
+            if (onAfterCreation) onAfterCreation()
         } catch (error: any) {
             enqueueSnackbar(
                 formatMessage({
@@ -167,8 +168,6 @@ export const useAlpiqProvider = () => {
                 },
             )
         }
-
-        if (onAfterCreation) onAfterCreation()
 
         setLoadingInProgress(false)
     }
