@@ -72,15 +72,15 @@ export const numberOfLevelsOptions = [
 export const houseLocationOptions = [
     {
         label: 'Isolée',
-        value: 'isolée',
+        value: 'isolated',
     },
     {
         label: 'Mitoyenne 1 côté',
-        value: 'Mitoyenne_1_Cote',
+        value: 'one_sided_attached_house',
     },
     {
         label: 'Mitoyenne 2 côtés',
-        value: 'Mitoyenne_2_Cotes',
+        value: 'two_sided_attached_house',
     },
 ]
 /**
@@ -89,7 +89,7 @@ export const houseLocationOptions = [
 export const houseYearOptions = [
     {
         label: 'Ne sais pas',
-        value: 'NeSaisPas',
+        value: 'Do_not_know',
     },
     {
         label: 'Avant 1950',

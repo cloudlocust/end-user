@@ -176,7 +176,10 @@ export const AccomodationTab = () => {
                             </div>
                             <SelectButtons
                                 name={accomodationNames.ownershipStatus}
-                                titleLabel="Je suis :"
+                                titleLabel={formatMessage({
+                                    id: 'Je suis :',
+                                    defaultMessage: 'Je suis :',
+                                })}
                                 wrapperStyles="flex flex-row justify-center space-x-12"
                                 formOptions={[
                                     {
@@ -196,7 +199,10 @@ export const AccomodationTab = () => {
                             <SelectButtons
                                 name={accomodationNames.houseType}
                                 wrapperStyles="flex flex-row justify-center space-x-12"
-                                titleLabel="Type de logement :"
+                                titleLabel={formatMessage({
+                                    id: 'Type de logement :',
+                                    defaultMessage: 'Type de logement :',
+                                })}
                                 formOptions={[
                                     {
                                         label: accomodationLabelOptions.house,
@@ -214,7 +220,10 @@ export const AccomodationTab = () => {
                             />
                             <SelectButtons
                                 wrapperStyles="flex flex-row justify-center"
-                                titleLabel="Type de résidence :"
+                                titleLabel={formatMessage({
+                                    id: 'Type de résidence :',
+                                    defaultMessage: 'Type de résidence :',
+                                })}
                                 name={accomodationNames.residenceType}
                                 formOptions={[
                                     {
@@ -243,7 +252,10 @@ export const AccomodationTab = () => {
                                 <div className="w-4/6">
                                     <Select
                                         name={accomodationNames.numberOfLevels}
-                                        label="Niveaux"
+                                        label={formatMessage({
+                                            id: 'Niveaux',
+                                            defaultMessage: 'Niveaux',
+                                        })}
                                         children={numberOfLevelsOptions.map((numberOfLevels) => (
                                             <MenuItem value={numberOfLevels.value}>{numberOfLevels.label}</MenuItem>
                                         ))}
@@ -254,7 +266,6 @@ export const AccomodationTab = () => {
                                     />
                                 </div>
                             </div>
-
                             {watch('houseType') === accomodationLabelOptions.house && (
                                 <div className="flex flex-row justify-between mt-16 mr-24">
                                     <div className="mt-16 mr-10 w-full ">
@@ -266,7 +277,10 @@ export const AccomodationTab = () => {
                                     <div className="w-4/6">
                                         <Select
                                             name={accomodationNames.houseLocation}
-                                            label="Emplacement"
+                                            label={formatMessage({
+                                                id: 'Emplacement',
+                                                defaultMessage: 'Emplacement',
+                                            })}
                                             children={houseLocationOptions.map((houseLocation) => (
                                                 <MenuItem value={houseLocation.value}>{houseLocation.label}</MenuItem>
                                             ))}
@@ -288,7 +302,10 @@ export const AccomodationTab = () => {
                                 <div className="w-4/6">
                                     <Select
                                         name={accomodationNames.houseYear}
-                                        label="Année"
+                                        label={formatMessage({
+                                            id: 'Année',
+                                            defaultMessage: 'Année',
+                                        })}
                                         children={houseYearOptions.map((houseYear) => (
                                             <MenuItem value={houseYear.value}>{houseYear.label}</MenuItem>
                                         ))}
@@ -321,14 +338,20 @@ export const AccomodationTab = () => {
                                         <FormControlLabel
                                             value="oui"
                                             control={<Radio color="primary" />}
-                                            label="Oui"
+                                            label={formatMessage({
+                                                id: 'Oui',
+                                                defaultMessage: 'Oui',
+                                            })}
                                             onClick={() => setIsDPE(true)}
                                             checked={isDPE}
                                         />
                                         <FormControlLabel
                                             value="non"
                                             control={<Radio color="primary" />}
-                                            label="Non"
+                                            label={formatMessage({
+                                                id: 'Non',
+                                                defaultMessage: 'Non',
+                                            })}
                                             onClick={() => setIsDPE(false)}
                                             checked={!isDPE}
                                         />
@@ -338,7 +361,10 @@ export const AccomodationTab = () => {
                                     {isDPE ? (
                                         <Select
                                             name={accomodationNames.energyPerformanceIndex}
-                                            label={accomodationLabelOptions.energeticPerformance}
+                                            label={formatMessage({
+                                                id: accomodationLabelOptions.energeticPerformance,
+                                                defaultMessage: accomodationLabelOptions.energeticPerformance,
+                                            })}
                                             children={performanceOptions.map((performance) => {
                                                 return <MenuItem value={performance}>{performance}</MenuItem>
                                             })}
@@ -351,7 +377,10 @@ export const AccomodationTab = () => {
                                     ) : (
                                         <Select
                                             name={accomodationNames.isolationLevel}
-                                            label={accomodationLabelOptions.isolation}
+                                            label={formatMessage({
+                                                id: accomodationLabelOptions.isolation,
+                                                defaultMessage: accomodationLabelOptions.isolation,
+                                            })}
                                             children={isolationOptions.map((isolation) => {
                                                 return <MenuItem value={isolation}>{isolation}</MenuItem>
                                             })}
@@ -443,12 +472,18 @@ export const AccomodationTab = () => {
                                                 >
                                                     <FormControlLabel
                                                         value={true}
-                                                        label="Oui"
+                                                        label={formatMessage({
+                                                            id: 'Oui',
+                                                            defaultMessage: 'Oui',
+                                                        })}
                                                         control={<Radio checked={watch(field.name)} />}
                                                     />
                                                     <FormControlLabel
                                                         value={false}
-                                                        label="Non"
+                                                        label={formatMessage({
+                                                            id: 'Non',
+                                                            defaultMessage: 'Non',
+                                                        })}
                                                         control={<Radio checked={watch(field.name) === false} />}
                                                     />
                                                 </RadioGroup>
