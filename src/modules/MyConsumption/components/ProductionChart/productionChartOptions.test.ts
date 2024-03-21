@@ -270,7 +270,7 @@ describe('Test echartsProductionOptions', () => {
                             // Important to put onZero so that bar charts don't overflow with yAxis.
                             onZero: true,
                             lineStyle: {
-                                color: '#000',
+                                color: theme.palette.common.black,
                                 type: 'solid',
                                 opacity: 1,
                             },
@@ -284,7 +284,7 @@ describe('Test echartsProductionOptions', () => {
                         splitLine: {
                             show: true,
                             lineStyle: {
-                                color: '#000',
+                                color: theme.palette.common.black,
                                 type: 'dashed',
                                 opacity: 0.4,
                             },
@@ -346,7 +346,7 @@ describe('Test echartsProductionOptions', () => {
                 onZero: true,
                 show: true,
                 lineStyle: {
-                    color: '#000',
+                    color: theme.palette.common.black,
                     type: 'solid',
                     opacity: 1,
                 },
@@ -355,7 +355,7 @@ describe('Test echartsProductionOptions', () => {
             splitLine: {
                 show: true,
                 lineStyle: {
-                    color: '#000',
+                    color: theme.palette.common.black,
                     type: 'dashed',
                     opacity: 0.4,
                 },

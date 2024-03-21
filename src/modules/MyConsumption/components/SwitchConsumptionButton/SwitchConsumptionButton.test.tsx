@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { createTheme } from '@mui/material/styles'
+import { createTheme, alpha } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material'
 import userEvent from '@testing-library/user-event'
 import { cleanup, waitFor } from '@testing-library/react'
@@ -82,7 +82,7 @@ describe('SwitchConsumptionButton', () => {
         userEvent.click(generalButtonElement)
         await waitFor(() => {
             expect(generalButtonElement).toHaveStyle({
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: alpha(theme.palette.primary.main, 0.75),
             })
         })
     })

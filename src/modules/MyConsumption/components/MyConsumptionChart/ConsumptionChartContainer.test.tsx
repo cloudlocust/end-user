@@ -20,6 +20,9 @@ import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
 import { SwitchConsumptionButtonLabelEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { screen, within } from '@testing-library/react'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -27,6 +30,10 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 // mock store.
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption])
+let mockAdditionalData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
+    metricTargetsEnum.consumption,
+    metricTargetsEnum.eurosConsumption,
+])
 
 // Nrlink Consent format
 const nrLinkConsent: INrlinkConsent = {
@@ -75,10 +82,11 @@ const CONSUMPTION_PERIOD_TITLE_YEARLY = 'en kWh par année'
 const EUROS_CONSUMPTION_PERIOD_TITLE_WEEKLY = 'en € par semaine'
 const EUROS_CONSUMPTION_PERIOD_TITLE_MONTHLY = 'en € par mois'
 const EUROS_CONSUMPTION_PERIOD_TITLE_YEARLY = 'en € par année'
-const CONSUMPTION_ICON_TEST_ID = 'BoltIcon'
-const EUROS_CONSUMPTION_ICON_TEST_ID = 'EuroIcon'
+const EUROS_CONSUMPTION_ICON_TEST_ID = 'euros-consumption-button'
 const menuButtonLabelText = 'target-menu'
 const menuItemRole = 'menuitem'
+const DECREMENT_DATE_ARROW_TEXT = 'chevron_left'
+const disabledClass = 'Mui-disabled'
 const mockGetConsents = jest.fn()
 const mockGetMetricsWithParams = jest.fn()
 let mockSgeConsentFeatureState = true
@@ -109,6 +117,8 @@ let echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     range: mockRange,
     isIdleShown: false,
     setMetricsInterval: jest.fn(),
+    onPeriodChange: jest.fn(),
+    onRangeChange: jest.fn(),
 }
 
 const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
@@ -122,6 +132,23 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useMetrics: () => ({
         data: mockData,
+        filters: mockFilters,
+        range: mockRange,
+        isMetricsLoading: mockIsMetricsLoading,
+        setRange: jest.fn(),
+        setMetricsInterval: jest.fn(),
+        interval: '1m',
+        setFilters: mockSetFilters,
+        getMetricsWithParams: mockGetMetricsWithParams,
+    }),
+
+    /**
+     * We mock the useAdditionalMetrics hook to return the mock data and the mock functions.
+     *
+     * @returns The mock data and the mock functions.
+     */
+    useAdditionalMetrics: () => ({
+        data: mockAdditionalData,
         filters: mockFilters,
         range: mockRange,
         isMetricsLoading: mockIsMetricsLoading,
@@ -203,8 +230,8 @@ describe('MyConsumptionContainer test', () => {
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
 
-            expect(getByText(ConsumptionChartTitle)).toBeInTheDocument()
-            expect(getByText(ConsumptionChartPeriodTitle)).toBeInTheDocument()
+            expect(getByText(new RegExp(ConsumptionChartTitle))).toBeInTheDocument()
+            expect(getByText(new RegExp(ConsumptionChartPeriodTitle))).toBeInTheDocument()
         },
     )
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
@@ -220,7 +247,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -235,20 +262,20 @@ describe('MyConsumptionContainer test', () => {
         async ({ period, metricsInterval, ConsumptionChartPeriodTitle }) => {
             echartsConsumptionChartContainerProps.period = period
             echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
-            const { getByText, getByTestId } = reduxedRender(
+            const { getByText, getByLabelText } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
+            const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+            expect(eurosConsumptionButtonToggler).not.toBeChecked()
             // TOGGLING TO EUROS CONSUMPTION CHART
-            userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
+            userEvent.click(eurosConsumptionButtonToggler)
             // CONSUMPTION ICON should be shown
-            await waitFor(() => {
-                expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeInTheDocument()
-            })
-            expect(getByText(CONSUMPTION_TITLE_NOT_DAILY)).toBeInTheDocument()
-            expect(getByText(ConsumptionChartPeriodTitle)).toBeInTheDocument()
+            expect(eurosConsumptionButtonToggler).toBeChecked()
+            expect(getByText(new RegExp(CONSUMPTION_TITLE_NOT_DAILY))).toBeInTheDocument()
+            expect(getByText(new RegExp(ConsumptionChartPeriodTitle))).toBeInTheDocument()
         },
         20000,
     )
@@ -256,19 +283,18 @@ describe('MyConsumptionContainer test', () => {
         echartsConsumptionChartContainerProps.period = 'weekly'
         echartsConsumptionChartContainerProps.metricsInterval = '1d'
         echartsConsumptionChartContainerProps.hasMissingHousingContracts = true
-        const { getByText, getByTestId } = reduxedRender(
+        const { getByText, getByTestId, getByLabelText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-
+        const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+        expect(eurosConsumptionButtonToggler).not.toBeChecked()
         // TOGGLING TO EUROS CONSUMPTION CHART
-        userEvent.click(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
+        userEvent.click(eurosConsumptionButtonToggler)
         // CONSUMPTION ICON should be shown
-        await waitFor(() => {
-            expect(getByTestId(CONSUMPTION_ICON_TEST_ID)).toBeInTheDocument()
-        })
+        expect(eurosConsumptionButtonToggler).toBeChecked()
         expect(() => getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toThrow()
 
         // HasMissingContractsExample Text
@@ -280,11 +306,9 @@ describe('MyConsumptionContainer test', () => {
         )
 
         // TOGGLING BACK TO CONSUMPTION, AUTOCONSUMPTION CHART, for coverage of EurosConsumptionButtonToggler.
-        userEvent.click(getByTestId(CONSUMPTION_ICON_TEST_ID).parentElement as HTMLButtonElement)
+        userEvent.click(eurosConsumptionButtonToggler)
         // EUROS ICON Should be shown
-        await waitFor(() => {
-            expect(getByTestId(EUROS_CONSUMPTION_ICON_TEST_ID)).toBeInTheDocument()
-        })
+        expect(eurosConsumptionButtonToggler).not.toBeChecked()
         expect(() => getByText(HAS_MISSING_CONTRACTS_WARNING_TEXT)).toThrow()
     }, 20000)
 
@@ -453,6 +477,77 @@ describe('MyConsumptionContainer test', () => {
     //     expect(queryByText('Identifier une conso')).toBeInTheDocument()
     // })
 
+    test(`should all years of date picker disabled except the last ${NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW} years on the yearly view if enedisSge connected`, async () => {
+        echartsConsumptionChartContainerProps.period = PeriodEnum.YEARLY
+        echartsConsumptionChartContainerProps.metricsInterval = '1M' as metricIntervalType
+        echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+
+        const { getByTestId } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        userEvent.click(getByTestId('date-picker-input'))
+        const dialog = screen.getByRole('dialog')
+        const dialogWithin = within(dialog)
+        // Check if the last NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW are enabled.
+        const currentYear = new Date().getFullYear()
+        const lastNYears = Array.from(
+            { length: NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW },
+            (_, index) => currentYear - index - 1,
+        )
+
+        for (let year of lastNYears) {
+            expect(dialogWithin.getByText(year.toString(), { selector: 'button' })).not.toBeDisabled()
+        }
+
+        // Check if the rest years are disabled.
+        const LAST_YEAR_IN_DATE_PICKER = 1900
+        const restOfYears = Array.from(
+            {
+                length:
+                    lastNYears[NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW - 1] -
+                    LAST_YEAR_IN_DATE_PICKER,
+            },
+            (_, i) => lastNYears[NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW - 1] - 1 - i,
+        )
+
+        for (let year of restOfYears) {
+            expect(dialogWithin.getByText(year.toString(), { selector: 'button' })).toBeDisabled()
+        }
+    })
+
+    test(`should previous button of year navigation disabled in last ${NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW} on the yearly view if enedisSge connected`, async () => {
+        echartsConsumptionChartContainerProps.period = PeriodEnum.YEARLY
+        echartsConsumptionChartContainerProps.metricsInterval = '1M' as metricIntervalType
+        echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+
+        // check if the previous button is enabled for n last years and it disabled of other.
+        for (let index = 0; index < NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW; index++) {
+            userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
+
+            const shouldBeDisabled = index === NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW - 1
+
+            await waitFor(
+                () => {
+                    const isDisabled =
+                        getByText(DECREMENT_DATE_ARROW_TEXT)!.parentElement!.classList.contains(disabledClass)
+                    // Use the expected condition in a single, unconditional expect call
+                    expect(isDisabled).toBe(shouldBeDisabled)
+                },
+                { timeout: 1500 },
+            )
+        }
+    })
+
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = 'weekly'
@@ -475,7 +570,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
             })
         }, 10000)
     })

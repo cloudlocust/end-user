@@ -82,18 +82,18 @@ export const useSolarSizing = (housingId?: number) => {
             return await axios.get<HousingSolarSizing>(solarSizingUrl)
         },
         {
-            /**
-             * On error callback.
-             */
-            onError: () => {
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la récupération des données des potentiel solaire',
-                        defaultMessage: 'Erreur lors de la récupération des potentiel solaire',
-                    }),
-                    { variant: 'error' },
-                )
-            },
+            // /**
+            //  * On error callback.
+            //  */
+            // onError: () => {
+            //     enqueueSnackbar(
+            //         formatMessage({
+            //             id: 'Erreur lors de la récupération des données des potentiel solaire',
+            //             defaultMessage: 'Erreur lors de la récupération des potentiel solaire',
+            //         }),
+            //         { variant: 'error' },
+            //     )
+            // },
             // Only fetch the data if the housingId is defined
             enabled: Boolean(housingId),
             cacheTime: 1000 * 60 * 1,

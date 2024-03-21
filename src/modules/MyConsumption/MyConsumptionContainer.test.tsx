@@ -1,10 +1,5 @@
-import { screen, within } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import {
-    MyConsumptionContainer,
-    NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW,
-} from 'src/modules/MyConsumption//MyConsumptionContainer'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
@@ -63,9 +58,6 @@ const RANGE_TEXT = 'Range'
 const mockSetPeriod = jest.fn()
 const PERIOD_TEXT = 'Period'
 const METRICS_INTERVAL_PRODUCTION_ACTIVE = '30m'
-
-const DECREMENT_DATE_ARROW_TEXT = 'chevron_left'
-const disabledClass = 'Mui-disabled'
 
 // Mock consentsHook
 jest.mock('src/modules/Consents/consentsHook.ts', () => ({
@@ -239,75 +231,5 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
         })
-    })
-
-    test(`should all years of date picker disabled except the last ${NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW} years on the yearly view if enedisSge connected`, async () => {
-        mockNrlinkConsent = { ...nrLinkConsent, nrlinkConsentState: 'CONNECTED' }
-        mockEnedisConsent = { ...enedisSGeConsent, enedisSgeConsentState: 'CONNECTED' }
-        mockConsentsLoading = false
-        const { container } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer defaultPeriod={PeriodEnum.YEARLY} />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-
-        userEvent.click(container.querySelector('input')!)
-        const dialog = screen.getByRole('dialog')
-        const dialogWithin = within(dialog)
-        // Check if the last NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW are enabled.
-        const currentYear = new Date().getFullYear()
-        const lastNYears = Array.from(
-            { length: NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW },
-            (_, index) => currentYear - index - 1,
-        )
-
-        for (let year of lastNYears) {
-            expect(dialogWithin.getByText(year.toString(), { selector: 'button' })).not.toBeDisabled()
-        }
-
-        // Check if the rest years are disabled.
-        const LAST_YEAR_IN_DATE_PICKER = 1900
-        const restOfYears = Array.from(
-            {
-                length:
-                    lastNYears[NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW - 1] -
-                    LAST_YEAR_IN_DATE_PICKER,
-            },
-            (_, i) => lastNYears[NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW - 1] - 1 - i,
-        )
-
-        for (let year of restOfYears) {
-            expect(dialogWithin.getByText(year.toString(), { selector: 'button' })).toBeDisabled()
-        }
-    })
-
-    test(`should previous button of year navigation disabled in last ${NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW} on the yearly view if enedisSge connected`, async () => {
-        mockNrlinkConsent = { ...nrLinkConsent, nrlinkConsentState: 'CONNECTED' }
-        mockEnedisConsent = { ...enedisSGeConsent, enedisSgeConsentState: 'CONNECTED' }
-        mockConsentsLoading = false
-        const { getByText } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer defaultPeriod={PeriodEnum.YEARLY} />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-
-        // check if the previous button is enabled for n last years and it disabled of other.
-        for (let index = 0; index < NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW; index++) {
-            userEvent.click(getByText(DECREMENT_DATE_ARROW_TEXT))
-
-            const shouldBeDisabled = index === NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW - 1
-
-            await waitFor(
-                () => {
-                    const isDisabled =
-                        getByText(DECREMENT_DATE_ARROW_TEXT)!.parentElement!.classList.contains(disabledClass)
-                    // Use the expected condition in a single, unconditional expect call
-                    expect(isDisabled).toBe(shouldBeDisabled)
-                },
-                { timeout: 1500 },
-            )
-        }
     })
 })

@@ -12,14 +12,14 @@ import { InstallationTab } from 'src/modules/MyHouse/components/Installation/Ins
  *
  * It regroups Accomodation tab & Equipments tab component.
  *
- * @returns HHousing information tabs page.
+ * @returns Housing information tabs page.
  */
 export const HousingInformation = () => {
     const theme = useTheme()
     const history = useHistory()
     const tabsContent = [
         {
-            tabTitle: 'Info Logement',
+            tabTitle: 'Ma maison',
             tabSlug: 'accomodation',
             tabContent: <AccomodationTab />,
         },
