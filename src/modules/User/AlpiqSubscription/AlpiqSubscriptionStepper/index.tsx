@@ -13,6 +13,11 @@ import { FacturationForm } from '../FacturationForm'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
+import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
+import { ButtonLoader } from 'src/common/ui-kit'
+import Divider from '@mui/material/Divider'
+import { SectionText } from '../FacturationForm/utils'
 
 /**
  * Steps labels.
@@ -29,13 +34,11 @@ const AlpiqSubscriptionStepper = () => {
     const { formatMessage } = useIntl()
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
     const initialMount = useRef(true)
-    // TODO start active step base on the user's state on the process
     const [activeStep, setActiveStep] = React.useState(AlpiqSubscriptionStepsEnum.firstStep)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     const { enedisSgeConsent } = useConsents()
 
-    // to set the step based on the levels of infos we have.
     // TODO - add tests for this part like the one in App.test.tsx
     useEffect(() => {
         if (initialMount.current) {
@@ -68,7 +71,7 @@ const AlpiqSubscriptionStepper = () => {
         <FacturationForm handleBack={handleBack} />,
     ]
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center">
+        <div className="w-full mt-40 flex flex-col justify-center items-center">
             <Stepper
                 className="w-5/6 mb-16"
                 activeStep={activeStep}
@@ -121,13 +124,27 @@ const AlpiqSubscriptionStepper = () => {
                 ))}
             </Stepper>
             <FuseCard
-                className="rounded flex p-16 w-5/6 md:w-1/2"
+                className="rounded p-16 w-5/6 md:w-1/2 mx-auto"
                 sx={{
                     border: alpha(theme.palette.primary.light, 0.1),
-                    minHeight: '450px',
+                    minHeight: '350px',
                 }}
             >
-                {stepsContent[activeStep]}
+                <CardContent className="mx-auto w-full">{stepsContent[activeStep]}</CardContent>
+                <Divider className="mt-20 mb-20" />
+                <CardActions className="flex md:flex-row flex-col md:justify-center justify-center items-center w-full lg:w-5/6 mx-auto">
+                    <SectionText
+                        text="Pour toutes questions, contactez notre équipe"
+                        textColor={theme.palette.common.black}
+                        className="font-semibold mb-10 md:mb-0 mr-0 md:mr-10"
+                    />
+                    <div className="flex flex-row items-center justify-center">
+                        <ButtonLoader variant="text" className="mr-0 md:mr-10">
+                            06.75.08.20.15
+                        </ButtonLoader>
+                        <ButtonLoader variant="text">info@bowatts.fr</ButtonLoader>
+                    </div>
+                </CardActions>
             </FuseCard>
         </div>
     )

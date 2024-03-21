@@ -24,10 +24,10 @@ describe('Test FacturationForm', () => {
         ).toBeInTheDocument()
         expect(getByText('Je souhaite être prélevé le :')).toBeInTheDocument()
         expect(getByText('Adresse de facturation')).toBeInTheDocument()
-        expect(getByText('Mon adresse de facturation est différente.')).toBeInTheDocument()
+        expect(getByText('Mon adresse de facturation est différente de celle de mon logement.')).toBeInTheDocument()
         expect(
             getByText(
-                "Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable dees frais de l'électricité consommée dans mon logement.",
+                "Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable des frais de l'électricité consommée dans mon logement.",
             ),
         ).toBeInTheDocument()
         expect(getByText('Coordonnées bancaires')).toBeInTheDocument()

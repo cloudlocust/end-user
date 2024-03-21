@@ -84,58 +84,62 @@ const ContractEstimation = ({
 
     return (
         <div className="flex flex-col w-full items-center justify-start">
-            <div className={`flex items-center justify-center mb-32 md:mb-48 ${isMobile && 'flex-col'}`}>
+            <div className="flex items-center justify-center mb-32 md:mb-48 flex-col">
                 <TypographyFormatMessage
                     color={theme.palette.primary.main}
                     textAlign="center"
                     variant={isMobile ? 'body1' : 'h6'}
                     fontWeight={600}
                 >
-                    {`Mon contrat BôWatts par alpiq ${!isMobile ? "L'electricité verte de beaujolais" : ''}`}
+                    Mon contrat BôWatts par Alpiq
                 </TypographyFormatMessage>
-                {isMobile && (
-                    <TypographyFormatMessage
-                        color={theme.palette.primary.main}
-                        textAlign="center"
-                        variant={isMobile ? 'body1' : 'h6'}
-                        fontWeight={600}
-                    >
-                        L'electricité verte de beaujolais
-                    </TypographyFormatMessage>
-                )}
+                <TypographyFormatMessage
+                    color={theme.palette.primary.main}
+                    textAlign="center"
+                    variant={isMobile ? 'body1' : 'h6'}
+                    fontWeight={600}
+                >
+                    L'électricité verte de beaujolais
+                </TypographyFormatMessage>
             </div>
             <div className="flex flex-col items-center justify-center w-full">
                 <div className="flex flex-col w-full items-center mb-20 mx-0 md:mx-20">
                     <div className="w-full flex-col mb-12 md:mb-24">
-                        <div className={`flex w-full ${isMobile ? 'justify-center' : 'justify-start'} items-center`}>
+                        <div
+                            className={`flex w-full ${
+                                isMobile ? 'justify-center' : 'justify-start'
+                            } items-center ml-10`}
+                        >
                             <TypographyFormatMessage
                                 color={theme.palette.primary.main}
                                 textAlign="center"
                                 variant="body1"
                                 fontWeight={600}
                             >
-                                Paramétrez votre contrat Alpiq:
+                                Paramétrez votre contrat Bôwatts :
                             </TypographyFormatMessage>
                         </div>
-                        <Form onSubmit={onSubmit}>
-                            <div className="flex w-full flex-col md:flex-row items-center justify-start">
-                                <SelectAlpiqContractForm
-                                    title="Type de contrat"
-                                    options={AlpiqContractTypeSelectOptions}
-                                    name="contractType"
-                                />
-                                <SelectAlpiqContractForm
-                                    title="Puissance"
-                                    options={AlpiqPowerValuesSelectOptions}
-                                    name="power"
-                                />
-                                <div className="flex items-center justify-center flex-1 mx-10">
-                                    <ButtonLoader inProgress={loadingInProgress} type="submit">
-                                        Estimer ma mensualité
-                                    </ButtonLoader>
+                        <div className="w-full">
+                            <Form onSubmit={onSubmit}>
+                                <div className="flex w-full flex-col md:flex-row items-center justify-start">
+                                    <SelectAlpiqContractForm
+                                        title="Type de contrat"
+                                        options={AlpiqContractTypeSelectOptions}
+                                        name="contractType"
+                                    />
+                                    <SelectAlpiqContractForm
+                                        title="Puissance"
+                                        options={AlpiqPowerValuesSelectOptions}
+                                        name="power"
+                                    />
+                                    <div className="flex items-center justify-center flex-1 mx-10">
+                                        <ButtonLoader inProgress={loadingInProgress} type="submit">
+                                            Estimer ma mensualité
+                                        </ButtonLoader>
+                                    </div>
                                 </div>
-                            </div>
-                        </Form>
+                            </Form>
+                        </div>
                     </div>
                 </div>
                 <div
@@ -144,7 +148,7 @@ const ContractEstimation = ({
                     }`}
                 >
                     <Card
-                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-20 w-full h-200 md:h-200 md:w-400 flex flex-col justify-center ${
+                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full h-200 md:h-200 md:w-400 flex flex-col justify-center ${
                             isMobile && 'mb-20'
                         }`}
                     >
@@ -162,7 +166,7 @@ const ContractEstimation = ({
                                 color={theme.palette.common.black}
                                 fontWeight={400}
                             >
-                                Mensualité calculée à partir de votre historique de consommation.
+                                Mensualité calculée à partir de vos consommations passées.
                             </TypographyFormatMessage>
                         </div>
                         <TypographyFormatMessage color={theme.palette.primary.main} textAlign="center" variant="h6">

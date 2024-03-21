@@ -58,7 +58,7 @@ export const FacturationForm = ({
     const afterTomorrow = addDays(new Date(), 2) // Get the day after tomorrow
     const formattedAfterTomorrow = format(afterTomorrow, 'yyyy-MM-dd')
     const IBAN_REGEX_TEXT = 'Format IBAN invalide'
-    const ibanRegex = /^([A-Za-z]{2})\d{2}\s?\d{4}\s?\d{4}\s?\d{4}(?:\s?\d{2}){2}\s?$/.source
+    const ibanRegex = /^FR\d{25}$/.source
 
     const { enqueueSnackbar } = useSnackbar()
     const { isOpen: isFinishFacturationOpen, openModal: onOpenFinishFacturationPopup } = useModal()
@@ -192,6 +192,14 @@ export const FacturationForm = ({
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Adresse de facturation" />
+                        <div className="w-full flex items-center justify-start">
+                            <CheckboxMui
+                                checked={isNewFacturationAddress}
+                                color="primary"
+                                onClick={() => setIsNewFacturationAddress(!isNewFacturationAddress)}
+                            />
+                            <SectionText text="Mon adresse de facturation est différente de celle de mon logement." />
+                        </div>
                         <div className="w-full flex items-center justify-center">
                             <div className="w-4/5 mt-12">
                                 <GoogleMapsAddressAutoCompleteField
@@ -201,14 +209,6 @@ export const FacturationForm = ({
                                 />
                             </div>
                         </div>
-                        <div className="w-full flex items-center justify-start">
-                            <CheckboxMui
-                                checked={isNewFacturationAddress}
-                                color="primary"
-                                onClick={() => setIsNewFacturationAddress(!isNewFacturationAddress)}
-                            />
-                            <SectionText text="Mon adresse de facturation est différente." />
-                        </div>
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Date de début de fourniture" />
@@ -216,16 +216,12 @@ export const FacturationForm = ({
                             <div className="w-5/6 md:w-2/3">
                                 <DatePicker name="dateDebutContrat" minDate={formattedAfterTomorrow} />
                             </div>
-                            <SectionText text="Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable dees frais de l'électricité consommée dans mon logement." />
+                            <SectionText text="Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable des frais de l'électricité consommée dans mon logement." />
                         </div>
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Coordonnées bancaires" />
-                        <div
-                            className={`mt-12 w-full flex ${
-                                isMobile ? 'flex-col' : 'flex-row'
-                            } items-center justify-around`}
-                        >
+                        <div className="mt-12 w-full flex flex-col lg:flex-row items-center justify-around">
                             <TextField
                                 name="iban"
                                 label="IBAN"
