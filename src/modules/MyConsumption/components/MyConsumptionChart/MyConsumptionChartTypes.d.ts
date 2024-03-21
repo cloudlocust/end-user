@@ -90,7 +90,7 @@ export interface ConsumptionChartContainerProps {
     /**
      * Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
      */
-    period: periodType
+    period: PeriodEnum
     /**
      * Current range so that we handle the xAxis values according to period and range selected.
      */
@@ -123,6 +123,20 @@ export interface ConsumptionChartContainerProps {
      * Set metrics interval.
      */
     setMetricsInterval: Dispatch<SetStateAction<metricIntervalType>>
+
+    /**
+     * Callback function for period change.
+     *
+     * @param period The new period value.
+     */
+    onPeriodChange: (period: PeriodEnum) => void
+
+    /**
+     * Callback function for range change.
+     *
+     * @param range The new range value.
+     */
+    onRangeChange: (range: metricRangeType) => void
 }
 
 /**

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { ITargetMenuGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -92,8 +92,8 @@ const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: 
     }
 
     return (
-        <div className="flex items-center justify-center">
-            <Button
+        <div>
+            <IconButton
                 aria-controls="target-menu"
                 aria-haspopup="true"
                 aria-expanded={Boolean(anchorEl)}
@@ -109,7 +109,7 @@ const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: 
                 aria-label="target-menu"
             >
                 <MoreVertIcon />
-            </Button>
+            </IconButton>
             {Boolean(anchorEl) && (
                 <Menu
                     id="target-menu"

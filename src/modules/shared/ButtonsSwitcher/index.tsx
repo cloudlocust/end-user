@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
+import clsx from 'clsx'
 import { ButtonsSwitcherProps } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -16,13 +17,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
  *
  * @param root0 N/A.
  * @param root0.buttonsSwitcherParams List of params object of the Buttons.
+ * @param root0.containerProps Container props.
+ * @param root0.buttonProps Buttons props.
  * @returns JSX.Element.
  */
-export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps) => {
+export const ButtonsSwitcher = ({ buttonsSwitcherParams, buttonProps, containerProps }: ButtonsSwitcherProps) => {
     const [indexOfSelectedButton, setIndexOfSelectedButton] = useState(0)
 
     return (
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center buttons-container" {...containerProps}>
             {buttonsSwitcherParams.map((buttonSwitcherParam, index) => (
                 <StyledButton
                     sx={(theme) =>
@@ -43,12 +46,15 @@ export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps)
                                   },
                               }
                     }
-                    className="text-13 sm:text-16"
+                    className={clsx('text-13 sm:text-16', { selected: index === indexOfSelectedButton })}
                     aria-label={index === indexOfSelectedButton ? 'active-cell' : 'clickable-cell'}
                     onClick={() => {
-                        setIndexOfSelectedButton(index)
-                        buttonSwitcherParam.clickHandler()
+                        if (index !== indexOfSelectedButton) {
+                            setIndexOfSelectedButton(index)
+                            buttonSwitcherParam.clickHandler()
+                        }
                     }}
+                    {...(buttonProps && buttonProps(index === indexOfSelectedButton))}
                 >
                     {buttonSwitcherParam.buttonText}
                 </StyledButton>

@@ -117,7 +117,7 @@ describe('ProductionChartContainer test', () => {
                     <ProductionChartContainer {...productionChartContainerProps} />
                 </Router>,
             )
-            expect(getByText(text)).toBeTruthy()
+            expect(getByText(new RegExp(text))).toBeTruthy()
         })
     })
     test('When only isMetricsLoading true, Spinner is shown', async () => {
