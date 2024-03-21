@@ -29,7 +29,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }))
 
 /**
- * Button component to redirect to EcogestCard.
+ * Button component to redirect to consumption labeliation page.
  *
  * @param {ButtonProps} props - The props for the button component.
  * @returns React component.
@@ -38,7 +38,7 @@ export const ConsumptionIdentifierButton: FC<ButtonProps> = (props) => {
     const history = useHistory()
 
     /**
-     * Redirect to EcogestCard.
+     * Redirect to consumption labeliation page.
      */
     const handleClick = () => {
         history.push(URL_CONSUMPTION_LABELIZATION)

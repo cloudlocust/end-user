@@ -30,11 +30,11 @@ const ShellyWindowInstructions = ({ shellyUrl }: { shellyUrl?: string }) => {
                 >
                     Information
                 </h1>
-                <h2>Veuillez fermer votre espace Shelly une fois votre traitement terminé.</h2>
+                <h2>Veuillez fermer votre espace Shelly une fois votre liaison terminé.</h2>
 
                 <p className="description">
                     <WarningIcon className="warning-icon" /> &nbsp; Actuellement, les prises Shelly peuvent être liées à
-                    l’application uniqument dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de
+                    l’application uniquement dans le cadre d’une connexion avec des panneaux solaires Plug&play afin de
                     visualiser la production solaire.
                 </p>
 

@@ -22,7 +22,7 @@ export interface ButtonsSwitcherProps {
      */
     buttonsSwitcherParams: ButtonSwitcherParamsType[]
     /**
-     * Props for the Button component.
+     * Function generating props for the Button component.
      */
     buttonProps?: (isSelected: boolean) => ButtonProps
     /**

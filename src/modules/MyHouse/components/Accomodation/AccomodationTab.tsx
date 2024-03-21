@@ -294,6 +294,9 @@ export const AccomodationTab = () => {
                                             })}
                                             defaultValue={null}
                                             validateFunctions={[requiredBuilder()]}
+                                            formControlProps={{
+                                                margin: 'normal',
+                                            }}
                                         />
                                     ) : (
                                         <Select
@@ -304,6 +307,9 @@ export const AccomodationTab = () => {
                                             })}
                                             defaultValue={null}
                                             validateFunctions={[requiredBuilder()]}
+                                            formControlProps={{
+                                                margin: 'normal',
+                                            }}
                                         />
                                     )}
                                 </div>

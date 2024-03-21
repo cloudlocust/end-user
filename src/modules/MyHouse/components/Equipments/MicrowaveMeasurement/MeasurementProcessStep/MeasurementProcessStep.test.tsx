@@ -123,7 +123,7 @@ describe('MeasurementProcessStep Component', () => {
         reduxedRender(
             <MeasurementProcessStep
                 {...MeasurementProcessStepPropsDefaultValues}
-                measurementStatus={{ status: measurementStatusEnum.FAILED, failureMessage: 'Failur message test' }}
+                measurementStatus={{ status: measurementStatusEnum.FAILED, failureReason: 'Failur message test' }}
             />,
         )
 

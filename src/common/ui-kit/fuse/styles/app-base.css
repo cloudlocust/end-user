@@ -6,9 +6,10 @@
 
 @import 'tailwindcss/base';
 
+
 /**
- * Custom base styles, applied after the tailwind-base classes
- */
+  * Custom base styles, applied after the tailwind-base classes
+  */
 
 html {
     font-size: 62.5%;
@@ -22,7 +23,16 @@ body {
     font-size: 13px;
     line-height: 1.4;
     overflow-x: hidden;
-    padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
+}
+
+html, body, #root {
+    position: relative;
+    margin: 0;
+    height: 100%;
+}
+
+#root {
+    overflow-y: auto;
 }
 
 h1, .h1 {

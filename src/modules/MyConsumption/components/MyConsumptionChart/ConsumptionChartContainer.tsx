@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useTheme, useMediaQuery } from '@mui/material'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
+import { useTheme, useMediaQuery, Typography } from '@mui/material'
+import { isSameDay } from 'date-fns'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -16,6 +17,7 @@ import {
 import {
     DefaultContractWarning,
     ConsumptionEnedisSgeWarning,
+    MissingDataWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
@@ -29,9 +31,11 @@ import {
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { useIntl } from 'src/common/react-platform-translation'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
 import { Title } from 'src/modules/MyConsumption/components/Title'
 import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
@@ -70,11 +74,12 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
     onPeriodChange,
     onRangeChange,
-}: ConsumptionChartContainerProps) => {
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+ConsumptionChartContainerProps) => {
     const theme = useTheme()
-
+    const { formatMessage } = useIntl()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
-    const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
+    const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -330,6 +335,52 @@ export const ConsumptionChartContainer = ({
         return undefined
     }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
 
+    const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
+        // check if we are in current day and the view is daily.
+        if (consumptionChartData.length && period === PeriodEnum.DAILY && isSameDay(new Date(range.from), new Date())) {
+            const currentTime = Date.now()
+            const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
+                datapoints.filter(([_value, time]) => time <= currentTime),
+            )
+            const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetrics)
+            if (time >= 10) {
+                return formatMessage(
+                    {
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                        defaultMessage:
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                    },
+                    { break: <br /> },
+                )
+            } else if (time >= 5) {
+                return formatMessage(
+                    {
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                        defaultMessage:
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                    },
+                    { break: <br /> },
+                )
+            }
+            return null
+        }
+    }, [consumptionChartData, period, range, formatMessage])
+    /**
+     * Checks if all yearly consumption data is available.
+     *
+     * @returns {boolean} True if all yearly data is available, false otherwise.
+     */
+    const checkIfAllYearlyDataExist = useCallback(() => {
+        return (
+            consumptionChartData.length > 0 &&
+            Array.from({ length: 12 }).every((_element, index) => {
+                return consumptionChartData.some((item) => {
+                    return item.datapoints[index] && !!item.datapoints[index][0]
+                })
+            })
+        )
+    }, [consumptionChartData])
+
     /**
      * Handles the selection of years in the date picker.
      * In yearly view, only the n years are displayed if the enedis consent is active.
@@ -349,6 +400,15 @@ export const ConsumptionChartContainer = ({
         },
         [enedisSgeOff, period],
     )
+
+    /**
+     * We use this hook to check if the data is partially available for yearly period.
+     */
+    useEffect(() => {
+        if (period === PeriodEnum.YEARLY) {
+            setPartiallyYearlyDataExist(consumptionChartData.length > 0)
+        }
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist])
 
     /**
      * Determines whether the previous year navigation button should be disabled in the yearly view.
@@ -373,6 +433,10 @@ export const ConsumptionChartContainer = ({
         },
         [period],
     )
+    const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
+    const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
+    // We disable the consumption identifier button temporarily, must remove this const when you enable it.
+    const isConsumptionIdentifierButtonDisablingTemporarily = true
 
     return (
         <div className="mb-12">
@@ -417,7 +481,9 @@ export const ConsumptionChartContainer = ({
                     hidePmax={hidePmax}
                     activeButton={targetMenuActiveButton}
                 />
-                {!mdDown && period === 'daily' && <ConsumptionIdentifierButton size="small" className="px-16" />}
+                {!isConsumptionIdentifierButtonDisablingTemporarily && !mdDown && period === 'daily' && (
+                    <ConsumptionIdentifierButton size="small" className="px-16" />
+                )}
             </div>
             <div>
                 <MyConsumptionDatePicker
@@ -434,18 +500,35 @@ export const ConsumptionChartContainer = ({
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
             ) : (
-                <MyConsumptionChart
-                    data={consumptionChartData}
-                    period={period}
-                    axisColor={theme.palette.common.black}
-                    totalConsumption={totalConsumption}
-                    totalEuroCost={totalEuroCost}
-                    onDisplayTooltipLabel={onDisplayTooltipLabel}
-                />
+                <>
+                    {messageOfSuccessiveMissingDataOfCurrentDay && (
+                        <div className="flex justify-center mt-32">
+                            <Typography
+                                className="max-w-screen-md text-center"
+                                style={{ color: theme.palette.common.black }}
+                            >
+                                {messageOfSuccessiveMissingDataOfCurrentDay}
+                            </Typography>
+                        </div>
+                    )}
+                    <MyConsumptionChart
+                        data={consumptionChartData}
+                        period={period}
+                        axisColor={theme.palette.common.black}
+                        totalConsumption={totalConsumption}
+                        totalEuroCost={totalEuroCost}
+                        onDisplayTooltipLabel={onDisplayTooltipLabel}
+                    />
+                </>
             )}
+            {period === PeriodEnum.YEARLY &&
+                !isDefaultContractWarningShown &&
+                !isConsumptionEnedisSgeWarningShown &&
+                !isMetricsLoading &&
+                !checkIfAllYearlyDataExist() && <MissingDataWarning />}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-            {mdDown && period === 'daily' && (
+            {!isConsumptionIdentifierButtonDisablingTemporarily && mdDown && period === 'daily' && (
                 <div className="flex justify-center px-24 py-8">
                     <ConsumptionIdentifierButton fullWidth />
                 </div>

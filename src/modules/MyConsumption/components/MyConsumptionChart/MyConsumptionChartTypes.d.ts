@@ -198,4 +198,8 @@ export interface ConsumptionChartProps {
      * Callback to determines whether to display the tooltip label.
      */
     onDisplayTooltipLabel?: onDisplayTooltipLabelType
+    /**
+     * Indicates if the chart is for the labelization.
+     */
+    isLabelizationChart?: boolean
 }

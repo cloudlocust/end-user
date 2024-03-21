@@ -73,8 +73,10 @@ const SimplifiedConsumptionChartContainer = ({
     } = useLabelization(currentHousing?.id)
 
     useEffect(() => {
-        getActivitiesList()
-    }, [getActivitiesList])
+        if (!isAddActivityLoading && !isDeleteActivityLoading) {
+            getActivitiesList(new Date(range.from))
+        }
+    }, [getActivitiesList, isAddActivityLoading, isDeleteActivityLoading, range.from])
 
     const { housingEquipmentsList, loadingEquipmentInProgress } = useEquipmentList(currentHousing?.id)
 
@@ -264,6 +266,7 @@ const SimplifiedConsumptionChartContainer = ({
                         selectedLabelPeriod={inputPeriodTime}
                         chartRef={chartRef}
                         setInputPeriodTime={setInputPeriodTime}
+                        isLabelizationChart
                     />
                 )}
                 <div className="mx-32 mt-32">

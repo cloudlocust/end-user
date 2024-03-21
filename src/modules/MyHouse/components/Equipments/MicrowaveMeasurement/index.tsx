@@ -169,7 +169,7 @@ export const MicrowaveMeasurement = ({
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-auto flex flex-col px-20 py-20 rounded-12 bg-white"
                 style={{
                     height: 'calc(100% - 20px)',
-                    maxHeight: '455px',
+                    maxHeight: currentStep === 0 ? '540px' : '455px',
                     width: 'calc(100% - 20px)',
                     maxWidth: '400px',
                 }}
