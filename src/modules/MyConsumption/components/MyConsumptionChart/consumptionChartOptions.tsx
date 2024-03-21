@@ -39,7 +39,7 @@ dayjs.extend(timezone)
  * @param period Period type.
  * @param axisColor Color of the axis.
  * @param totalConsumption Total Consumption used to display on the tooltip.
- * @param totalCost Total Cost used to display on the tooltip.
+ * @param totalEuroCost Total Cost used to display on the tooltip.
  * @param displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
@@ -53,7 +53,7 @@ export const getEchartsConsumptionChartOptions = (
     period: periodType,
     axisColor: string,
     totalConsumption?: TotalMeasurement,
-    totalCost?: TotalMeasurement,
+    totalEuroCost?: TotalMeasurement,
     displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction,
     selectedLabelPeriod?: IPeriodTime,
 ) => {
@@ -88,7 +88,7 @@ export const getEchartsConsumptionChartOptions = (
             xAxisTimestamps,
             isPeriodUsed,
             totalConsumption,
-            totalCost,
+            totalEuroCost,
             displayTooltipLabelCondition,
         ),
         ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
@@ -108,7 +108,7 @@ export const getEchartsConsumptionChartOptions = (
  * @param xAxisTimestamps Timestamps.
  * @param isPeriodUsed Boolean indicating if the period is used.
  * @param totalConsumption Total Consumption used to display on the tooltip.
- * @param totalCost Total Cost used to display on the tooltip.
+ * @param totalEuroCost Total Cost used to display on the tooltip.
  * @param displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
  * @returns Default EchartsConsumptionChart option.
  */
@@ -121,7 +121,7 @@ const getDefaultOptionsEchartsConsumptionChart = (
     xAxisTimestamps: number[],
     isPeriodUsed: boolean,
     totalConsumption?: TotalMeasurement,
-    totalCost?: TotalMeasurement,
+    totalEuroCost?: TotalMeasurement,
     displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction,
 ) => {
     // Targets functions yAxis Value formatter type (label shown in tooltip).
@@ -163,7 +163,7 @@ const getDefaultOptionsEchartsConsumptionChart = (
                             targetsYAxisValueFormatters[targetsYAxisIndexes[index] as targetYAxisIndexEnum]
                         }
                         totalConsumption={totalConsumption}
-                        totalCost={totalCost}
+                        totalEuroCost={totalEuroCost}
                         displayTooltipLabelCondition={displayTooltipLabelCondition}
                     />,
                 ),

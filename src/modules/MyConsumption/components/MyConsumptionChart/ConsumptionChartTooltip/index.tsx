@@ -61,14 +61,14 @@ const Container = styled('div')(() => ({
  * @param param0.params Params echart tooltip params.
  * @param param0.valueFormatter The formatter of the data value.
  * @param param0.totalConsumption Total consumption.
- * @param param0.totalCost Total cost.
+ * @param param0.totalEuroCost Total cost.
  * @param param0.displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
  * @returns React Component.
  */
 export const ConsumptionChartTooltip = ({
     params,
     totalConsumption,
-    totalCost,
+    totalEuroCost,
     valueFormatter,
     displayTooltipLabelCondition = () => true,
 }: ConsumptionChartTooltipProps) => {
@@ -97,10 +97,10 @@ export const ConsumptionChartTooltip = ({
             <div className="title">
                 <Typography>{params[0].name}</Typography>
             </div>
-            {totalConsumption && totalCost && (
+            {totalConsumption && totalEuroCost && (
                 <div className="consumption-summary">
                     <Typography className="total-cost">
-                        {totalCost.value} {totalCost.unit}
+                        {totalEuroCost.value} {totalEuroCost.unit}
                     </Typography>
                     <div className="vertical-divider" />
                     <Typography className="total-consumption">

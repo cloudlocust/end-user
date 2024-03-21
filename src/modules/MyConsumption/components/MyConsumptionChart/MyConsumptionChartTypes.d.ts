@@ -193,7 +193,7 @@ export interface ConsumptionChartProps {
     /**
      * Total Cost used to display on the tooltip.
      */
-    totalCost?: TotalMeasurement
+    totalEuroCost?: TotalMeasurement
     /**
      * Callback to determines whether to display the tooltip label.
      */
