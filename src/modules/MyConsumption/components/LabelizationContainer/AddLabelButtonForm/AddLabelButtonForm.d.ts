@@ -42,4 +42,8 @@ interface AddLabelButtonFormProps {
      * The current range of the metrics.
      */
     range: metricRangeType
+    /**
+     * The chart data.
+     */
+    chartData: IMetric[]
 }

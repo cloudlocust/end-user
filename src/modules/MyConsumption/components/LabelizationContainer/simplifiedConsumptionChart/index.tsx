@@ -201,7 +201,7 @@ const SimplifiedConsumptionChartContainer = ({
             try {
                 await addActivity(requestBody)
                 // To clean the brush selected area
-                chartRef.current?.getEchartsInstance().dispatchAction({
+                chartRef.current?.getEchartsInstance()?.dispatchAction({
                     type: 'brush',
                     areas: [],
                 })
@@ -251,6 +251,7 @@ const SimplifiedConsumptionChartContainer = ({
                     }
                     addingLabelsIsDisabled={loadingEquipmentInProgress || isAddActivityLoading}
                     range={range}
+                    chartData={consumptionChartData}
                 />
             </Form>
             <div>
@@ -279,7 +280,7 @@ const SimplifiedConsumptionChartContainer = ({
                         </div>
                     ) : consumptionLabelCardsData.length === 0 ? (
                         <TypographyFormatMessage className="text-18 sm:text-20 font-400 text-grey-400 text-center m-20 mt-60">
-                            Aucun label n'est disponible
+                            Aucun label disponible pour le jour sélectionné
                         </TypographyFormatMessage>
                     ) : (
                         <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">
