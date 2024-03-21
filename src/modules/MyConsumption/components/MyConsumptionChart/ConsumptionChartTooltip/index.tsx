@@ -1,6 +1,7 @@
 import { styled, alpha } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import { ConsumptionChartTooltipProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { useMemo } from 'react'
 
 const Container = styled('div')(() => ({
     background: '#F6F7F9',
@@ -61,6 +62,7 @@ const Container = styled('div')(() => ({
  * @param param0.valueFormatter The formatter of the data value.
  * @param param0.totalConsumption Total consumption.
  * @param param0.totalEuroCost Total cost.
+ * @param param0.onDisplayTooltipLabel Callback to determines whether to display the tooltip label.
  * @returns React Component.
  */
 export const ConsumptionChartTooltip = ({
@@ -68,7 +70,28 @@ export const ConsumptionChartTooltip = ({
     totalConsumption,
     totalEuroCost,
     valueFormatter,
+    onDisplayTooltipLabel = () => true,
 }: ConsumptionChartTooltipProps) => {
+    const labels = useMemo(() => {
+        const items: JSX.Element[] = []
+        params.forEach((item, index: number) => {
+            if (onDisplayTooltipLabel(item)) {
+                const value = valueFormatter ? valueFormatter(item.seriesIndex)(item.value) : item.value
+                items.push(
+                    <div className="label" key={index}>
+                        <Typography>
+                            <span dangerouslySetInnerHTML={{ __html: item.marker }} /> {item.seriesName}
+                        </Typography>
+                        <Typography className="value">{value}</Typography>
+                    </div>,
+                )
+            }
+        })
+        return items
+    }, [params, valueFormatter, onDisplayTooltipLabel])
+
+    if (!labels.length) return null
+
     return (
         <Container>
             <div className="title">
@@ -86,16 +109,7 @@ export const ConsumptionChartTooltip = ({
                 </div>
             )}
             <div className="horizontal-divider" />
-            <div className="labels-container">
-                {params.map((item: any, index: number) => (
-                    <div className="label" key={index}>
-                        <Typography>
-                            <span dangerouslySetInnerHTML={{ __html: item.marker }} /> {item.seriesName}
-                        </Typography>
-                        <Typography className="value">{valueFormatter(item.seriesIndex)(item.value)}</Typography>
-                    </div>
-                ))}
-            </div>
+            <div className="labels-container">{labels}</div>
         </Container>
     )
 }
