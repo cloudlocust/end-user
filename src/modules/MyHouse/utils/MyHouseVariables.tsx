@@ -271,7 +271,7 @@ export const myEquipmentOptions = [
     },
     {
         name: 'dishwasher',
-        labelTitle: 'Lave-vaisselle',
+        labelTitle: 'Lave-vaiselle',
         // eslint-disable-next-line jsdoc/require-jsdoc
         iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <EquipmentIcon equipmentName="dishwasher" theme={theme} isDisabled={isDisabled} fill={fill} />
@@ -496,7 +496,7 @@ export const mapppingEquipmentToLabel = {
     oven: 'Four',
     microwave: 'Micro-onde',
     fridge: 'Congélateur',
-    dishwasher: 'Lave-vaisselle',
+    dishwasher: 'Lave-vaiselle',
     washingmachine: 'Lave linge',
     dryer: 'Sèche linge',
     laptop: 'PC Portable',
