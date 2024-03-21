@@ -1,5 +1,7 @@
-import { MouseEvent } from 'react'
-import { ToggleButtonGroup, ToggleButton, capitalize } from '@mui/material'
+import { Button, capitalize } from '@mui/material'
+import { styled, alpha } from '@mui/material/styles'
+import { useTheme } from '@mui/material'
+import clsx from 'clsx'
 import {
     SwitchConsumptionButtonLabelEnum,
     SwitchConsumptionButtonProps,
@@ -23,6 +25,62 @@ const switchButtons: SwitchConsumpytionButtonType = [
     },
 ]
 
+const Container = styled('div')(({ theme }) => ({
+    overflowX: 'scroll',
+    width: '100%',
+    whiteSpace: 'nowrap',
+    scrollbarWidth: 'none',
+    paddingLeft: 16,
+    paddingRight: 16,
+    alignItems: 'flex-start',
+    gap: 8,
+    display: 'inline-flex',
+    alignSelf: 'stretch',
+    paddingTop: 24,
+    paddingBottom: 4,
+    justifyContent: 'center',
+    [theme.breakpoints.down('md')]: {
+        paddingTop: 4,
+    },
+    '& .MuiButton-root': {
+        [theme.breakpoints.down('md')]: {
+            height: 24,
+            fontSize: 12,
+            minWidth: 160,
+        },
+        height: 30,
+        minWidth: 200,
+        display: 'flex',
+        padding: '8px 16px',
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingTop: 8,
+        paddingBottom: 8,
+        borderRadius: 90,
+        border: '1px solid',
+        borderColor: theme.palette.primary.main,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+        color: theme.palette.primary.main,
+        fontWeight: 400,
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        lineHeight: 'normal',
+        '&.selected': {
+            boxShadow: `0px 2px 4px 0px ${alpha(theme.palette.primary.dark, 0.2)}, 0px 1px 10px 0px ${alpha(
+                theme.palette.primary.dark,
+                0.12,
+            )}, 0px 4px 5px 0px ${alpha(theme.palette.primary.dark, 0.14)}`,
+            color: theme.palette.primary.contrastText,
+            cursor: 'default',
+            '&:hover': {
+                backgroundColor: alpha(theme.palette.primary.main, 0.75),
+            },
+        },
+    },
+}))
+
 /**
  * Component for idle consumption switch button.
  *
@@ -38,60 +96,47 @@ export const SwitchConsumptionButton = ({
     isAutoConsumptionProductionShown,
 }: SwitchConsumptionButtonProps): JSX.Element => {
     const { consumptionToggleButton, setConsumptionToggleButton } = useMyConsumptionStore()
+    const theme = useTheme()
 
     /**
      * Function handling switch of idleConsumptionButton.
      *
-     * @param _event Event handler.
      * @param value SwitchConsumptionButtonProps.
      */
-    const onChange = (_event: MouseEvent<HTMLElement>, value: SwitchConsumptionButtonTypeEnum) => {
-        if (value === null) return
-        setConsumptionToggleButton(value)
-        onSwitchConsumptionButton(value)
+    const onChange = (value: SwitchConsumptionButtonTypeEnum) => {
+        if (consumptionToggleButton !== value) {
+            setConsumptionToggleButton(value)
+            onSwitchConsumptionButton(value)
+        }
     }
 
     return (
-        <ToggleButtonGroup
-            color="secondary"
-            exclusive
-            size="small"
-            value={consumptionToggleButton}
-            onChange={onChange}
-            aria-label="toggle-consumption-button-group"
-        >
-            {switchButtons.map((element) => {
+        <Container>
+            {switchButtons.map((element, index) => {
                 const isIdleElementDisabled = !isIdleShown && element.type === SwitchConsumptionButtonTypeEnum.Idle
                 const isProductionElementDisabled =
                     !isAutoConsumptionProductionShown &&
                     element.type === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
                 const isElementExcluded = isIdleElementDisabled || isProductionElementDisabled
-
                 if (isElementExcluded) return null
-
+                const isSelected = consumptionToggleButton === element.type
                 return (
-                    <ToggleButton
-                        key={element.label}
-                        className="rounded-full text-12 md:text-13"
-                        aria-label="toggle-consumption-button"
-                        value={element.type}
-                        sx={{
-                            backgroundColor: 'primary.main',
-                            color: 'primary.contrastText',
-                            '&:hover': {
-                                color: 'secondary.contrastText',
-                            },
-                            fontWeight: 500,
-                            '&.Mui-selected': {
-                                backgroundColor: 'secondary.main',
-                                color: 'secondary.contrastText',
-                            },
-                        }}
-                    >
-                        {capitalize(element.label)}
-                    </ToggleButton>
+                    <div key={index}>
+                        <Button
+                            variant={isSelected ? 'contained' : 'outlined'}
+                            disableElevation={true}
+                            disableRipple={true}
+                            onClick={() => onChange(element.type)}
+                            className={clsx({ selected: isSelected })}
+                            sx={{
+                                backgroundColor: isSelected ? alpha(theme.palette.primary.main, 0.75) : 'initial',
+                            }}
+                        >
+                            {capitalize(element.label)}
+                        </Button>
+                    </div>
                 )
             })}
-        </ToggleButtonGroup>
+        </Container>
     )
 }
