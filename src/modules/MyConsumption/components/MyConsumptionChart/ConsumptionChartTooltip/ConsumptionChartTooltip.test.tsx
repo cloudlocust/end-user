@@ -19,7 +19,7 @@ const secondChartTooltipParam = {
 
 const params = [firstChartTooltipParam, secondChartTooltipParam]
 const totalConsumption = { value: 30, unit: 'kWh' }
-const totalCost = { value: 50, unit: 'USD' }
+const totalEuroCost = { value: 50, unit: 'USD' }
 
 const firstChartformatedValue = `${firstChartTooltipParam.value} kWh`
 const secondChartformatedValue = `${firstChartTooltipParam.value} W`
@@ -38,7 +38,7 @@ describe('ConsumptionChartTooltip', () => {
             <ConsumptionChartTooltip
                 params={params}
                 totalConsumption={totalConsumption}
-                totalCost={totalCost}
+                totalEuroCost={totalEuroCost}
                 valueFormatter={valueFormatter}
             />,
         )
@@ -54,7 +54,7 @@ describe('ConsumptionChartTooltip', () => {
         expect(getByText('50 USD')).toBeInTheDocument()
     })
 
-    test('does not render consumption summary if totalConsumption and totalCost are not provided', () => {
+    test('does not render consumption summary if totalConsumption and totalEuroCost are not provided', () => {
         const { queryByText } = reduxedRender(
             <ConsumptionChartTooltip params={params} valueFormatter={valueFormatter} />,
         )

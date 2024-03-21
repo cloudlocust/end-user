@@ -36,7 +36,7 @@ dayjs.extend(timezone)
  * @param period Period type.
  * @param axisColor Color of the axis.
  * @param totalConsumption Total Consumption used to display on the tooltip.
- * @param totalCost Total Cost used to display on the tooltip.
+ * @param totalEuroCost Total Cost used to display on the tooltip.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
  */
@@ -49,7 +49,7 @@ export const getEchartsConsumptionChartOptions = (
     period: periodType,
     axisColor: string,
     totalConsumption?: TotalMeasurement,
-    totalCost?: TotalMeasurement,
+    totalEuroCost?: TotalMeasurement,
     selectedLabelPeriod?: IPeriodTime,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
@@ -83,7 +83,7 @@ export const getEchartsConsumptionChartOptions = (
             xAxisTimestamps,
             isPeriodUsed,
             totalConsumption,
-            totalCost,
+            totalEuroCost,
         ),
         ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
@@ -102,7 +102,7 @@ export const getEchartsConsumptionChartOptions = (
  * @param xAxisTimestamps Timestamps.
  * @param isPeriodUsed Boolean indicating if the period is used.
  * @param totalConsumption Total Consumption used to display on the tooltip.
- * @param totalCost Total Cost used to display on the tooltip.
+ * @param totalEuroCost Total Cost used to display on the tooltip.
  * @returns Default EchartsConsumptionChart option.
  */
 const getDefaultOptionsEchartsConsumptionChart = (
@@ -114,7 +114,7 @@ const getDefaultOptionsEchartsConsumptionChart = (
     xAxisTimestamps: number[],
     isPeriodUsed: boolean,
     totalConsumption?: TotalMeasurement,
-    totalCost?: TotalMeasurement,
+    totalEuroCost?: TotalMeasurement,
 ) => {
     // Targets functions yAxis Value formatter type (label shown in tooltip).
     const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
@@ -155,7 +155,7 @@ const getDefaultOptionsEchartsConsumptionChart = (
                             targetsYAxisValueFormatters[targetsYAxisIndexes[index] as targetYAxisIndexEnum]
                         }
                         totalConsumption={totalConsumption}
-                        totalCost={totalCost}
+                        totalEuroCost={totalEuroCost}
                     />,
                 ),
         },
