@@ -381,6 +381,11 @@ ConsumptionChartContainerProps) => {
         )
     }, [consumptionChartData])
 
+    // Callback to check if the range is in the current year.
+    const isRangeInCurrentYear = useCallback(() => {
+        return new Date(range.from).getFullYear() === new Date().getFullYear()
+    }, [range])
+
     /**
      * Handles the selection of years in the date picker.
      * In yearly view, only the n years are displayed if the enedis consent is active.
@@ -405,10 +410,10 @@ ConsumptionChartContainerProps) => {
      * We use this hook to check if the data is partially available for yearly period.
      */
     useEffect(() => {
-        if (period === PeriodEnum.YEARLY) {
+        if (period === PeriodEnum.YEARLY && !isRangeInCurrentYear()) {
             setPartiallyYearlyDataExist(consumptionChartData.length > 0)
         }
-    }, [consumptionChartData, period, setPartiallyYearlyDataExist])
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist, isRangeInCurrentYear, range])
 
     /**
      * Determines whether the previous year navigation button should be disabled in the yearly view.
