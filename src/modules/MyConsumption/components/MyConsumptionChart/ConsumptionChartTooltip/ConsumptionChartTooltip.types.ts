@@ -49,7 +49,7 @@ export type EChartTooltipFormatterParams = EChartTooltipFormatterParamsItem[]
  * @param item - The item of the EChartTooltipFormatterParams.
  * @returns A boolean indicating whether to display the tooltip label.
  */
-export type DisplayTooltipLabelConditionFunction = (item: EChartTooltipFormatterParamsItem) => boolean
+export type onDisplayTooltipLabelType = (item: EChartTooltipFormatterParamsItem) => boolean
 /**
  * Props for the ConsumptionChartTooltip component.
  */
@@ -80,5 +80,5 @@ export type ConsumptionChartTooltipProps =
         /**
          * Callback to determines whether to display the tooltip label.
          */
-        displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction
+        onDisplayTooltipLabel?: onDisplayTooltipLabelType
     }

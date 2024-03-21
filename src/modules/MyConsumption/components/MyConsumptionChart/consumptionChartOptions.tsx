@@ -22,7 +22,7 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import {
     EChartTooltipFormatterParams,
-    DisplayTooltipLabelConditionFunction,
+    onDisplayTooltipLabelType,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
 import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
 dayjs.extend(utc)
@@ -40,7 +40,7 @@ dayjs.extend(timezone)
  * @param axisColor Color of the axis.
  * @param totalConsumption Total Consumption used to display on the tooltip.
  * @param totalEuroCost Total Cost used to display on the tooltip.
- * @param displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
+ * @param onDisplayTooltipLabel Callback to determines whether to display the tooltip label.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
  */
@@ -54,7 +54,7 @@ export const getEchartsConsumptionChartOptions = (
     axisColor: string,
     totalConsumption?: TotalMeasurement,
     totalEuroCost?: TotalMeasurement,
-    displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction,
+    onDisplayTooltipLabel?: onDisplayTooltipLabelType,
     selectedLabelPeriod?: IPeriodTime,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
@@ -89,7 +89,7 @@ export const getEchartsConsumptionChartOptions = (
             isPeriodUsed,
             totalConsumption,
             totalEuroCost,
-            displayTooltipLabelCondition,
+            onDisplayTooltipLabel,
         ),
         ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
@@ -109,7 +109,7 @@ export const getEchartsConsumptionChartOptions = (
  * @param isPeriodUsed Boolean indicating if the period is used.
  * @param totalConsumption Total Consumption used to display on the tooltip.
  * @param totalEuroCost Total Cost used to display on the tooltip.
- * @param displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
+ * @param onDisplayTooltipLabel Callback to determines whether to display the tooltip label.
  * @returns Default EchartsConsumptionChart option.
  */
 const getDefaultOptionsEchartsConsumptionChart = (
@@ -122,7 +122,7 @@ const getDefaultOptionsEchartsConsumptionChart = (
     isPeriodUsed: boolean,
     totalConsumption?: TotalMeasurement,
     totalEuroCost?: TotalMeasurement,
-    displayTooltipLabelCondition?: DisplayTooltipLabelConditionFunction,
+    onDisplayTooltipLabel?: onDisplayTooltipLabelType,
 ) => {
     // Targets functions yAxis Value formatter type (label shown in tooltip).
     const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
@@ -164,7 +164,7 @@ const getDefaultOptionsEchartsConsumptionChart = (
                         }
                         totalConsumption={totalConsumption}
                         totalEuroCost={totalEuroCost}
-                        displayTooltipLabelCondition={displayTooltipLabelCondition}
+                        onDisplayTooltipLabel={onDisplayTooltipLabel}
                     />,
                 ),
         },

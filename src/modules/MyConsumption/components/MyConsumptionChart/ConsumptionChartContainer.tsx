@@ -367,7 +367,7 @@ export const ConsumptionChartContainer = ({
         )
     }, [enedisSgeOff, period, range])
 
-    const getTooltipLabelDisplayingCondition = useCallback(
+    const onDisplayTooltipLabel = useCallback(
         (label) => {
             return period === PeriodEnum.DAILY ? true : label.value !== null && label.value !== undefined
         },
@@ -440,7 +440,7 @@ export const ConsumptionChartContainer = ({
                     axisColor={theme.palette.common.black}
                     totalConsumption={totalConsumption}
                     totalEuroCost={totalEuroCost}
-                    displayTooltipLabelCondition={getTooltipLabelDisplayingCondition}
+                    onDisplayTooltipLabel={onDisplayTooltipLabel}
                 />
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />

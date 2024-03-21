@@ -62,7 +62,7 @@ const Container = styled('div')(() => ({
  * @param param0.valueFormatter The formatter of the data value.
  * @param param0.totalConsumption Total consumption.
  * @param param0.totalEuroCost Total cost.
- * @param param0.displayTooltipLabelCondition Callback to determines whether to display the tooltip label.
+ * @param param0.onDisplayTooltipLabel Callback to determines whether to display the tooltip label.
  * @returns React Component.
  */
 export const ConsumptionChartTooltip = ({
@@ -70,12 +70,12 @@ export const ConsumptionChartTooltip = ({
     totalConsumption,
     totalEuroCost,
     valueFormatter,
-    displayTooltipLabelCondition = () => true,
+    onDisplayTooltipLabel = () => true,
 }: ConsumptionChartTooltipProps) => {
     const labels = useMemo(() => {
         const items: JSX.Element[] = []
         params.forEach((item, index: number) => {
-            if (displayTooltipLabelCondition(item)) {
+            if (onDisplayTooltipLabel(item)) {
                 const value = valueFormatter ? valueFormatter(item.seriesIndex)(item.value) : item.value
                 items.push(
                     <div className="label" key={index}>
@@ -88,7 +88,7 @@ export const ConsumptionChartTooltip = ({
             }
         })
         return items
-    }, [params, valueFormatter, displayTooltipLabelCondition])
+    }, [params, valueFormatter, onDisplayTooltipLabel])
 
     if (!labels.length) return null
 
