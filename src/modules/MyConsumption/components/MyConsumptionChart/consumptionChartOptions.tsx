@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from 'react-dom/server'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { metricTargetType, metricTargetsEnum, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics.d'
 import { EChartsOption } from 'echarts'
@@ -17,7 +18,10 @@ import {
     getTargetsYAxisValueFormattersType,
     IPeriodTime,
     IPeriodTimeIndexs,
+    TotalMeasurement,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
+import { EChartTooltipFormatterParams } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -31,6 +35,8 @@ dayjs.extend(timezone)
  * @param isMobile Is Mobile view.
  * @param period Period type.
  * @param axisColor Color of the axis.
+ * @param totalConsumption Total Consumption used to display on the tooltip.
+ * @param totalEuroCost Total Cost used to display on the tooltip.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
  */
@@ -42,6 +48,8 @@ export const getEchartsConsumptionChartOptions = (
     isMobile: boolean,
     period: periodType,
     axisColor: string,
+    totalConsumption?: TotalMeasurement,
+    totalEuroCost?: TotalMeasurement,
     selectedLabelPeriod?: IPeriodTime,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
@@ -69,10 +77,13 @@ export const getEchartsConsumptionChartOptions = (
         ...getDefaultOptionsEchartsConsumptionChart(
             theme,
             isMobile,
+            values,
             period,
             selectedLabelPeriodIndex,
             xAxisTimestamps,
             isPeriodUsed,
+            totalConsumption,
+            totalEuroCost,
         ),
         ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
@@ -85,20 +96,31 @@ export const getEchartsConsumptionChartOptions = (
  *
  * @param theme Theme used for colors, fonts and backgrounds.
  * @param isMobile Is Mobile view.
+ * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Period type.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @param xAxisTimestamps Timestamps.
  * @param isPeriodUsed Boolean indicating if the period is used.
+ * @param totalConsumption Total Consumption used to display on the tooltip.
+ * @param totalEuroCost Total Cost used to display on the tooltip.
  * @returns Default EchartsConsumptionChart option.
  */
 const getDefaultOptionsEchartsConsumptionChart = (
     theme: Theme,
     isMobile: boolean,
+    values: targetTimestampsValuesFormat,
     period: periodType,
     selectedLabelPeriod: IPeriodTimeIndexs | undefined,
     xAxisTimestamps: number[],
     isPeriodUsed: boolean,
+    totalConsumption?: TotalMeasurement,
+    totalEuroCost?: TotalMeasurement,
 ) => {
+    // Targets functions yAxis Value formatter type (label shown in tooltip).
+    const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
+    const targetsYAxisIndexes = Object.keys(values).map((target) =>
+        getTargetYAxisIndexFromTargetName(target as metricTargetsEnum),
+    )
     let defaultOptions = {
         color: 'transparent',
         axisPointer: {
@@ -116,6 +138,26 @@ const getDefaultOptionsEchartsConsumptionChart = (
                       return { top: '-90', left: '20' }
                   }
                 : 'inside',
+            // We make padding and borderWidth because we need to customize the tooltip and change it background color.
+            padding: 0,
+            borderWidth: 0,
+            /**
+             * Formatter used to override the tooltip.
+             *
+             * @param params The params of tooltip.
+             * @returns Html string.
+             */
+            formatter: (params: EChartTooltipFormatterParams) =>
+                renderToStaticMarkup(
+                    <ConsumptionChartTooltip
+                        params={params}
+                        valueFormatter={(index) =>
+                            targetsYAxisValueFormatters[targetsYAxisIndexes[index] as targetYAxisIndexEnum]
+                        }
+                        totalConsumption={totalConsumption}
+                        totalEuroCost={totalEuroCost}
+                    />,
+                ),
         },
         dataZoom: [
             {
@@ -206,9 +248,6 @@ export const getSeriesOptionEchartsConsumptionChart = (
     switchButtonType: SwitchConsumptionButtonTypeEnum,
     theme: Theme,
 ) => {
-    // Targets functions yAxis Value formatter type (label shown in tooltip).
-    const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
-
     const resultSeries = Object.keys(values).map((target) => {
         const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
         const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
@@ -233,9 +272,6 @@ export const getSeriesOptionEchartsConsumptionChart = (
             data: values[target as metricTargetType],
             stack: getStackTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, theme, switchButtonType),
             yAxisIndex: Number(targetYAxisIndex),
-            tooltip: {
-                valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
-            },
             showSymbol: false,
             smooth: true,
             itemStyle: {
