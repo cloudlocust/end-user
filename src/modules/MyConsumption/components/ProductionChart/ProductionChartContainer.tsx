@@ -1,6 +1,4 @@
 import { useEffect } from 'react'
-import { motion } from 'framer-motion'
-import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { showPerPeriodText } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { useTheme } from '@mui/material'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
@@ -14,6 +12,7 @@ import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsu
 import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 import EchartsProductionChart from 'src/modules/MyConsumption/components/ProductionChart'
+import { Title } from 'src/modules/MyConsumption/components/Title'
 
 /**
  * ProductionChartContainer Component.
@@ -101,23 +100,7 @@ export const ProductionChartContainer = ({
     return (
         <div className="mb-12">
             <div className="relative flex flex-col md:flex-row items-center justify-center">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mb-10 md:mb-0 flex flex-col items-center md:flex-row text-center"
-                >
-                    <TypographyFormatMessage
-                        variant="h5"
-                        className="sm:mr-8"
-                        style={{ color: theme.palette.common.black }}
-                    >
-                        Ma production
-                    </TypographyFormatMessage>
-                    {/* Consommation Watt par jour / Semaine / Mois / Année */}
-                    <TypographyFormatMessage variant="h5" style={{ color: theme.palette.common.black }}>
-                        {showPerPeriodText('production', period)}
-                    </TypographyFormatMessage>
-                </motion.div>
+                <Title>Ma production {showPerPeriodText('production', period)}</Title>
             </div>
             <EchartsProductionChart period={period} data={data} />
         </div>
