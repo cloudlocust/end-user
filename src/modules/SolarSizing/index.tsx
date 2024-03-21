@@ -75,7 +75,6 @@ export default function SolarSizing() {
     }, [latestSurface])
 
     const annualProduction = floor(convert(solarSizingData?.data['annualProduction']).from('kWh').to('MWh'), 1)
-
     const autoConsumptionPercentage = floor(solarSizingData?.data.autoConsumptionPercentage!, 1)
     const autoProductionPercentage = floor(solarSizingData?.data.autoProductionPercentage!, 1)
     const nominalPower = floor(solarSizingData?.data.nominalPower!, 1)
