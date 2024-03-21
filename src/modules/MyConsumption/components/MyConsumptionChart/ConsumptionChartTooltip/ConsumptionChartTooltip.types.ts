@@ -55,7 +55,7 @@ export type ConsumptionChartTooltipProps =
         /**
          * Total cost measurement.
          */
-        totalCost?: TotalMeasurement
+        totalEuroCost?: TotalMeasurement
         /**
          * Total consumption measurement.
          */

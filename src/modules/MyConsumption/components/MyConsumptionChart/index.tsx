@@ -27,7 +27,7 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.chartRef ChartRef.
  * @param props.setInputPeriodTime SetInputPeriodTime.
  * @param props.totalConsumption Total Consumption.
- * @param props.totalCost Total Cost.
+ * @param props.totalEuroCost Total Cost.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -38,7 +38,7 @@ const MyConsumptionChart = ({
     chartRef,
     setInputPeriodTime,
     totalConsumption,
-    totalCost,
+    totalEuroCost,
 }: ConsumptionChartProps) => {
     const theme = useTheme()
     const { consumptionToggleButton } = useMyConsumptionStore()
@@ -66,7 +66,7 @@ const MyConsumptionChart = ({
             period,
             axisColor,
             totalConsumption,
-            totalCost,
+            totalEuroCost,
             selectedLabelPeriod,
         )
     }, [
@@ -79,7 +79,7 @@ const MyConsumptionChart = ({
         axisColor,
         selectedLabelPeriod,
         totalConsumption,
-        totalCost,
+        totalEuroCost,
     ])
 
     const handleBrushSelected = useCallback(
