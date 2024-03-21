@@ -58,6 +58,7 @@ export let TEST_HOUSING_SOLAR_SIZING: HousingSolarSizing = {
     autoProductionPercentage: 50,
     consumptionStartAt: '2022-01-01T00:00:00.000Z',
     consumptionEndAt: '2022-12-31T23:59:59.999Z',
+    nominalPower: 20,
 }
 
 /**

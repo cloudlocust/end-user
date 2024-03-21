@@ -77,4 +77,8 @@ export type HousingSolarSizing = {
      * Consumption end at.
      */
     consumptionEndAt: Date | string
+    /**
+     * Kilowatt peak (crête) measured in kWc.
+     */
+    nominalPower: number
 }
