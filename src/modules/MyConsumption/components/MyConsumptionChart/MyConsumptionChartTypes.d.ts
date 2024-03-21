@@ -193,4 +193,8 @@ export interface ConsumptionChartProps {
      * Total Cost used to display on the tooltip.
      */
     totalEuroCost?: TotalMeasurement
+    /**
+     * Indicates if the chart is for the labelization.
+     */
+    isLabelizationChart?: boolean
 }

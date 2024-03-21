@@ -28,6 +28,7 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.setInputPeriodTime SetInputPeriodTime.
  * @param props.totalConsumption Total Consumption.
  * @param props.totalEuroCost Total Cost.
+ * @param props.isLabelizationChart Indicates if the chart is for the labelization.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -39,6 +40,7 @@ const MyConsumptionChart = ({
     setInputPeriodTime,
     totalConsumption,
     totalEuroCost,
+    isLabelizationChart,
 }: ConsumptionChartProps) => {
     const theme = useTheme()
     const { consumptionToggleButton } = useMyConsumptionStore()
@@ -57,7 +59,7 @@ const MyConsumptionChart = ({
 
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(
+        const options = getEchartsConsumptionChartOptions(
             timestamps,
             values,
             theme,
@@ -69,6 +71,19 @@ const MyConsumptionChart = ({
             totalEuroCost,
             selectedLabelPeriod,
         )
+        return {
+            ...options,
+            ...(isLabelizationChart
+                ? {
+                      dataZoom: [
+                          {
+                              type: 'inside',
+                              disabled: true,
+                          },
+                      ],
+                  }
+                : {}),
+        }
     }, [
         timestamps,
         values,
@@ -80,6 +95,7 @@ const MyConsumptionChart = ({
         selectedLabelPeriod,
         totalConsumption,
         totalEuroCost,
+        isLabelizationChart,
     ])
 
     const handleBrushSelected = useCallback(

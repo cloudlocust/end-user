@@ -47,7 +47,7 @@ export const useCommercialOffer = () => {
     const [isPowersLoading, setIsPowersLoading] = useState(false)
     const [isTariffsLoading, setIsTariffsLoading] = useState(false)
     const [providerList, setProviderList] = useState<IProvider[] | null>(null)
-    const [offerList, setOfferList] = useState<IProvider[] | null>(null)
+    const [offerList, setOfferList] = useState<IOffer[] | null>(null)
     const [contractTypeList, setContractTypeList] = useState<IContractType[] | null>(null)
     const [tariffTypeList, setTariffTypeList] = useState<ITariffType[] | null>(null)
     const [powerList, setPowerList] = useState<IPower[] | null>(null)

@@ -7,8 +7,6 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 export type widgetTitleType =
     | 'Consommation Totale'
     | 'Puissance Maximale'
-    | 'Température Intérieure'
-    | 'Température Extérieure'
     | 'Coût Total'
     | 'Production Totale'
     | 'Injectée'

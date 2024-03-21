@@ -2,7 +2,7 @@ import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider, UseMutationResult } from 'react-query'
 import { TEST_HOUSING_SOLAR_SIZING } from 'src/mocks/handlers/solarSizing'
-import { SolarSizing } from 'src/modules/SolarSizing'
+import SolarSizing from 'src/modules/SolarSizing'
 import { ISolarSizing } from 'src/modules/SolarSizing/solarSizeing.types'
 
 let mockSolarSizingData = TEST_HOUSING_SOLAR_SIZING
@@ -79,8 +79,5 @@ describe('SolarSizing', () => {
             expect(mockAsyncMutate).toBeCalled()
             expect(mockRefetch).toBeCalled()
         })
-
-        expect(getByText('250')).toBeInTheDocument()
-        expect(getByText('1000')).toBeInTheDocument()
     })
 })

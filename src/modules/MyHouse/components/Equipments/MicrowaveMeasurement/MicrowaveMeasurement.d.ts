@@ -65,24 +65,6 @@ export interface MeasurementResultApiResponse {
 /**
  * Format of measurement status Api response.
  */
-export interface MeasurementStatusApiResponse {
-    /**
-     * The status.
-     */
-    status: measurementStatusEnum
-    /**
-     * Time of the last update of status.
-     */
-    updatedAt?: string
-    /**
-     * Time of the creation of status.
-     */
-    createdAt?: string
-}
-
-/**
- * Type of the measurement status state.
- */
 export interface MeasurementStatusStateType {
     /**
      * The measurement status.
@@ -93,7 +75,11 @@ export interface MeasurementStatusStateType {
      */
     updatedAt?: string
     /**
+     * The time of the creation of the measurement status.
+     */
+    createdAt?: string
+    /**
      * The error message to show when the status is FAILED.
      */
-    failureMessage?: string
+    failureReason?: string
 }

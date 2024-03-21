@@ -12,10 +12,10 @@ const config: CapacitorConfig = {
     server: {
         cleartext: true,
         androidScheme: 'https',
-        url: 'https://particuliers.nrlink.fr/services',
+        url: 'https://particuliers.nrlink.fr/services/',
     },
     ios: {
-        contentInset: 'automatic',
+        contentInset: 'always',
     },
 }
 

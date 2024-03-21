@@ -64,22 +64,18 @@ describe('Test echartsConsumptionOptions', () => {
 
                 color: theme.palette.primary.light,
             },
-            { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
+            { target: metricTargetsEnum.autoconsumption, color: '#039DE0' },
             { target: metricTargetsEnum.idleConsumption, color: '#8191B2' },
             { target: metricTargetsEnum.eurosIdleConsumption, color: '#8191B2' },
             { target: metricTargetsEnum.subscriptionPrices, color: '#CCDCDD' },
-            { target: metricTargetsEnum.peakHourConsumption, color: '#CC9121' },
-            { target: metricTargetsEnum.offPeakHourConsumption, color: '#CCAB1D' },
+            { target: metricTargetsEnum.peakHourConsumption, color: '#039DE0' },
+            { target: metricTargetsEnum.offPeakHourConsumption, color: '#9BE1FD' },
             {
                 target: metricTargetsEnum.totalOffIdleConsumption,
 
                 color: theme.palette.secondary.main,
             },
-            {
-                target: metricTargetsEnum.consumption,
-
-                color: theme.palette.secondary.main,
-            },
+            { target: metricTargetsEnum.consumption, color: '#039DE0' },
             { target: metricTargetsEnum.euroPeakHourConsumption, color: '#6BCBFF' },
             { target: metricTargetsEnum.euroOffPeakConsumption, color: '#BEE8FF' },
             {

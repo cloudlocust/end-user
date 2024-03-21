@@ -159,7 +159,9 @@ export const computeTotalEurosWithSubscriptionPrice = (data: IMetric[]): { value
     const { value: totalEuros } = computeTotalEuros(data)
     const { value: totalSubscriptionPrice } = computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
 
-    return { value: totalEuros + totalSubscriptionPrice, unit: '€' }
+    const totalEurosWithSubscription = Number((totalEuros + totalSubscriptionPrice).toFixed(2))
+
+    return { value: totalEurosWithSubscription, unit: '€' }
 }
 
 /**
@@ -272,10 +274,6 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
                 : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
-        case metricTargetsEnum.externalTemperature:
-            return 'Température Extérieure'
-        case metricTargetsEnum.internalTemperature:
-            return 'Température Intérieure'
         case metricTargetsEnum.eurosConsumption:
             return 'Coût Total'
         case metricTargetsEnum.totalProduction:
