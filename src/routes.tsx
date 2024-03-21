@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom'
 import { navbarItemType } from './common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import { MyConsumptionConfig } from './modules/MyConsumption'
 import { AdvicesConfig } from './modules/Advices'
-import { AnalysisConfig } from './modules/Analysis/AnalysisConfig'
 import { LoginConfig } from './modules/User/Login/LoginConfig'
 import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswordConfig'
 import { ResetPasswordConfig } from 'src/modules/User/ResetPassword/ResetPasswordConfig'
@@ -22,6 +21,7 @@ import { EcogestesConfig } from 'src/modules/Ecogestes/EcogestesConfig'
 import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 import { MaintenanceConfig } from 'src/modules/Maintenance/MaintenanceConfig'
 import { DashboardConfig, URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { SolarSizingConfig } from 'src/modules/SolarSizing/SolarSizingConfig'
 import { AlpiqSubscriptionConfig } from './modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 
 /**
@@ -39,7 +39,6 @@ export const routes = [
     ...ForgotPasswordConfig,
     ...ResetPasswordConfig,
     ...SetPasswordConfig,
-    ...AnalysisConfig,
     ...ProfileManagementConfig,
     ...InstallationsRequestsConfig,
     ...EnphaseConfirmStateConfig,
@@ -51,6 +50,7 @@ export const routes = [
     ...MaintenanceConfig,
     ...AlpiqSubscriptionConfig,
     ...DashboardConfig,
+    ...SolarSizingConfig,
     {
         /**
          * TODO Document.
@@ -142,4 +142,4 @@ export type IPageSettingsDisabled = IPageSettings & /**
 export const navigationsConfig: IRouteNavigationConfig</**
  *
  */
-{}>[] = [DashboardConfig[0], MyConsumptionConfig[0], AnalysisConfig[0], AdvicesConfig[0], MyHouseConfig[0]]
+{}>[] = [DashboardConfig[0], MyConsumptionConfig[0], AdvicesConfig[0], MyHouseConfig[0]]

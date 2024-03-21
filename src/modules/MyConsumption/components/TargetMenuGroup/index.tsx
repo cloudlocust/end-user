@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { ITargetMenuGroup } from 'src/modules/MyConsumption/myConsumptionTypes'
@@ -12,6 +12,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { SvgIcon } from '@mui/material/'
 import { ReactComponent as PmaxIcon } from 'src/assets/images/pmax.svg'
 import { DoNotDisturbAlt as NoneIcon, Thermostat as TemperatureIcon, Check } from '@mui/icons-material/'
+import { alpha } from '@mui/material/styles'
 
 /**
  *  Button options.
@@ -91,19 +92,24 @@ const TargetMenuGroup = ({ removeTargets, addTargets, hidePmax, activeButton }: 
     }
 
     return (
-        <div className="flex items-center justify-center">
-            <Button
+        <div>
+            <IconButton
                 aria-controls="target-menu"
                 aria-haspopup="true"
                 aria-expanded={Boolean(anchorEl)}
                 onClick={handleClick}
-                // endIcon={}
                 className="mx-auto my-0 min-h-auto"
-                style={{ color: theme.palette.common.white }}
+                sx={{
+                    color: theme.palette.primary.contrastText,
+                    backgroundColor: alpha(theme.palette.primary.main, 0.5),
+                    '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.7),
+                    },
+                }}
                 aria-label="target-menu"
             >
                 <MoreVertIcon />
-            </Button>
+            </IconButton>
             {Boolean(anchorEl) && (
                 <Menu
                     id="target-menu"

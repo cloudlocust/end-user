@@ -13,6 +13,7 @@ import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHo
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { getAvailableEquipments } from 'src/modules/MyHouse/components/Equipments/utils'
 import { orderListBy } from 'src/modules/utils'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -41,6 +42,7 @@ export const Equipments = () => {
     const {
         equipmentsList,
         housingEquipmentsList,
+        addingInProgressEquipmentsIds,
         addHousingEquipment,
         loadingEquipmentInProgress,
         loadEquipmentList,
@@ -114,12 +116,16 @@ export const Equipments = () => {
                             loadingEquipmentInProgress={loadingEquipmentInProgress}
                         />
                     )}
-                    {!mappedHousingEquipmentsList?.length ? (
+                    {loadingEquipmentInProgress ? (
+                        <div className="h-full items-center flex">
+                            <FuseLoading />
+                        </div>
+                    ) : !mappedHousingEquipmentsList?.length ? (
                         <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
                     ) : (
                         <EquipmentsList
                             housingEquipmentsList={orderedHousingEquipmentsList}
-                            loadingEquipmentInProgress={loadingEquipmentInProgress}
+                            addingInProgressEquipmentsIds={addingInProgressEquipmentsIds}
                             addHousingEquipment={addHousingEquipment}
                         />
                     )}

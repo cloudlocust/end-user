@@ -18,7 +18,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * MicrowaveMeasurement component.
  *
  * @param root0 N/A.
- * @param root0.housingEquipmentId The global equipment id.
+ * @param root0.housingEquipmentId The housing equipment id.
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.
@@ -169,7 +169,7 @@ export const MicrowaveMeasurement = ({
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-auto flex flex-col px-20 py-20 rounded-12 bg-white"
                 style={{
                     height: 'calc(100% - 20px)',
-                    maxHeight: '455px',
+                    maxHeight: currentStep === 0 ? '540px' : '455px',
                     width: 'calc(100% - 20px)',
                     maxWidth: '400px',
                 }}

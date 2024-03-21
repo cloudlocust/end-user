@@ -42,7 +42,7 @@ describe('AddEquipmentsPopup', () => {
         userEvent.click(selectButton)
         const options = getAllByTestId('equipment-option')
 
-        expect(options).toHaveLength(TEST_EQUIPMENTS.length - 2)
+        expect(options).toHaveLength(TEST_EQUIPMENTS.length - 3)
     })
     test('Popup is closed when clicked on close button', async () => {
         mockAddEquipmentPopupProps.isOpen = true

@@ -88,7 +88,7 @@ const Routes = () => {
     const location = useLocation()
     const history = useHistory()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
+    const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { enedisSgeConsent, getConsents } = useConsents()
     const isInitialMount = useRef(true)
@@ -113,7 +113,7 @@ const Routes = () => {
          * Therefore we don't need to perform updateLastVisitTime().
          */
         if (!user) return
-        updateLastVisitTime()
+        updateLastVisitTime(dayjs().toISOString())
     }, [location.pathname, updateLastVisitTime, user])
 
     const { hasAccess, getUrlRedirection } = useAuth()

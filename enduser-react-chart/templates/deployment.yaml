@@ -312,5 +312,15 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION
+        - name: REACT_APP_CLIENT_ENVIRONNEMENT
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_CLIENT_ENVIRONNEMENT
+        - name: REACT_APP_SENTRY_DSN
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_SENTRY_DSN
       imagePullSecrets:
       - name: dockersecret  

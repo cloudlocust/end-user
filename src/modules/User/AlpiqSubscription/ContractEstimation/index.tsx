@@ -234,6 +234,9 @@ const SelectAlpiqContractForm = ({
                     width: '100%',
                 }}
                 validateFunctions={[requiredBuilder()]}
+                formControlProps={{
+                    margin: 'normal',
+                }}
             >
                 {options.map((option, _index) => (
                     <MenuItem key={_index} value={option.value}>

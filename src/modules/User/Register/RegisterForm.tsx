@@ -141,6 +141,9 @@ export const RegisterForm = ({
                     children={civilityOptionsList.map((civility) => {
                         return <MenuItem value={civility.value}>{civility.label}</MenuItem>
                     })}
+                    formControlProps={{
+                        margin: 'normal',
+                    }}
                 />
                 <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
                 <TextField name="lastName" label="Nom" validateFunctions={[requiredBuilder()]} />
