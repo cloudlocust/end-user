@@ -190,3 +190,14 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
         getMetricsWithParams,
     }
 }
+
+/**
+ * Hook used to wrapper useMetrics for we can use it in the same component and mock it in the tests.
+ *
+ * @param initialState Initial State of the hook.
+ * @param immediate Indicates if getMetrics will execute when useMetrics instantiated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
+ * @returns Consumption metrics hook.
+ */
+export function useAdditionalMetrics(initialState: getMetricType = defaultInitialState, immediate: boolean = false) {
+    return useMetrics(initialState, immediate)
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { useTheme, useMediaQuery, Typography } from '@mui/material'
 import { isSameDay } from 'date-fns'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -38,6 +38,7 @@ import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
 import { Title } from 'src/modules/MyConsumption/components/Title'
+import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -73,7 +74,8 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
     onPeriodChange,
     onRangeChange,
-}: ConsumptionChartContainerProps) => {
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
@@ -106,6 +108,17 @@ export const ConsumptionChartContainer = ({
     const hidePmax = period === 'daily' || enedisSgeOff
 
     const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
+        interval: metricsInterval,
+        range: range,
+        targets: [],
+        filters,
+    })
+    // now we used this hooks to get some data used to calculate total cost + total consumption.
+    const {
+        data: additionalMetricsData,
+        getMetricsWithParams: getAdditionalMetricsWithParams,
+        isMetricsLoading: isAdditionalMetricsLoading,
+    } = useAdditionalMetrics({
         interval: metricsInterval,
         range: range,
         targets: [],
@@ -270,6 +283,57 @@ export const ConsumptionChartContainer = ({
     useEffect(() => {
         getMetrics()
     }, [getMetrics])
+    // Callback use to fetch the some metrics
+    const getAdditionalMetrics = useCallback(async () => {
+        await getAdditionalMetricsWithParams({
+            interval: metricsInterval,
+            range,
+            targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+            filters,
+        })
+    }, [getAdditionalMetricsWithParams, metricsInterval, range, filters])
+
+    const isTotalsOnChartTooltipDisplayed =
+        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Consumption && period !== 'daily'
+    // Effect used to get additional metrics.
+    useEffect(() => {
+        if (isTotalsOnChartTooltipDisplayed) {
+            getAdditionalMetrics()
+        }
+    }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
+    /**
+     * Calculates the total consumption based on the additional metrics data.
+     * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items,
+     * the total consumption is computed using the `computeTotalConsumption` function.
+     * Otherwise, it returns undefined.
+     *
+     * @param additionalMetricsData - The additional metrics data used to calculate the total consumption.
+     * @param isTotalsOnChartTooltipDisplayed - A flag indicating whether to display the total consumption on the chart tooltip.
+     * @returns The total consumption or undefined.
+     */
+    const totalConsumption = useMemo(() => {
+        if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
+            return computeTotalConsumption(additionalMetricsData)
+        }
+        return undefined
+    }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
+
+    /**
+     * Calculates the total cost in euros based on the additional metrics data.
+     * If isTotalsOnChartTooltipDisplayed is true and additionalMetricsData has at least one item,
+     * the total cost is computed using the computeTotalEuros function.
+     * Otherwise, the total cost is undefined.
+     *
+     * @param additionalMetricsData - The additional metrics data used to calculate the total cost.
+     * @param isTotalsOnChartTooltipDisplayed - A flag indicating whether to display the total cost on the chart tooltip.
+     * @returns The total cost in euros or undefined.
+     */
+    const totalEuroCost = useMemo(() => {
+        if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
+            return computeTotalEuros(additionalMetricsData)
+        }
+        return undefined
+    }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
 
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
         // check if we are in current day and the view is daily.
@@ -317,6 +381,11 @@ export const ConsumptionChartContainer = ({
         )
     }, [consumptionChartData])
 
+    // Callback to check if the range is in the current year.
+    const isRangeInCurrentYear = useCallback(() => {
+        return new Date(range.from).getFullYear() === new Date().getFullYear()
+    }, [range])
+
     /**
      * Handles the selection of years in the date picker.
      * In yearly view, only the n years are displayed if the enedis consent is active.
@@ -341,10 +410,10 @@ export const ConsumptionChartContainer = ({
      * We use this hook to check if the data is partially available for yearly period.
      */
     useEffect(() => {
-        if (period === PeriodEnum.YEARLY) {
+        if (period === PeriodEnum.YEARLY && !isRangeInCurrentYear()) {
             setPartiallyYearlyDataExist(consumptionChartData.length > 0)
         }
-    }, [consumptionChartData, period, setPartiallyYearlyDataExist])
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist, isRangeInCurrentYear, range])
 
     /**
      * Determines whether the previous year navigation button should be disabled in the yearly view.
@@ -363,6 +432,12 @@ export const ConsumptionChartContainer = ({
         )
     }, [enedisSgeOff, period, range])
 
+    const onDisplayTooltipLabel = useCallback(
+        (label) => {
+            return period === PeriodEnum.DAILY ? true : label.value !== null && label.value !== undefined
+        },
+        [period],
+    )
     const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
     const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
     // We disable the consumption identifier button temporarily, must remove this const when you enable it.
@@ -425,7 +500,7 @@ export const ConsumptionChartContainer = ({
                 />
             </div>
 
-            {isMetricsLoading ? (
+            {isMetricsLoading || isAdditionalMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>
                     <CircularProgress style={{ color: theme.palette.background.paper }} />
                 </div>
@@ -445,6 +520,9 @@ export const ConsumptionChartContainer = ({
                         data={consumptionChartData}
                         period={period}
                         axisColor={theme.palette.common.black}
+                        totalConsumption={totalConsumption}
+                        totalEuroCost={totalEuroCost}
+                        onDisplayTooltipLabel={onDisplayTooltipLabel}
                     />
                 </>
             )}

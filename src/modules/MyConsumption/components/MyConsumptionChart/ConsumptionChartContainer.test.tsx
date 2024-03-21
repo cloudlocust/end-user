@@ -30,6 +30,10 @@ const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 // mock store.
 
 let mockData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption])
+let mockAdditionalData: IMetric[] = TEST_SUCCESS_WEEK_METRICS([
+    metricTargetsEnum.consumption,
+    metricTargetsEnum.eurosConsumption,
+])
 
 // Nrlink Consent format
 const nrLinkConsent: INrlinkConsent = {
@@ -137,6 +141,23 @@ jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
         setFilters: mockSetFilters,
         getMetricsWithParams: mockGetMetricsWithParams,
     }),
+
+    /**
+     * We mock the useAdditionalMetrics hook to return the mock data and the mock functions.
+     *
+     * @returns The mock data and the mock functions.
+     */
+    useAdditionalMetrics: () => ({
+        data: mockAdditionalData,
+        filters: mockFilters,
+        range: mockRange,
+        isMetricsLoading: mockIsMetricsLoading,
+        setRange: jest.fn(),
+        setMetricsInterval: jest.fn(),
+        interval: '1m',
+        setFilters: mockSetFilters,
+        getMetricsWithParams: mockGetMetricsWithParams,
+    }),
 }))
 
 // Mock consentsHook
@@ -226,7 +247,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -549,7 +570,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
             })
         }, 10000)
     })
