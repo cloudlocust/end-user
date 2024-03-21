@@ -70,7 +70,6 @@ describe('Test Accomodation', () => {
         )
         userEvent.click(getByText('Propriétaire'))
         userEvent.click(getByText('Maison'))
-        userEvent.click(getByText('Avant 1950'))
         userEvent.click(getByText('Secondaire'))
 
         userEvent.click(getByText(SUBMIT_BUTTON_TEXT))
@@ -79,21 +78,28 @@ describe('Test Accomodation', () => {
         })
     })
     test('when we click on the radio button, the data changes', async () => {
-        const { getByRole } = reduxedRender(
+        const { getAllByRole } = reduxedRender(
             <BrowserRouter>
                 <AccomodationTab />
             </BrowserRouter>,
         )
-        act(() => {
-            fireEvent.click(getByRole('radio', { name: 'Non' }))
-        })
+        const nonRadioButtons = getAllByRole('radio', { name: 'Non' })
+        const ouiRadioButtons = getAllByRole('radio', { name: 'Oui' })
 
-        expect(getByRole('radio', { name: 'Non' })).toBeChecked()
-        act(() => {
-            fireEvent.click(getByRole('radio', { name: 'Oui' }))
-        })
-
-        expect(getByRole('radio', { name: 'Oui' })).toBeChecked()
+        expect(nonRadioButtons).toHaveLength(2)
+        expect(ouiRadioButtons).toHaveLength(2)
+        Array(2)
+            .fill(null)
+            .forEach((_, index) => {
+                act(() => {
+                    fireEvent.click(nonRadioButtons[index])
+                })
+                expect(nonRadioButtons[index]).toBeChecked()
+                act(() => {
+                    fireEvent.click(ouiRadioButtons[index])
+                })
+                expect(ouiRadioButtons[index]).toBeChecked()
+            })
     })
     test('When loading equipmentList, Circular progress should be shown', async () => {
         mockIsLoadingInProgress = true
