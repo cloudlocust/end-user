@@ -72,7 +72,7 @@ const HAS_MISSING_CONTRACTS_WARNING_TEXT =
 const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contrat d'énergie"
 const CONSUMPTION_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
 const MESSING_DATA_WARNING_TEXT =
-    'Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat déclaré ou sans Linky ou encore si la période est antérieur à 3 ans.'
+    'Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat déclaré ou sans Linky ou encore si la période est antérieure à 3 ans.'
 const CONSUMPTION_TITLE_DAILY = 'Ma puissance'
 const CONSUMPTION_TITLE_NOT_DAILY = 'Ma consommation'
 const CONSUMPTION_PERIOD_TITLE_DAILY = 'en Watt par jour'
