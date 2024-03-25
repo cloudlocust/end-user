@@ -4,7 +4,7 @@ import { RegisterForm } from 'src/modules/User/Register/RegisterForm'
 import { act } from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
-import { passwordQuerySelector, mockSuggestionAddressesData } from 'src/helpers/testVariables'
+import { mockSuggestionAddressesData } from 'src/helpers/testVariables'
 
 const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
@@ -16,8 +16,10 @@ const formatted_test_country = 'test country'
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const VALIDER_TEXT = 'Valider'
+
 const BIRTHDATE_lABEL = 'Date de naissance (optionnel)'
 const ADDRESS_TESTID = 'AddressAutoCompleteField'
+const INPUT_SECRET_QUERY_SELECTOR = 'input[name="password"]'
 
 jest.mock('use-places-autocomplete', () => ({
     ...jest.requireActual('use-places-autocomplete'),
@@ -96,7 +98,7 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     // Be careful password is not a role
     // https://github.com/testing-library/dom-testing-library/issues/567
     // To get the element password you can use this: const getByLabelText(/password/i)
-    const passwordField = container.querySelector(passwordQuerySelector) as Element
+    const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR) as Element
     userEvent.type(passwordField, 'P@ssword1')
     const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
     userEvent.type(repeatPasswordField, 'P@ssword1')
@@ -178,7 +180,7 @@ describe('test registerForm', () => {
 
     test('Password field is invalid', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
+        const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR) as Element
         userEvent.type(passwordField, '12345678')
         userEvent.click(screen.getByText(VALIDER_TEXT))
         await waitFor(() => expect(getAllByText(INVALID_PASSWORD_FIELD_ERROR).length).toBe(1))
@@ -186,7 +188,7 @@ describe('test registerForm', () => {
     test('Repeat password validation', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
         await act(async () => {
-            const passwordField = container.querySelector(passwordQuerySelector)
+            const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR)
             expect(passwordField).not.toBe(null)
             // This condition is only to prevent tscript from yelling.
             if (passwordField !== null) {
