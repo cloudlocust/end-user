@@ -27,9 +27,13 @@ export interface AddEquipmentPopupProps {
     /**
      * Loading boolean for adding equipment.
      */
-    isaAdEquipmentLoading: boolean
+    isAddEquipmentLoading: boolean
     /**
      * Add housing equipment function.
      */
     addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
+    /**
+     * Callback to call when the equipment is added successfully.
+     */
+    onAddingEquipmentSuccesses?: (equipmentId: number) => void
 }

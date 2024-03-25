@@ -244,14 +244,14 @@ describe('EquipmentHooks test', () => {
         //             name: 'test equipment',
         //         })
         //     })
-        //     expect(result.current.isaAdEquipmentLoading).toBe(true)
+        //     expect(result.current.isAddEquipmentLoading).toBe(true)
         //     await waitForValueToChange(
         //         () => {
-        //             return result.current.isaAdEquipmentLoading
+        //             return result.current.isAddEquipmentLoading
         //         },
         //         { timeout: 4000 },
         //     )
-        //     expect(result.current.isaAdEquipmentLoading).toBe(false)
+        //     expect(result.current.isAddEquipmentLoading).toBe(false)
         //     // eslint-disable-next-line sonarjs/no-identical-functions
         //     act(async () => {
         //         try {

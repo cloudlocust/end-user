@@ -16,7 +16,7 @@ beforeEach(() => {
     mockAddEquipmentPopupProps = {
         addEquipment: jest.fn(),
         equipmentsList: [],
-        isaAdEquipmentLoading: false,
+        isAddEquipmentLoading: false,
         isOpen: false,
         onClosePopup: jest.fn(),
         addHousingEquipment: jest.fn(),

@@ -11,7 +11,7 @@ import { RootState } from 'src/redux'
 import { Form } from 'src/common/react-platform-components'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
-import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import {
     SimplifiedConsumptionChartContainerPropsType,
     addActivityFormFieldsType,
@@ -21,8 +21,6 @@ import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionC
 import ReactECharts from 'echarts-for-react'
 import AddLabelButtonForm from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
-import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useLabelization } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizationHook'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
@@ -77,8 +75,6 @@ const SimplifiedConsumptionChartContainer = ({
             getActivitiesList(new Date(range.from))
         }
     }, [getActivitiesList, isAddActivityLoading, isDeleteActivityLoading, range.from])
-
-    const { housingEquipmentsList, loadingEquipmentInProgress } = useEquipmentList(currentHousing?.id)
 
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
@@ -229,27 +225,7 @@ const SimplifiedConsumptionChartContainer = ({
                     chartRef={chartRef}
                     inputPeriodTime={inputPeriodTime}
                     setInputPeriodTime={setInputPeriodTime}
-                    equipments={
-                        housingEquipmentsList
-                            ?.filter(
-                                (housingEquipment) =>
-                                    housingEquipment.equipmentNumber &&
-                                    (mappingEquipmentNameToType[
-                                        housingEquipment.equipment.name as equipmentNameType
-                                    ] === 'number' ||
-                                        housingEquipment.equipment.customerId),
-                            )
-                            .map((housingEquipment) => {
-                                const equipmentOption = myEquipmentOptions.find(
-                                    (option) => option.name === housingEquipment.equipment.name,
-                                )
-                                return {
-                                    id: housingEquipment.id,
-                                    name: equipmentOption?.labelTitle || housingEquipment.equipment.name,
-                                }
-                            }) ?? []
-                    }
-                    addingLabelsIsDisabled={loadingEquipmentInProgress || isAddActivityLoading}
+                    isAddingLabelInProgress={isAddActivityLoading}
                     range={range}
                     chartData={consumptionChartData}
                 />
@@ -280,7 +256,7 @@ const SimplifiedConsumptionChartContainer = ({
                         </div>
                     ) : consumptionLabelCardsData.length === 0 ? (
                         <TypographyFormatMessage className="text-18 sm:text-20 font-400 text-grey-400 text-center m-20 mt-60">
-                            Aucun label disponible pour le jour sélectionné
+                            Aucun label disponible au jour sélectionné
                         </TypographyFormatMessage>
                     ) : (
                         <div className="grid gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-24">

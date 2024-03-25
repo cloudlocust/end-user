@@ -20,24 +20,9 @@ interface AddLabelButtonFormProps {
      */
     setInputPeriodTime: (inputPeriodTime: IPeriodTime) => void
     /**
-     * The equipments list.
+     * Weither the add label is in progress.
      */
-    equipments: /**
-     */
-    {
-        /**
-         * Id of the equipment.
-         */
-        id?: number
-        /**
-         * Name of the equipment.
-         */
-        name: string
-    }[]
-    /**
-     * Weather the creation of labels is disabled.
-     */
-    addingLabelsIsDisabled: boolean
+    isAddingLabelInProgress: boolean
     /**
      * The current range of the metrics.
      */
