@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -16,7 +16,6 @@ import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
-import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 import { getTokenFromFirebase } from 'src/firebase'
 import {
     URL_ALPIQ_SUBSCRIPTION_FORM,
@@ -86,7 +85,6 @@ const isRouteDisabled = (
  */
 const Routes = () => {
     const location = useLocation()
-    const history = useHistory()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -127,16 +125,7 @@ const Routes = () => {
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
 
-    useEffect(() => {
-        const { pathname } = location
-        const isRedirectNeeded = isMaintenanceMode ? pathname !== URL_MAINTENANCE : pathname === URL_MAINTENANCE
-
-        if (isRedirectNeeded) {
-            history.replace(isMaintenanceMode ? URL_MAINTENANCE : '/')
-        }
-    }, [history, location])
-
-    if (!isMaintenanceMode && location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
+    if (location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
         return (
             <ThemingProvider>
                 <AlpiqSubscriptionStepper />
@@ -170,11 +159,7 @@ const Routes = () => {
                                                     toolbarContent={<ToolbarContent />}
                                                     toolbarIcon={<ToolbarIcon />}
                                                 >
-                                                    {isMaintenanceMode ? (
-                                                        <Maintenance />
-                                                    ) : (
-                                                        <route.component {...route.props} />
-                                                    )}
+                                                    <route.component {...route.props} />
                                                 </Layout1>
                                             </Root>
                                         </ConfirmProvider>
@@ -214,6 +199,14 @@ function App() {
             isTokenLoadedFromFirebase.current = true
         }
     }, [user])
+
+    if (isMaintenanceMode) {
+        return (
+            <ThemingProvider>
+                <Maintenance />
+            </ThemingProvider>
+        )
+    }
 
     return <Routes />
 }
