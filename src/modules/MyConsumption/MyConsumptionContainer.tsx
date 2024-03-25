@@ -1,16 +1,10 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { useTheme, CircularProgress, Box } from '@mui/material'
-import {
-    formatMetricFilter,
-    getRangeV2,
-    getDateWithTimezoneOffset,
-} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
@@ -30,11 +24,6 @@ import {
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-
-/**
- * Const represent how many years we want to display on the calender in the yearly view.
- */
-export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
 
 /**
  * MyConsumptionContainer.
@@ -112,43 +101,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         [isSolarProductionConsentOff, period],
     )
 
-    /**
-     * Handles the selection of years in the date picker.
-     * In yearly view, only the n years are displayed if the enedis consent is active.
-     *
-     * @param {Date} date - The selected date.
-     * @returns {boolean} - True if the date should be displayed in the date picker, false otherwise.
-     */
-    const handleYearsOfDatePicker = useCallback(
-        (date: Date) => {
-            // in yearly view display only the last n years if the enedis consent is active.
-            return (
-                period === PeriodEnum.YEARLY &&
-                !enedisOff &&
-                date.getFullYear() <
-                    new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
-            )
-        },
-        [enedisOff, period],
-    )
-
-    /**
-     * Determines whether the previous year navigation button should be disabled in the yearly view.
-     * The button is disabled if the enedis consent is active and the range is within the last n years.
-     *
-     * @returns {boolean} True if the previous year navigation button should be disabled, false otherwise.
-     */
-    const disablePreviousYearOfNavigationButton = useMemo(() => {
-        // in yearly view display only the previous button for the last n years if the enedis consent is active.
-        return (
-            period === PeriodEnum.YEARLY &&
-            !enedisOff &&
-            range &&
-            getDateWithTimezoneOffset(range.from).getFullYear() <=
-                new Date().getFullYear() - NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW
-        )
-    }, [enedisOff, period, range])
-
     if (consentsLoading)
         return (
             <Box
@@ -174,7 +126,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     return (
         <>
-            <div className="p-12 sm:p-24">
+            <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
                 {nrlinkOff && enedisOff ? (
                     <ChartErrorMessage
                         nrLinkEnedisOff={nrlinkOff && enedisOff}
@@ -182,37 +134,19 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
                 ) : (
-                    <>
-                        <div className="mb-24">
-                            <MyConsumptionPeriod
-                                setPeriod={setPeriod}
-                                setRange={setRange}
-                                setMetricsInterval={setMetricsInterval}
-                                period={period}
-                                range={range}
-                            />
-                            <MyConsumptionDatePicker
-                                period={period}
-                                setRange={setRange}
-                                range={range}
-                                handleYears={handleYearsOfDatePicker}
-                                isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
-                                color={theme.palette.primary.main}
-                            />
-                        </div>
-
-                        <ConsumptionChartContainer
-                            period={period}
-                            hasMissingHousingContracts={hasMissingHousingContracts}
-                            range={range}
-                            filters={filters}
-                            isSolarProductionConsentOff={isSolarProductionConsentOff}
-                            enedisSgeConsent={enedisSgeConsent}
-                            metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
-                            isIdleShown={isIdleShown}
-                            setMetricsInterval={setMetricsInterval}
-                        />
-                    </>
+                    <ConsumptionChartContainer
+                        period={period}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
+                        range={range}
+                        filters={filters}
+                        isSolarProductionConsentOff={isSolarProductionConsentOff}
+                        enedisSgeConsent={enedisSgeConsent}
+                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                        isIdleShown={isIdleShown}
+                        setMetricsInterval={setMetricsInterval}
+                        onPeriodChange={setPeriod}
+                        onRangeChange={setRange}
+                    />
                 )}
 
                 {/* Production Chart */}

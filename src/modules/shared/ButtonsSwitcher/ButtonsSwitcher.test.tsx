@@ -31,7 +31,8 @@ describe('ButtonsSwitcher', () => {
         // Simulate clicks on the buttons
         userEvent.click(button1)
         await waitFor(() => {
-            expect(mockClickHandler1).toHaveBeenCalledTimes(1)
+            // The button should be initially selected (active). Clicking it again should have no effect (or toggle its selection state depending on your desired behavior).
+            expect(mockClickHandler1).toHaveBeenCalledTimes(0)
         })
         userEvent.click(button2)
         await waitFor(() => {

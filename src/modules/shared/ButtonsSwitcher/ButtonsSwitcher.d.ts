@@ -21,4 +21,12 @@ export interface ButtonsSwitcherProps {
      * List of params object of the Buttons.
      */
     buttonsSwitcherParams: ButtonSwitcherParamsType[]
+    /**
+     * Function generating props for the Button component.
+     */
+    buttonProps?: (isSelected: boolean) => ButtonProps
+    /**
+     * Props of the container.
+     */
+    containerProps?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 }

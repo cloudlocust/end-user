@@ -11,7 +11,8 @@ import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadi
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { floor, round } from 'lodash'
+import floor from 'lodash/floor'
+import isNull from 'lodash/isNull'
 import convert from 'convert-units'
 
 /**
@@ -19,10 +20,10 @@ import convert from 'convert-units'
  *
  * @returns Solar sizing page.
  */
-export const SolarSizing = () => {
+export default function SolarSizing() {
     const currentHousing = useCurrentHousing()
-    const [orientationValue, setOrientationValue] = useState<number>(0)
-    const [inclinationValue, setInclinationValue] = useState<number>(0)
+    const [orientationValue, setOrientationValue] = useState<number | null>(null)
+    const [inclinationValue, setInclinationValue] = useState<number | null>(null)
     const { addSolarSizing, refetch, solarSizingData } = useSolarSizing(currentHousing?.id)
     const history = useHistory()
     const [latestSurface, setLatestSurface] = useState<number>(0)
@@ -56,23 +57,27 @@ export const SolarSizing = () => {
      * @param data Form data.
      */
     const onSubmit = async (data: ISolarSizing) => {
-        const dataToSubmit = { ...data, orientation: orientationValue, inclination: inclinationValue }
+        const dataToSubmit = {
+            ...data,
+            orientation: orientationValue as number,
+            inclination: inclinationValue as number,
+        }
         const { surface } = data
+        setLatestSurface(surface)
         await addSolarSizing.mutateAsync({ ...dataToSubmit, surface: parseInt(surface as unknown as string) })
         await refetch()
-        setLatestSurface(surface)
     }
 
     useEffect(() => {
         if (latestSurface) {
-            setPotentialSolarPanelPerSurface(round(latestSurface / oneSolarPanelSurface))
+            setPotentialSolarPanelPerSurface(floor(latestSurface / oneSolarPanelSurface))
         }
     }, [latestSurface])
 
     const annualProduction = floor(convert(solarSizingData?.data['annualProduction']).from('kWh').to('MWh'), 1)
-
-    const autoConsumptionPercentage = floor(solarSizingData?.data['autoConsumptionPercentage']!, 1)
-    const autoProductionPercentage = floor(solarSizingData?.data['autoProductionPercentage']!, 1)
+    const autoConsumptionPercentage = floor(solarSizingData?.data.autoConsumptionPercentage!, 1)
+    const autoProductionPercentage = floor(solarSizingData?.data.autoProductionPercentage!, 1)
+    const nominalPower = floor(solarSizingData?.data.nominalPower!, 1)
 
     const averageConsumptionFromAnualProduction = useMemo(
         () => floor((annualProduction * autoConsumptionPercentage) / 100, 1),
@@ -83,6 +88,26 @@ export const SolarSizing = () => {
         () => floor((annualProduction * autoProductionPercentage) / 100, 1),
         [annualProduction, autoProductionPercentage],
     )
+
+    const isDataReadyToBeShown = useMemo(() => {
+        return (
+            addSolarSizing.isSuccess &&
+            Number(annualProduction) &&
+            Number(autoConsumptionPercentage) &&
+            Number(averageConsumptionFromAnualProduction) &&
+            Number(autoProductionPercentage) &&
+            Number(averageProducationFromAnualProduction) &&
+            Number(nominalPower)
+        )
+    }, [
+        addSolarSizing.isSuccess,
+        annualProduction,
+        autoConsumptionPercentage,
+        autoProductionPercentage,
+        averageConsumptionFromAnualProduction,
+        averageProducationFromAnualProduction,
+        nominalPower,
+    ])
 
     return (
         <PageSimple
@@ -119,10 +144,10 @@ export const SolarSizing = () => {
                         <div
                             className={clsx(
                                 'w-full grid grid-rows-1 md:grid-cols-8 gap-10',
-                                addSolarSizing.isSuccess && 'grid-rows-2',
+                                Boolean(isDataReadyToBeShown) && 'grid-rows-2',
                             )}
                         >
-                            <div className={clsx(addSolarSizing.isSuccess ? 'col-span-6' : 'col-span-8')}>
+                            <div className={clsx(Boolean(isDataReadyToBeShown) ? 'col-span-6' : 'col-span-8')}>
                                 <Form onSubmit={onSubmit} defaultValues={solarSizingDefaultValues}>
                                     {/* Surface */}
                                     <TextField
@@ -141,14 +166,14 @@ export const SolarSizing = () => {
                                             data-testid="orientation-radio-group"
                                             boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
                                             elements={[
-                                                { value: '0', label: 'Nord' },
-                                                { value: '45', label: 'Nord-Est' },
+                                                { value: '180', label: 'Nord' },
+                                                { value: '135', label: 'Nord-Est' },
                                                 { value: '90', label: 'Est' },
-                                                { value: '135', label: 'Sud-Est' },
-                                                { value: '180', label: 'Sud' },
-                                                { value: '225', label: 'Sud-Ouest' },
-                                                { value: '270', label: 'Ouest' },
-                                                { value: '315', label: 'Nord-Ouest' },
+                                                { value: '45', label: 'Sud-Est' },
+                                                { value: '0', label: 'Sud' },
+                                                { value: '-45', label: 'Sud-Ouest' },
+                                                { value: '-90', label: 'Ouest' },
+                                                { value: '-135', label: 'Nord-Ouest' },
                                             ]}
                                             onValueChange={onOrientationValueChange}
                                         />
@@ -173,24 +198,28 @@ export const SolarSizing = () => {
                                         type="submit"
                                         fullWidth
                                         inProgress={addSolarSizing.isLoading}
+                                        disabled={isNull(orientationValue) || isNull(inclinationValue)}
                                     >
                                         <Typography>Simuler mon installation solaire</Typography>
                                     </ButtonLoader>
                                 </Form>
                             </div>
-                            {addSolarSizing.isSuccess && (
+                            {Boolean(isDataReadyToBeShown) && (
                                 <div className="col-span-2">
-                                    <Typography className="mb-10 text-14">
-                                        Votre maison peut être équipée de{' '}
-                                        <strong>{potentialSolarPanelPerSurface}</strong> panneaux solaires, cela
-                                        représente un potentiel <strong>{annualProduction}</strong> MWh / an avec
-                                        l'ensoleillement de l'année passée dans votre ville. En fonction de la
-                                        répartition de votre consommation dans la journée, vous pourriez alors
-                                        autoconsommer <strong>{averageConsumptionFromAnualProduction}</strong> MWh soit{' '}
-                                        <strong>{autoConsumptionPercentage}</strong> % de votre consommation totale.{' '}
-                                        {''}
-                                        <strong>{autoProductionPercentage}</strong> % de votre production soit{' '}
-                                        <strong>{averageProducationFromAnualProduction}</strong> MWh
+                                    <Typography paragraph className="mb-10 text-14">
+                                        {`Votre maison peut être équipée de `}
+                                        <strong>{potentialSolarPanelPerSurface}</strong>
+                                        {` panneaux solaires, cela représente un potentiel `}
+                                        <strong>{nominalPower}</strong>
+                                        {` kWc / an avec l'ensoleillement de l'année passée dans votre ville. En fonction de la répartition de votre consommation dans la journée, vous pourriez alors autoconsommer `}
+                                        <strong>{averageConsumptionFromAnualProduction}</strong>
+                                        {` MWh soit `}
+                                        <strong>{autoConsumptionPercentage}</strong>
+                                        {` % de votre consommation totale.`}
+                                        <strong>{autoProductionPercentage}</strong>
+                                        {` % de votre production soit `}
+                                        <strong>{averageProducationFromAnualProduction}</strong>
+                                        {` MWh`}
                                     </Typography>
                                 </div>
                             )}

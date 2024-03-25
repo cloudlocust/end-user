@@ -1,13 +1,12 @@
-import { useTheme } from '@mui/material/styles'
-import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
-import Box from '@mui/material/Box'
+import { useTheme, alpha } from '@mui/material'
 import {
     dataConsumptionPeriod,
     dataConsumptionPeriodValueList,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { IMyConsumptionPeriod, PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
+import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
+
 /**
  * MyConsumptionPeriod Component.
  *
@@ -15,57 +14,69 @@ import { getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctio
  * @param param0.setPeriod SetPeriod function.
  * @param param0.setRange SetRange function.
  * @param param0.setMetricsInterval SetMetricsInterval function.
- * @param param0.period Current Period.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, period }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval }: IMyConsumptionPeriod) => {
     const theme = useTheme()
+    /**
+     * Handle select of the period.
+     *
+     * @param value Period (daily, weekly, monthly, yearly).
+     */
+    const handleClick = (value: PeriodEnum) => {
+        const valueIndex = dataConsumptionPeriodValueList.indexOf(value)
+        setRange(getRangeV2(dataConsumptionPeriod[valueIndex].period))
+        setMetricsInterval(dataConsumptionPeriod[valueIndex].interval)
+        setPeriod(dataConsumptionPeriod[valueIndex].period)
+    }
+
+    const activeButtonStyle = {
+        color: theme.palette.grey['900'],
+        backgroundColor: theme.palette.common.white,
+        boxShadow: `0px 2px 4px 0px ${alpha(theme.palette.primary.dark, 0.2)}, 0px 1px 10px 0px ${alpha(
+            theme.palette.primary.dark,
+            0.12,
+        )}, 0px 4px 5px 0px ${alpha(theme.palette.primary.dark, 0.14)}`,
+        zIndex: 2,
+        cursor: 'default',
+        borderRadius: '1px',
+        '&:hover': {
+            backgroundColor: theme.palette.common.white,
+        },
+    }
 
     return (
-        <div className="flex flex-row items-center">
-            <Tabs
-                value={period}
-                onChange={(_event, value) => {
-                    const valueIndex = dataConsumptionPeriodValueList.indexOf(value as PeriodEnum)
-                    setRange(getRangeV2(dataConsumptionPeriod[valueIndex].period))
-                    setMetricsInterval(dataConsumptionPeriod[valueIndex].interval)
-                    setPeriod(dataConsumptionPeriod[valueIndex].period)
-                }}
-                indicatorColor="secondary"
-                textColor="inherit"
-                variant="scrollable"
-                scrollButtons={false}
-                className="w-full mx-4 min-h-40"
-                classes={{
-                    indicator: 'flex justify-center bg-transparent w-full h-full  ',
-                    flexContainer: 'flex justify-center',
-                }}
-                TabIndicatorProps={{
-                    children: (
-                        <Box sx={{ bgcolor: theme.palette.secondary.main }} className="w-full h-full rounded-full " />
-                    ),
-                }}
-            >
-                {dataConsumptionPeriod.map((item) => (
-                    <Tab
-                        value={item.period}
-                        key={item.name}
-                        className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 capitalize opacity-50"
-                        disableRipple
-                        label={item.name}
-                        sx={{
-                            color: theme.palette.primary.contrastText,
-                            zIndex: 1,
-                            backgroundColor: theme.palette.primary.main,
-                            borderRadius: '35px',
-                            '&.Mui-selected': {
-                                backgroundColor: theme.palette.secondary.main,
-                                color: theme.palette.secondary.contrastText,
-                            },
-                        }}
-                    />
-                ))}
-            </Tabs>
-        </div>
+        <ButtonsSwitcher
+            buttonsSwitcherParams={dataConsumptionPeriod.map((item) => ({
+                buttonText: item.name,
+                /**
+                 * Handle click event.
+                 *
+                 * @returns Void.
+                 */
+                clickHandler: () => handleClick(item.period),
+            }))}
+            buttonProps={(isSelected) => ({
+                sx: {
+                    boxShadow: 'none',
+                    padding: '8px 16px',
+                    color: theme.palette.grey['500'],
+                    fontSize: '12px !important',
+                    fontWeight: 400,
+                    fontHeight: 'normal',
+                    fontStyle: 'normal',
+                    fontFamily: 'Poppins',
+                    zIndex: 1,
+                    height: 24,
+                    '&:hover': {
+                        backgroundColor: theme.palette.grey[200],
+                    },
+                    ...(isSelected && activeButtonStyle),
+                },
+            })}
+            containerProps={{
+                style: { height: 'inherit', borderRadius: 3 },
+            }}
+        />
     )
 }
