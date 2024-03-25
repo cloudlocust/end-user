@@ -344,8 +344,11 @@ ConsumptionChartContainerProps) => {
     }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
 
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
+        // check if we have data and the view is daily and the data is more than 31 points because we need to avoid the using the data of other periods when the component fast rendering.
+        const isDailyData =
+            consumptionChartData.length && period === PeriodEnum.DAILY && consumptionChartData[0].datapoints.length > 31
         // check if we are in current day and the view is daily.
-        if (consumptionChartData.length && period === PeriodEnum.DAILY && isSameDay(new Date(range.from), new Date())) {
+        if (isDailyData && isSameDay(new Date(range.from), new Date())) {
             const currentTime = Date.now()
             const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
                 datapoints.filter(([_value, time]) => time <= currentTime),
@@ -473,8 +476,8 @@ ConsumptionChartContainerProps) => {
                     <div className="py-6 max-w-320 whitespace-pre-wrap">
                         <p>
                             {formatMessage({
-                                id: 'Aucune donnée transmise par Enedis pour cette période',
-                                defaultMessage: 'Aucune donnée transmise par Enedis pour cette période',
+                                id: 'Aucune donnée transmise par le Linky ou par le nrLINK',
+                                defaultMessage: 'Aucune donnée transmise par le Linky ou par le nrLINK',
                             })}
                         </p>
                     </div>

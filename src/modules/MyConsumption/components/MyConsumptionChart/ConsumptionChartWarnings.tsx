@@ -121,7 +121,7 @@ export const MissingDataWarning = () => {
                     className="text-13 md:text-16 text-center"
                 >
                     Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat
-                    déclaré ou sans Linky ou encore si la période est antérieur à 3 ans.
+                    déclaré ou sans Linky ou encore si la période est antérieure à 3 ans.
                 </TypographyFormatMessage>
             </div>
         </div>
