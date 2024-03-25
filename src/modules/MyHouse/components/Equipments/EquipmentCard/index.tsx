@@ -21,7 +21,8 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { isEquipmentMeasurementFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import { FEATURE_COMMING_SOON_TEXT } from 'src/modules/shared'
-import { DashboardCustomizeOutlined } from '@mui/icons-material'
+import DefaultEquipmentIcon from '@mui/icons-material/DashboardCustomizeOutlined'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 /**
  * Equipment Card component.
@@ -55,9 +56,9 @@ export const EquipmentCard = ({
     /**
      * Function for navigating to the equipment details page.
      */
-    const navigateToEquipmentDetailsPage = useCallback(() => {
+    const navigateToEquipmentMeasurementsPage = useCallback(() => {
         if (currentHousing?.id)
-            history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, {
+            history.replace(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/measurements`, {
                 equipment: {
                     id: equipment.id,
                     housingEquipmentId: equipment.housingEquipmentId,
@@ -102,7 +103,7 @@ export const EquipmentCard = ({
                         {iconComponent ? (
                             iconComponent(theme)
                         ) : (
-                            <DashboardCustomizeOutlined color="primary" fontSize="large" />
+                            <DefaultEquipmentIcon color="primary" fontSize="large" />
                         )}
                     </div>
 
@@ -153,6 +154,16 @@ export const EquipmentCard = ({
                                 >
                                     <Icon>add_circle_outlined</Icon>
                                 </IconButton>
+                                <SettingsIcon
+                                    color="disabled"
+                                    className="mr-6 cursor-pointer"
+                                    onClick={() => {
+                                        console.log(currentHousing?.id, history)
+                                        history.replace({
+                                            pathname: `${URL_MY_HOUSE}/${currentHousing?.id}/equipments/details`,
+                                        })
+                                    }}
+                                />
                             </div>
                         </div>
 
@@ -168,7 +179,7 @@ export const EquipmentCard = ({
                                     <Button
                                         sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
                                         variant="contained"
-                                        onClick={navigateToEquipmentDetailsPage}
+                                        onClick={navigateToEquipmentMeasurementsPage}
                                         disabled={!isEquipmentMeasurementFeatureState}
                                     >
                                         Mes mesures
@@ -194,7 +205,7 @@ export const EquipmentCard = ({
                     measurementModes={equipment.measurementModes!}
                     isMeasurementModalOpen={isMeasurementModalOpen}
                     onCloseMeasurementModal={onCloseMeasurementModal}
-                    navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
+                    navigateToEquipmentMeasurementsPage={navigateToEquipmentMeasurementsPage}
                 />
             )}
         </>

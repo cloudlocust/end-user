@@ -8,10 +8,10 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useIntl } from 'src/common/react-platform-translation'
-import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
+import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
-import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/MeasurementResult'
+import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/MeasurementResult'
 
 /**
  * EquipmentMeasurementResults compoonent.
@@ -26,7 +26,7 @@ import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetai
  * @param root0.updateEquipmentMeasurementResults Function to update the measurement result values.
  * @returns EquipmentMeasurementResults JSX.
  */
-export const EquipmentMeasurementResults = ({
+export const EquipmentMeasurementsResults = ({
     measurementModes,
     housingEquipmentId,
     equipmentsNumber,
