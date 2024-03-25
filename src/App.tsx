@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+import { useEffect, useMemo, useRef } from 'react'
+import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -23,6 +23,8 @@ import {
 } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { URL_NRLINK_CONNECTION } from 'src/modules/nrLinkConnection'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -88,16 +90,20 @@ const Routes = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { enedisSgeConsent, getConsents } = useConsents()
-    const isInitialMount = useRef(true)
+    const { enedisSgeConsent, nrlinkConsent, getConsents } = useConsents()
     const isApplicationBlocked = useRef(false)
+    const history = useHistory()
 
     useEffect(() => {
-        if (isInitialMount.current && currentHousing?.id) {
-            isInitialMount.current = false
+        if (currentHousing?.id) {
             getConsents(currentHousing?.id)
         }
-    }, [getConsents, currentHousing])
+        /**
+         * TODO: we don't need to add getConsent in dependecies, it lead into redudunt call of getConsent.
+         * That should be removed when we do the refactor of add Consents in zustand.
+         */
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentHousing?.id])
 
     useEffect(() => {
         if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
@@ -115,15 +121,36 @@ const Routes = () => {
     }, [location.pathname, updateLastVisitTime, user])
 
     const { hasAccess, getUrlRedirection } = useAuth()
-    const navbarContent: navbarItemType[] = []
-    navigationsConfig.forEach((navigationConfig) => {
-        const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
 
-        // If the navbar item is hidden, we don't need to push it to the navbarContent.
-        if (UINavbarItem?.isHidden) return
+    const navbarContent: navbarItemType[] = useMemo(() => {
+        const newNavbarContent: navbarItemType[] = []
+        navigationsConfig.forEach((navigationConfig) => {
+            const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
 
-        hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
-    })
+            // If the navbar item is hidden, we don't need to push it to the navbarContent.
+            if (UINavbarItem?.isHidden) return
+
+            if (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') {
+                UINavbarItem.isNotAllowed = true
+            } else {
+                UINavbarItem.isNotAllowed = false
+            }
+
+            hasAccess(navigationConfig.auth) && newNavbarContent.push(UINavbarItem)
+        })
+        return newNavbarContent
+    }, [hasAccess, nrlinkConsent])
+
+    useEffect(() => {
+        if (
+            user &&
+            (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') &&
+            location.pathname !== URL_NRLINK_CONNECTION &&
+            location.pathname !== URL_DASHBOARD
+        ) {
+            history.push(URL_NRLINK_CONNECTION)
+        }
+    }, [history, location.pathname, nrlinkConsent, nrlinkConsent?.nrlinkConsentState, user])
 
     if (location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
         return (
@@ -203,7 +230,9 @@ function App() {
     if (isMaintenanceMode) {
         return (
             <ThemingProvider>
-                <Maintenance />
+                <ConfirmProvider>
+                    <Maintenance />
+                </ConfirmProvider>
             </ThemingProvider>
         )
     }

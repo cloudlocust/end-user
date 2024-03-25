@@ -68,6 +68,10 @@ export type navbarItemType = {
      * Represent other navbarLink that are children of the current navbarLink in a UI sense the same as the Application navbarLink example has children [dashboard, Calendar, ...etc].
      */
     children?: navbarItemType[]
+    /**
+     *
+     */
+    isNotAllowed?: boolean
 }
 /**
  * Interface IFuseNavigationProps, represents all the props possible to be passed a navigation Element in the navbar.
