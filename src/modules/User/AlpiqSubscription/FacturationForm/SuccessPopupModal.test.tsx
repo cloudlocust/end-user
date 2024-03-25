@@ -15,7 +15,7 @@ describe('SuccessPopupModal', () => {
         ).toBeInTheDocument()
 
         expect(
-            getByText('Vous allez prochainement recevoir par email toutes les informations pour :'),
+            getByText('Vous allez prochainement recevoir par email toutes les informations pour:'),
         ).toBeInTheDocument()
 
         expect(getByText('► récupérer votre nrLINK pour faire des économies')).toBeInTheDocument()

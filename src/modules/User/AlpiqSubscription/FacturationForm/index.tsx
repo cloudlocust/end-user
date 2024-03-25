@@ -63,12 +63,28 @@ export const FacturationForm = ({
     const { enqueueSnackbar } = useSnackbar()
     const { isOpen: isFinishFacturationOpen, openModal: onOpenFinishFacturationPopup } = useModal()
 
+    const [selectedDate, setSelectedDate] = useState<Date>(afterTomorrow)
+
+    /**
+     * Function that tells us if the selected date is within 14 days.
+     *
+     * @param date Selected Date in Datepicker.
+     * @returns True/False.
+     */
+    const isWithinForteenDays = (date: Date) => {
+        const today = new Date()
+        const fourteenDaysFromToday = new Date(today)
+        fourteenDaysFromToday.setDate(today.getDate() + 14)
+
+        return date < fourteenDaysFromToday
+    }
+
     /**
      * Handle Open CGV.
      */
     const handleOpenCGV = () => {
         // doing it static because it's only a feature for bowatt
-        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire-aout-2023.pdf', '_blank')
+        window.open('https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf', '_blank')
     }
 
     /**
@@ -76,7 +92,7 @@ export const FacturationForm = ({
      */
     const handleOpenGrilleTariff = () => {
         // doing it static because it's only a feature for bowatt
-        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire-aout-2023.pdf', '_blank')
+        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf', '_blank')
     }
 
     /**
@@ -214,9 +230,15 @@ export const FacturationForm = ({
                         <SectionTitle title="Date de début de fourniture" />
                         <div className="w-full flex flex-col items-start justify-center">
                             <div className="w-5/6 md:w-2/3">
-                                <DatePicker name="dateDebutContrat" minDate={formattedAfterTomorrow} />
+                                <DatePicker
+                                    name="dateDebutContrat"
+                                    minDate={formattedAfterTomorrow}
+                                    onAccept={(date: any) => setSelectedDate(date)}
+                                />
                             </div>
-                            <SectionText text="Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable des frais de l'électricité consommée dans mon logement." />
+                            {isWithinForteenDays(selectedDate) && (
+                                <SectionText text="Je demande expressément à Alpiq d'activer mon contrat avant l'expiration de mon délai de rétraction de 14 jours à compter de la souscription du contrat. Si je me rétracte, je serai redevable des frais de l'électricité consommée dans mon logement." />
+                            )}
                         </div>
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">

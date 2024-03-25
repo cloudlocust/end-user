@@ -62,16 +62,16 @@ export const SuccessPopupModal = ({
                         />
                     </div>
 
-                    <div className="w-full mt-20">
+                    <div className="w-11/12 mt-20">
                         <SectionText
                             text="Notre équipe BôWatts | Alpiq s'occupe de la mise en service de votre nouvel abonnement."
                             textColor={theme.palette.common.white}
                         />
                     </div>
 
-                    <div className="w-5/6 mt-20">
+                    <div className="w-11/12 mt-20">
                         <SectionText
-                            text="Vous allez prochainement recevoir par email toutes les informations pour :"
+                            text="Vous allez prochainement recevoir par email toutes les informations pour:"
                             textColor={theme.palette.common.white}
                         />
                     </div>

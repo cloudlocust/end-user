@@ -17,6 +17,7 @@ import { useState } from 'react'
 import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
+import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 
 /**
  * ContractEstimation step in alpiq.
@@ -148,7 +149,7 @@ const ContractEstimation = ({
                     }`}
                 >
                     <Card
-                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full h-200 md:h-200 md:w-400 flex flex-col justify-center ${
+                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full md:w-400 h-256 lg:h-224 flex flex-col justify-center ${
                             isMobile && 'mb-20'
                         }`}
                     >
@@ -172,6 +173,12 @@ const ContractEstimation = ({
                         <TypographyFormatMessage color={theme.palette.primary.main} textAlign="center" variant="h6">
                             {`${monthlyEstimation ?? '--'} €TTC/Mois`}
                         </TypographyFormatMessage>
+                        <div className="w-11/12 ml-10 mt-12">
+                            <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
+                                * Votre mensualité pourra être ajustée dans votre espace client ALPIQ 2 mois après votre
+                                souscription
+                            </TypographyFormatMessage>
+                        </div>
                     </Card>
                     <div className={`${!isMobile ? 'px-20' : 'w-full'} flex justify-end items-center`}>
                         <ButtonLoader

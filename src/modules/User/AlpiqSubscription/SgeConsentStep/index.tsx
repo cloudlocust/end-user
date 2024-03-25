@@ -60,8 +60,7 @@ const SgeConsentStep = ({
                     variant={isMobile ? 'caption' : 'body1'}
                     fontWeight={500}
                 >
-                    Pour afficher vos consommations passées dans votre espace personnel, nous avons besoins que vous
-                    activiez la récupération de votre historique :
+                    Nous avons besoin de votre consentement pour accéder à votre historique :
                 </TypographyFormatMessage>
             </div>
             <div className="flex w-full justify-center mt-32 mb-16">
