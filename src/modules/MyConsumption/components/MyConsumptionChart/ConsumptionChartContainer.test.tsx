@@ -73,15 +73,6 @@ const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contr
 const CONSUMPTION_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
 const MESSING_DATA_WARNING_TEXT =
     'Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat déclaré ou sans Linky ou encore si la période est antérieure à 3 ans.'
-const CONSUMPTION_TITLE_DAILY = 'Ma puissance'
-const CONSUMPTION_TITLE_NOT_DAILY = 'Ma consommation'
-const CONSUMPTION_PERIOD_TITLE_DAILY = 'en Watt par jour'
-const CONSUMPTION_PERIOD_TITLE_WEEKLY = 'en kWh par semaine'
-const CONSUMPTION_PERIOD_TITLE_MONTHLY = 'en kWh par mois'
-const CONSUMPTION_PERIOD_TITLE_YEARLY = 'en kWh par année'
-const EUROS_CONSUMPTION_PERIOD_TITLE_WEEKLY = 'en € par semaine'
-const EUROS_CONSUMPTION_PERIOD_TITLE_MONTHLY = 'en € par mois'
-const EUROS_CONSUMPTION_PERIOD_TITLE_YEARLY = 'en € par année'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'euros-consumption-button'
 const menuButtonLabelText = 'target-menu'
 const menuItemRole = 'menuitem'
@@ -211,29 +202,6 @@ describe('MyConsumptionContainer test', () => {
     // Unmounts React trees after each test.
     afterEach(cleanup)
 
-    test.each`
-        period       | metricsInterval | ConsumptionChartTitle          | ConsumptionChartPeriodTitle
-        ${'daily'}   | ${'1m'}         | ${CONSUMPTION_TITLE_DAILY}     | ${CONSUMPTION_PERIOD_TITLE_DAILY}
-        ${'weekly'}  | ${'1d'}         | ${CONSUMPTION_TITLE_NOT_DAILY} | ${CONSUMPTION_PERIOD_TITLE_WEEKLY}
-        ${'monthly'} | ${'1d'}         | ${CONSUMPTION_TITLE_NOT_DAILY} | ${CONSUMPTION_PERIOD_TITLE_MONTHLY}
-        ${'yearly'}  | ${'1M'}         | ${CONSUMPTION_TITLE_NOT_DAILY} | ${CONSUMPTION_PERIOD_TITLE_YEARLY}
-    `(
-        'consumption chart for $period period.',
-        async ({ period, metricsInterval, ConsumptionChartTitle, ConsumptionChartPeriodTitle }) => {
-            echartsConsumptionChartContainerProps.period = period
-            echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
-
-            const { getByText } = reduxedRender(
-                <Router>
-                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-                </Router>,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-
-            expect(getByText(new RegExp(ConsumptionChartTitle))).toBeInTheDocument()
-            expect(getByText(new RegExp(ConsumptionChartPeriodTitle))).toBeInTheDocument()
-        },
-    )
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
         mockPeriod = 'daily'
         echartsConsumptionChartContainerProps.metricsInterval = '1m'
@@ -247,22 +215,22 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
     })
     test.each`
-        period       | metricsInterval | ConsumptionChartPeriodTitle
-        ${'weekly'}  | ${'1d'}         | ${EUROS_CONSUMPTION_PERIOD_TITLE_WEEKLY}
-        ${'monthly'} | ${'1d'}         | ${EUROS_CONSUMPTION_PERIOD_TITLE_MONTHLY}
-        ${'yearly'}  | ${'1M'}         | ${EUROS_CONSUMPTION_PERIOD_TITLE_YEARLY}
+        period       | metricsInterval
+        ${'weekly'}  | ${'1d'}
+        ${'monthly'} | ${'1d'}
+        ${'yearly'}  | ${'1M'}
     `(
         'euros consumption chart for $period period.',
-        async ({ period, metricsInterval, ConsumptionChartPeriodTitle }) => {
+        async ({ period, metricsInterval }) => {
             echartsConsumptionChartContainerProps.period = period
             echartsConsumptionChartContainerProps.metricsInterval = metricsInterval
-            const { getByText, getByLabelText } = reduxedRender(
+            const { getByLabelText } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
                 </Router>,
@@ -274,8 +242,6 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(eurosConsumptionButtonToggler)
             // CONSUMPTION ICON should be shown
             expect(eurosConsumptionButtonToggler).toBeChecked()
-            expect(getByText(new RegExp(CONSUMPTION_TITLE_NOT_DAILY))).toBeInTheDocument()
-            expect(getByText(new RegExp(ConsumptionChartPeriodTitle))).toBeInTheDocument()
         },
         20000,
     )

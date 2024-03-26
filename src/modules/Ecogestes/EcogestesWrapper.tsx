@@ -23,6 +23,7 @@ export const EcogestesWrapper = () => {
             clickHandler: () => {
                 setSelectedEcogestesCategory(IEcogesteCategoryTypes.CONSUMPTION)
             },
+            isSelected: selectedEcogestesCategory === IEcogesteCategoryTypes.CONSUMPTION,
         },
         {
             buttonText: 'Pièces',
@@ -32,6 +33,7 @@ export const EcogestesWrapper = () => {
             clickHandler: () => {
                 setSelectedEcogestesCategory(IEcogesteCategoryTypes.ROOMS)
             },
+            isSelected: selectedEcogestesCategory === IEcogesteCategoryTypes.ROOMS,
         },
     ]
 

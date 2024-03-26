@@ -96,10 +96,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
-    const isIdleShown = useMemo(
-        () => isSolarProductionConsentOff && period !== 'daily',
-        [isSolarProductionConsentOff, period],
-    )
+    const isIdleShown = isSolarProductionConsentOff
 
     if (consentsLoading)
         return (
@@ -174,7 +171,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
                         enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
-                        isIdleWidgetShown={isIdleShown}
+                        isIdleWidgetShown={isIdleShown && period !== PeriodEnum.DAILY}
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}
