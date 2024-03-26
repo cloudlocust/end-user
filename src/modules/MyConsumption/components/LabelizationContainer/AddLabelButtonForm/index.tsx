@@ -180,11 +180,16 @@ const AddLabelButtonForm = ({
                                     defaultMessage: 'Equipement',
                                 })}
                                 validateFunctions={[requiredBuilder()]}
+                                data-testid="housing-equipment-select"
+                                inputProps={{
+                                    'data-testid': 'housing-equipment-select-input',
+                                }}
                             >
                                 {mappedHousingEquipmentsList?.map((housingEquipment) => (
                                     <MenuItem
                                         key={housingEquipment.housingEquipmentId}
                                         value={housingEquipment.housingEquipmentId}
+                                        data-testid="housing-equipment-option"
                                     >
                                         {mapppingEquipmentToLabel[housingEquipment.name as equipmentNameType] ||
                                             housingEquipment.name}
