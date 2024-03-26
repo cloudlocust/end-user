@@ -7,7 +7,10 @@ import { Select } from 'src/common/ui-kit/form-fields/Select'
 import {
     accomodationLabelOptions,
     accomodationNames,
+    houseLocationOptions,
+    houseYearOptions,
     isolationOptions,
+    numberOfLevelsOptions,
     performanceOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { requiredBuilder } from 'src/common/react-platform-components'
@@ -28,7 +31,7 @@ import { ReactComponent as ApartmentIcon } from 'src/assets/images/accomodation/
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { RouterPrompt } from 'src/modules/shared/RoutePrompt'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, Controller } from 'react-hook-form'
 
 /**
  * AccomodationForm .
@@ -95,7 +98,7 @@ export const AccomodationTab = () => {
         ...(accomodation ? { defaultValues: accomodation } : null),
     })
 
-    const { getValues, reset, handleSubmit } = methods
+    const { getValues, reset, handleSubmit, watch, setValue } = methods
 
     useEffect(() => {
         if (accomodation) {
@@ -134,7 +137,10 @@ export const AccomodationTab = () => {
                 }}
             />
 
-            <div className="flex flex-col items-center justify-center w-full overflow-y-scroll pb-40">
+            <div
+                className="flex flex-col items-center justify-center w-full overflow-y-scroll pb-40 mx-auto"
+                style={{ maxWidth: '700px' }}
+            >
                 {isAccomodationInfoConsentmentOpen && (
                     <div
                         className="flex items-center text-center text-13 md:text-16 justify-center w-full min-h-56"
@@ -170,7 +176,10 @@ export const AccomodationTab = () => {
                             </div>
                             <SelectButtons
                                 name={accomodationNames.ownershipStatus}
-                                titleLabel="Je suis :"
+                                titleLabel={formatMessage({
+                                    id: 'Je suis :',
+                                    defaultMessage: 'Je suis :',
+                                })}
                                 wrapperStyles="flex flex-row justify-center space-x-12"
                                 formOptions={[
                                     {
@@ -190,7 +199,10 @@ export const AccomodationTab = () => {
                             <SelectButtons
                                 name={accomodationNames.houseType}
                                 wrapperStyles="flex flex-row justify-center space-x-12"
-                                titleLabel="Type de logement :"
+                                titleLabel={formatMessage({
+                                    id: 'Type de logement :',
+                                    defaultMessage: 'Type de logement :',
+                                })}
                                 formOptions={[
                                     {
                                         label: accomodationLabelOptions.house,
@@ -207,30 +219,11 @@ export const AccomodationTab = () => {
                                 ]}
                             />
                             <SelectButtons
-                                name={accomodationNames.houseYear}
-                                wrapperStyles="flex flex-row  justify-center"
-                                titleLabel="Année de construction :"
-                                formOptions={[
-                                    {
-                                        label: accomodationLabelOptions.before1950,
-                                        buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
-                                        value: 'Avant_1950',
-                                    },
-                                    {
-                                        label: accomodationLabelOptions.from1950to1975,
-                                        buttonStyle: 'w-224 mt-16 flex flex-col mr-16 text-xs pt-10 pb-10',
-                                        value: 'Entre_1950_1975',
-                                    },
-                                    {
-                                        label: accomodationLabelOptions.after1975,
-                                        buttonStyle: 'w-224 mt-16 flex flex-col text-xs pt-10 pb-10',
-                                        value: 'Apres_1975',
-                                    },
-                                ]}
-                            />
-                            <SelectButtons
                                 wrapperStyles="flex flex-row justify-center"
-                                titleLabel="Type de résidence :"
+                                titleLabel={formatMessage({
+                                    id: 'Type de résidence :',
+                                    defaultMessage: 'Type de résidence :',
+                                })}
                                 name={accomodationNames.residenceType}
                                 formOptions={[
                                     {
@@ -249,6 +242,80 @@ export const AccomodationTab = () => {
                                     },
                                 ]}
                             />
+                            <div className="flex flex-row justify-between mt-16 mr-24">
+                                <div className="mt-16 mr-10 w-full ">
+                                    {formatMessage({
+                                        id: 'Nombre de niveaux :',
+                                        defaultMessage: 'Nombre de niveaux :',
+                                    })}
+                                </div>
+                                <div className="w-4/6">
+                                    <Select
+                                        name={accomodationNames.numberOfLevels}
+                                        label={formatMessage({
+                                            id: 'Niveaux',
+                                            defaultMessage: 'Niveaux',
+                                        })}
+                                        children={numberOfLevelsOptions.map((numberOfLevels) => (
+                                            <MenuItem value={numberOfLevels.value}>{numberOfLevels.label}</MenuItem>
+                                        ))}
+                                        defaultValue={null}
+                                        formControlProps={{
+                                            margin: 'normal',
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            {watch('houseType') === accomodationLabelOptions.house && (
+                                <div className="flex flex-row justify-between mt-16 mr-24">
+                                    <div className="mt-16 mr-10 w-full ">
+                                        {formatMessage({
+                                            id: 'Emplacement de la maison :',
+                                            defaultMessage: 'Emplacement de la maison :',
+                                        })}
+                                    </div>
+                                    <div className="w-4/6">
+                                        <Select
+                                            name={accomodationNames.houseLocation}
+                                            label={formatMessage({
+                                                id: 'Emplacement',
+                                                defaultMessage: 'Emplacement',
+                                            })}
+                                            children={houseLocationOptions.map((houseLocation) => (
+                                                <MenuItem value={houseLocation.value}>{houseLocation.label}</MenuItem>
+                                            ))}
+                                            defaultValue={null}
+                                            formControlProps={{
+                                                margin: 'normal',
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                            <div className="flex flex-row justify-between mt-16 mr-24">
+                                <div className="mt-16 mr-10 w-full ">
+                                    {formatMessage({
+                                        id: 'Année de construction :',
+                                        defaultMessage: 'Année de construction :',
+                                    })}
+                                </div>
+                                <div className="w-4/6">
+                                    <Select
+                                        name={accomodationNames.houseYear}
+                                        label={formatMessage({
+                                            id: 'Année',
+                                            defaultMessage: 'Année',
+                                        })}
+                                        children={houseYearOptions.map((houseYear) => (
+                                            <MenuItem value={houseYear.value}>{houseYear.label}</MenuItem>
+                                        ))}
+                                        defaultValue={null}
+                                        formControlProps={{
+                                            margin: 'normal',
+                                        }}
+                                    />
+                                </div>
+                            </div>
                             <div className="flex flex-col md:flex-row mt-16 mr-24 content-center items-end md:items-center justify-end">
                                 <div className="w-full flex flex-row justify-between content-center items-center">
                                     <div>
@@ -271,14 +338,20 @@ export const AccomodationTab = () => {
                                         <FormControlLabel
                                             value="oui"
                                             control={<Radio color="primary" />}
-                                            label="Oui"
+                                            label={formatMessage({
+                                                id: 'Oui',
+                                                defaultMessage: 'Oui',
+                                            })}
                                             onClick={() => setIsDPE(true)}
                                             checked={isDPE}
                                         />
                                         <FormControlLabel
                                             value="non"
                                             control={<Radio color="primary" />}
-                                            label="Non"
+                                            label={formatMessage({
+                                                id: 'Non',
+                                                defaultMessage: 'Non',
+                                            })}
                                             onClick={() => setIsDPE(false)}
                                             checked={!isDPE}
                                         />
@@ -288,7 +361,10 @@ export const AccomodationTab = () => {
                                     {isDPE ? (
                                         <Select
                                             name={accomodationNames.energyPerformanceIndex}
-                                            label={accomodationLabelOptions.energeticPerformance}
+                                            label={formatMessage({
+                                                id: accomodationLabelOptions.energeticPerformance,
+                                                defaultMessage: accomodationLabelOptions.energeticPerformance,
+                                            })}
                                             children={performanceOptions.map((performance) => {
                                                 return <MenuItem value={performance}>{performance}</MenuItem>
                                             })}
@@ -301,7 +377,10 @@ export const AccomodationTab = () => {
                                     ) : (
                                         <Select
                                             name={accomodationNames.isolationLevel}
-                                            label={accomodationLabelOptions.isolation}
+                                            label={formatMessage({
+                                                id: accomodationLabelOptions.isolation,
+                                                defaultMessage: accomodationLabelOptions.isolation,
+                                            })}
                                             children={isolationOptions.map((isolation) => {
                                                 return <MenuItem value={isolation}>{isolation}</MenuItem>
                                             })}
@@ -333,7 +412,7 @@ export const AccomodationTab = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="flex flex-row justify-between mb-10">
+                            <div className="flex flex-row justify-between">
                                 <div className="mt-16 mr-10 w-full ">
                                     {formatMessage({
                                         id: 'Superficie du logement :',
@@ -352,6 +431,66 @@ export const AccomodationTab = () => {
                                     />
                                 </div>
                                 <div className="mt-16 ml-6">m²</div>
+                            </div>
+                            <div className="flex flex-row gap-x-24 flex-wrap mt-16 mr-24 mb-10">
+                                <div className="flex-1 flex flex-row justify-between min-w-256">
+                                    <div className="mt-16 mr-10 w-full ">
+                                        {formatMessage({
+                                            id: 'Nombre de fenêtres :',
+                                            defaultMessage: 'Nombre de fenêtres :',
+                                        })}
+                                    </div>
+                                    <div className="w-4/6">
+                                        <TextField
+                                            type="number"
+                                            name={accomodationNames.numberOfWindows}
+                                            label={formatMessage({
+                                                id: 'Fenêtres',
+                                                defaultMessage: 'Fenêtres',
+                                            })}
+                                            inputProps={{ min: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex-1 flex flex-row justify-between min-w-256">
+                                    <div className="mt-16 mr-10 w-full ">
+                                        {formatMessage({
+                                            id: 'Double / Triple vitrage ?',
+                                            defaultMessage: 'Double / Triple vitrage ?',
+                                        })}
+                                    </div>
+                                    <div className="w-full mt-5">
+                                        <Controller
+                                            name="doubleOrTripleGlazedWindows"
+                                            render={({ field }) => (
+                                                <RadioGroup
+                                                    value={watch(field.name)}
+                                                    onChange={(_, value) => {
+                                                        setValue(field.name, value === 'true')
+                                                    }}
+                                                    className="flex flex-row"
+                                                >
+                                                    <FormControlLabel
+                                                        value={true}
+                                                        label={formatMessage({
+                                                            id: 'Oui',
+                                                            defaultMessage: 'Oui',
+                                                        })}
+                                                        control={<Radio checked={watch(field.name)} />}
+                                                    />
+                                                    <FormControlLabel
+                                                        value={false}
+                                                        label={formatMessage({
+                                                            id: 'Non',
+                                                            defaultMessage: 'Non',
+                                                        })}
+                                                        control={<Radio checked={watch(field.name) === false} />}
+                                                    />
+                                                </RadioGroup>
+                                            )}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             <div className="flex justify-end item-center">
                                 <ButtonLoader
