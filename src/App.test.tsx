@@ -3,6 +3,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import App from 'src/App'
 import { SnackbarProvider } from 'src/common/react-platform-components/alerts/SnackbarProvider'
 import { IEnedisSgeConsent, enedisSgeConsentStatus } from 'src/modules/Consents/Consents.d'
+import { cleanup } from '@testing-library/react'
 
 const MAINTENANCE_INFO_TEXT = 'Une maintenance est en cours. Nous revenons au plus vite.'
 const ADD_NRLINK_CONNECTION_TEXT =
@@ -48,7 +49,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
 jest.mock('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig', () => ({
     ...jest.requireActual('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'),
     //eslint-disable-next-line
-    get isAlpiqSubscriptionForm(){
+    get isAlpiqSubscriptionForm() {
         return mockIsAlpiqSubscriptionForm
     },
 }))
@@ -68,6 +69,18 @@ const renderAppComponent = (initialState?: {}) => {
 }
 
 describe('test App', () => {
+    afterEach(cleanup)
+
+    test('when the user is authenticated, the device token was sent to the back', () => {
+        renderAppComponent({ userModel: { user: { id: 'user_1' } } })
+
+        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(1)
+    })
+    test('when the user is not authenticated, the device token was not sent to the back', () => {
+        renderAppComponent()
+
+        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(0)
+    })
     describe('Test when alpiq provider', () => {
         test('when alpiq provider variable is on and sge consent revoked, get alpiq stepper', () => {
             mockIsAlpiqSubscriptionForm = true
@@ -94,16 +107,6 @@ describe('test App', () => {
             })
             expect(queryByText(STEPPER_FIRST_STEP_TEXT)).not.toBeInTheDocument()
         })
-    })
-    test('when the user is authenticated, the device token was sent to the back', () => {
-        renderAppComponent({ userModel: { user: { id: 'user_1' } } })
-
-        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(1)
-    })
-    test('when the user is not authenticated, the device token was not sent to the back', () => {
-        renderAppComponent()
-
-        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(0)
     })
     describe('test Maintenance Mode', () => {
         test('when maintenance mode is true, Maintenance page is showing.', () => {
