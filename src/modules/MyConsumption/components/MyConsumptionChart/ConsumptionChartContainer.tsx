@@ -460,12 +460,9 @@ ConsumptionChartContainerProps) => {
         )
     }, [enedisSgeOff, period, range])
 
-    const onDisplayTooltipLabel = useCallback(
-        (label) => {
-            return period === PeriodEnum.DAILY ? true : label.value !== null && label.value !== undefined
-        },
-        [period],
-    )
+    const onDisplayTooltipLabel = useCallback((label) => {
+        return label.value !== null && label.value !== undefined
+    }, [])
     const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
     const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
     // We disable the consumption identifier button temporarily, must remove this const when you enable it.
