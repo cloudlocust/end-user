@@ -364,23 +364,37 @@ ConsumptionChartContainerProps) => {
         // check if we have data and the view is daily and the data is more than 31 points because we need to avoid the using the data of other periods when the component fast rendering.
         const isDailyData =
             consumptionChartData.length && period === PeriodEnum.DAILY && consumptionChartData[0].datapoints.length > 31
-        // check if we are in current day and the view is daily.
-        if (isDailyData && isSameDay(new Date(range.from), new Date())) {
+        if (isDailyData) {
             const currentTime = Date.now()
+            // in current day view we need to check if the data is available for the last 10 minutes.
+            if (isSameDay(new Date(range.from), new Date())) {
+                const tenMinutesInTimestamp = 10 * 60 * 1000
+                // get datapoints between [currentTime - 10, currentTime]
+                const datapointsOfMetricsOfLastTenMinutes = consumptionChartData.map(({ datapoints }) =>
+                    datapoints.filter(
+                        ([_value, time]) => time >= currentTime - tenMinutesInTimestamp && time <= currentTime,
+                    ),
+                )
+
+                const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetricsOfLastTenMinutes)
+                if (time >= 10) {
+                    return formatMessage(
+                        {
+                            id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                            defaultMessage:
+                                'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
+                        },
+                        { break: <br /> },
+                    )
+                }
+            }
+            // else we need to check if the data is available for the whole day.
             const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
                 datapoints.filter(([_value, time]) => time <= currentTime),
             )
             const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetrics)
-            if (time >= 10) {
-                return formatMessage(
-                    {
-                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
-                        defaultMessage:
-                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
-                    },
-                    { break: <br /> },
-                )
-            } else if (time >= 5) {
+
+            if (time >= 5)
                 return formatMessage(
                     {
                         id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
@@ -389,7 +403,6 @@ ConsumptionChartContainerProps) => {
                     },
                     { break: <br /> },
                 )
-            }
             return null
         }
     }, [consumptionChartData, period, range, formatMessage])
