@@ -126,7 +126,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     return (
         <>
-            <div className="px-12 py-12 sm:px-24 sm:pb-24">
+            <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
                 {nrlinkOff && enedisOff ? (
                     <ChartErrorMessage
                         nrLinkEnedisOff={nrlinkOff && enedisOff}

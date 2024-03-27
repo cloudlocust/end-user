@@ -6,12 +6,13 @@ import { IEnedisSgeConsent, enedisSgeConsentStatus } from 'src/modules/Consents/
 import { IHousing } from './modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from './mocks/handlers/houses'
 import { applyCamelCase } from './common/react-platform-components'
+import { cleanup } from '@testing-library/react'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const MAINTENANCE_INFO_TEXT = 'Une maintenance est en cours. Nous revenons au plus vite.'
 const ADD_NRLINK_CONNECTION_TEXT =
     'Connectez votre capteur à votre compteur et configurez votre afficheur nrLINK pour commencer à suivre votre consommation !'
-const STEPPER_FIRST_STEP_TEXT = 'Connectons votre compteur Linky'
+const STEPPER_FIRST_STEP_TEXT = 'Connectons votre compteur électrique'
 
 let mockIsMaintenanceMode = true
 const mockGetTokenFromFirebase = jest.fn()
@@ -53,7 +54,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
 jest.mock('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig', () => ({
     ...jest.requireActual('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'),
     //eslint-disable-next-line
-    get isAlpiqSubscriptionForm(){
+    get isAlpiqSubscriptionForm() {
         return mockIsAlpiqSubscriptionForm
     },
 }))
@@ -86,6 +87,18 @@ let initialHousingModelState = {
 }
 
 describe('test App', () => {
+    afterEach(cleanup)
+
+    test('when the user is authenticated, the device token was sent to the back', () => {
+        renderAppComponent({ userModel: { user: { id: 'user_1' } } })
+
+        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(1)
+    })
+    test('when the user is not authenticated, the device token was not sent to the back', () => {
+        renderAppComponent()
+
+        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(0)
+    })
     describe('Test when alpiq provider', () => {
         test('when alpiq provider variable is on and their is not meter and sge consent revoked, get alpiq stepper in first step', () => {
             mockIsAlpiqSubscriptionForm = true
@@ -105,16 +118,6 @@ describe('test App', () => {
             })
             expect(queryByText(STEPPER_FIRST_STEP_TEXT)).not.toBeInTheDocument()
         })
-    })
-    test('when the user is authenticated, the device token was sent to the back', () => {
-        renderAppComponent({ userModel: { user: { id: 'user_1' } } })
-
-        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(1)
-    })
-    test('when the user is not authenticated, the device token was not sent to the back', () => {
-        renderAppComponent()
-
-        expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(0)
     })
     describe('test Maintenance Mode', () => {
         test('when maintenance mode is true, Maintenance page is showing.', () => {

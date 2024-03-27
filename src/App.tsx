@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
@@ -16,7 +16,6 @@ import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
-import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 import { getTokenFromFirebase } from 'src/firebase'
 import {
     URL_ALPIQ_SUBSCRIPTION_FORM,
@@ -24,6 +23,8 @@ import {
 } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { URL_NRLINK_CONNECTION } from 'src/modules/nrLinkConnection'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -86,20 +87,23 @@ const isRouteDisabled = (
  */
 const Routes = () => {
     const location = useLocation()
-    const history = useHistory()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { enedisSgeConsent, getConsents } = useConsents()
-    const isInitialMount = useRef(true)
+    const { enedisSgeConsent, nrlinkConsent, getConsents } = useConsents()
     const isApplicationBlocked = useRef(false)
+    const history = useHistory()
 
     useEffect(() => {
-        if (isInitialMount.current && currentHousing?.id) {
-            isInitialMount.current = false
+        if (currentHousing?.id) {
             getConsents(currentHousing?.id)
         }
-    }, [getConsents, currentHousing])
+        /**
+         * TODO: we don't need to add getConsent in dependecies, it lead into redudunt call of getConsent.
+         * That should be removed when we do the refactor of add Consents in zustand.
+         */
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentHousing?.id])
 
     useEffect(() => {
         if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
@@ -117,24 +121,36 @@ const Routes = () => {
     }, [location.pathname, updateLastVisitTime, user])
 
     const { hasAccess, getUrlRedirection } = useAuth()
-    const navbarContent: navbarItemType[] = []
-    navigationsConfig.forEach((navigationConfig) => {
-        const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
 
-        // If the navbar item is hidden, we don't need to push it to the navbarContent.
-        if (UINavbarItem?.isHidden) return
+    const navbarContent: navbarItemType[] = useMemo(() => {
+        const newNavbarContent: navbarItemType[] = []
+        navigationsConfig.forEach((navigationConfig) => {
+            const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
 
-        hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
-    })
+            // If the navbar item is hidden, we don't need to push it to the navbarContent.
+            if (UINavbarItem?.isHidden) return
+
+            if (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') {
+                UINavbarItem.isNotAllowed = true
+            } else {
+                UINavbarItem.isNotAllowed = false
+            }
+
+            hasAccess(navigationConfig.auth) && newNavbarContent.push(UINavbarItem)
+        })
+        return newNavbarContent
+    }, [hasAccess, nrlinkConsent])
 
     useEffect(() => {
-        const { pathname } = location
-        const isRedirectNeeded = isMaintenanceMode ? pathname !== URL_MAINTENANCE : pathname === URL_MAINTENANCE
-
-        if (isRedirectNeeded) {
-            history.replace(isMaintenanceMode ? URL_MAINTENANCE : '/')
+        if (
+            user &&
+            (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') &&
+            location.pathname !== URL_NRLINK_CONNECTION &&
+            location.pathname !== URL_DASHBOARD
+        ) {
+            history.push(URL_NRLINK_CONNECTION)
         }
-    }, [history, location])
+    }, [history, location.pathname, nrlinkConsent, nrlinkConsent?.nrlinkConsentState, user])
 
     if (
         !isMaintenanceMode &&
@@ -176,11 +192,7 @@ const Routes = () => {
                                                     toolbarContent={<ToolbarContent />}
                                                     toolbarIcon={<ToolbarIcon />}
                                                 >
-                                                    {isMaintenanceMode ? (
-                                                        <Maintenance />
-                                                    ) : (
-                                                        <route.component {...route.props} />
-                                                    )}
+                                                    <route.component {...route.props} />
                                                 </Layout1>
                                             </Root>
                                         </ConfirmProvider>
@@ -220,6 +232,16 @@ function App() {
             isTokenLoadedFromFirebase.current = true
         }
     }, [user])
+
+    if (isMaintenanceMode) {
+        return (
+            <ThemingProvider>
+                <ConfirmProvider>
+                    <Maintenance />
+                </ConfirmProvider>
+            </ThemingProvider>
+        )
+    }
 
     return <Routes />
 }

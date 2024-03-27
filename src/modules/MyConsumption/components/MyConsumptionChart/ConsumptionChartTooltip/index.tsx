@@ -63,6 +63,7 @@ const Container = styled('div')(() => ({
  * @param param0.totalConsumption Total consumption.
  * @param param0.totalEuroCost Total cost.
  * @param param0.onDisplayTooltipLabel Callback to determines whether to display the tooltip label.
+ * @param param0.renderComponentOnMissingLabels Callback to render component when there are no labels.
  * @returns React Component.
  */
 export const ConsumptionChartTooltip = ({
@@ -71,6 +72,7 @@ export const ConsumptionChartTooltip = ({
     totalEuroCost,
     valueFormatter,
     onDisplayTooltipLabel = () => true,
+    renderComponentOnMissingLabels = () => null,
 }: ConsumptionChartTooltipProps) => {
     const labels = useMemo(() => {
         const items: JSX.Element[] = []
@@ -90,26 +92,30 @@ export const ConsumptionChartTooltip = ({
         return items
     }, [params, valueFormatter, onDisplayTooltipLabel])
 
-    if (!labels.length) return null
-
     return (
         <Container>
             <div className="title">
                 <Typography>{params[0].name}</Typography>
             </div>
-            {totalConsumption && totalEuroCost && (
-                <div className="consumption-summary">
-                    <Typography className="total-cost">
-                        {totalEuroCost.value} {totalEuroCost.unit}
-                    </Typography>
-                    <div className="vertical-divider" />
-                    <Typography className="total-consumption">
-                        {totalConsumption.value} {totalConsumption.unit}
-                    </Typography>
-                </div>
+            {labels.length ? (
+                <>
+                    {totalConsumption && totalEuroCost && (
+                        <div className="consumption-summary">
+                            <Typography className="total-cost">
+                                {totalEuroCost.value} {totalEuroCost.unit}
+                            </Typography>
+                            <div className="vertical-divider" />
+                            <Typography className="total-consumption">
+                                {totalConsumption.value} {totalConsumption.unit}
+                            </Typography>
+                        </div>
+                    )}
+                    <div className="horizontal-divider" />
+                    <div className="labels-container">{labels}</div>
+                </>
+            ) : (
+                renderComponentOnMissingLabels(params)
             )}
-            <div className="horizontal-divider" />
-            <div className="labels-container">{labels}</div>
         </Container>
     )
 }

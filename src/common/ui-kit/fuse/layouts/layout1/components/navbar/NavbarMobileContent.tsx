@@ -248,7 +248,7 @@ function NavbarMobileContent(props: /**
                                         value={item.id}
                                         exact={item.exact}
                                         role="button"
-                                        disabled={item.disabled}
+                                        disabled={item.disabled || item.isNotAllowed}
                                         icon={
                                             isItemSelected(item) ? (
                                                 <Icon

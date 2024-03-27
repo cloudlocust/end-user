@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import dayjs from 'dayjs'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { useTheme, useMediaQuery, Typography } from '@mui/material'
 import { isSameDay } from 'date-fns'
@@ -39,6 +41,12 @@ import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyCons
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
 import { Title } from 'src/modules/MyConsumption/components/Title'
 import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import {
+    EChartTooltipFormatterParams,
+    TooltipValueFormatter,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
+import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -336,8 +344,11 @@ ConsumptionChartContainerProps) => {
     }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
 
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
+        // check if we have data and the view is daily and the data is more than 31 points because we need to avoid the using the data of other periods when the component fast rendering.
+        const isDailyData =
+            consumptionChartData.length && period === PeriodEnum.DAILY && consumptionChartData[0].datapoints.length > 31
         // check if we are in current day and the view is daily.
-        if (consumptionChartData.length && period === PeriodEnum.DAILY && isSameDay(new Date(range.from), new Date())) {
+        if (isDailyData && isSameDay(new Date(range.from), new Date())) {
             const currentTime = Date.now()
             const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
                 datapoints.filter(([_value, time]) => time <= currentTime),
@@ -443,6 +454,40 @@ ConsumptionChartContainerProps) => {
     // We disable the consumption identifier button temporarily, must remove this const when you enable it.
     const isConsumptionIdentifierButtonDisablingTemporarily = true
 
+    /**
+     *  Function for rendering a component when all labels are missing in the tooltip.
+     */
+    const renderComponentOnMissingLabels = useCallback(
+        (params: EChartTooltipFormatterParams) => {
+            // get the xAxis value.
+            const xAxisValue = params[0].axisValue
+            const xAxisValueDate = parseXAxisLabelToDate(xAxisValue, period, range)
+            const currentDate = dayjs()
+            // check if the xAxis value is in the past using dayjs (in the weekly and monthly periods, we don't have the data for the current day, so we don't count it).
+            const isHoveredOnPastTime = xAxisValueDate.isBefore(
+                // in yealy
+                period === PeriodEnum.DAILY || period === PeriodEnum.YEARLY
+                    ? currentDate
+                    : currentDate.subtract(1, 'day'),
+            )
+            // display message only if the xAxis value is in the past.
+            if (isHoveredOnPastTime) {
+                return (
+                    <div className="py-6 max-w-320 whitespace-pre-wrap">
+                        <p>
+                            {formatMessage({
+                                id: 'Aucune donnée transmise par le Linky ou par le nrLINK',
+                                defaultMessage: 'Aucune donnée transmise par le Linky ou par le nrLINK',
+                            })}
+                        </p>
+                    </div>
+                )
+            }
+            return null
+        },
+        [formatMessage, period, range],
+    )
+
     return (
         <div className="mb-12">
             {(isIdleShown || isAutoConsumptionProductionShown) && (
@@ -520,9 +565,21 @@ ConsumptionChartContainerProps) => {
                         data={consumptionChartData}
                         period={period}
                         axisColor={theme.palette.common.black}
-                        totalConsumption={totalConsumption}
-                        totalEuroCost={totalEuroCost}
-                        onDisplayTooltipLabel={onDisplayTooltipLabel}
+                        tooltipFormatter={(
+                            params: EChartTooltipFormatterParams,
+                            valueFormatter?: TooltipValueFormatter,
+                        ) =>
+                            renderToStaticMarkup(
+                                <ConsumptionChartTooltip
+                                    params={params}
+                                    valueFormatter={valueFormatter}
+                                    totalConsumption={totalConsumption}
+                                    totalEuroCost={totalEuroCost}
+                                    onDisplayTooltipLabel={onDisplayTooltipLabel}
+                                    renderComponentOnMissingLabels={renderComponentOnMissingLabels}
+                                />,
+                            )
+                        }
                     />
                 </>
             )}

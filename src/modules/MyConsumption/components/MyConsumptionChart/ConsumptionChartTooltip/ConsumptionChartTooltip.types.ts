@@ -36,6 +36,10 @@ export type EChartTooltipFormatterParamsItem =
          * Html string represent symbol for series, used in labels for color or shape identification.
          */
         marker: string
+        /**
+         * The value of the axis.
+         */
+        axisValue: string
     }
 
 /**
@@ -50,6 +54,14 @@ export type EChartTooltipFormatterParams = EChartTooltipFormatterParamsItem[]
  * @returns A boolean indicating whether to display the tooltip label.
  */
 export type onDisplayTooltipLabelType = (item: EChartTooltipFormatterParamsItem) => boolean
+
+/**
+ * Function type for rendering a component when there are missing labels in the tooltip.
+ *
+ * @param params - The parameters for the EChartTooltipFormatter.
+ * @returns The rendered JSX element or null.
+ */
+export type RenderComponentOnMissingLabelsTypes = (params: EChartTooltipFormatterParams) => JSX.Element | null
 /**
  * Props for the ConsumptionChartTooltip component.
  */
@@ -68,7 +80,7 @@ export type ConsumptionChartTooltipProps =
          * @param index - The index of the chart.
          * @returns The formatted value.
          */
-        valueFormatter?: (index: number) => axisValueFormatterType
+        valueFormatter?: TooltipValueFormatter
         /**
          * Total cost measurement.
          */
@@ -81,4 +93,26 @@ export type ConsumptionChartTooltipProps =
          * Callback to determines whether to display the tooltip label.
          */
         onDisplayTooltipLabel?: onDisplayTooltipLabelType
+
+        /**
+         * Function for rendering a component when there are missing labels in the tooltip.
+         */
+        renderComponentOnMissingLabels?: RenderComponentOnMissingLabelsTypes
     }
+
+/**
+ * Represents a formatter function for tooltip values.
+ *
+ * @param index - The index of the value.
+ * @returns The formatted value.
+ */
+export type TooltipValueFormatter = (index: number) => axisValueFormatterType
+
+/**
+ * Represents a formatter function for override the tooltip.
+ *
+ * @param params - The parameters for the EChartTooltipFormatter.
+ * @param valueFormatter - The value formatter function.
+ * @returns The formatted tooltip string.
+ */
+export type TooltipFormatter = (params: EChartTooltipFormatterParams, valueFormatter: TooltipValueFormatter) => string

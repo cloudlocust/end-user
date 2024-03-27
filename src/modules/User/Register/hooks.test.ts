@@ -110,9 +110,12 @@ describe('Testing useRegister hooks', () => {
                 '69007',
             ])
         })
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Votre Région ne bénéficie pas de l'offre Bôwatts", {
-            variant: 'error',
-        })
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+            "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
+            {
+                variant: 'error',
+            },
+        )
     })
     test('When activate allowedZipCodes and the zipCode fit, register successfully', async () => {
         const {
