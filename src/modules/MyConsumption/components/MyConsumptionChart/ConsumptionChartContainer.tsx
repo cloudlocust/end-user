@@ -40,13 +40,13 @@ import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumpti
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
-import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import {
     EChartTooltipFormatterParams,
     TooltipValueFormatter,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
 import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
 import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -327,38 +327,54 @@ ConsumptionChartContainerProps) => {
         }
     }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
     /**
-     * Calculates the total consumption based on the additional metrics data.
-     * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items,
-     * the total consumption is computed using the `computeTotalConsumption` function.
+     * Callback to return the total consumption of hovered element based on the additional metrics data.
+     * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items.
      * Otherwise, it returns undefined.
      *
      * @param additionalMetricsData - The additional metrics data used to calculate the total consumption.
      * @param isTotalsOnChartTooltipDisplayed - A flag indicating whether to display the total consumption on the chart tooltip.
      * @returns The total consumption or undefined.
      */
-    const totalConsumption = useMemo(() => {
-        if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
-            return computeTotalConsumption(additionalMetricsData)
-        }
-        return undefined
-    }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
+    const getTotalConsumption = useCallback(
+        (index: number) => {
+            if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
+                const consumptionMetrics = additionalMetricsData.find(
+                    (item) => item.target === metricTargetsEnum.consumption,
+                )
+                const originalValue = consumptionMetrics!.datapoints[index][0]
+                if (originalValue !== null) {
+                    return consumptionWattUnitConversion(originalValue)
+                }
+            }
+        },
+        [additionalMetricsData, isTotalsOnChartTooltipDisplayed],
+    )
 
     /**
-     * Calculates the total cost in euros based on the additional metrics data.
-     * If isTotalsOnChartTooltipDisplayed is true and additionalMetricsData has at least one item,
-     * the total cost is computed using the computeTotalEuros function.
+     * Callback to calculates the total cost in euros of hovered element based on the additional metrics data.
+     * If isTotalsOnChartTooltipDisplayed is true and additionalMetricsData has at least one item.
      * Otherwise, the total cost is undefined.
      *
      * @param additionalMetricsData - The additional metrics data used to calculate the total cost.
      * @param isTotalsOnChartTooltipDisplayed - A flag indicating whether to display the total cost on the chart tooltip.
      * @returns The total cost in euros or undefined.
      */
-    const totalEuroCost = useMemo(() => {
-        if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
-            return computeTotalEuros(additionalMetricsData)
-        }
-        return undefined
-    }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
+    const getTotalEuroCost = useCallback(
+        (index: number) => {
+            if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
+                const eurosConsumptionMetrics = additionalMetricsData.find(
+                    (item) => item.target === metricTargetsEnum.eurosConsumption,
+                )
+                const originalValue = eurosConsumptionMetrics!.datapoints[index][0]
+                if (originalValue !== null)
+                    return {
+                        value: Number(originalValue.toFixed(2)),
+                        unit: '€',
+                    }
+            }
+        },
+        [additionalMetricsData, isTotalsOnChartTooltipDisplayed],
+    )
 
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
         // check if we have data and the view is daily and the data is more than 31 points because we need to avoid the using the data of other periods when the component fast rendering.
@@ -608,8 +624,8 @@ ConsumptionChartContainerProps) => {
                                 <ConsumptionChartTooltip
                                     params={params}
                                     valueFormatter={valueFormatter}
-                                    totalConsumption={totalConsumption}
-                                    totalEuroCost={totalEuroCost}
+                                    getTotalConsumption={getTotalConsumption}
+                                    getTotalEuroCost={getTotalEuroCost}
                                     onDisplayTooltipLabel={onDisplayTooltipLabel}
                                     renderComponentOnMissingLabels={renderComponentOnMissingLabels}
                                 />,
