@@ -127,11 +127,6 @@ export const useEquipmentList = (housingId?: number) => {
                     )
                 }
 
-                // Remove the equipmentIds from the addingInProgressEquipmentsIds state
-                setAddingInProgressEquipmentsIds((addingInProgressEquipmentsIds) =>
-                    addingInProgressEquipmentsIds.filter((id) => !equipmentIds.includes(id)),
-                )
-
                 return responseData
             } catch (error: any) {
                 enqueueSnackbar(
@@ -146,7 +141,7 @@ export const useEquipmentList = (housingId?: number) => {
                           }),
                     { variant: 'error' },
                 )
-
+            } finally {
                 // Remove the equipmentIds from the addingInProgressEquipmentsIds state
                 setAddingInProgressEquipmentsIds((addingInProgressEquipmentsIds) =>
                     addingInProgressEquipmentsIds.filter((id) => !equipmentIds.includes(id)),
@@ -169,6 +164,7 @@ export const useEquipmentList = (housingId?: number) => {
                     },
                 )
 
+                // TODO: Remove this because it will be handled in the endpoint
                 if (response.status === 201) {
                     const addedHousingEquipment = await addHousingEquipment([
                         {

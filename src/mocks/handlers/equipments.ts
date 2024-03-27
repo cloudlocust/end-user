@@ -153,6 +153,9 @@ export var TEST_HOUSING_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] 
             name: 'heater' as equipmentNameType,
             allowed_type: ['electricity', 'other'],
         },
+        equipment_brand: 'brand1',
+        equipment_model: 'model1',
+        year_of_purchase: 2021,
     },
     {
         equipment_id: 2,
@@ -162,6 +165,9 @@ export var TEST_HOUSING_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] 
             name: 'sanitary' as equipmentNameType,
             allowed_type: ['electricity', 'other'],
         },
+        equipment_brand: 'brand2',
+        equipment_model: 'model2',
+        year_of_purchase: 2022,
     },
     {
         equipment_id: 3,
@@ -172,6 +178,9 @@ export var TEST_HOUSING_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] 
             name: 'hotplate' as equipmentNameType,
             allowed_type: ['vitroceramic', 'induction', 'other'],
         },
+        equipment_brand: 'brand3',
+        equipment_model: 'model3',
+        year_of_purchase: 2023,
     },
     {
         equipment_id: 4,
@@ -182,6 +191,9 @@ export var TEST_HOUSING_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] 
             name: 'desktopcomputer' as equipmentNameType,
             allowed_type: [],
         },
+        equipment_brand: 'brand4',
+        equipment_model: 'model4',
+        year_of_purchase: 2024,
     },
     {
         equipment_id: 5,
@@ -192,6 +204,9 @@ export var TEST_HOUSING_EQUIPMENTS: SnakeCasedPropertiesDeep<IEquipmentMeter>[] 
             name: 'laptop' as equipmentNameType,
             allowed_type: [],
         },
+        equipment_brand: 'brand5',
+        equipment_model: 'model5',
+        year_of_purchase: 2025,
     },
     {
         equipment_id: 6,

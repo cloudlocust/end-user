@@ -38,8 +38,6 @@ export default function EquipmentMeasurements() {
     const history = useHistory()
     const isInitialRender = useRef(true)
 
-    console.log(equipment)
-
     /**
      * Return to the equipment list page when the currentHousing is changed.
      */

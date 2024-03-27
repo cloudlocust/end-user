@@ -81,6 +81,7 @@ export const Equipments = () => {
                             'number',
                         measurementModes: housingEquipment.equipment.measurementModes,
                         customerId: housingEquipment.equipment.customerId,
+                        ...housingEquipment,
                     }
                 })
                 .filter((eq) => eq.number && (eq.isNumber || eq.customerId)),

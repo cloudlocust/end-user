@@ -277,6 +277,11 @@ export const MyHouseConfig = [
                                 <HousingIcon />
                             </SvgIcon>
                         ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_HOUSING_EQUIPMENT_DETAILS,
                     },
                 },

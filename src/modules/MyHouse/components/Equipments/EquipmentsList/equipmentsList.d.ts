@@ -32,6 +32,12 @@ export type HousingEquipmentType =
         measurementModes?: string[] | null
         // eslint-disable-next-line jsdoc/require-jsdoc
         customerId?: number | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentBrand?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentModel?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        yearOfPurchase?: number | null
     }
 
 /**

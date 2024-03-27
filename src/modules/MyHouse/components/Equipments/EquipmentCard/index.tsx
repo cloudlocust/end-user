@@ -158,10 +158,13 @@ export const EquipmentCard = ({
                                     color="disabled"
                                     className="mr-6 cursor-pointer"
                                     onClick={() => {
-                                        console.log(currentHousing?.id, history)
-                                        history.replace({
-                                            pathname: `${URL_MY_HOUSE}/${currentHousing?.id}/equipments/details`,
-                                        })
+                                        if (currentHousing?.id) {
+                                            // equipment has to be serilized otherwise it throw an error
+                                            const serializedEquipment = JSON.stringify(equipment)
+                                            history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, {
+                                                equipment: JSON.parse(serializedEquipment),
+                                            })
+                                        }
                                     }}
                                 />
                             </div>
