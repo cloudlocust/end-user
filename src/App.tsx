@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
-import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
+import {
+    routes as routesConfig,
+    navigationsConfig,
+    IAdditionnalSettings,
+    IPageSettingsDisabled,
+    routesRequiringNrlinkConsent,
+} from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -23,8 +29,6 @@ import {
 } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
-import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
-import { URL_NRLINK_CONNECTION } from 'src/modules/nrLinkConnection'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -92,7 +96,6 @@ const Routes = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { enedisSgeConsent, nrlinkConsent, getConsents } = useConsents()
     const isApplicationBlocked = useRef(false)
-    const history = useHistory()
 
     useEffect(() => {
         if (currentHousing?.id) {
@@ -130,27 +133,12 @@ const Routes = () => {
             // If the navbar item is hidden, we don't need to push it to the navbarContent.
             if (UINavbarItem?.isHidden) return
 
-            if (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') {
-                UINavbarItem.isNotAllowed = true
-            } else {
-                UINavbarItem.isNotAllowed = false
-            }
+            UINavbarItem.isNotAllowed = !nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
             hasAccess(navigationConfig.auth) && newNavbarContent.push(UINavbarItem)
         })
         return newNavbarContent
     }, [hasAccess, nrlinkConsent])
-
-    useEffect(() => {
-        if (
-            user &&
-            (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') &&
-            location.pathname !== URL_NRLINK_CONNECTION &&
-            location.pathname !== URL_DASHBOARD
-        ) {
-            history.push(URL_NRLINK_CONNECTION)
-        }
-    }, [history, location.pathname, nrlinkConsent, nrlinkConsent?.nrlinkConsentState, user])
 
     if (location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
         return (
@@ -163,6 +151,12 @@ const Routes = () => {
     return (
         <Switch>
             {routesConfig.map((route, index) => {
+                const UINavbarItem = route.settings?.layout?.navbar?.UINavbarItem
+                if (UINavbarItem && routesRequiringNrlinkConsent.includes(route)) {
+                    const isNrlinkConsentNonExistent =
+                        !nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
+                    UINavbarItem.disabled = isNrlinkConsentNonExistent
+                }
                 return (
                     <Route
                         key={index}
