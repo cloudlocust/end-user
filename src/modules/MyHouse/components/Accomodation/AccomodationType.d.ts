@@ -67,7 +67,7 @@ export type AccomodationDataType =
         /**
          * Windows are double or triple glazed.
          */
-        doubleOrTripleGlazedWindows?: boolean
+        isGlazedWindows?: boolean
         /**
          * Ownership status.
          */
