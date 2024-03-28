@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { useTheme, useMediaQuery, Typography } from '@mui/material'
 import { isSameDay } from 'date-fns'
-import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { IMetric, metricTargetsEnum, metricTargetType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
@@ -12,9 +12,9 @@ import {
     getTotalOffIdleConsumptionData,
     filterMetricsData,
     getDefaultConsumptionTargets,
-    showPerPeriodText,
     nullifyTodayIdleConsumptionValue,
     getDateWithTimezoneOffset,
+    getRangeV2,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -29,6 +29,7 @@ import {
     eurosIdleConsumptionTargets,
     idleConsumptionTargets,
     temperatureOrPmaxTargets,
+    dataConsumptionPeriod,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
@@ -39,7 +40,6 @@ import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumpti
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
-import { Title } from 'src/modules/MyConsumption/components/Title'
 import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import {
     EChartTooltipFormatterParams,
@@ -263,6 +263,15 @@ ConsumptionChartContainerProps) => {
      */
     const onSwitchConsumptionButton = useCallback(
         (buttonType: SwitchConsumptionButtonTypeEnum) => {
+            // If the user is on daily view and clicks on the idle button, we should switch to weekly view.
+            if (buttonType === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
+                const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find(
+                    (item) => item.period === PeriodEnum.WEEKLY,
+                )!
+                onPeriodChange(dataConsumptionWeeklyPeriod.period)
+                onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
+                setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+            }
             setTargets((prev) => {
                 switch (buttonType) {
                     case SwitchConsumptionButtonTypeEnum.Idle:
@@ -277,7 +286,15 @@ ConsumptionChartContainerProps) => {
                 }
             })
         },
-        [getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
+        [
+            getAutoconsumptionProductionTargets,
+            getConsumptionTargets,
+            isEurosButtonToggled,
+            onPeriodChange,
+            onRangeChange,
+            period,
+            setMetricsInterval,
+        ],
     )
 
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
@@ -488,6 +505,20 @@ ConsumptionChartContainerProps) => {
         [formatMessage, period, range],
     )
 
+    /**
+     * Handles the change of period.
+     *
+     * @param {PeriodEnum} value - The new period value.
+     */
+    const handlePeriodChange = (value: PeriodEnum) => {
+        // if the user on the idle view and click on the daily button, we should switch to the consumption view.
+        if (value === PeriodEnum.DAILY && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
+            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
+            onSwitchConsumptionButton(SwitchConsumptionButtonTypeEnum.Consumption)
+        }
+        onPeriodChange(value)
+    }
+
     return (
         <div className="mb-12">
             {(isIdleShown || isAutoConsumptionProductionShown) && (
@@ -499,13 +530,6 @@ ConsumptionChartContainerProps) => {
                     />
                 </div>
             )}
-
-            <div className="px-16 sm:py-16 flex justify-center">
-                <Title>
-                    {period === 'daily' ? 'Ma puissance' : 'Ma consommation'}&nbsp;
-                    {showPerPeriodText('consumption', period, isEurosButtonToggled)}
-                </Title>
-            </div>
             <div
                 className="px-16 mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
@@ -519,10 +543,15 @@ ConsumptionChartContainerProps) => {
                 )}
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={onPeriodChange}
+                        setPeriod={handlePeriodChange}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
+                        period={period}
+                        hidePeriods={
+                            // Hide daily period when the consumption toggle button is on idle.
+                            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle ? [PeriodEnum.DAILY] : []
+                        }
                     />
                 </div>
                 <TargetMenuGroup
