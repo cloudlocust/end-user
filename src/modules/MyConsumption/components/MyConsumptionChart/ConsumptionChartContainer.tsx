@@ -548,6 +548,10 @@ ConsumptionChartContainerProps) => {
                         setMetricsInterval={setMetricsInterval}
                         range={range}
                         period={period}
+                        hidePeriods={
+                            // Hide daily period when the consumption toggle button is on idle.
+                            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle ? [PeriodEnum.DAILY] : []
+                        }
                     />
                 </div>
                 <TargetMenuGroup

@@ -15,9 +15,16 @@ import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
  * @param param0.setRange SetRange function.
  * @param param0.setMetricsInterval SetMetricsInterval function.
  * @param param0.period The current period.
+ * @param param0.hidePeriods List of periods to hide.
  * @returns  MyConsumptionPeriod.
  */
-export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, period }: IMyConsumptionPeriod) => {
+export const MyConsumptionPeriod = ({
+    setRange,
+    setPeriod,
+    setMetricsInterval,
+    period,
+    hidePeriods = [],
+}: IMyConsumptionPeriod) => {
     const theme = useTheme()
     /**
      * Handle select of the period.
@@ -48,16 +55,18 @@ export const MyConsumptionPeriod = ({ setRange, setPeriod, setMetricsInterval, p
 
     return (
         <ButtonsSwitcher
-            buttonsSwitcherParams={dataConsumptionPeriod.map((item) => ({
-                buttonText: item.name,
-                /**
-                 * Handle click event.
-                 *
-                 * @returns Void.
-                 */
-                clickHandler: () => handleClick(item.period),
-                isSelected: item.period === period,
-            }))}
+            buttonsSwitcherParams={dataConsumptionPeriod
+                .filter((item) => !hidePeriods.includes(item.period))
+                .map((item) => ({
+                    buttonText: item.name,
+                    /**
+                     * Handle click event.
+                     *
+                     * @returns Void.
+                     */
+                    clickHandler: () => handleClick(item.period),
+                    isSelected: item.period === period,
+                }))}
             buttonProps={(isSelected) => ({
                 sx: {
                     boxShadow: 'none',

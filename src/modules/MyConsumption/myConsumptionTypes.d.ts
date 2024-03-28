@@ -25,6 +25,10 @@ export interface IMyConsumptionPeriod {
      * The current period.
      */
     period: periodType
+    /**
+     * List of periods to hide.
+     */
+    hidePeriods?: any[]
 }
 /**
  * Range value type.
