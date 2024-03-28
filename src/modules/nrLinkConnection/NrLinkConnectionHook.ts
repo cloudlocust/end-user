@@ -16,8 +16,8 @@ export const useGetShowNrLinkPopupHook = () => {
      * Get ShowNrLink Popup request handler.
      */
     const getShowNrLinkPopup = useCallback(async () => {
+        setIsGetShowNrLinkLoading(true)
         try {
-            setIsGetShowNrLinkLoading(true)
             // eslint-disable-next-line jsdoc/require-jsdoc
             const { data: responseData } = await axios.get<{ showNrlinkPopup: boolean }>(
                 `${GET_SHOW_NRLINK_POPUP_ENDPOINT}`,

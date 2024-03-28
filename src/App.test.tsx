@@ -14,6 +14,7 @@ let mockIsMaintenanceMode = true
 const mockGetTokenFromFirebase = jest.fn()
 let mockIsAlpiqSubscriptionForm = false
 let mockEnedisStatus: enedisSgeConsentStatus = 'REVOKED'
+let mockIsNrlinkPopupShowing = true
 
 // Mock the getTokenFromFirebase function
 jest.mock('src/firebase', () => ({
@@ -58,7 +59,7 @@ jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
     ...jest.requireActual('src/modules/nrLinkConnection/NrLinkConnectionHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useGetShowNrLinkPopupHook: () => ({
-        isNrLinkPopupShowing: true,
+        isNrLinkPopupShowing: mockIsNrlinkPopupShowing,
         isGetShowNrLinkLoading: false,
     }),
 }))
@@ -131,7 +132,7 @@ describe('test App', () => {
             expect(queryByText(MAINTENANCE_INFO_TEXT)).not.toBeInTheDocument()
             expect(getByText('Connexion')).toBeInTheDocument()
         })
-        test('when maintenance mode is false, and the user is authenticated, nrlink connection page is showing.', () => {
+        test('when maintenance mode is false, and the user is authenticated, and show nrlink popup is true, nrlink connection page is showing.', () => {
             mockIsMaintenanceMode = false
             const { queryByText, getByText } = renderAppComponent({
                 userModel: { user: { id: 'user_1' }, authenticationToken: 'token' },
@@ -139,6 +140,17 @@ describe('test App', () => {
 
             expect(queryByText(MAINTENANCE_INFO_TEXT)).not.toBeInTheDocument()
             expect(getByText(ADD_NRLINK_CONNECTION_TEXT)).toBeInTheDocument()
+        })
+        test('when maintenance mode is false, and the user is authenticated, and show nrlink popup is false, dashboard page with message of missing housing & meter.', () => {
+            mockIsNrlinkPopupShowing = false
+            const { queryByText, getByText } = renderAppComponent({
+                userModel: { user: { id: 'user_1' }, authenticationToken: 'token' },
+            })
+
+            expect(queryByText(MAINTENANCE_INFO_TEXT)).not.toBeInTheDocument()
+            expect(getByText('Aucun logement disponible')).toBeInTheDocument()
+            expect(getByText("Pour voir votre consommation vous devez d'abord")).toBeInTheDocument()
+            expect(getByText('enregistrer votre compteur et votre nrLINK')).toBeInTheDocument()
         })
     })
 })
