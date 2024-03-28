@@ -366,18 +366,18 @@ ConsumptionChartContainerProps) => {
             consumptionChartData.length && period === PeriodEnum.DAILY && consumptionChartData[0].datapoints.length > 31
         if (isDailyData) {
             const currentTime = Date.now()
-            // in current day view we need to check if the data is available for the last 10 minutes.
+            // in current day view we need to check if the data is available for the last 5 minutes.
             if (isSameDay(new Date(range.from), new Date())) {
-                const tenMinutesInTimestamp = 10 * 60 * 1000
-                // get datapoints between [currentTime - 10, currentTime]
-                const datapointsOfMetricsOfLastTenMinutes = consumptionChartData.map(({ datapoints }) =>
+                const fiveMinutesInTimestamp = 5 * 60 * 1000
+                // get datapoints between [currentTime - 5, currentTime]
+                const datapointsOfMetricsOfLastFiveMinutes = consumptionChartData.map(({ datapoints }) =>
                     datapoints.filter(
-                        ([_value, time]) => time >= currentTime - tenMinutesInTimestamp && time <= currentTime,
+                        ([_value, time]) => time >= currentTime - fiveMinutesInTimestamp && time <= currentTime,
                     ),
                 )
 
-                const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetricsOfLastTenMinutes)
-                if (time >= 10) {
+                const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetricsOfLastFiveMinutes)
+                if (time >= 5) {
                     return formatMessage(
                         {
                             id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
@@ -397,9 +397,9 @@ ConsumptionChartContainerProps) => {
             if (time >= 5)
                 return formatMessage(
                     {
-                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble avoir été rompue pendant quelques minutes.',
                         defaultMessage:
-                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
+                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble avoir été rompue pendant quelques minutes.',
                     },
                     { break: <br /> },
                 )
