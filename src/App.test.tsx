@@ -54,6 +54,15 @@ jest.mock('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig', () => ({
     },
 }))
 
+jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
+    ...jest.requireActual('src/modules/nrLinkConnection/NrLinkConnectionHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useGetShowNrLinkPopupHook: () => ({
+        isNrLinkPopupShowing: true,
+        isGetShowNrLinkLoading: false,
+    }),
+}))
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 const renderAppComponent = (initialState?: {}) => {
     return reduxedRender(
