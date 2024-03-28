@@ -9,6 +9,7 @@ const firstChartTooltipParam: EChartTooltipFormatterParamsItem = {
     value: 10,
     seriesIndex: 0,
     axisValue: '123456',
+    dataIndex: 0,
 }
 
 const secondChartTooltipParam: EChartTooltipFormatterParamsItem = {
@@ -18,11 +19,22 @@ const secondChartTooltipParam: EChartTooltipFormatterParamsItem = {
     value: 10,
     seriesIndex: 1,
     axisValue: '123456',
+    dataIndex: 0,
 }
 
 const params = [firstChartTooltipParam, secondChartTooltipParam]
-const totalConsumption = { value: 30, unit: 'kWh' }
-const totalEuroCost = { value: 50, unit: 'USD' }
+/**
+ * Callback function for get total consumption.
+ *
+ * @returns Total consumption.
+ */
+const getTotalConsumption = () => ({ value: 30, unit: 'kWh' })
+/**
+ * Callback function for get total euro cost.
+ *
+ * @returns Total euro cost.
+ */
+const getTotalEuroCost = () => ({ value: 50, unit: 'USD' })
 
 const firstChartformatedValue = `${firstChartTooltipParam.value} kWh`
 const secondChartformatedValue = `${firstChartTooltipParam.value} W`
@@ -40,8 +52,8 @@ describe('ConsumptionChartTooltip', () => {
         const { getByText } = reduxedRender(
             <ConsumptionChartTooltip
                 params={params}
-                totalConsumption={totalConsumption}
-                totalEuroCost={totalEuroCost}
+                getTotalConsumption={getTotalConsumption}
+                getTotalEuroCost={getTotalEuroCost}
                 valueFormatter={valueFormatter}
             />,
         )
