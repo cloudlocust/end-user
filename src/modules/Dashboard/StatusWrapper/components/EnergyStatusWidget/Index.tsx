@@ -71,8 +71,6 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
     const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
     const isNrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
-    // const lastDataTimestamp = lastPowerData?.timestamp
-
     const computedLastPowerData = useMemo(() => {
         return lastPowerData?.value && lastPowerData.timestamp
             ? { value: Math.abs(lastPowerData.value), unit: 'W' }
