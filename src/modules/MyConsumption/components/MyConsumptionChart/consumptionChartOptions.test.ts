@@ -76,7 +76,7 @@ describe('Test echartsConsumptionOptions', () => {
 
                 color: theme.palette.secondary.main,
             },
-            { target: metricTargetsEnum.consumption, color: '#039DE0' },
+            { target: metricTargetsEnum.consumption, color: '#FFC201' },
             { target: metricTargetsEnum.euroPeakHourConsumption, color: '#6BCBFF' },
             { target: metricTargetsEnum.euroOffPeakConsumption, color: '#BEE8FF' },
             {
