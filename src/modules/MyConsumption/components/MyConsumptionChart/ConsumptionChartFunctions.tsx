@@ -86,7 +86,7 @@ export const getMessageOfSuccessiveMissingDataOfCurrentDayByGapInterval = (
     if (isSameDay(new Date(range.from), new Date())) {
         const minTimeBetweenSuccessiveMissingValuesInTimestamp = minTimeBetweenSuccessiveMissingValues * 60 * 1000
         // get datapoints between [currentTime - minTimeBetweenSuccessiveMissingValuesInTimestamp, currentTime]
-        const datapointsOfMetricsOfLastFiveMinutes = consumptionChartData.map(({ datapoints }) =>
+        const datapointsOfMetricsOfLastTime = consumptionChartData.map(({ datapoints }) =>
             datapoints.filter(
                 ([_value, time]) =>
                     time >= currentTime - minTimeBetweenSuccessiveMissingValuesInTimestamp && time <= currentTime,
@@ -94,14 +94,14 @@ export const getMessageOfSuccessiveMissingDataOfCurrentDayByGapInterval = (
         )
         let time = 0
         // if data count is 1 that means there is one value > minTimeBetweenSuccessiveMissingValues
-        if (datapointsOfMetricsOfLastFiveMinutes[0].length === 1) {
-            const datapointsOfMetricsPresenceStatus = checkMissingDataList(datapointsOfMetricsOfLastFiveMinutes)
+        if (datapointsOfMetricsOfLastTime[0].length === 1) {
+            const datapointsOfMetricsPresenceStatus = checkMissingDataList(datapointsOfMetricsOfLastTime)
             if (!datapointsOfMetricsPresenceStatus[0][0]) {
                 time = minTimeBetweenSuccessiveMissingValues
             }
             // if data count more than one must get the max time between successive missing value
-        } else if (datapointsOfMetricsOfLastFiveMinutes[0].length > 1) {
-            time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetricsOfLastFiveMinutes)
+        } else if (datapointsOfMetricsOfLastTime[0].length > 1) {
+            time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetricsOfLastTime)
         }
         if (time >= minTimeBetweenSuccessiveMissingValues) {
             return (
