@@ -86,15 +86,17 @@ const SgeConsentStep = ({
                     onAfterCreateEnedisConsent={handleNext}
                 />
             </div>
-            <TypographyFormatMessage
-                className="mb-16"
-                variant="caption"
-                sx={{ color: textNrlinkColor }}
-                fontSize={isMobile ? '0.9rem' : undefined}
-            >
-                * Pas d’inquiétude, vos données restent entre vous et nous, elles ne seront jamais transmises à des
-                tiers.
-            </TypographyFormatMessage>
+            <div className="w-full flex items-center justify-center">
+                <TypographyFormatMessage
+                    className="mb-16"
+                    variant="caption"
+                    sx={{ color: textNrlinkColor }}
+                    fontSize={isMobile ? '0.9rem' : undefined}
+                >
+                    * Pas d’inquiétude, vos données restent entre vous et nous, elles ne seront jamais transmises à des
+                    tiers.
+                </TypographyFormatMessage>
+            </div>
         </div>
     )
 }
