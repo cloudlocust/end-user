@@ -101,21 +101,6 @@ const Routes = () => {
          */
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentHousing?.id])
-    // const isInitialMount = useRef(false)
-    // const isApplicationBlocked = useRef(false)
-
-    // useEffect(() => {
-    //     if (isInitialMount.current && user) {
-    //         isInitialMount.current = true
-    //         // getConsents(currentHousing?.id)
-    //     }
-    // }, [user])
-
-    // useEffect(() => {
-    //     if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
-    //         isApplicationBlocked.current = true
-    //     }
-    // }, [enedisSgeConsent])
 
     useEffect(() => {
         /**

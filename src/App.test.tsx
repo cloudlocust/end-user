@@ -59,13 +59,6 @@ jest.mock('src/modules/User/AlpiqSubscription/index.d', () => ({
     },
 }))
 
-jest.mock('src/modules/Dashboard/StatusWrapper/nrlinkPowerHook.ts', () => ({
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    useNrlinkMetrics: () => ({
-        data: [],
-    }),
-}))
-
 // eslint-disable-next-line jsdoc/require-jsdoc
 const renderAppComponent = (initialState?: {}) => {
     return reduxedRender(
