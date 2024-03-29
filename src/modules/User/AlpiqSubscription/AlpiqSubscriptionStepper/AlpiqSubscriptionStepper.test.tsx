@@ -23,7 +23,9 @@ jest.mock('src/modules/Meters/metersHook', () => ({
 
 describe('Test SgeConsentStepProps', () => {
     test('component shows correctly', async () => {
-        const { getByText } = reduxedRender(<AlpiqSubscriptionStepper />)
+        const { getByText } = reduxedRender(<AlpiqSubscriptionStepper />, {
+            initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[1] } },
+        })
         stepsLabels.map((label) => expect(getByText(label)).toBeTruthy())
         expect(
             getByText('Votre souscription est sauvegardée, vous pouvez la reprendre à tout moment.'),

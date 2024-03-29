@@ -63,6 +63,7 @@ const PdlVerificationForm = ({
          */
         guid: string
     }) => {
+        let response = null
         if (!currentHousing?.id) {
             enqueueSnackbar(
                 formatMessage({
@@ -76,13 +77,16 @@ const PdlVerificationForm = ({
 
         if (!currentMeterGuid) {
             // if their is no meter in the housing, then it's a creation
-            await addMeter(currentHousing.id, data)
+            response = await addMeter(currentHousing.id, data)
         } else if (currentMeterGuid !== data.guid) {
             // if their is a meter in the housing, then it's an update
-            await editMeter(currentHousing?.id, data)
+            response = await editMeter(currentHousing?.id, data)
+        } else {
+            verifyMeterEligibility(currentHousing.id, handleNext)
+            return
         }
 
-        verifyMeterEligibility(currentHousing.id, handleNext)
+        if (response) verifyMeterEligibility(currentHousing.id, handleNext)
     }
 
     return (
@@ -120,12 +124,12 @@ const PdlVerificationForm = ({
                         placeholder="Ex: 12345678912345"
                         validateFunctions={[requiredBuilder(), regex(meteGuidNumberRegex, METER_GUID_REGEX_TEXT)]}
                     />
-                    <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
-                        * Il est composé de 14 chiffres, il s'agit de l'identifiant de votre compteur utilisé par
-                        Enedis, vous pouvez aussi retrouver votre PDL sur votre compteur Linky en appuyant 6 fois sur la
-                        touche « + » sous le nom «NUMERO PRM»
-                    </TypographyFormatMessage>
                 </div>
+                <TypographyFormatMessage variant="caption" className="mt-12" sx={{ color: textNrlinkColor }}>
+                    * Il est composé de 14 chiffres, il s'agit de l'identifiant de votre compteur utilisé par Enedis,
+                    vous pouvez aussi retrouver votre PDL sur votre compteur Linky en appuyant 6 fois sur la touche « +
+                    » sous le nom «NUMERO PRM»
+                </TypographyFormatMessage>
             </div>
             <div className="flex w-full justify-center mt-32">
                 <ButtonLoader inProgress={isAddOrEditInProgress || isAlpiqVerificationInProgress} type="submit">

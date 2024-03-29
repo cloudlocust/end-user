@@ -1,5 +1,5 @@
 import { Stepper, Step, StepLabel } from '@mui/material'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AlpiqSubscriptionStepsEnum } from 'src/modules/User/AlpiqSubscription/index.d'
 import { alpha, useTheme } from '@mui/material/styles'
 import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
@@ -20,6 +20,7 @@ import Divider from '@mui/material/Divider'
 import { SectionText } from '../FacturationForm/utils'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 /**
  * Steps labels.
@@ -35,6 +36,7 @@ const AlpiqSubscriptionStepper = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
+    const [isPageLoading, setIsPageLoading] = useState(true)
     const initialMount = useRef(true)
     const [activeStep, setActiveStep] = React.useState(AlpiqSubscriptionStepsEnum.firstStep)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -43,12 +45,13 @@ const AlpiqSubscriptionStepper = () => {
 
     // TODO - add tests for this part like the one in App.test.tsx
     useEffect(() => {
-        if (initialMount.current) {
-            // if (alpiqSubscriptionSpecs) setActiveStep(AlpiqSubscriptionStepsEnum.forthStep)
-            // else if (enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED')
-            //     setActiveStep(AlpiqSubscriptionStepsEnum.thridStep)
-            // else if (currentHousing?.meter?.guid) setActiveStep(AlpiqSubscriptionStepsEnum.secondStep)
+        if (initialMount.current && currentHousing) {
+            if (alpiqSubscriptionSpecs) setActiveStep(AlpiqSubscriptionStepsEnum.forthStep)
+            else if (enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED')
+                setActiveStep(AlpiqSubscriptionStepsEnum.thridStep)
+            else if (currentHousing?.meter?.guid) setActiveStep(AlpiqSubscriptionStepsEnum.secondStep)
             initialMount.current = false
+            setIsPageLoading(false)
         }
     }, [currentHousing, enedisSgeConsent, alpiqSubscriptionSpecs])
 
@@ -132,28 +135,34 @@ const AlpiqSubscriptionStepper = () => {
                     minHeight: '350px',
                 }}
             >
-                <CardContent className="mx-auto w-full">{stepsContent[activeStep]}</CardContent>
-                <Divider className="mt-20 mb-20" />
-                <CardActions className="w-full flex flex-col justify-center items-center">
-                    <div className="w-full flex items-center justify-center mb-10 md:mb-0 text-center">
-                        <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
-                            Votre souscription est sauvegardée, vous pouvez la reprendre à tout moment.
-                        </TypographyFormatMessage>
-                    </div>
-                    <div className="flex md:flex-row flex-col justify-center items-center w-full">
-                        <SectionText
-                            text="Pour toutes questions, contactez notre équipe"
-                            textColor={theme.palette.common.black}
-                            className="font-semibold mb-10 md:mb-0 mr-0 md:mr-10 text-center"
-                        />
-                        <div className="flex flex-row items-center justify-center">
-                            <ButtonLoader variant="text" className="mr-0 md:mr-10">
-                                06.75.08.20.15
-                            </ButtonLoader>
-                            <ButtonLoader variant="text">info@bowatts.fr</ButtonLoader>
-                        </div>
-                    </div>
-                </CardActions>
+                {isPageLoading ? (
+                    <FuseLoading />
+                ) : (
+                    <>
+                        <CardContent className="mx-auto w-full"> {stepsContent[activeStep]}</CardContent>
+                        <Divider className="mt-20 mb-20" />
+                        <CardActions className="w-full flex flex-col justify-center items-center">
+                            <div className="w-full flex items-center justify-center mb-12 text-center">
+                                <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
+                                    Votre souscription est sauvegardée, vous pouvez la reprendre à tout moment.
+                                </TypographyFormatMessage>
+                            </div>
+                            <div className="flex md:flex-row flex-col justify-center items-center w-full">
+                                <SectionText
+                                    text="Pour toutes questions, contactez notre équipe"
+                                    textColor={theme.palette.common.black}
+                                    className="font-semibold mb-10 md:mb-0 mr-0 md:mr-10 text-center"
+                                />
+                                <div className="flex flex-row items-center justify-center">
+                                    <ButtonLoader variant="text" className="mr-0 md:mr-10">
+                                        06.75.08.20.15
+                                    </ButtonLoader>
+                                    <ButtonLoader variant="text">info@bowatts.fr</ButtonLoader>
+                                </div>
+                            </div>
+                        </CardActions>
+                    </>
+                )}
             </FuseCard>
         </div>
     )

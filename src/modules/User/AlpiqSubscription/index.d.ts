@@ -1,6 +1,13 @@
 import { UserAddressType } from '../model'
 
 /**
+ * Indicate if when we first connect, we should show the form to enter the PDL before the popup registration.
+ *
+ * It's in unusual position because it creates a problem when put in AlpiqSubscriptionConfig.
+ */
+export const isAlpiqSubscriptionForm = window._env_.REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE === 'enabled'
+
+/**
  * Enum for Energy Provider Subscription connection steps.
  */
 export enum AlpiqSubscriptionStepsEnum {
@@ -20,6 +27,10 @@ export enum AlpiqSubscriptionStepsEnum {
      * Forth Step, Facturation.
      */
     forthStep = 3,
+    /**
+     * Fifith Step.
+     */
+    fifthStep = 4,
 }
 
 /**

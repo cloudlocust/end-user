@@ -81,6 +81,7 @@ describe('Test PdlVerificationForm', () => {
         })
     })
     test('GUID Correct format, edit existing meter', async () => {
+        mockEditMeter.mockReturnValue({ guid: '11222999' })
         const { container, getByText } = reduxedRender(<PdlVerificationForm {...mockPdlVerificationFormProps} />, {
             initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
         })
@@ -98,6 +99,7 @@ describe('Test PdlVerificationForm', () => {
         })
     })
     test('GUID Correct format, add new meter', async () => {
+        mockAddMeter.mockReturnValue({ guid: '11222999' })
         const { container, getByText } = reduxedRender(<PdlVerificationForm {...mockPdlVerificationFormProps} />, {
             initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[1] } },
         })

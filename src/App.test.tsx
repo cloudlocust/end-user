@@ -16,7 +16,7 @@ const STEPPER_FIRST_STEP_TEXT = 'Connectons votre compteur électrique'
 
 let mockIsMaintenanceMode = true
 const mockGetTokenFromFirebase = jest.fn()
-let mockIsAlpiqSubscriptionForm = false
+var mockIsAlpiqSubscriptionForm = false
 let mockEnedisStatus: enedisSgeConsentStatus = 'REVOKED'
 
 // Mock the getTokenFromFirebase function
@@ -51,8 +51,8 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
     }),
 }))
 
-jest.mock('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig', () => ({
-    ...jest.requireActual('src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'),
+jest.mock('src/modules/User/AlpiqSubscription/index.d', () => ({
+    ...jest.requireActual('src/modules/User/AlpiqSubscription/index.d'),
     //eslint-disable-next-line
     get isAlpiqSubscriptionForm() {
         return mockIsAlpiqSubscriptionForm
@@ -139,6 +139,7 @@ describe('test App', () => {
                 userModel: { user: { id: 'user_1' }, authenticationToken: 'token' },
             })
 
+            // expect(console.log).toHaveBeenCalledWith('Hello, world!')
             expect(queryByText(MAINTENANCE_INFO_TEXT)).not.toBeInTheDocument()
             expect(getByText(ADD_NRLINK_CONNECTION_TEXT)).toBeInTheDocument()
         })
