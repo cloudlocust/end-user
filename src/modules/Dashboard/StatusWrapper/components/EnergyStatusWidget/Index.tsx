@@ -59,7 +59,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                   dateTextColor: theme.palette.grey[600],
               }
             : {
-                  widgetTitle: 'Dernière puissance remontée',
+                  widgetTitle: 'Dernière puissance consommée',
                   iconType: <BoltIcon fill={theme.palette.secondary.main} {...iconStyle} />,
                   iconBackgroundColor: themeContrastText,
                   backgroundColor: 'primary.main',
@@ -71,7 +71,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
     const isNrlinkDisconnected = nrlinkConsent?.nrlinkConsentState === 'DISCONNECTED'
     const isNrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
-    const lastDataTimestamp = lastPowerData?.timestamp
+    // const lastDataTimestamp = lastPowerData?.timestamp
 
     const computedLastPowerData = useMemo(() => {
         return lastPowerData?.value && lastPowerData.timestamp
@@ -79,7 +79,22 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
             : { value: 0, unit: 'W' }
     }, [lastPowerData])
 
-    const lastNrlinkPowerDate = lastDataTimestamp ? dayjs(lastDataTimestamp).utc().locale('fr').format('HH:mm:ss') : ''
+    let lastNrlinkPowerDate = ''
+    if (lastPowerData?.timestamp) {
+        const lastDataDate = dayjs(lastPowerData?.timestamp).utc().locale('fr')
+        const currentDate = dayjs().utc().locale('fr')
+
+        if (lastDataDate.isSame(currentDate, 'day')) {
+            // If lastDataTimestamp is from the current day, display only the time
+            lastNrlinkPowerDate = lastDataDate.format('HH:mm:ss')
+        } else {
+            // If lastDataTimestamp is from a different day, display the full date and time
+            lastNrlinkPowerDate = lastDataDate
+                .format('dddd D MMMM HH:mm')
+                // this to capitalize the first letter of the day
+                .replace(/^[a-zA-Z]/, (c) => c.toUpperCase())
+        }
+    }
 
     const lastNrlinkPowerDataInEuro = useMemo(
         () => (pricePerKwh ? convert(computedLastPowerData.value).from('Wh').to('kWh') * pricePerKwh : 0),
@@ -126,7 +141,7 @@ export const EnergyStatusWidget = (props: EnergyStatusWidgetProps) => {
                     )}
                     <div className="flex justify-end items-center text-12 sm:text-16 mb-10">
                         <span style={{ color: dateTextColor }}>
-                            {lastNrlinkPowerDate ? `à ${lastNrlinkPowerDate}` : null}
+                            {lastNrlinkPowerDate ? `${lastNrlinkPowerDate}` : null}
                         </span>
                     </div>
                     <div className="flex flex-row space-x-5 justify-end flex-1">

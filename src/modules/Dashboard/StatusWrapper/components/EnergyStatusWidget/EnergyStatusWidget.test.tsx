@@ -52,7 +52,7 @@ describe('EnergyStatusWidget', () => {
             value: 2,
         }
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
-        expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
+        expect(screen.getByText('Dernière puissance consommée')).toBeInTheDocument()
         expect(screen.getByText('bolt.svg')).toBeInTheDocument()
     })
 
@@ -78,7 +78,7 @@ describe('EnergyStatusWidget', () => {
         }
         defaultProps.pricePerKwh = 0.22
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
-        expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
+        expect(screen.getByText('Dernière puissance consommée')).toBeInTheDocument()
         expect(screen.getByText('22')).toBeInTheDocument()
         expect(screen.getByText('W')).toBeInTheDocument()
         expect(screen.getByText('€/h')).toBeInTheDocument()
