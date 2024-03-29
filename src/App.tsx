@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
-import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
+import {
+    routes as routesConfig,
+    navigationsConfig,
+    IAdditionnalSettings,
+    IPageSettingsDisabled,
+    routesRequiringNrlinkConsent,
+} from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -121,11 +127,7 @@ const Routes = () => {
             // If the navbar item is hidden, we don't need to push it to the navbarContent.
             if (UINavbarItem?.isHidden) return
 
-            if (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') {
-                UINavbarItem.isNotAllowed = true
-            } else {
-                UINavbarItem.isNotAllowed = false
-            }
+            UINavbarItem.isNotAllowed = !nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
             hasAccess(navigationConfig.auth) && newNavbarContent.push(UINavbarItem)
         })
@@ -160,6 +162,12 @@ const Routes = () => {
     return (
         <Switch>
             {routesConfig.map((route, index) => {
+                const UINavbarItem = route.settings?.layout?.navbar?.UINavbarItem
+                if (UINavbarItem && routesRequiringNrlinkConsent.includes(route)) {
+                    const isNrlinkConsentNonExistent =
+                        !nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
+                    UINavbarItem.disabled = isNrlinkConsentNonExistent
+                }
                 return (
                     <Route
                         key={index}

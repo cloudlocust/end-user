@@ -40,6 +40,10 @@ export type EChartTooltipFormatterParamsItem =
          * The value of the axis.
          */
         axisValue: string
+        /**
+         * The index of the data item.
+         */
+        dataIndex: number
     }
 
 /**
@@ -82,13 +86,13 @@ export type ConsumptionChartTooltipProps =
          */
         valueFormatter?: TooltipValueFormatter
         /**
-         * Total cost measurement.
+         * Callback to return total cost measurement of hovered element.
          */
-        totalEuroCost?: TotalMeasurement
+        getTotalEuroCost?: (index: number) => TotalMeasurement | undefined
         /**
-         * Total consumption measurement.
+         * Callback to return total consumption measurement of hovered element.
          */
-        totalConsumption?: TotalMeasurement
+        getTotalConsumption?: (index: number) => TotalMeasurement | undefined
         /**
          * Callback to determines whether to display the tooltip label.
          */

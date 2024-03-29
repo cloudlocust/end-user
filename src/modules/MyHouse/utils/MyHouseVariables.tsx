@@ -45,7 +45,7 @@ export const accomodationNames = {
     numberOfInhabitants: 'numberOfInhabitants',
     houseArea: 'houseArea',
     numberOfWindows: 'numberOfWindows',
-    doubleOrTripleGlazedWindows: 'doubleOrTripleGlazedWindows',
+    isGlazedWindows: 'isGlazedWindows',
     meterId: 'meterId',
     ownershipStatus: 'ownershipStatus',
 }

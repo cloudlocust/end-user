@@ -12,10 +12,12 @@ describe('ButtonsSwitcher', () => {
             {
                 buttonText: 'Button 1',
                 clickHandler: mockClickHandler1,
+                isSelected: true,
             },
             {
                 buttonText: 'Button 2',
                 clickHandler: mockClickHandler2,
+                isSelected: false,
             },
         ]
 
