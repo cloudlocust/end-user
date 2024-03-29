@@ -475,7 +475,7 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.consumption:
             return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
                 ? TRANSPARENT_COLOR
-                : '#039DE0'
+                : '#FFC201'
         case metricTargetsEnum.baseConsumption:
             return '#039DE0'
         case metricTargetsEnum.euroPeakHourConsumption:

@@ -3,7 +3,6 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import dayjs from 'dayjs'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { useTheme, useMediaQuery, Typography } from '@mui/material'
-import { isSameDay } from 'date-fns'
 import { IMetric, metricTargetsEnum, metricTargetType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -36,7 +35,7 @@ import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/compo
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { useIntl } from 'src/common/react-platform-translation'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
+import { getMessageOfSuccessiveMissingDataOfCurrentDay } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
@@ -377,51 +376,8 @@ ConsumptionChartContainerProps) => {
     )
 
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
-        // check if we have data and the view is daily and the data is more than 31 points because we need to avoid the using the data of other periods when the component fast rendering.
-        const isDailyData =
-            consumptionChartData.length && period === PeriodEnum.DAILY && consumptionChartData[0].datapoints.length > 31
-        if (isDailyData) {
-            const currentTime = Date.now()
-            // in current day view we need to check if the data is available for the last 5 minutes.
-            if (isSameDay(new Date(range.from), new Date())) {
-                const fiveMinutesInTimestamp = 5 * 60 * 1000
-                // get datapoints between [currentTime - 5, currentTime]
-                const datapointsOfMetricsOfLastFiveMinutes = consumptionChartData.map(({ datapoints }) =>
-                    datapoints.filter(
-                        ([_value, time]) => time >= currentTime - fiveMinutesInTimestamp && time <= currentTime,
-                    ),
-                )
-
-                const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetricsOfLastFiveMinutes)
-                if (time >= 5) {
-                    return formatMessage(
-                        {
-                            id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
-                            defaultMessage:
-                                'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
-                        },
-                        { break: <br /> },
-                    )
-                }
-            }
-            // else we need to check if the data is available for the whole day.
-            const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
-                datapoints.filter(([_value, time]) => time <= currentTime),
-            )
-            const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetrics)
-
-            if (time >= 5)
-                return formatMessage(
-                    {
-                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble avoir été rompue pendant quelques minutes.',
-                        defaultMessage:
-                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble avoir été rompue pendant quelques minutes.',
-                    },
-                    { break: <br /> },
-                )
-            return null
-        }
-    }, [consumptionChartData, period, range, formatMessage])
+        return getMessageOfSuccessiveMissingDataOfCurrentDay(consumptionChartData, period, range)
+    }, [consumptionChartData, period, range])
     /**
      * Checks if all yearly consumption data is available.
      *

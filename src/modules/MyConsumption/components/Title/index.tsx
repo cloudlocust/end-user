@@ -5,7 +5,6 @@ import { styled } from '@mui/material/styles'
  * Title component.
  */
 export const Title = styled(Typography)(({ theme }) => ({
-    fontFamily: 'Inter',
     fontStyle: 'normal',
     lineHeight: 'normal',
     fontSize: 18,
