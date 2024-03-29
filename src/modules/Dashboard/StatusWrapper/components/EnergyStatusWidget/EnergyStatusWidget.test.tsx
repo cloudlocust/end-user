@@ -63,7 +63,7 @@ describe('EnergyStatusWidget', () => {
         }
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
         expect(screen.getByText('Dernière puissance injectée')).toBeInTheDocument()
-        expect(screen.getByText('electric-tower.svg')).toBeInTheDocument()
+        expect(screen.getByText('sun.svg')).toBeInTheDocument()
         expect(() => screen.getByText('€/h')).toThrow()
     })
     test('when nrlink is connected and there is last power data', async () => {
