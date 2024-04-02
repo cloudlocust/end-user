@@ -170,7 +170,7 @@ export function useConsents() {
     )
 
     const createEnedisSgeConsent = useCallback(
-        async (housingId: number) => {
+        async (housingId: number, onAfterCreation?: () => void) => {
             try {
                 if (!housingId) throw new Error(NO_HOUSING_ID_ERROR_TEXT)
                 setIsCreateEnedisSgeConsentLoading(true)
@@ -179,8 +179,9 @@ export function useConsents() {
                 )
                 if (status === 201) {
                     setEnedisSgeConsent(data)
-                }
-                setIsCreateEnedisSgeConsentLoading(false)
+                    setIsCreateEnedisSgeConsentLoading(false)
+                    if (onAfterCreation) onAfterCreation()
+                } else setIsCreateEnedisSgeConsentLoading(false)
             } catch (error: any) {
                 setIsCreateEnedisSgeConsentLoading(false)
 

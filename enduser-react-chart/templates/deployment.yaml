@@ -307,6 +307,11 @@ spec:
             configMapKeyRef:
               name: enduser-react
               key: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
+        - name: REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION
+          valueFrom:
+            configMapKeyRef:
+              name: enduser-react
+              key: REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION
         - name: REACT_APP_CLIENT_ENVIRONNEMENT
           valueFrom:
             configMapKeyRef:

@@ -461,7 +461,7 @@ export const AccomodationTab = () => {
                                     </div>
                                     <div className="w-full mt-5">
                                         <Controller
-                                            name="doubleOrTripleGlazedWindows"
+                                            name="isGlazedWindows"
                                             render={({ field }) => (
                                                 <RadioGroup
                                                     value={watch(field.name)}

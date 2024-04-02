@@ -11,6 +11,7 @@ import CardContent from '@mui/material/CardContent'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { renderCommonLogo } from 'src/modules/User/Login/Login'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 import { isPopupAfterRegistration } from 'src/modules/User/Register/RegisterConfig'
 
 /**
@@ -31,6 +32,8 @@ export interface RegisterProps {
  */
 const Register: FC<RegisterProps> = ({ registerForm = <DefaultRegisterForm defaultRole="enduser" /> }): JSX.Element => {
     const { formatMessage } = useIntl()
+
+    const isNoticeShown = isAlpiqSubscriptionForm || isPopupAfterRegistration
     return (
         <div className="flex flex-col flex-auto items-center justify-center p-16 sm:p-32">
             <div className="flex flex-col items-center justify-center w-full">
@@ -42,7 +45,7 @@ const Register: FC<RegisterProps> = ({ registerForm = <DefaultRegisterForm defau
                                 {formatMessage({ id: 'Inscription', defaultMessage: 'Inscription' })}
                             </Typography>
 
-                            {isPopupAfterRegistration && (
+                            {isNoticeShown && (
                                 <TypographyFormatMessage className="text-13 mb-32 text-center font-medium">
                                     Munissez vous de votre N° de PDL - présent sur votre facture d'électrcité - et de
                                     votre RIB.

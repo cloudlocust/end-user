@@ -15,7 +15,7 @@ import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import { MenuItem, TextField as MuiTextFieldSelect } from '@mui/material'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
-import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { isProfessionalRegisterFeature, allowedZipCodesInRegistration } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
@@ -82,10 +82,13 @@ export const RegisterForm = ({
             return
         }
 
-        onSubmit({
-            ...cleanData,
-            role: defaultRole,
-        })
+        onSubmit(
+            {
+                ...cleanData,
+                role: defaultRole,
+            },
+            allowedZipCodesInRegistration,
+        )
     }
 
     return (

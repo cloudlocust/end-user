@@ -23,8 +23,16 @@ jest.mock('src/modules/Meters/metersHook', () => ({
 
 describe('Test SgeConsentStepProps', () => {
     test('component shows correctly', async () => {
-        const { getByText } = reduxedRender(<AlpiqSubscriptionStepper />)
+        const { getByText } = reduxedRender(<AlpiqSubscriptionStepper />, {
+            initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[1] } },
+        })
         stepsLabels.map((label) => expect(getByText(label)).toBeTruthy())
+        expect(
+            getByText('Votre souscription est sauvegardée, vous pouvez la reprendre à tout moment.'),
+        ).toBeInTheDocument()
+        expect(getByText('Pour toutes questions, contactez notre équipe')).toBeInTheDocument()
+        expect(getByText('06.75.08.20.15')).toBeInTheDocument()
+        expect(getByText('info@bowatts.fr')).toBeInTheDocument()
     })
     test('allows navigation to the next step', async () => {
         const { container, getByText } = reduxedRender(<AlpiqSubscriptionStepper />, {

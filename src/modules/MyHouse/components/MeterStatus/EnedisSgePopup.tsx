@@ -25,6 +25,7 @@ import Button from '@mui/material/Button'
  * @param param0.isCreateEnedisSgeConsentLoading Loading state when creating enedis sge consent.
  * @param param0.createEnedisSgeConsentError Error when create enedis sge consent.
  * @param param0.isElementButton If true, the component is a button.
+ * @param param0.onAfterCreateEnedisConsent Callback function for after enedis sge creation.
  * @returns Enedis Sge consent JSX.
  */
 export const EnedisSgePopup = ({
@@ -35,6 +36,7 @@ export const EnedisSgePopup = ({
     isCreateEnedisSgeConsentLoading,
     createEnedisSgeConsentError,
     isElementButton,
+    onAfterCreateEnedisConsent,
 }: EnedisSgePopupProps): JSX.Element => {
     const selectedTheme = selectTheme()
     const { formatMessage } = useIntl()
@@ -63,10 +65,16 @@ export const EnedisSgePopup = ({
     // This also reset the sgeStep and the checkbox.
     useEffect(() => {
         if (enedisConsentCheckbox && propsOrReduxHouseId) {
-            createEnedisSgeConsent(propsOrReduxHouseId)
+            createEnedisSgeConsent(propsOrReduxHouseId, onAfterCreateEnedisConsent)
             setEnedisConsentCheckbox(false)
         }
-    }, [createEnedisSgeConsent, enedisConsentCheckbox, propsOrReduxHouseId, setMeterVerification])
+    }, [
+        createEnedisSgeConsent,
+        enedisConsentCheckbox,
+        propsOrReduxHouseId,
+        setMeterVerification,
+        onAfterCreateEnedisConsent,
+    ])
 
     /**
      * Function that handles checkbox onChange event.
