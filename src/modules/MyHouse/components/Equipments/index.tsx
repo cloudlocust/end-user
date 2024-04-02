@@ -47,7 +47,7 @@ export const Equipments = () => {
         loadingEquipmentInProgress,
         loadEquipmentList,
         addEquipment,
-        isaAdEquipmentLoading,
+        isAddEquipmentLoading,
     } = useEquipmentList(currentHousing?.id)
     const [isEquipmentsQuickAddPopupOpen, setIsEquipmentsQuickAddPopupOpen] = useState(false)
     const [isAddEquipmentPopupOpen, setIsAddEquipmentPopupOpen] = useState(false)
@@ -136,7 +136,7 @@ export const Equipments = () => {
                             equipmentsList={availableEquipments}
                             addEquipment={addEquipment}
                             addHousingEquipment={addHousingEquipment}
-                            isaAdEquipmentLoading={isaAdEquipmentLoading}
+                            isAddEquipmentLoading={isAddEquipmentLoading}
                         />
                     )}
                 </>

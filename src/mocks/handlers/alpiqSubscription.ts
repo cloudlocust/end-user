@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 import { API_RESOURCES_URL } from 'src/configs'
+import { TEST_HOUSES } from './houses'
 
 /**
  * Alpiq Subscription endpoints.
@@ -27,5 +28,10 @@ export const AlpiqSubscriptionEndpoints = [
         } else {
             return res(ctx.status(200), ctx.delay(1000), ctx.json({ monthlySubscriptionEstimation: 33 }))
         }
+    }),
+    rest.post(`${API_RESOURCES_URL}/housings/:housingId/alpiq/create-subscription`, (req, res, ctx) => {
+        const { housingId } = req.params
+        if (parseInt(housingId) === TEST_HOUSES[0].id) return res(ctx.status(200), ctx.delay(1000))
+        return res(ctx.status(500), ctx.delay(1000))
     }),
 ]

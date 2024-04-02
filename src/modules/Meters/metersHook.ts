@@ -78,6 +78,7 @@ export const useMeterForHousing = () => {
             )
 
             setLoadingInProgress(false)
+            return null
         }
     }
 
@@ -135,7 +136,7 @@ export const useMeterForHousing = () => {
 }
 
 /**
- * Error message editElementDetailsError.
+ * Error message editElementDeconsole.log(tailsError.
  *
  * @param _error Error.
  * @param formatMessage FormatMessage intl object from (react-intl package).

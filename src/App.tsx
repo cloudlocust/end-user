@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import {
     routes as routesConfig,
@@ -23,12 +23,12 @@ import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { getTokenFromFirebase } from 'src/firebase'
-import {
-    URL_ALPIQ_SUBSCRIPTION_FORM,
-    isAlpiqSubscriptionForm,
-} from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { URL_ALPIQ_SUBSCRIPTION_FORM } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { URL_NRLINK_CONNECTION } from 'src/modules/nrLinkConnection'
+import AlpiqSubscriptionStepper from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -94,8 +94,8 @@ const Routes = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { enedisSgeConsent, nrlinkConsent, getConsents } = useConsents()
-    const isApplicationBlocked = useRef(false)
+    const { nrlinkConsent, getConsents } = useConsents()
+    const history = useHistory()
 
     useEffect(() => {
         if (currentHousing?.id) {
@@ -107,12 +107,6 @@ const Routes = () => {
          */
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentHousing?.id])
-
-    useEffect(() => {
-        if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
-            isApplicationBlocked.current = true
-        }
-    }, [enedisSgeConsent])
 
     useEffect(() => {
         /**
@@ -140,7 +134,24 @@ const Routes = () => {
         return newNavbarContent
     }, [hasAccess, nrlinkConsent])
 
-    if (location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
+    useEffect(() => {
+        if (
+            user &&
+            (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') &&
+            location.pathname !== URL_NRLINK_CONNECTION &&
+            location.pathname !== URL_DASHBOARD
+        ) {
+            history.push(URL_NRLINK_CONNECTION)
+        }
+    }, [history, location.pathname, nrlinkConsent, nrlinkConsent?.nrlinkConsentState, user])
+
+    if (
+        isAlpiqSubscriptionForm &&
+        !isMaintenanceMode &&
+        user &&
+        !user.isProviderSubscriptionCompleted &&
+        location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM
+    ) {
         return (
             <ThemingProvider>
                 <AlpiqSubscriptionStepper />

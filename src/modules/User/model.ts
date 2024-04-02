@@ -115,6 +115,10 @@ export interface IUser extends IBaseUser {
      * SuperUser State.
      */
     isSuperUser: boolean
+    /**
+     * Is provider subscription completed.
+     */
+    isProviderSubscriptionCompleted: boolean
 }
 
 /**

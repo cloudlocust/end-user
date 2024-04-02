@@ -15,10 +15,12 @@ import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastSte
  *
  * @param props Props.
  * @param props.handleBack Handle back button callback.
+ * @param props.handleNext Handle next callback.
  * @returns JSX Element.
  */
 const SgeConsentStep = ({
     handleBack,
+    handleNext,
 }: /**
  *
  */
@@ -27,13 +29,17 @@ const SgeConsentStep = ({
      * Handle back.
      */
     handleBack: () => void
+    /**
+     * Handle next.
+     */
+    handleNext: () => void
 }) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     // TODO - in next story we might need to use enedisSgeConsent to check if it's valide or not to skip this step
     const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, createEnedisSgeConsentError } = useConsents()
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
         <div className="flex flex-col justify-center">
@@ -54,8 +60,7 @@ const SgeConsentStep = ({
                     variant={isMobile ? 'caption' : 'body1'}
                     fontWeight={500}
                 >
-                    Pour afficher vos consommations passées dans votre espace personnel, nous avons besoins que vous
-                    activiez la récupération de votre historique :
+                    Nous avons besoin de votre consentement pour accéder à votre historique :
                 </TypographyFormatMessage>
             </div>
             <div className="flex w-full justify-center mt-32 mb-16">
@@ -78,17 +83,20 @@ const SgeConsentStep = ({
                     createEnedisSgeConsentError={createEnedisSgeConsentError}
                     isCreateEnedisSgeConsentLoading={isCreateEnedisSgeConsentLoading}
                     isElementButton={true}
+                    onAfterCreateEnedisConsent={handleNext}
                 />
             </div>
-            <TypographyFormatMessage
-                className="mb-16"
-                variant="caption"
-                sx={{ color: textNrlinkColor }}
-                fontSize={isMobile ? '0.9rem' : undefined}
-            >
-                * Pas d’inquiétude, vos données restent entre vous et nous, elles ne seront jamais transmises à des
-                tiers.
-            </TypographyFormatMessage>
+            <div className="w-full flex items-center justify-center">
+                <TypographyFormatMessage
+                    className="mb-16"
+                    variant="caption"
+                    sx={{ color: textNrlinkColor }}
+                    fontSize={isMobile ? '0.9rem' : undefined}
+                >
+                    * Pas d’inquiétude, vos données restent entre vous et nous, elles ne seront jamais transmises à des
+                    tiers.
+                </TypographyFormatMessage>
+            </div>
         </div>
     )
 }
