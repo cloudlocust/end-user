@@ -37,7 +37,7 @@ export const useEquipmentList = (housingId?: number) => {
     const [isEquipmentMeterListEmpty, setIsEquipmentMeterListEmpty] = useState(false)
     const [equipmentsList, setEquipmentsList] = useState<equipmentType[] | null>(null)
     const [housingEquipmentsList, setHousingEquipmentsList] = useState<IEquipmentMeter[] | null>(null)
-    const [isaAdEquipmentLoading, setIsAddEquipmentLoading] = useState(false)
+    const [isAddEquipmentLoading, setIsAddEquipmentLoading] = useState(false)
 
     /**
      * Load Customers function responsing for fetching customersList.
@@ -208,7 +208,7 @@ export const useEquipmentList = (housingId?: number) => {
         isEquipmentMeterListEmpty,
         loadEquipmentList,
         addEquipment,
-        isaAdEquipmentLoading,
+        isAddEquipmentLoading,
     }
 }
 

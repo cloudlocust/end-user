@@ -16,7 +16,7 @@ beforeEach(() => {
     mockAddEquipmentPopupProps = {
         addEquipment: jest.fn(),
         equipmentsList: [],
-        isaAdEquipmentLoading: false,
+        isAddEquipmentLoading: false,
         isOpen: false,
         onClosePopup: jest.fn(),
         addHousingEquipment: jest.fn(),
@@ -42,7 +42,7 @@ describe('AddEquipmentsPopup', () => {
         userEvent.click(selectButton)
         const options = getAllByTestId('equipment-option')
 
-        expect(options).toHaveLength(TEST_EQUIPMENTS.length - 3)
+        expect(options).toHaveLength(TEST_EQUIPMENTS.length - 4)
     })
     test('Popup is closed when clicked on close button', async () => {
         mockAddEquipmentPopupProps.isOpen = true
