@@ -10,6 +10,7 @@ let mockInitialState: IHousingState = {
     housingList: [],
     currentHousing: null,
     currentHousingScopes: [],
+    alpiqSubscriptionSpecs: null,
 }
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)

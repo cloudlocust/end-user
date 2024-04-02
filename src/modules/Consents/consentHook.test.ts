@@ -42,6 +42,7 @@ const connectedState = 'CONNECTED'
 const TEST_ENEDIS_NRLINK_ENPHASE_ERROR =
     'Nous rencontrons une erreur lors de la récupération de vos consentements d’un de vos compteurs ou capteurs. Veuillez réessayer plus tard'
 
+// TODO - Add tests for onAfterEnedisConsent creation callback.
 describe('useConsents test', () => {
     describe('test getConsents request', () => {
         test('when getConsents is called, state changes', async () => {

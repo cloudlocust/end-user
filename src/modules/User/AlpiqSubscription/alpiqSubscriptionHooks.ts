@@ -6,7 +6,10 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
 import {
     IAlpiqMeterEligibiltyResponse,
     IApliqMonthlySubscriptionEstimationResponse,
+    CreateAlpiqSubscriptionDataType,
+    ICreateAlpiqSubscriptionResponse,
 } from 'src/modules/User/AlpiqSubscription/index.d'
+import { AxiosResponse } from 'axios'
 
 /**
  * Errror message when testing meter eligibility.
@@ -116,5 +119,58 @@ export const useAlpiqProvider = () => {
         }
     }
 
-    return { verifyMeterEligibility, getMonthlySubscriptionEstimation, loadingInProgress }
+    /**
+     * Hook for alpiq subscription.
+     *
+     * @param body Data for alpiq subscription.
+     * @param housingId Housing Id.
+     * @param onAfterCreation On after creation success.
+     * @returns Void.
+     */
+    const createAlpiqSubscription = async (
+        body: CreateAlpiqSubscriptionDataType,
+        housingId?: number,
+        onAfterCreation?: () => void,
+    ) => {
+        if (!housingId) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: NO_HOUSING_ERROR_MESSAGE,
+                    defaultMessage: NO_HOUSING_ERROR_MESSAGE,
+                }),
+                { variant: 'error' },
+            )
+            return
+        }
+        setLoadingInProgress(true)
+        try {
+            await axios.post<CreateAlpiqSubscriptionDataType, AxiosResponse<ICreateAlpiqSubscriptionResponse>>(
+                `${HOUSING_API}/${housingId}/alpiq/create-subscription`,
+                body,
+            )
+
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Souscription reçue',
+                    defaultMessage: 'Souscription reçue',
+                }),
+                { variant: 'success' },
+            )
+            if (onAfterCreation) onAfterCreation()
+        } catch (error: any) {
+            enqueueSnackbar(
+                formatMessage({
+                    id: 'Erreur lors de la souscription au contract Alpiq',
+                    defaultMessage: 'Erreur lors de la souscription au contract Alpiq',
+                }),
+                {
+                    variant: 'error',
+                },
+            )
+        }
+
+        setLoadingInProgress(false)
+    }
+
+    return { verifyMeterEligibility, getMonthlySubscriptionEstimation, loadingInProgress, createAlpiqSubscription }
 }

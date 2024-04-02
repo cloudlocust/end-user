@@ -205,7 +205,7 @@ describe('test registerForm', () => {
         expect(mockOnSubmit).not.toHaveBeenCalled()
         expect(getAllByText('Les mot de passes ne correspondent pas.').length).toBe(1)
     })
-    test('Normal case with call to submit', async () => {
+    test('Normal case, no zipCode blocage with call to submit', async () => {
         const { getByRole, getByTestId, container, getByLabelText, getAllByRole, getByText } = reduxedRender(
             <RegisterForm defaultRole="defaultRle" />,
         )
@@ -226,26 +226,29 @@ describe('test registerForm', () => {
         expect(screen.getByText('Valider')).toBeTruthy()
         await waitFor(
             () => {
-                expect(mockOnSubmit).toHaveBeenCalledWith({
-                    companyName: TEST_SUCCESS_USER.company_name,
-                    siren: TEST_SUCCESS_USER.siren,
-                    civility: TEST_CIVILITY_OPTION.value,
-                    email: TEST_EMAIL,
-                    firstName: 'test prénom',
-                    lastName: 'test nom',
-                    phone: TEST_SUCCESS_USER.phone,
-                    password: 'P@ssword1',
-                    address: {
-                        city: 'test locality',
-                        country: 'test country',
-                        lat: 1,
-                        lng: 2,
-                        name: 'normal formatted_address',
-                        placeId: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
-                        zipCode: '1234',
+                expect(mockOnSubmit).toHaveBeenCalledWith(
+                    {
+                        companyName: TEST_SUCCESS_USER.company_name,
+                        siren: TEST_SUCCESS_USER.siren,
+                        civility: TEST_CIVILITY_OPTION.value,
+                        email: TEST_EMAIL,
+                        firstName: 'test prénom',
+                        lastName: 'test nom',
+                        phone: TEST_SUCCESS_USER.phone,
+                        password: 'P@ssword1',
+                        address: {
+                            city: 'test locality',
+                            country: 'test country',
+                            lat: 1,
+                            lng: 2,
+                            name: 'normal formatted_address',
+                            placeId: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
+                            zipCode: '1234',
+                        },
+                        role: 'defaultRle',
                     },
-                    role: 'defaultRle',
-                })
+                    undefined,
+                )
             },
             { timeout: 3000 },
         )

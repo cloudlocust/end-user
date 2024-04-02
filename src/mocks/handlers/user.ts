@@ -64,6 +64,7 @@ export const TEST_SUCCESS_USER = {
     is_active: true,
     is_verified: true,
     is_super_user: false,
+    is_provider_subscription_completed: false,
 }
 
 let TEST_USER_WRONG_ROLE = {

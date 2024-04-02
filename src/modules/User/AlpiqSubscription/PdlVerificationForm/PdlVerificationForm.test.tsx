@@ -45,13 +45,17 @@ jest.mock('src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks', () => ({
 describe('Test PdlVerificationForm', () => {
     test('component shows correctly', async () => {
         const { getByText } = reduxedRender(<PdlVerificationForm {...mockPdlVerificationFormProps} />)
-        expect(getByText('Connectons votre compteur Linky')).toBeInTheDocument()
+        expect(getByText('Connectons votre compteur électrique')).toBeInTheDocument()
         expect(
             getByText(
-                'Connectons votre compteur à votre espace personnel, ainsi, une fois que vous aurez votre nrLINK vous pourrez visualiser votre consommation à la minute !',
+                'Merci de renseigner votre PDL pour connecter votre compteur électrique à votre espace personnel afin de vous faire la meilleure estimation possible.',
             ),
         ).toBeInTheDocument()
-        expect(getByText('* Votre N° de PDL (point de livraison) est présent sur votre facture.')).toBeInTheDocument()
+        expect(
+            getByText(
+                "* Il est composé de 14 chiffres, il s'agit de l'identifiant de votre compteur utilisé par Enedis, vous pouvez aussi retrouver votre PDL sur votre compteur Linky en appuyant 6 fois sur la touche « + » sous le nom «NUMERO PRM»",
+            ),
+        ).toBeInTheDocument()
     })
     test('all fields required required', async () => {
         const { getAllByText, getByText } = reduxedRender(<PdlVerificationForm {...mockPdlVerificationFormProps} />)
@@ -77,6 +81,7 @@ describe('Test PdlVerificationForm', () => {
         })
     })
     test('GUID Correct format, edit existing meter', async () => {
+        mockEditMeter.mockReturnValue({ guid: '11222999' })
         const { container, getByText } = reduxedRender(<PdlVerificationForm {...mockPdlVerificationFormProps} />, {
             initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } },
         })
@@ -94,6 +99,7 @@ describe('Test PdlVerificationForm', () => {
         })
     })
     test('GUID Correct format, add new meter', async () => {
+        mockAddMeter.mockReturnValue({ guid: '11222999' })
         const { container, getByText } = reduxedRender(<PdlVerificationForm {...mockPdlVerificationFormProps} />, {
             initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[1] } },
         })
