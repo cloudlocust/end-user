@@ -20,7 +20,7 @@ import { equipmentNameType, equipmentType } from 'src/modules/MyHouse/components
  * @param props.addEquipment Add equipment function.
  * @param props.addHousingEquipment Add housing equipment function.
  * @param props.isAddEquipmentLoading Loading boolean for adding equipment.
- * @param props.onAddingEquipmentSuccesses Callback to call when the equipment is added successfully.
+ * @param props.onAddingEquipmentSuccess Callback to call when the equipment is added successfully.
  * @returns AddEquipmentPopup JSX.
  */
 export const AddEquipmentPopup = ({
@@ -30,7 +30,7 @@ export const AddEquipmentPopup = ({
     addEquipment,
     addHousingEquipment,
     isAddEquipmentLoading,
-    onAddingEquipmentSuccesses,
+    onAddingEquipmentSuccess,
 }: AddEquipmentPopupProps) => {
     const { formatMessage } = useIntl()
     const [equipmentValue, setEquipmentValue] = useState<equipmentType | 'other' | string>('')
@@ -129,8 +129,8 @@ export const AddEquipmentPopup = ({
                                         },
                                     ])
                                 }
-                                if (equipment && equipment.length > 0 && onAddingEquipmentSuccesses) {
-                                    onAddingEquipmentSuccesses(equipment[0].equipmentId)
+                                if (equipment && equipment.length > 0 && onAddingEquipmentSuccess) {
+                                    onAddingEquipmentSuccess(equipment[0].equipmentId)
                                 }
                             } finally {
                                 onClosePopup()

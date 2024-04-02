@@ -35,5 +35,5 @@ export interface AddEquipmentPopupProps {
     /**
      * Callback to call when the equipment is added successfully.
      */
-    onAddingEquipmentSuccesses?: (equipmentId: number) => void
+    onAddingEquipmentSuccess?: (equipmentId: number) => void
 }

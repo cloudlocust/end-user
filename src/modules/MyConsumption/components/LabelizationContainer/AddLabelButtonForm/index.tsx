@@ -28,7 +28,7 @@ import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/I
  * @param root0.chartRef Ref of the chart.
  * @param root0.inputPeriodTime Input Period Time.
  * @param root0.setInputPeriodTime Set the input period time.
- * @param root0.isAddingLabelInProgress Weither the add label is in progress.
+ * @param root0.isAddingLabelInProgress Whether adding label is in progress.
  * @param root0.range The current range of the metrics.
  * @param root0.chartData The chart data.
  * @returns JSX Element.
@@ -43,7 +43,7 @@ const AddLabelButtonForm = ({
 }: AddLabelButtonFormProps) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { formatMessage } = useIntl()
-    const { setValue, watch, clearErrors, reset, formState } = useFormContext()
+    const { setValue, watch, clearErrors, formState } = useFormContext()
     const [labelingInProcess, setLabelingInProcess] = useState(false)
     const [isAddEquipmentPopupOpen, setIsAddEquipmentPopupOpen] = useState(false)
     const [addedEquipmentId, setAddedEquipmentId] = useState<number | null>(null)
@@ -56,6 +56,7 @@ const AddLabelButtonForm = ({
         isAddEquipmentLoading,
     } = useEquipmentList(currentHousing?.id)
 
+    // TODO: Refactor this to avoid repeating the same code in several places.
     const mappedHousingEquipmentsList = useMemo(
         () =>
             housingEquipmentsList
@@ -93,14 +94,14 @@ const AddLabelButtonForm = ({
      * Reset the form fields.
      */
     const resetFormFields = useCallback(() => {
-        reset()
         setInputPeriodTime({
             startTime: undefined,
             endTime: undefined,
         })
         setValue('housingEquipmentId', '')
         setValue('useType', '')
-    }, [reset, setInputPeriodTime, setValue])
+        clearErrors()
+    }, [clearErrors, setInputPeriodTime, setValue])
 
     /**
      *  Canceling the labeling.
@@ -113,7 +114,6 @@ const AddLabelButtonForm = ({
             areas: [],
         })
         resetFormFields()
-        clearErrors()
     }
 
     useEffect(() => {
@@ -303,7 +303,7 @@ const AddLabelButtonForm = ({
                     addEquipment={addEquipment}
                     addHousingEquipment={addHousingEquipment}
                     isAddEquipmentLoading={isAddEquipmentLoading}
-                    onAddingEquipmentSuccesses={setAddedEquipmentId}
+                    onAddingEquipmentSuccess={setAddedEquipmentId}
                 />
             )}
         </>

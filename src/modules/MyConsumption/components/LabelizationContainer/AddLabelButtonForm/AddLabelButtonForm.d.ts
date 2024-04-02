@@ -20,7 +20,7 @@ interface AddLabelButtonFormProps {
      */
     setInputPeriodTime: (inputPeriodTime: IPeriodTime) => void
     /**
-     * Weither the add label is in progress.
+     * Whether adding label is in progress.
      */
     isAddingLabelInProgress: boolean
     /**
