@@ -1,5 +1,5 @@
 import { IRoute, authTypes } from 'src/common/react-platform-components'
-import { SolarSizing } from 'src/modules/SolarSizing'
+import SolarSizing from 'src/modules/SolarSizing'
 
 /**
  * Url for advices.

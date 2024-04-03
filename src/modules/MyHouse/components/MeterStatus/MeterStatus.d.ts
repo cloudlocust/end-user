@@ -35,6 +35,10 @@ export interface EnedisSgePopupProps {
      * Is Element a Button or text.
      */
     isElementButton?: boolean
+    /**
+     * OnAfterCreateEnedisConsent.
+     */
+    onAfterCreateEnedisConsent?: () => void
 }
 
 /**

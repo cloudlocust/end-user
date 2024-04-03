@@ -66,6 +66,22 @@ export const routes = [
 ]
 
 /**
+ * Represent the routes that are needed to have the nrlink consent to be able to access them.
+ */
+export const routesRequiringNrlinkConsent = [
+    ...MyConsumptionConfig,
+    ...AdvicesConfig,
+    ...MyHouseConfig,
+    ...ContractsConfig,
+    ...InstallationsRequestsConfig,
+    ...EnphaseConfirmStateConfig,
+    ...SolarEquipmentsConfig,
+    ...EcogestesConfig,
+    ...AlertsConfig,
+    ...SolarSizingConfig,
+]
+
+/**
  * Represent custom page settings.
  */
 export type IAdditionnalSettings = /**

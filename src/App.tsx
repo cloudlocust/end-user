@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
-import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
+import {
+    routes as routesConfig,
+    navigationsConfig,
+    IAdditionnalSettings,
+    IPageSettingsDisabled,
+    routesRequiringNrlinkConsent,
+} from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
 import ThemingProvider from 'src/common/ui-kit/fuse/components/ThemingProvider'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
@@ -17,14 +23,12 @@ import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { getTokenFromFirebase } from 'src/firebase'
-import {
-    URL_ALPIQ_SUBSCRIPTION_FORM,
-    isAlpiqSubscriptionForm,
-} from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { URL_ALPIQ_SUBSCRIPTION_FORM } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
 import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import { URL_NRLINK_CONNECTION } from 'src/modules/nrLinkConnection'
+import AlpiqSubscriptionStepper from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -90,8 +94,7 @@ const Routes = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { enedisSgeConsent, nrlinkConsent, getConsents } = useConsents()
-    const isApplicationBlocked = useRef(false)
+    const { nrlinkConsent, getConsents } = useConsents()
     const history = useHistory()
 
     useEffect(() => {
@@ -104,12 +107,6 @@ const Routes = () => {
          */
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentHousing?.id])
-
-    useEffect(() => {
-        if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
-            isApplicationBlocked.current = true
-        }
-    }, [enedisSgeConsent])
 
     useEffect(() => {
         /**
@@ -130,11 +127,7 @@ const Routes = () => {
             // If the navbar item is hidden, we don't need to push it to the navbarContent.
             if (UINavbarItem?.isHidden) return
 
-            if (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') {
-                UINavbarItem.isNotAllowed = true
-            } else {
-                UINavbarItem.isNotAllowed = false
-            }
+            UINavbarItem.isNotAllowed = !nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
 
             hasAccess(navigationConfig.auth) && newNavbarContent.push(UINavbarItem)
         })
@@ -152,7 +145,13 @@ const Routes = () => {
         }
     }, [history, location.pathname, nrlinkConsent, nrlinkConsent?.nrlinkConsentState, user])
 
-    if (location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
+    if (
+        isAlpiqSubscriptionForm &&
+        !isMaintenanceMode &&
+        user &&
+        !user.isProviderSubscriptionCompleted &&
+        location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM
+    ) {
         return (
             <ThemingProvider>
                 <AlpiqSubscriptionStepper />
@@ -163,6 +162,12 @@ const Routes = () => {
     return (
         <Switch>
             {routesConfig.map((route, index) => {
+                const UINavbarItem = route.settings?.layout?.navbar?.UINavbarItem
+                if (UINavbarItem && routesRequiringNrlinkConsent.includes(route)) {
+                    const isNrlinkConsentNonExistent =
+                        !nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
+                    UINavbarItem.disabled = isNrlinkConsentNonExistent
+                }
                 return (
                     <Route
                         key={index}

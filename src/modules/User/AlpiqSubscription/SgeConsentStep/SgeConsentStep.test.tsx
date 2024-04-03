@@ -5,8 +5,10 @@ import userEvent from '@testing-library/user-event'
 const BACK_TEXT = 'Retour'
 const SGE_POPUP_BUTTON_TEXT = 'Récupérer mes données'
 const mockHandleBack = jest.fn()
+const mockHandleNext = jest.fn()
 const mockSgeConsentStepProps = {
     handleBack: mockHandleBack,
+    handleNext: mockHandleNext,
 }
 
 describe('Test SgeConsentStepProps', () => {
@@ -14,9 +16,7 @@ describe('Test SgeConsentStepProps', () => {
         const { getByText } = reduxedRender(<SgeConsentStep {...mockSgeConsentStepProps} />)
         expect(getByText('Intégrons votre historique de consommation à votre espace personnel')).toBeInTheDocument()
         expect(
-            getByText(
-                'Pour afficher vos consommations passées dans votre espace personnel, nous avons besoins que vous activiez la récupération de votre historique :',
-            ),
+            getByText('Nous avons besoin de votre consentement pour accéder à votre historique :'),
         ).toBeInTheDocument()
         expect(
             getByText(

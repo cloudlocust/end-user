@@ -23,10 +23,11 @@ jest.mock('src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks', () => ({
 describe('Test ContractEstimation', () => {
     test('component shows correctly', async () => {
         const { getByText } = reduxedRender(<ContractEstimation {...contractEstimationProps} />)
-        expect(getByText("Mon contrat BôWatts par alpiq L'electricité verte de beaujolais")).toBeInTheDocument()
-        expect(getByText('Paramétrez votre contrat Alpiq:')).toBeInTheDocument()
+        expect(getByText('Mon contrat BôWatts par Alpiq')).toBeInTheDocument()
+        expect(getByText("L'électricité verte de beaujolais")).toBeInTheDocument()
+        expect(getByText('Paramétrez votre contrat Bôwatts :')).toBeInTheDocument()
         expect(getByText(ESTIMATE_MONTHLY_SUBSCRIPTION_BUTTON_TEXT)).toBeInTheDocument()
-        expect(getByText('Mensualité calculée à partir de votre historique de consommation.')).toBeInTheDocument()
+        expect(getByText('Mensualité calculée à partir de vos consommations passées.')).toBeInTheDocument()
         expect(getByText('Type de contrat')).toBeInTheDocument()
         expect(getByText('Puissance')).toBeInTheDocument()
     })

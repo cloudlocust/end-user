@@ -29,6 +29,14 @@ export type AccomodationDataType =
          */
         houseType?: string
         /**
+         * House location.
+         */
+        houseLocation?: string
+        /**
+         * Number of levels.
+         */
+        numberOfLevels?: number
+        /**
          * House Year.
          */
         houseYear?: string
@@ -52,6 +60,14 @@ export type AccomodationDataType =
          * House Area.
          */
         houseArea?: string
+        /**
+         * Number of windows.
+         */
+        numberOfWindows?: number
+        /**
+         * Windows are double or triple glazed.
+         */
+        isGlazedWindows?: boolean
         /**
          * Ownership status.
          */
