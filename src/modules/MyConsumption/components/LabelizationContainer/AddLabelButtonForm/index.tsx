@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useIntl } from 'src/common/react-platform-translation'
+import { FormattedMessage, useIntl } from 'src/common/react-platform-translation'
 import IconButton from '@mui/material/IconButton'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -13,7 +13,8 @@ import { AddLabelButtonFormProps } from 'src/modules/MyConsumption/components/La
 import { ButtonLoader, MuiTextField } from 'src/common/ui-kit'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useFormContext } from 'react-hook-form'
-import { requiredBuilder } from 'src/common/react-platform-components'
+import { requiredBuilder, regex } from 'src/common/react-platform-components'
+import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes'
 
 /**
  * Button to add a label.
@@ -89,6 +90,29 @@ const AddLabelButtonForm = ({
         }
     }, [inputPeriodTime.endTime, inputPeriodTime.startTime, setValue])
 
+    /**
+     * Get the index of the label.
+     *
+     * @param label The label to get the index of.
+     * @returns The index of the label.
+     */
+    const getIndexOfXAxisLabel = (label: string) => {
+        const labelParts = label.split(':')
+        if (
+            labelParts.length !== 2 ||
+            labelParts[0].length !== 2 ||
+            labelParts[1].length !== 2 ||
+            isNaN(Number(labelParts[0])) ||
+            Number(labelParts[0]) < 0 ||
+            Number(labelParts[0]) > 23 ||
+            isNaN(Number(labelParts[1])) ||
+            Number(labelParts[1]) < 0 ||
+            Number(labelParts[1]) > 59
+        )
+            return null
+        return Number(labelParts[0]) * 60 + Number(labelParts[1]) - 1
+    }
+
     return (
         <div className="flex justify-end items-center gap-24 mx-32">
             {isSelectLabelActive && (
@@ -134,11 +158,53 @@ const AddLabelButtonForm = ({
                                         id: 'De',
                                         defaultMessage: 'De',
                                     })}
-                                    inputProps={{
-                                        readOnly: true,
-                                    }}
-                                    validateFunctions={[requiredBuilder()]}
+                                    validateFunctions={[
+                                        requiredBuilder(),
+                                        regex(
+                                            '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
+                                            'Veuillez entrer une heure valide (format HH:MM)',
+                                        ),
+                                        (): JSX.Element | undefined => {
+                                            const startIndex = getIndexOfXAxisLabel(inputPeriodTime.startTime ?? '')
+                                            const endIndex = getIndexOfXAxisLabel(inputPeriodTime.endTime ?? '')
+                                            if (startIndex !== null && endIndex !== null && startIndex >= endIndex) {
+                                                return (
+                                                    <FormattedMessage
+                                                        id="L'heure de début doit être inférieure à l'heure de fin"
+                                                        defaultMessage="L'heure de début doit être inférieure à l'heure de fin"
+                                                    />
+                                                )
+                                            }
+                                            return undefined
+                                        },
+                                    ]}
+                                    placeholder="00:00"
                                     className="w-full"
+                                    onChange={(e) => {
+                                        const startIndex = getIndexOfXAxisLabel(e.target.value)
+                                        const endIndex = getIndexOfXAxisLabel(inputPeriodTime.endTime ?? '')
+                                        if (startIndex !== null && endIndex !== null && startIndex < endIndex) {
+                                            chartRef.current.getEchartsInstance().dispatchAction({
+                                                type: 'brush',
+                                                areas: [
+                                                    {
+                                                        brushType: 'lineX',
+                                                        xAxisIndex: 0,
+                                                        coordRange: [startIndex, endIndex],
+                                                    },
+                                                ],
+                                            })
+                                        } else {
+                                            chartRef.current.getEchartsInstance().dispatchAction({
+                                                type: 'brush',
+                                                areas: [],
+                                            })
+                                            setInputPeriodTime((prevState: IPeriodTime) => ({
+                                                ...prevState,
+                                                startTime: e.target.value,
+                                            }))
+                                        }
+                                    }}
                                 />
                             </div>
 
@@ -151,11 +217,53 @@ const AddLabelButtonForm = ({
                                         id: 'À',
                                         defaultMessage: 'À',
                                     })}
-                                    inputProps={{
-                                        readOnly: true,
-                                    }}
-                                    validateFunctions={[requiredBuilder()]}
+                                    validateFunctions={[
+                                        requiredBuilder(),
+                                        regex(
+                                            '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
+                                            'Veuillez entrer une heure valide (format HH:MM)',
+                                        ),
+                                        (): JSX.Element | undefined => {
+                                            const startIndex = getIndexOfXAxisLabel(inputPeriodTime.startTime ?? '')
+                                            const endIndex = getIndexOfXAxisLabel(inputPeriodTime.endTime ?? '')
+                                            if (startIndex !== null && endIndex !== null && startIndex >= endIndex) {
+                                                return (
+                                                    <FormattedMessage
+                                                        id="L'heure de fin doit être supérieure à l'heure de début"
+                                                        defaultMessage="L'heure de fin doit être supérieure à l'heure de début"
+                                                    />
+                                                )
+                                            }
+                                            return undefined
+                                        },
+                                    ]}
+                                    placeholder="00:00"
                                     className="w-full"
+                                    onChange={(e) => {
+                                        const startIndex = getIndexOfXAxisLabel(inputPeriodTime.startTime ?? '')
+                                        const endIndex = getIndexOfXAxisLabel(e.target.value)
+                                        if (startIndex !== null && endIndex !== null && startIndex < endIndex) {
+                                            chartRef.current.getEchartsInstance().dispatchAction({
+                                                type: 'brush',
+                                                areas: [
+                                                    {
+                                                        brushType: 'lineX',
+                                                        xAxisIndex: 0,
+                                                        coordRange: [startIndex, endIndex],
+                                                    },
+                                                ],
+                                            })
+                                        } else {
+                                            chartRef.current.getEchartsInstance().dispatchAction({
+                                                type: 'brush',
+                                                areas: [],
+                                            })
+                                            setInputPeriodTime((prevState: IPeriodTime) => ({
+                                                ...prevState,
+                                                endTime: e.target.value,
+                                            }))
+                                        }
+                                    }}
                                 />
                             </div>
                         </div>
