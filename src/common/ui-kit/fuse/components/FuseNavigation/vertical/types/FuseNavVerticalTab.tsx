@@ -90,7 +90,7 @@ function FuseNavVerticalTab(props: IFuseNavigationComponentProps) {
                         selectedId === item!.id && 'active',
                         'fuse-list-item flex flex-col items-center justify-center p-12',
                     )}
-                    disabled={item?.disabled || item?.isNotAllowed}
+                    disabled={item?.disabled}
                     onClick={() => onItemClick && onItemClick(item)}
                     exact={item!.exact!}
                     role="button"
