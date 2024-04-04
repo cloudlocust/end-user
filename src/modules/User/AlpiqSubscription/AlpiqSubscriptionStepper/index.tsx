@@ -38,14 +38,22 @@ const AlpiqSubscriptionStepper = () => {
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
     const [isPageLoading, setIsPageLoading] = useState(true)
     const initialMount = useRef(true)
+    const initialMountConsent = useRef(true)
     const [activeStep, setActiveStep] = React.useState(AlpiqSubscriptionStepsEnum.firstStep)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-    const { enedisSgeConsent } = useConsents()
+    const { enedisSgeConsent, getConsents } = useConsents()
+
+    useEffect(() => {
+        if (initialMountConsent.current && currentHousing?.id) {
+            getConsents(currentHousing.id)
+            initialMountConsent.current = false
+        }
+    })
 
     // TODO - add tests for this part like the one in App.test.tsx
     useEffect(() => {
-        if (initialMount.current && currentHousing) {
+        if (initialMount.current && currentHousing && enedisSgeConsent) {
             if (alpiqSubscriptionSpecs) setActiveStep(AlpiqSubscriptionStepsEnum.forthStep)
             else if (enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED')
                 setActiveStep(AlpiqSubscriptionStepsEnum.thridStep)
@@ -53,7 +61,7 @@ const AlpiqSubscriptionStepper = () => {
             initialMount.current = false
             setIsPageLoading(false)
         }
-    }, [currentHousing, enedisSgeConsent, alpiqSubscriptionSpecs])
+    }, [currentHousing, enedisSgeConsent, alpiqSubscriptionSpecs, getConsents])
 
     /**
      * Next Step callback.
