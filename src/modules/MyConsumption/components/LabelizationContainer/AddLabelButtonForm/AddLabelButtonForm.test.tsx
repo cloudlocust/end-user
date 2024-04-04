@@ -59,12 +59,12 @@ let mockAddLabelButtonFormProps: AddLabelButtonFormProps = {
 const housingEquipmentSelectTestId = 'housing-equipment-select'
 const housingEquipmentOptionTestId = 'housing-equipment-option'
 const useTypeLabel = "Type d'usage"
-const startTimeLabel = 'De'
-const endTimeLabel = 'À'
+const startTimeTestId = 'start-time'
+const endTimeTestId = 'end-time'
 
 describe('AddLabelButtonForm', () => {
     test('render correctly', () => {
-        const { getByRole } = reduxedRender(
+        const { getByRole, getByTestId } = reduxedRender(
             <Form onSubmit={() => {}}>
                 <AddLabelButtonForm {...mockAddLabelButtonFormProps} />
             </Form>,
@@ -72,8 +72,8 @@ describe('AddLabelButtonForm', () => {
 
         expect(screen.getByLabelText('Equipement *')).toBeInTheDocument()
         expect(getByRole('textbox', { name: useTypeLabel })).toBeInTheDocument()
-        expect(getByRole('textbox', { name: startTimeLabel })).toBeInTheDocument()
-        expect(getByRole('textbox', { name: endTimeLabel })).toBeInTheDocument()
+        expect(getByTestId(startTimeTestId)).toBeInTheDocument()
+        expect(getByTestId(endTimeTestId)).toBeInTheDocument()
         expect(getByRole('button', { name: 'Ajouter' })).toBeInTheDocument()
         expect(getByRole('button', { name: 'Annuler' })).toBeInTheDocument()
     })
