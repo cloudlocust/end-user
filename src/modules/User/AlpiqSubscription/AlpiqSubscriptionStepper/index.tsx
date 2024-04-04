@@ -49,7 +49,7 @@ const AlpiqSubscriptionStepper = () => {
             getConsents(currentHousing.id)
             initialMountConsent.current = false
         }
-    })
+    }, [getConsents, currentHousing])
 
     // TODO - add tests for this part like the one in App.test.tsx
     useEffect(() => {
@@ -61,7 +61,7 @@ const AlpiqSubscriptionStepper = () => {
             initialMount.current = false
             setIsPageLoading(false)
         }
-    }, [currentHousing, enedisSgeConsent, alpiqSubscriptionSpecs, getConsents])
+    }, [currentHousing, enedisSgeConsent, alpiqSubscriptionSpecs])
 
     /**
      * Next Step callback.
