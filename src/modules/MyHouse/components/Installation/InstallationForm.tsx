@@ -701,18 +701,22 @@ export const InstallationTab = () => {
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
                                             <Typography>
                                                 {formatMessage({
-                                                    id: 'Tarif de revente (€)',
-                                                    defaultMessage: 'Tarif de revente (€)',
+                                                    id: 'Tarif de revente',
+                                                    defaultMessage: 'Tarif de revente',
                                                 })}
                                                 &nbsp;:
                                             </Typography>
-                                            <TextField
-                                                name="resaleTariff"
-                                                label="Tarif"
-                                                type="number"
-                                                style={{ marginBottom: 0 }}
-                                                className="w-full sm:w-auto sm:max-w-128"
-                                            />
+                                            <div className="flex flex-row items-center gap-10">
+                                                <TextField
+                                                    name="resaleTariff"
+                                                    label="Tarif"
+                                                    type="number"
+                                                    style={{ marginBottom: 0 }}
+                                                    className="w-full sm:w-auto sm:max-w-128 hide-number-input-arrows"
+                                                    placeholder="0.0000"
+                                                />
+                                                €
+                                            </div>
                                         </div>
                                         <Typography className="text-11 text-grey-700 text-center w-auto sm:max-w-288">
                                             {formatMessage({
