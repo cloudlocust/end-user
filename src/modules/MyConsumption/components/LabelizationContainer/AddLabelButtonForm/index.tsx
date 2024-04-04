@@ -7,8 +7,8 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { motion } from 'framer-motion'
 import { AddLabelButtonFormProps } from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm/AddLabelButtonForm'
 import { ButtonLoader, MuiTextField } from 'src/common/ui-kit'
-import { useFormContext } from 'react-hook-form'
-import { requiredBuilder } from 'src/common/react-platform-components'
+import { useFormContext, Controller, Validate } from 'react-hook-form'
+import { requiredBuilder, validators } from 'src/common/react-platform-components'
 import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
@@ -20,6 +20,11 @@ import {
     myEquipmentOptions,
 } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import dayjs from 'dayjs'
+import _ from 'lodash'
+import TextField from '@mui/material/TextField'
 
 /**
  * Button to add a label.
@@ -43,7 +48,14 @@ const AddLabelButtonForm = ({
 }: AddLabelButtonFormProps) => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { formatMessage } = useIntl()
-    const { setValue, watch, clearErrors, formState } = useFormContext()
+    const {
+        setValue,
+        watch,
+        clearErrors,
+        formState,
+        formState: { errors },
+        control,
+    } = useFormContext()
     const [labelingInProcess, setLabelingInProcess] = useState(false)
     const [isAddEquipmentPopupOpen, setIsAddEquipmentPopupOpen] = useState(false)
     const [addedEquipmentId, setAddedEquipmentId] = useState<number | null>(null)
@@ -166,11 +178,88 @@ const AddLabelButtonForm = ({
         }
     }, [addedEquipmentId, mappedHousingEquipmentsList, setValue])
 
+    /**
+     * Get the index of the label.
+     *
+     * @param label The label to get the index of.
+     * @returns The index of the label.
+     */
+    const getIndexOfXAxisLabel = (label: string) => {
+        const labelParts = label.split(':')
+        if (
+            labelParts.length !== 2 ||
+            labelParts[0].length !== 2 ||
+            labelParts[1].length !== 2 ||
+            isNaN(Number(labelParts[0])) ||
+            Number(labelParts[0]) < 0 ||
+            Number(labelParts[0]) > 23 ||
+            isNaN(Number(labelParts[1])) ||
+            Number(labelParts[1]) < 0 ||
+            Number(labelParts[1]) > 59
+        )
+            return null
+        return Number(labelParts[0]) * 60 + Number(labelParts[1]) - 1
+    }
+
+    /**
+     * Function to update the chart selected range.
+     *
+     * @param startIndex The start index.
+     * @param endIndex The end index.
+     * @param changedSide The changed side ('startTime' or 'endTime').
+     * @param newValue The new value.
+     */
+    const updateChartSelectedRange = (
+        startIndex: number | null,
+        endIndex: number | null,
+        changedSide: 'startTime' | 'endTime',
+        newValue: string,
+    ) => {
+        if (startIndex !== null && endIndex !== null && startIndex < endIndex) {
+            chartRef.current.getEchartsInstance().dispatchAction({
+                type: 'brush',
+                areas: [
+                    {
+                        brushType: 'lineX',
+                        xAxisIndex: 0,
+                        coordRange: [startIndex, endIndex],
+                    },
+                ],
+            })
+        } else {
+            chartRef.current.getEchartsInstance().dispatchAction({
+                type: 'brush',
+                areas: [],
+            })
+            setInputPeriodTime((prevState: IPeriodTime) => ({
+                ...prevState,
+                [changedSide]: newValue,
+            }))
+        }
+    }
+
+    const rangeValidation = useCallback(
+        (errorMessage: string) => {
+            return () => {
+                const startIndex = getIndexOfXAxisLabel(inputPeriodTime.startTime ?? '')
+                const endIndex = getIndexOfXAxisLabel(inputPeriodTime.endTime ?? '')
+                if (startIndex !== null && endIndex !== null && startIndex >= endIndex) {
+                    return errorMessage
+                }
+                return undefined
+            }
+        },
+        [inputPeriodTime.endTime, inputPeriodTime.startTime],
+    )
+
     return (
         <>
-            <div className="flex flex-col sm:flex-row justify-end items-center mx-32 gap-24 relative">
-                <div className="flex-1 flex justify-start lg:justify-center">
-                    <div className="w-full md:max-w-640 flex flex-col md:flex-row justify-center items-start gap-x-10 gap-y-20">
+            <div className="flex flex-col sm:flex-row justify-center items-center md:items-start mx-32 gap-24">
+                <div className="flex">
+                    <div
+                        className="w-full flex flex-col md:flex-row justify-center items-start gap-x-10 gap-y-20"
+                        style={{ maxWidth: 700 }}
+                    >
                         {/* Equipment select */}
                         <div className="flex-1 w-full">
                             <Select
@@ -230,37 +319,104 @@ const AddLabelButtonForm = ({
                         <div className="w-full flex-1 flex justify-center items-start gap-10">
                             {/* Start time */}
                             <div className="flex-1 w-full">
-                                <MuiTextField
-                                    name="startDate"
-                                    value={inputPeriodTime.startTime}
+                                <TimePicker
                                     label={formatMessage({
                                         id: 'De',
                                         defaultMessage: 'De',
                                     })}
-                                    inputProps={{
-                                        readOnly: true,
+                                    value={inputPeriodTime.startTime ? dayjs(inputPeriodTime.startTime, 'HH:mm') : null}
+                                    onChange={(newValue) => {
+                                        const formattedTime = dayjs.utc(newValue).local().format('HH:mm')
+                                        const startIndex = getIndexOfXAxisLabel(formattedTime ?? '')
+                                        const endIndex = getIndexOfXAxisLabel(inputPeriodTime.endTime ?? '')
+                                        updateChartSelectedRange(startIndex, endIndex, 'startTime', formattedTime)
                                     }}
-                                    focused={inputPeriodTime.startTime !== undefined}
-                                    validateFunctions={[requiredBuilder()]}
-                                    className="w-full"
+                                    renderInput={(params) => (
+                                        <Controller
+                                            name="startDate"
+                                            control={control}
+                                            rules={{
+                                                validate: validators([
+                                                    requiredBuilder(),
+                                                    rangeValidation(
+                                                        formatMessage({
+                                                            id: "L'heure de début doit être inférieure à l'heure de fin",
+                                                            defaultMessage:
+                                                                "L'heure de début doit être inférieure à l'heure de fin",
+                                                        }),
+                                                    ),
+                                                ]) as Validate<unknown>,
+                                            }}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    {...params}
+                                                    fullWidth
+                                                    required
+                                                    error={_.has(errors, 'startDate')}
+                                                    helperText={
+                                                        _.has(errors, 'startDate')
+                                                            ? _.get(errors, `${'startDate'}.message`)
+                                                            : ''
+                                                    }
+                                                    data-testId="start-time"
+                                                />
+                                            )}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             {/* End time */}
                             <div className="flex-1 w-full">
-                                <MuiTextField
-                                    name="endDate"
-                                    value={inputPeriodTime.endTime}
+                                {
+                                    // TODO: Refactor this by creating a custom TimePicker input.
+                                }
+                                <TimePicker
                                     label={formatMessage({
                                         id: 'À',
                                         defaultMessage: 'À',
                                     })}
-                                    inputProps={{
-                                        readOnly: true,
+                                    value={inputPeriodTime.endTime ? dayjs(inputPeriodTime.endTime, 'HH:mm') : null}
+                                    onChange={(newValue) => {
+                                        const formattedTime = dayjs.utc(newValue).local().format('HH:mm')
+                                        const startIndex = getIndexOfXAxisLabel(inputPeriodTime.startTime ?? '')
+                                        const endIndex = getIndexOfXAxisLabel(formattedTime ?? '')
+                                        updateChartSelectedRange(startIndex, endIndex, 'endTime', formattedTime)
                                     }}
-                                    focused={inputPeriodTime.endTime !== undefined}
-                                    validateFunctions={[requiredBuilder()]}
-                                    className="w-full"
+                                    renderInput={(params) => (
+                                        <Controller
+                                            name="endDate"
+                                            control={control}
+                                            rules={{
+                                                validate: validators([
+                                                    requiredBuilder(),
+                                                    rangeValidation(
+                                                        formatMessage({
+                                                            id: "L'heure de fin doit être supérieure à l'heure de début",
+                                                            defaultMessage:
+                                                                "L'heure de fin doit être supérieure à l'heure de début",
+                                                        }),
+                                                    ),
+                                                ]) as Validate<unknown>,
+                                            }}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    {...params}
+                                                    fullWidth
+                                                    required
+                                                    error={_.has(errors, 'endDate')}
+                                                    helperText={
+                                                        _.has(errors, 'endDate')
+                                                            ? _.get(errors, `${'endDate'}.message`)
+                                                            : ''
+                                                    }
+                                                    data-testId="end-time"
+                                                />
+                                            )}
+                                        />
+                                    )}
                                 />
                             </div>
                         </div>
@@ -269,7 +425,7 @@ const AddLabelButtonForm = ({
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
-                    className="flex flex-row sm:flex-col md:flex-row justify-center items-center gap-x-10 gap-y-20 lg:absolute lg:right-0"
+                    className="flex flex-row w-full sm:w-auto sm:flex-col md:flex-row md:mt-5 justify-center items-center gap-x-10 gap-y-20"
                 >
                     <ButtonLoader
                         inProgress={isAddingLabelInProgress || loadingEquipmentInProgress}
