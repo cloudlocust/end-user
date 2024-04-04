@@ -25,7 +25,7 @@ import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 /**
  * Steps labels.
  */
-export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat', 'Facturation']
+export const stepsLabels = ['Mon logement', 'Mon historique', 'Mon Contrat', 'Facturation']
 
 /**
  * Energy Provider Subscription Stepper for Alpic.
