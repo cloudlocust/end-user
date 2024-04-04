@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { FormattedMessage, useIntl } from 'src/common/react-platform-translation'
+import { useIntl } from 'src/common/react-platform-translation'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import { MenuItem, Divider, Button, SvgIcon, ListSubheader } from '@mui/material'
 import AddIcon from '@mui/icons-material/AddCircleOutline'
@@ -7,7 +7,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { motion } from 'framer-motion'
 import { AddLabelButtonFormProps } from 'src/modules/MyConsumption/components/LabelizationContainer/AddLabelButtonForm/AddLabelButtonForm'
 import { ButtonLoader, MuiTextField } from 'src/common/ui-kit'
-import { useFormContext, Controller } from 'react-hook-form'
+import { useFormContext, Controller, Validate } from 'react-hook-form'
 import { requiredBuilder, validators } from 'src/common/react-platform-components'
 import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
 import { useSelector } from 'react-redux'
@@ -240,11 +240,11 @@ const AddLabelButtonForm = ({
 
     const rangeValidation = useCallback(
         (errorMessage: string) => {
-            return (): JSX.Element | undefined => {
+            return () => {
                 const startIndex = getIndexOfXAxisLabel(inputPeriodTime.startTime ?? '')
                 const endIndex = getIndexOfXAxisLabel(inputPeriodTime.endTime ?? '')
                 if (startIndex !== null && endIndex !== null && startIndex >= endIndex) {
-                    return <FormattedMessage id={errorMessage} defaultMessage={errorMessage} />
+                    return errorMessage
                 }
                 return undefined
             }
@@ -339,9 +339,13 @@ const AddLabelButtonForm = ({
                                                 validate: validators([
                                                     requiredBuilder(),
                                                     rangeValidation(
-                                                        "L'heure de début doit être inférieure à l'heure de fin",
+                                                        formatMessage({
+                                                            id: "L'heure de début doit être inférieure à l'heure de fin",
+                                                            defaultMessage:
+                                                                "L'heure de début doit être inférieure à l'heure de fin",
+                                                        }),
                                                     ),
-                                                ]) as any,
+                                                ]) as Validate<unknown>,
                                             }}
                                             render={({ field }) => (
                                                 <TextField
@@ -365,6 +369,9 @@ const AddLabelButtonForm = ({
 
                             {/* End time */}
                             <div className="flex-1 w-full">
+                                {
+                                    // TODO: Refactor this by creating a custom TimePicker input.
+                                }
                                 <TimePicker
                                     label={formatMessage({
                                         id: 'À',
@@ -385,9 +392,13 @@ const AddLabelButtonForm = ({
                                                 validate: validators([
                                                     requiredBuilder(),
                                                     rangeValidation(
-                                                        "L'heure de fin doit être supérieure à l'heure de début",
+                                                        formatMessage({
+                                                            id: "L'heure de fin doit être supérieure à l'heure de début",
+                                                            defaultMessage:
+                                                                "L'heure de fin doit être supérieure à l'heure de début",
+                                                        }),
                                                     ),
-                                                ]) as any,
+                                                ]) as Validate<unknown>,
                                             }}
                                             render={({ field }) => (
                                                 <TextField
