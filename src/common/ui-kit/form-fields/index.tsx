@@ -71,8 +71,8 @@ export const MuiTextField: FC<UiTextFieldProps & MaterialUiTextFieldProps> = fun
             rules={{ validate: validators(validateFunctions) }}
             render={({ field }) => (
                 <MaterialUiNativeTextField
-                    {...nativeProps}
                     {...field}
+                    {...nativeProps}
                     error={_.has(errors, name)}
                     helperText={_.has(errors, name) ? _.get(errors, `${name}.message`) : ''}
                 />

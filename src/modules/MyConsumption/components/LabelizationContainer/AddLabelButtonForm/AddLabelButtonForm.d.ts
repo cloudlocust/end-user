@@ -18,7 +18,7 @@ interface AddLabelButtonFormProps {
     /**
      * Set the input period time.
      */
-    setInputPeriodTime: (inputPeriodTime: IPeriodTime) => void
+    setInputPeriodTime: Dispatch<SetStateAction<IPeriodTime>>
     /**
      * Whether adding label is in progress.
      */
