@@ -25,7 +25,7 @@ import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 /**
  * Steps labels.
  */
-export const stepsLabels = ['Mon Compteur Linky', 'Mon historique', 'Mon Contrat', 'Facturation']
+export const stepsLabels = ['Mon logement', 'Mon historique', 'Mon Contrat', 'Facturation']
 
 /**
  * Energy Provider Subscription Stepper for Alpic.
@@ -38,14 +38,22 @@ const AlpiqSubscriptionStepper = () => {
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
     const [isPageLoading, setIsPageLoading] = useState(true)
     const initialMount = useRef(true)
+    const initialMountConsent = useRef(true)
     const [activeStep, setActiveStep] = React.useState(AlpiqSubscriptionStepsEnum.firstStep)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-    const { enedisSgeConsent } = useConsents()
+    const { enedisSgeConsent, getConsents } = useConsents()
+
+    useEffect(() => {
+        if (initialMountConsent.current && currentHousing?.id) {
+            getConsents(currentHousing.id)
+            initialMountConsent.current = false
+        }
+    }, [getConsents, currentHousing])
 
     // TODO - add tests for this part like the one in App.test.tsx
     useEffect(() => {
-        if (initialMount.current && currentHousing) {
+        if (initialMount.current && currentHousing && enedisSgeConsent) {
             if (alpiqSubscriptionSpecs) setActiveStep(AlpiqSubscriptionStepsEnum.forthStep)
             else if (enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED')
                 setActiveStep(AlpiqSubscriptionStepsEnum.thridStep)

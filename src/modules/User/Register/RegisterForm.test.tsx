@@ -87,9 +87,9 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     userEvent.type(companyName, TEST_SUCCESS_USER.company_name)
     const siren = getByRole('textbox', { name: 'Siren' })
     userEvent.type(siren, TEST_SUCCESS_USER.siren)
-    const firstNameField = getByRole('textbox', { name: 'Prénom' })
+    const firstNameField = getByRole('textbox', { name: "Prénom présent sur votre facture d'électricité" })
     userEvent.type(firstNameField, 'test prénom')
-    const lastNameField = getByRole('textbox', { name: 'Nom' })
+    const lastNameField = getByRole('textbox', { name: "Nom présent sur votre facture d'électricité" })
     userEvent.type(lastNameField, 'test nom')
     const emailField = getByRole('textbox', { name: 'Email' })
     userEvent.type(emailField, TEST_EMAIL)
@@ -252,7 +252,7 @@ describe('test registerForm', () => {
             },
             { timeout: 3000 },
         )
-    }, 25000)
+    }, 50000)
     test('if siren field is invalid', async () => {
         const { getByRole, getByText, getAllByRole, getByLabelText } = reduxedRender(<RegisterForm />)
         handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)

@@ -145,8 +145,17 @@ export const RegisterForm = ({
                         margin: 'normal',
                     }}
                 />
-                <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
-                <TextField name="lastName" label="Nom" validateFunctions={[requiredBuilder()]} />
+                <TextField
+                    name="firstName"
+                    label="Prénom présent sur votre facture d'électricité"
+                    validateFunctions={[requiredBuilder()]}
+                    variant="outlined"
+                />
+                <TextField
+                    name="lastName"
+                    label="Nom présent sur votre facture d'électricité"
+                    validateFunctions={[requiredBuilder()]}
+                />
                 <TextField name="email" label="Email" validateFunctions={[requiredBuilder(), email()]} />
                 <PhoneNumber
                     name="phone"

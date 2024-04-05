@@ -149,7 +149,7 @@ export function useConsents() {
                 setIsMeterVerifyLoading(false)
                 setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 enqueueSnackbar(
-                    error.response.data && error.response.data.detail
+                    error.response?.data && error.response?.data.detail
                         ? formatMessage({
                               id: error.response.data.detail,
                               defaultMessage: error.response.data.detail,
