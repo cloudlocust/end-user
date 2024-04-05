@@ -94,11 +94,6 @@ ConsumptionChartContainerProps) => {
     )
     const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
 
-    useEffect(() => {
-        const defaultTargets = getDefaultConsumptionTargets(consumptionToggleButton)
-        setTargets(defaultTargets)
-    }, [consumptionToggleButton])
-
     // Switch consumption button should be reset to consumption when the other two are not shown.
     useEffect(() => {
         if (
