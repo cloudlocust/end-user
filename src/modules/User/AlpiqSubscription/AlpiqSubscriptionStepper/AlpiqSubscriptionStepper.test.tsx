@@ -21,6 +21,15 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     }),
 }))
 
+jest.mock('src/modules/Consents/consentsHook', () => ({
+    ...jest.requireActual('src/modules/Consents/consentsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConsents: () => ({
+        enedisSgeConsent: { enedisSgeConsentState: 'NONEXISTANT' },
+        getConsents: jest.fn(),
+    }),
+}))
+
 describe('Test SgeConsentStepProps', () => {
     test('component shows correctly', async () => {
         const { getByText } = reduxedRender(<AlpiqSubscriptionStepper />, {

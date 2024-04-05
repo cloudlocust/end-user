@@ -89,6 +89,7 @@ const Routes = () => {
     const { getConsents } = useConsents()
     const isInitialMount = useRef(true)
 
+    // TODO - DELETE IT !
     useEffect(() => {
         if (isInitialMount.current && currentHousing?.id) {
             isInitialMount.current = false
