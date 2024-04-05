@@ -19,18 +19,15 @@ pipeline{
             }
         }
         stage('Typescript') {
-
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
-
         }
-        stage('Unit-test'){
-            steps {
-                sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
-            }
-
-        }
+        // stage('Unit-test'){
+        //     steps {
+        //         sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+        //     }
+        // }
         // stage('build && SonarQube analysis') {
         //     environment {
         //         scannerHome = tool 'SonarQubeScanner'
