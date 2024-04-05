@@ -215,7 +215,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(1)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -536,7 +536,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
             })
         }, 10000)
     })
