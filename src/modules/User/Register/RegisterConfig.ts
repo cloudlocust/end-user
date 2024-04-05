@@ -42,10 +42,7 @@ export const isProfessionalRegisterFeature = window._env_.REACT_APP_PROFESSIONAL
 /**
  * Allowed zip code for address when register.
  */
-export const allowedZipCodesInRegistration =
-    window._env_.REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION !== ''
-        ? window._env_.REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION.split('|')
-        : undefined
+export const allowedZipCodesInRegistration = undefined
 
 /**
  * Configuration object for the register page. It contains, url, component and its props, and authentication level needed.
