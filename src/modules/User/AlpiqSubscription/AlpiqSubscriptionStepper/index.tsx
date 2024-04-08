@@ -53,7 +53,12 @@ const AlpiqSubscriptionStepper = () => {
 
     // TODO - add tests for this part like the one in App.test.tsx
     useEffect(() => {
-        if (initialMount.current && currentHousing && !consentsLoading) {
+        if (
+            initialMount.current &&
+            currentHousing &&
+            !consentsLoading &&
+            (currentHousing.meter ? enedisSgeConsent !== undefined : true)
+        ) {
             if (alpiqSubscriptionSpecs) setActiveStep(AlpiqSubscriptionStepsEnum.forthStep)
             else if (enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED')
                 setActiveStep(AlpiqSubscriptionStepsEnum.thridStep)
