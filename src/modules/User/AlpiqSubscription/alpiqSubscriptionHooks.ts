@@ -160,12 +160,10 @@ export const useAlpiqProvider = () => {
         } catch (error: any) {
             enqueueSnackbar(
                 formatMessage({
-                    id: 'Erreur lors de la souscription au contract Alpiq',
-                    defaultMessage: 'Erreur lors de la souscription au contract Alpiq',
+                    id: error.response?.data?.detail ?? 'Erreur lors de la souscription au contract Alpiq',
+                    defaultMessage: error.response?.data?.detail ?? 'Erreur lors de la souscription au contract Alpiq',
                 }),
-                {
-                    variant: 'error',
-                },
+                { variant: 'error' },
             )
         }
 
