@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import { useState } from 'react'
+import clsx from 'clsx'
 import { ButtonsSwitcherProps } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -16,17 +16,17 @@ const StyledButton = styled(Button)(({ theme }) => ({
  *
  * @param root0 N/A.
  * @param root0.buttonsSwitcherParams List of params object of the Buttons.
+ * @param root0.containerProps Container props.
+ * @param root0.buttonProps Buttons props.
  * @returns JSX.Element.
  */
-export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps) => {
-    const [indexOfSelectedButton, setIndexOfSelectedButton] = useState(0)
-
+export const ButtonsSwitcher = ({ buttonsSwitcherParams, buttonProps, containerProps }: ButtonsSwitcherProps) => {
     return (
-        <div className="w-full flex justify-center">
-            {buttonsSwitcherParams.map((buttonSwitcherParam, index) => (
+        <div className="w-full flex justify-center buttons-container" {...containerProps}>
+            {buttonsSwitcherParams.map((buttonSwitcherParam) => (
                 <StyledButton
                     sx={(theme) =>
-                        index === indexOfSelectedButton
+                        buttonSwitcherParam.isSelected
                             ? {
                                   color: theme.palette.grey[700],
                                   backgroundColor: theme.palette.common.white,
@@ -43,12 +43,14 @@ export const ButtonsSwitcher = ({ buttonsSwitcherParams }: ButtonsSwitcherProps)
                                   },
                               }
                     }
-                    className="text-13 sm:text-16"
-                    aria-label={index === indexOfSelectedButton ? 'active-cell' : 'clickable-cell'}
+                    className={clsx('text-13 sm:text-16', { selected: buttonSwitcherParam.isSelected })}
+                    aria-label={buttonSwitcherParam.isSelected ? 'active-cell' : 'clickable-cell'}
                     onClick={() => {
-                        setIndexOfSelectedButton(index)
-                        buttonSwitcherParam.clickHandler()
+                        if (!buttonSwitcherParam.isSelected) {
+                            buttonSwitcherParam.clickHandler()
+                        }
                     }}
+                    {...(buttonProps && buttonProps(buttonSwitcherParam.isSelected))}
                 >
                     {buttonSwitcherParam.buttonText}
                 </StyledButton>

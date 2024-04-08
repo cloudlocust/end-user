@@ -18,6 +18,11 @@ import {
     IPeriodTime,
     IPeriodTimeIndexs,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
+import {
+    EChartTooltipFormatterParams,
+    TooltipFormatter,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { metricRangeType } from 'src/modules/Metrics/Metrics'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -31,6 +36,7 @@ dayjs.extend(timezone)
  * @param isMobile Is Mobile view.
  * @param period Period type.
  * @param axisColor Color of the axis.
+ * @param tooltipFormatter Callback used to override the tooltip.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @returns Echarts Consumption Option.
  */
@@ -42,6 +48,7 @@ export const getEchartsConsumptionChartOptions = (
     isMobile: boolean,
     period: periodType,
     axisColor: string,
+    tooltipFormatter?: TooltipFormatter,
     selectedLabelPeriod?: IPeriodTime,
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
@@ -69,10 +76,12 @@ export const getEchartsConsumptionChartOptions = (
         ...getDefaultOptionsEchartsConsumptionChart(
             theme,
             isMobile,
+            values,
             period,
             selectedLabelPeriodIndex,
             xAxisTimestamps,
             isPeriodUsed,
+            tooltipFormatter,
         ),
         ...getXAxisOptionEchartsConsumptionChart(xAxisData, switchButtonType, period, axisColor),
         ...getYAxisOptionEchartsConsumptionChart(filteredValues, period, axisColor),
@@ -85,20 +94,29 @@ export const getEchartsConsumptionChartOptions = (
  *
  * @param theme Theme used for colors, fonts and backgrounds.
  * @param isMobile Is Mobile view.
+ * @param values Datapoint values from the echarts metrics conversion function.
  * @param period Period type.
  * @param selectedLabelPeriod The period selected by the user to highlight.
  * @param xAxisTimestamps Timestamps.
  * @param isPeriodUsed Boolean indicating if the period is used.
+ * @param tooltipFormatter Callback used to override the tooltip.
  * @returns Default EchartsConsumptionChart option.
  */
 const getDefaultOptionsEchartsConsumptionChart = (
     theme: Theme,
     isMobile: boolean,
+    values: targetTimestampsValuesFormat,
     period: periodType,
     selectedLabelPeriod: IPeriodTimeIndexs | undefined,
     xAxisTimestamps: number[],
     isPeriodUsed: boolean,
+    tooltipFormatter?: TooltipFormatter,
 ) => {
+    // Targets functions yAxis Value formatter type (label shown in tooltip).
+    const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
+    const targetsYAxisIndexes = Object.keys(values).map((target) =>
+        getTargetYAxisIndexFromTargetName(target as metricTargetsEnum),
+    )
     let defaultOptions = {
         color: 'transparent',
         axisPointer: {
@@ -116,6 +134,23 @@ const getDefaultOptionsEchartsConsumptionChart = (
                       return { top: '-90', left: '20' }
                   }
                 : 'inside',
+            // We make padding and borderWidth because we need to customize the tooltip and change it background color.
+            padding: 0,
+            borderWidth: 0,
+            /**
+             * Formatter used to override the tooltip.
+             *
+             * @param params The params of tooltip.
+             * @returns Html string.
+             */
+            formatter: tooltipFormatter
+                ? (params: EChartTooltipFormatterParams) =>
+                      tooltipFormatter(
+                          params,
+                          (index: number) =>
+                              targetsYAxisValueFormatters[targetsYAxisIndexes[index] as targetYAxisIndexEnum],
+                      )
+                : undefined,
         },
         dataZoom: [
             {
@@ -206,9 +241,6 @@ export const getSeriesOptionEchartsConsumptionChart = (
     switchButtonType: SwitchConsumptionButtonTypeEnum,
     theme: Theme,
 ) => {
-    // Targets functions yAxis Value formatter type (label shown in tooltip).
-    const targetsYAxisValueFormatters = getTargetsYAxisValueFormatters(values, period)
-
     const resultSeries = Object.keys(values).map((target) => {
         const targetYAxisIndex = getTargetYAxisIndexFromTargetName(target as metricTargetsEnum)
         const colorTargetSeries = getColorTargetSeriesEchartsConsumptionChart(
@@ -233,9 +265,6 @@ export const getSeriesOptionEchartsConsumptionChart = (
             data: values[target as metricTargetType],
             stack: getStackTargetSeriesEchartsConsumptionChart(target as metricTargetsEnum, theme, switchButtonType),
             yAxisIndex: Number(targetYAxisIndex),
-            tooltip: {
-                valueFormatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
-            },
             showSymbol: false,
             smooth: true,
             itemStyle: {
@@ -380,6 +409,29 @@ export const getXAxisCategoriesData = (timestamps: number[], period: periodType)
 }
 
 /**
+ * Parses the xAxis label to to a date object based on the period and range.
+ *
+ * @param partialDateString Partial date string of the label.
+ * @param period Period type.
+ * @param range Date range.
+ * @returns Parsed date object.
+ */
+export const parseXAxisLabelToDate = (partialDateString: string, period: periodType, range: metricRangeType) => {
+    const startDate = dayjs(range.from)
+    const year = startDate.year()
+    switch (period) {
+        case 'daily':
+            const [hours, minutes] = partialDateString.split(':')
+            return startDate.hour(Number(hours)).minute(Number(minutes))
+        case 'yearly':
+            return dayjs(`${partialDateString.toLowerCase()} ${year}`, 'MMM YYYY', 'fr', true)
+        default:
+            const [, day, month] = partialDateString.split(' ')
+            return dayjs(`${day} ${month} ${year}`, 'D MMM YYYY', 'fr', true)
+    }
+}
+
+/**
  * Function that returns the color for each target series of EchartsConsumptionChart.
  *
  * @param target MetricTarget Chart.
@@ -408,22 +460,24 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
         case metricTargetsEnum.onlyEuroConsumption:
             return theme.palette.primary.light
         case metricTargetsEnum.autoconsumption:
-            return '#BEECDB'
+            return '#039DE0'
         case metricTargetsEnum.idleConsumption:
         case metricTargetsEnum.eurosIdleConsumption:
             return '#8191B2'
         case metricTargetsEnum.subscriptionPrices:
             return '#CCDCDD'
         case metricTargetsEnum.peakHourConsumption:
-            return '#CC9121'
+            return '#039DE0'
         case metricTargetsEnum.offPeakHourConsumption:
-            return '#CCAB1D'
+            return '#9BE1FD'
         case metricTargetsEnum.totalOffIdleConsumption:
             return theme.palette.secondary.main
         case metricTargetsEnum.consumption:
             return switchButtonType !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
                 ? TRANSPARENT_COLOR
-                : theme.palette.secondary.main
+                : '#FFC201'
+        case metricTargetsEnum.baseConsumption:
+            return '#039DE0'
         case metricTargetsEnum.euroPeakHourConsumption:
             return '#6BCBFF'
         case metricTargetsEnum.euroOffPeakConsumption:
@@ -432,22 +486,24 @@ export const getColorTargetSeriesEchartsConsumptionChart = (
             return theme.palette.secondary.main
         case metricTargetsEnum.peakHourBlueTempoConsumption:
         case metricTargetsEnum.euroPeakHourBlueTempoConsumption:
-            return '#6CCBFD'
+            return '#039DE0'
         case metricTargetsEnum.offPeakHourBlueTempoConsumption:
         case metricTargetsEnum.euroOffPeakHourBlueTempoConsumption:
-            return '#BEE8FE'
+            return '#9BE1FD'
         case metricTargetsEnum.peakHourRedTempoConsumption:
         case metricTargetsEnum.euroPeakHourRedTempoConsumption:
-            return '#FF7065'
+            return '#DE6B68'
         case metricTargetsEnum.offPeakHourRedTempoConsumption:
         case metricTargetsEnum.euroOffPeakHourRedTempoConsumption:
-            return '#FFC3BE'
+            return '#FBC6C4'
         case metricTargetsEnum.peakHourWhiteTempoConsumption:
         case metricTargetsEnum.euroPeakHourWhiteTempoConsumption:
-            return '#7A7A7A'
+            return '#809DB0'
         case metricTargetsEnum.offPeakHourWhiteTempoConsumption:
         case metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption:
-            return '#B8B8B8'
+            return '#C8D9E5'
+        case metricTargetsEnum.injectedProduction:
+            return '#039DE0'
         default:
             return theme.palette.secondary.main
     }

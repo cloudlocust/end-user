@@ -8,6 +8,7 @@ import {
     getXAxisOptionEchartsConsumptionChart,
     getYAxisOptionEchartsConsumptionChart,
     getXAxisCategoriesData,
+    parseXAxisLabelToDate,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
@@ -64,22 +65,18 @@ describe('Test echartsConsumptionOptions', () => {
 
                 color: theme.palette.primary.light,
             },
-            { target: metricTargetsEnum.autoconsumption, color: '#BEECDB' },
+            { target: metricTargetsEnum.autoconsumption, color: '#039DE0' },
             { target: metricTargetsEnum.idleConsumption, color: '#8191B2' },
             { target: metricTargetsEnum.eurosIdleConsumption, color: '#8191B2' },
             { target: metricTargetsEnum.subscriptionPrices, color: '#CCDCDD' },
-            { target: metricTargetsEnum.peakHourConsumption, color: '#CC9121' },
-            { target: metricTargetsEnum.offPeakHourConsumption, color: '#CCAB1D' },
+            { target: metricTargetsEnum.peakHourConsumption, color: '#039DE0' },
+            { target: metricTargetsEnum.offPeakHourConsumption, color: '#9BE1FD' },
             {
                 target: metricTargetsEnum.totalOffIdleConsumption,
 
                 color: theme.palette.secondary.main,
             },
-            {
-                target: metricTargetsEnum.consumption,
-
-                color: theme.palette.secondary.main,
-            },
+            { target: metricTargetsEnum.consumption, color: '#FFC201' },
             { target: metricTargetsEnum.euroPeakHourConsumption, color: '#6BCBFF' },
             { target: metricTargetsEnum.euroOffPeakConsumption, color: '#BEE8FF' },
             {
@@ -497,6 +494,32 @@ describe('Test echartsConsumptionOptions', () => {
             const resultYAxisIndex = getTargetYAxisIndexFromTargetName(target)
 
             expect(resultYAxisIndex).toStrictEqual(YAxisIndex)
+        })
+    })
+
+    describe('parseXAxisLabelToDate', () => {
+        // Define constants for testing
+        const mockRange = { from: '2023-01-01T00:00:00Z', to: '2024-01-01T00:00:00Z' }
+        const dateFormatPattern = 'DD-MM-YYYY HH:mm'
+        // Happy path tests with various realistic test values
+        test('should parse daily period with hours and minutes', () => {
+            const partialDateString = '14:30'
+            const period = PeriodEnum.DAILY
+            const result = parseXAxisLabelToDate(partialDateString, period, mockRange)
+            expect(result.format(dateFormatPattern)).toBe('01-01-2023 14:30')
+        })
+
+        test('should parse yearly period with month string', () => {
+            const partialDateString = 'Mars'
+            const period = PeriodEnum.YEARLY
+            const result = parseXAxisLabelToDate(partialDateString, period, mockRange)
+            expect(result.format(dateFormatPattern)).toBe('01-03-2023 00:00')
+        })
+
+        test.each(['weekly', 'monthly'])('should parse $period period.', (period) => {
+            const partialDateString = 'Mer. 15 mars'
+            const result = parseXAxisLabelToDate(partialDateString, period as PeriodEnum, mockRange)
+            expect(result.format(dateFormatPattern)).toBe('15-03-2023 00:00')
         })
     })
 

@@ -70,7 +70,12 @@ export function useConsents() {
      */
     const getConsents = useCallback(
         async (houseId?: number) => {
-            if (!houseId || !currentHousing?.meter?.guid) return
+            if (!houseId || !currentHousing?.meter?.guid) {
+                setNrlinkConsent(undefined)
+                setEnphaseConsent(undefined)
+                setEnedisSgeConsent(undefined)
+                return
+            }
             setConsentsLoading(true)
             /**
              * Used Promise.allSettled() instead of Promise.all to return a promise that resolves after all of the given requests have either been fulfilled or rejected.
@@ -144,7 +149,7 @@ export function useConsents() {
                 setIsMeterVerifyLoading(false)
                 setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
                 enqueueSnackbar(
-                    error.response.data && error.response.data.detail
+                    error.response?.data && error.response?.data.detail
                         ? formatMessage({
                               id: error.response.data.detail,
                               defaultMessage: error.response.data.detail,
@@ -165,7 +170,7 @@ export function useConsents() {
     )
 
     const createEnedisSgeConsent = useCallback(
-        async (housingId: number) => {
+        async (housingId: number, onAfterCreation?: () => void) => {
             try {
                 if (!housingId) throw new Error(NO_HOUSING_ID_ERROR_TEXT)
                 setIsCreateEnedisSgeConsentLoading(true)
@@ -174,8 +179,9 @@ export function useConsents() {
                 )
                 if (status === 201) {
                     setEnedisSgeConsent(data)
-                }
-                setIsCreateEnedisSgeConsentLoading(false)
+                    setIsCreateEnedisSgeConsentLoading(false)
+                    if (onAfterCreation) onAfterCreation()
+                } else setIsCreateEnedisSgeConsentLoading(false)
             } catch (error: any) {
                 setIsCreateEnedisSgeConsentLoading(false)
 

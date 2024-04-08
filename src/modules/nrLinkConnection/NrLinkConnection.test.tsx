@@ -2,21 +2,28 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { URL_NRLINK_CONNECTION_STEPS, NrLinkConnection } from 'src/modules/nrLinkConnection'
-import { showNrLinkPopupFalse, showNrLinkPopupTrue, TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
-import { applyCamelCase } from 'src/common/react-platform-components'
 import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
-
-const userData = applyCamelCase(TEST_SUCCESS_USER)
 
 const CONNECT_NRLINK_BTN_TEXT = 'Je connecte mon nrLINK'
 const SKIP_LINK_TEXT = 'Passer cette étape'
 const mockHistoryPush = jest.fn()
+let mockIsGetShowNrLinkLoading = false
+let mockIsNrLinkPopupShowing = false
 
 jest.mock('react-router', () => ({
     ...jest.requireActual('react-router'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHistory: () => ({
         push: mockHistoryPush,
+    }),
+}))
+
+jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
+    ...jest.requireActual('src/modules/nrLinkConnection/NrLinkConnectionHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useGetShowNrLinkPopupHook: () => ({
+        isNrLinkPopupShowing: mockIsNrLinkPopupShowing,
+        isGetShowNrLinkLoading: mockIsGetShowNrLinkLoading,
     }),
 }))
 
@@ -27,46 +34,34 @@ const NrLinkConnectionRouter = () => (
     </Router>
 )
 describe('Test NrLinkConnection Page', () => {
-    // When initializing store state in reduxedRender, it doesn't update the state when using store.getState().
-    // Thus to use the state with useSelector and store.getState(), we require('src/redux') and use dispatch for updating the state, and give store in the reduxedRender.
-    // And then we can have the same state when using useSelector and store.getStore()
-    const { store } = require('src/redux')
-
     test('When response getShowNrLinkPopup false, it should redirect from NrLinkConnection', async () => {
-        await store.dispatch.userModel.setAuthenticationToken(showNrLinkPopupFalse)
+        // mockIsGetShowNrLink is false by default
+        reduxedRender(<NrLinkConnectionRouter />)
 
-        reduxedRender(<NrLinkConnectionRouter />, { store })
-
-        await waitFor(
-            () => {
-                expect(mockHistoryPush).toHaveBeenCalledWith(URL_DASHBOARD)
-            },
-            { timeout: 5000 },
-        )
+        await waitFor(() => {
+            expect(mockHistoryPush).toHaveBeenCalledWith(URL_DASHBOARD)
+        })
     }, 10000)
     test('When response getShowNrLinkPopup true, it should not redirect from NrLinkConnection', async () => {
-        await store.dispatch.userModel.setAuthenticationToken(showNrLinkPopupTrue)
-        reduxedRender(<NrLinkConnectionRouter />, { store })
+        mockIsNrLinkPopupShowing = true
+        reduxedRender(<NrLinkConnectionRouter />)
 
         await waitFor(() => {
             expect(mockHistoryPush).not.toHaveBeenCalled()
         })
     }, 10000)
-    test('When response getShowNrLinkPopup error, it should redirect from NrLinkConnection', async () => {
-        await store.dispatch.userModel.setAuthenticationToken('error')
-        reduxedRender(<NrLinkConnectionRouter />, { store })
+    test('When getShowNrLink is Loading, it should display loading component', async () => {
+        mockIsGetShowNrLinkLoading = true
+        const { getByText } = reduxedRender(<NrLinkConnectionRouter />)
 
-        await waitFor(
-            () => {
-                expect(mockHistoryPush).toHaveBeenCalledWith(URL_DASHBOARD)
-            },
-            { timeout: 5000 },
-        )
+        await waitFor(() => {
+            expect(getByText('Chargement...')).toBeTruthy()
+        })
+
+        mockIsGetShowNrLinkLoading = false
     }, 10000)
     test('When clicking on CTA button connect nrLINK, it should redirect to nrLinkConnectionStep', async () => {
-        const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {
-            initialState: { userModel: { user: userData } },
-        })
+        const { getByText } = reduxedRender(<NrLinkConnectionRouter />)
         await waitFor(() => {
             expect(getByText(CONNECT_NRLINK_BTN_TEXT)).toBeTruthy()
         })
@@ -77,9 +72,7 @@ describe('Test NrLinkConnection Page', () => {
         expect(getByText(CONNECT_NRLINK_BTN_TEXT).closest('a')).toHaveAttribute('href', URL_NRLINK_CONNECTION_STEPS)
     })
     test('When clicking on Skip nrLinkConnection Link, it should redirect to URL_DASHBOARD', async () => {
-        const { getByText } = reduxedRender(<NrLinkConnectionRouter />, {
-            initialState: { userModel: { user: userData } },
-        })
+        const { getByText } = reduxedRender(<NrLinkConnectionRouter />)
         await waitFor(() => {
             expect(getByText(SKIP_LINK_TEXT)).toBeTruthy()
         })

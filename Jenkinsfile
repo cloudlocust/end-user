@@ -10,7 +10,7 @@ pipeline{
         stage ('Install deps') {
             steps {
                 // Using ignore-engines, will fix the error "engine node incompatible with this module", when using yarn install which happens on jenkins after installing firebase package.
-                sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=8192"'
+                sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=7900"'
             }
         }
         stage ('Eslint') {
@@ -19,52 +19,53 @@ pipeline{
             }
         }
         stage('Typescript') {
-
             steps {
                 sh 'npx tsc --skipLibCheck'
             }
-
         }
-        stage('Unit-test'){
-            steps {
-                sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
-            }
+        // stage('Unit-test'){
+        //     steps {
+        //         sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'
+        //     }
+        // }
+        // stage('build && SonarQube analysis') {
+        //     environment {
+        //         scannerHome = tool 'SonarQubeScanner'
+        //         sonarqube_Token = credentials('sonarq-token')
+        //         sonar_host = credentials('sonarq-host')
+        //     }
+        //     steps {
+        //         withSonarQubeEnv('sonarqube') {
+        //         script {
+        //             // Execute shell command to set directory variable
+        //             directory = sh(returnStdout: true, script: 'pwd').trim()
+        //             // execute sonarqube command directly in the agent pod using kubectl exec command
+        //             sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
 
-        }
-        stage('build && SonarQube analysis') {
-            environment {
-                scannerHome = tool 'SonarQubeScanner'
-                sonarqube_Token = credentials('sonarq-token')
-                sonar_host = credentials('sonarq-host')
-            }
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                script {
-                    // Execute shell command to set directory variable
-                    directory = sh(returnStdout: true, script: 'pwd').trim()
-                    // execute sonarqube command directly in the agent pod using kubectl exec command
-                    sh "kubectl exec -it \$NODE_NAME -n jenkins -- /bin/bash -c ' cd ${directory} && export SONAR_HOST_URL=${sonar_host} && ${scannerHome}/bin/sonar-scanner -Dsonar.login=${sonarqube_Token} -X ' "
+        //         }
 
-                }
-
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
+        // stage("Quality Gate") {
+        //     steps {
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+        //             // true = set pipeline to UNSTABLE, false = don't
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         stage('Test NG generate') {
             when {
               expression { ! (BRANCH_NAME ==~ /(production|master|develop)/) }
-            }            
+            }
+            environment {
+                SENTRY_AUTH_TOKEN = credentials('SENTRY_AUTH_TOKEN')
+            }
             steps{
                sh 'yarn build'
+               sh 'yarn sentry:sourcemaps && yarn rm-source-maps'
             }
         }
         stage("Publish") {

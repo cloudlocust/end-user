@@ -71,9 +71,12 @@ const ContractFormSelect = <T extends unknown>({
                 defaultValue=""
                 disabled={!manualContractFillingIsEnabled || (optionList.length === 1 && !otherOptionLabel)}
                 validateFunctions={validateFunctions}
+                formControlProps={{
+                    margin: 'normal',
+                }}
                 {...otherSelectProps}
             >
-                {optionList.map((option, _index) => (
+                {optionList?.map((option, _index) => (
                     <MenuItem key={formatOptionValue(option)} value={formatOptionValue(option)}>
                         {formatOptionLabel(option)}
                     </MenuItem>

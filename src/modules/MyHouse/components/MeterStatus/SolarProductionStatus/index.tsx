@@ -10,10 +10,7 @@ import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import {
-    arePlugsUsedBasedOnProductionStatus,
-    isProductionActiveAndHousingHasAccess,
-} from 'src/modules/MyHouse/MyHouseConfig'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.
@@ -39,8 +36,6 @@ export const SolarProductionConsentStatus = ({
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
     const [openConnectedPlugProductionConsentPopup, setOpenConnectedPlugProductionConsentPopup] = useState(false)
-
-    const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
 
     // Load connected plug only when housing is defined
     const {
@@ -217,23 +212,22 @@ export const SolarProductionConsentStatus = ({
     return (
         <>
             {/* Enphase Consent Status */}
-            <div className={`w-full md:w-1/3 p-12 ${!isProductionActive && 'hidden'}`}>
-                {solarProductionConsentLoadingInProgress || isConnectedPlugListLoadingInProgress ? (
-                    <CircularProgress size={25} />
-                ) : (
-                    <>
-                        <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
-                            Production solaire
-                        </TypographyFormatMessage>
-                        <div className="flex flex-row items-center">
-                            {/* If there is a connected plug that's in production mode, then solarProduction consent is active */}
-                            {renderSolarProductionConsentStatus(
-                                getProductionConnectedPlug() ? 'ACTIVE' : solarProductionConsent?.enphaseConsentState,
-                            )}
-                        </div>
-                    </>
-                )}
-            </div>
+            {solarProductionConsentLoadingInProgress || isConnectedPlugListLoadingInProgress ? (
+                <CircularProgress size={25} />
+            ) : (
+                <>
+                    <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
+                        Production solaire
+                    </TypographyFormatMessage>
+                    <div className="flex flex-row items-center">
+                        {/* If there is a connected plug that's in production mode, then solarProduction consent is active */}
+                        {renderSolarProductionConsentStatus(
+                            getProductionConnectedPlug() ? 'ACTIVE' : solarProductionConsent?.enphaseConsentState,
+                        )}
+                    </div>
+                </>
+            )}
+
             {openEnphaseConsentPopup && <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />}
             {openConnectedPlugProductionConsentPopup && (
                 <ConnectedPlugProductionConsentPopup onClose={handleCloseConnectedPlugConsentPopup} />

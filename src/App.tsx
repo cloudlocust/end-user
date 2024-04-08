@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -16,14 +16,11 @@ import { RootState } from 'src/redux'
 import { useSelector } from 'react-redux'
 import { isMaintenanceMode } from 'src/configs'
 import { Maintenance } from 'src/modules/Maintenance/Maintenance'
-import { URL_MAINTENANCE } from 'src/modules/Maintenance/MaintenanceConfig'
 import { getTokenFromFirebase } from 'src/firebase'
-import {
-    URL_ALPIQ_SUBSCRIPTION_FORM,
-    isAlpiqSubscriptionForm,
-} from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { URL_ALPIQ_SUBSCRIPTION_FORM } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import AlpiqSubscriptionStepper from './modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
+import AlpiqSubscriptionStepper from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -86,14 +83,13 @@ const isRouteDisabled = (
  */
 const Routes = () => {
     const location = useLocation()
-    const history = useHistory()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
-    const { updateLastVisitTime } = useLastVisit(dayjs().toISOString())
+    const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { enedisSgeConsent, getConsents } = useConsents()
+    const { getConsents } = useConsents()
     const isInitialMount = useRef(true)
-    const isApplicationBlocked = useRef(false)
 
+    // TODO - DELETE IT !
     useEffect(() => {
         if (isInitialMount.current && currentHousing?.id) {
             isInitialMount.current = false
@@ -102,21 +98,16 @@ const Routes = () => {
     }, [getConsents, currentHousing])
 
     useEffect(() => {
-        if (isAlpiqSubscriptionForm && enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
-            isApplicationBlocked.current = true
-        }
-    }, [enedisSgeConsent])
-
-    useEffect(() => {
         /**
          * If there is no user in redux, it means that the user isn't logged in.
          * Therefore we don't need to perform updateLastVisitTime().
          */
         if (!user) return
-        updateLastVisitTime()
+        updateLastVisitTime(dayjs().toISOString())
     }, [location.pathname, updateLastVisitTime, user])
 
     const { hasAccess, getUrlRedirection } = useAuth()
+
     const navbarContent: navbarItemType[] = []
     navigationsConfig.forEach((navigationConfig) => {
         const UINavbarItem = navigationConfig.settings.layout.navbar.UINavbarItem
@@ -127,16 +118,13 @@ const Routes = () => {
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
 
-    useEffect(() => {
-        const { pathname } = location
-        const isRedirectNeeded = isMaintenanceMode ? pathname !== URL_MAINTENANCE : pathname === URL_MAINTENANCE
-
-        if (isRedirectNeeded) {
-            history.replace(isMaintenanceMode ? URL_MAINTENANCE : '/')
-        }
-    }, [history, location])
-
-    if (!isMaintenanceMode && location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && isApplicationBlocked.current) {
+    if (
+        isAlpiqSubscriptionForm &&
+        !isMaintenanceMode &&
+        user &&
+        !user.isProviderSubscriptionCompleted &&
+        location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM
+    ) {
         return (
             <ThemingProvider>
                 <AlpiqSubscriptionStepper />
@@ -170,11 +158,7 @@ const Routes = () => {
                                                     toolbarContent={<ToolbarContent />}
                                                     toolbarIcon={<ToolbarIcon />}
                                                 >
-                                                    {isMaintenanceMode ? (
-                                                        <Maintenance />
-                                                    ) : (
-                                                        <route.component {...route.props} />
-                                                    )}
+                                                    <route.component {...route.props} />
                                                 </Layout1>
                                             </Root>
                                         </ConfirmProvider>
@@ -214,6 +198,14 @@ function App() {
             isTokenLoadedFromFirebase.current = true
         }
     }, [user])
+
+    if (isMaintenanceMode) {
+        return (
+            <ThemingProvider>
+                <Maintenance />
+            </ThemingProvider>
+        )
+    }
 
     return <Routes />
 }

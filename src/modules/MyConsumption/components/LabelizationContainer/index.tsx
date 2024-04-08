@@ -7,9 +7,8 @@ import { motion } from 'framer-motion'
 import CircularProgress from '@mui/material/CircularProgress'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
+import { metricFiltersType, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
@@ -45,28 +44,19 @@ const Root = styled(PageSimple)(({ theme }) => ({
 const LablizationContainer = () => {
     const theme = useTheme()
     const history = useHistory()
-    const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
+    const { getConsents, nrlinkConsent, enedisSgeConsent, consentsLoading } = useConsents()
 
-    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
 
     // will be used for date picker
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
 
-    const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>('1m')
-
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     // Load connected plug only when housing is defined
-    const { getProductionConnectedPlug, loadConnectedPlugList } = useConnectedPlugList(currentHousing?.id)
-    // Check if there's connected plug in production mode.
-    const isProductionConnectedPlug = getProductionConnectedPlug()
-
-    // TODO put enphaseConsent.enphaseConsentState in an enum.
-    let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
-    if (arePlugsUsedBasedOnProductionStatus(currentHousingScopes))
-        isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
+    const { loadConnectedPlugList } = useConnectedPlugList(currentHousing?.id)
 
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
@@ -74,13 +64,6 @@ const LablizationContainer = () => {
         setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
     }, [setFilters, getConsents, currentHousing?.id])
-
-    useEffect(() => {
-        setMetricsInterval((prevState) => {
-            if (prevState === '1m' || prevState === '30m') return !isSolarProductionConsentOff ? '30m' : '1m'
-            else return prevState
-        })
-    }, [isSolarProductionConsentOff])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -113,33 +96,31 @@ const LablizationContainer = () => {
         <Root
             header={
                 <ThemeProvider theme={theme}>
-                    <div className="flex flex-col items-center ml-0 sm:ml-20">
-                        <Button
-                            className="flex justify-center items-center m-0 p-0"
-                            variant="text"
-                            onClick={() => history.goBack()}
-                        >
-                            <Icon sx={{ color: theme.palette.primary.contrastText }}>arrow_back</Icon>
-                            <TypographyFormatMessage
-                                sx={{ color: theme.palette.primary.contrastText }}
-                                className="text-16 font-medium hidden sm:flex"
+                    <div className="relative w-full flex justify-center">
+                        <div className="absolute left-0 sm:left-20 top-0 bottom-0 flex items-center">
+                            <Button
+                                className="flex justify-center items-center m-0 p-0"
+                                variant="text"
+                                onClick={() => history.goBack()}
                             >
-                                Retour
+                                <Icon sx={{ color: theme.palette.primary.contrastText }}>arrow_back</Icon>
+                                <TypographyFormatMessage
+                                    sx={{ color: theme.palette.primary.contrastText }}
+                                    className="text-16 font-medium hidden sm:block"
+                                >
+                                    Retour
+                                </TypographyFormatMessage>
+                            </Button>
+                        </div>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <TypographyFormatMessage
+                                className="text-center text-18 md:text-24 mx-52"
+                                style={{ color: theme.palette.primary.contrastText }}
+                            >
+                                Identification des activités
                             </TypographyFormatMessage>
-                        </Button>
+                        </motion.div>
                     </div>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="w-full flex flex-col items-center"
-                    >
-                        <TypographyFormatMessage
-                            className="text-18 md:text-24"
-                            style={{ color: theme.palette.primary.contrastText }}
-                        >
-                            Labélisation des appareils
-                        </TypographyFormatMessage>
-                    </motion.div>
                 </ThemeProvider>
             }
             content={
@@ -154,8 +135,7 @@ const LablizationContainer = () => {
                         range={range}
                         setRange={setRange}
                         filters={filters}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
-                        metricsInterval={metricsInterval}
+                        metricsInterval="1m"
                         enedisSgeConsent={enedisSgeConsent}
                     />
                 )

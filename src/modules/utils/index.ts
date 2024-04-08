@@ -1,3 +1,5 @@
+import { renderToString } from 'react-dom/server'
+
 /**
  * This function handle error cases of axios request.
  *
@@ -82,4 +84,14 @@ export const orderListBy = <T>(list: T[], orderByValueCallback?: (item: T) => an
                 : orderByValueCallback(a).toString().localeCompare(orderByValueCallback(b).toString())
             : 0,
     )
+}
+
+/**
+ * Get the data URI of an icon.
+ *
+ * @param icon The JSX element representing the icon.
+ * @returns The data URI of the icon.
+ */
+export const getDataUriOfIcon = (icon: JSX.Element) => {
+    return `data:image/svg+xml;utf8,${renderToString(icon)}`
 }

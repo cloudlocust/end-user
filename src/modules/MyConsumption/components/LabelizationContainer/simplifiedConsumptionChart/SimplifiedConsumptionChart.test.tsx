@@ -14,7 +14,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import SimplifiedConsumptionChartContainer from 'src/modules/MyConsumption/components/LabelizationContainer/simplifiedConsumptionChart'
-import { SimplifiedConsumptionChartContainerPropsType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.d'
+import { SimplifiedConsumptionChartContainerPropsType } from 'src/modules/MyConsumption/components/LabelizationContainer/labelizaitonTypes.types'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
 
 // List of houses to add to the redux state
@@ -73,7 +73,6 @@ let mockSetRange = jest.fn()
 
 let echartsConsumptionChartContainerProps: SimplifiedConsumptionChartContainerPropsType = {
     filters: mockFilters,
-    isSolarProductionConsentOff: false,
     metricsInterval: mockMetricsInterval,
     range: mockRange,
     setRange: mockSetRange,
@@ -84,7 +83,11 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     filters: mockFilters,
     interval: mockMetricsInterval,
     range: mockRange,
-    targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
+    targets: [
+        metricTargetsEnum.consumptionByTariffComponent,
+        metricTargetsEnum.consumption,
+        metricTargetsEnum.eurosConsumption,
+    ],
 }
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
@@ -156,7 +159,7 @@ describe('MyConsumptionContainer test', () => {
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-        expect(queryAllByText('Ajouter un label')).toBeTruthy()
+        expect(queryAllByText('Ajouter une étiquette')).toBeTruthy()
     })
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
         const { getByText } = reduxedRender(

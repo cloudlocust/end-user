@@ -26,6 +26,11 @@ export const CardContentPaddingStyle = {
 }
 
 /**
+ * How many item we want to display on the dashboard.
+ */
+export const ECOGESTES_ITEMS_COUNT = 6
+
+/**
  * Advice wrapper component.
 
  * @returns Advice wrapper component.
@@ -41,15 +46,17 @@ export const AdviceContainer = () => {
     } = useModal()
     const [currentEcogeste, setCurrentEcogeste] = useState<IEcogeste | null>(null)
 
-    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true).map((ecogeste) => (
-        <NewEcogesteCard
-            ecogeste={ecogeste}
-            showMoreDetails={() => {
-                setCurrentEcogeste(ecogeste)
-                onOpenDetailAdvicePopup()
-            }}
-        />
-    ))
+    const cards = orderListBy(ecogestes ?? [], (item) => item.createdAt ?? '', true)
+        .slice(0, ECOGESTES_ITEMS_COUNT)
+        .map((ecogeste) => (
+            <NewEcogesteCard
+                ecogeste={ecogeste}
+                showMoreDetails={() => {
+                    setCurrentEcogeste(ecogeste)
+                    onOpenDetailAdvicePopup()
+                }}
+            />
+        ))
 
     return (
         <FuseCard

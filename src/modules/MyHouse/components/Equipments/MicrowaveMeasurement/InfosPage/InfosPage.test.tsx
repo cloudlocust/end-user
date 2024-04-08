@@ -13,8 +13,13 @@ describe('InfosPage Component', () => {
         // Assert that the headers are present
         expect(screen.getByText("Mesure d'appareil")).toBeInTheDocument()
         expect(screen.getByText('Micro Onde')).toBeInTheDocument()
-
         // Assert that the content texts are present
+        expect(
+            screen.getByText(
+                "Cette fonctionnalité est en phase de test, ce qui signifie que vos résultats peuvent varier. Pour obtenir un résultat optimal, veuillez ne pas utiliser d'autres appareils dans les 2 à 3 minutes précédentes ou pendant le test.",
+            ),
+        ).toBeInTheDocument()
+
         expect(
             screen.getByText(
                 "Grâce à votre nrLINK, vous avez la possibilité de surveiller l'efficacité énergétique de vos appareils.",

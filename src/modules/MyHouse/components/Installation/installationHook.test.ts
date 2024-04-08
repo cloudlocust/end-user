@@ -7,7 +7,21 @@ import {
     TEST_LOAD_ERROR_METER_EQUIPMENT,
     TEST_AUTHORIZATION_LOAD_EMPTY_METER_EQUIPEMENTS,
 } from 'src/mocks/handlers/equipments'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
+import {
+    ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+    ADD_UPDATE_INSTALLATION_SUCCESS_MESSAGE,
+    GET_INSTALLATION_DEFAULT_ERROR_MESSAGE,
+    useEquipmentList,
+    useInstallation,
+} from 'src/modules/MyHouse/components/Installation/installationHook'
+import {
+    TEST_ADD_UPDATE_INSTALLATION_BACKEND_ERROR_MESSAGE,
+    TEST_GET_INSTALLATION_BACKEND_ERROR_MESSAGE,
+    TEST_INSTALLATION,
+    TEST_NEW_INSTALLATION,
+} from 'src/mocks/handlers/installation'
+import { applyCamelCase } from 'src/common/react-platform-components'
+
 const mockEnqueueSnackbar = jest.fn()
 /**
  * Mocking the useSnackbar used in CustomerDetails to load the customerDetails based on url /customers/:id {id} params.
@@ -43,7 +57,7 @@ describe('EquipmentHooks test', () => {
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             // Element is added at the beginning of the equipmentList.
             act(async () => {
                 try {
@@ -55,14 +69,14 @@ describe('EquipmentHooks test', () => {
                     ])
                 } catch (err) {}
             })
-            expect(result.current.loadingEquipmentInProgress).toBe(true)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([TEST_ERROR_SAVE_EQUIPMENT_ID])
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingEquipmentInProgress
+                    return result.current.addingInProgressEquipmentsIds
                 },
                 { timeout: 2000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -78,7 +92,7 @@ describe('EquipmentHooks test', () => {
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             // Element is added at the beginning of the equipmentList.
             act(async () => {
                 try {
@@ -90,14 +104,14 @@ describe('EquipmentHooks test', () => {
                     ])
                 } catch (err) {}
             })
-            expect(result.current.loadingEquipmentInProgress).toBe(true)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([TEST_SAVE_EQUIPMENT.equipment_id + 1])
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingEquipmentInProgress
+                    return result.current.addingInProgressEquipmentsIds
                 },
                 { timeout: 2000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_DEFAULT_ERROR_MESSAGE, {
                 variant: 'error',
             })
@@ -113,21 +127,26 @@ describe('EquipmentHooks test', () => {
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             // Element is added.
             act(async () => {
                 try {
-                    await result.current.addHousingEquipment([{ ...TEST_SAVE_EQUIPMENT }])
+                    await result.current.addHousingEquipment([
+                        {
+                            ...TEST_SAVE_EQUIPMENT,
+                            equipmentId: TEST_SAVE_EQUIPMENT.equipment_id,
+                        },
+                    ])
                 } catch (err) {}
             })
-            expect(result.current.loadingEquipmentInProgress).toBe(true)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([TEST_SAVE_EQUIPMENT.equipment_id])
             await waitForValueToChange(
                 () => {
-                    return result.current.loadingEquipmentInProgress
+                    return result.current.addingInProgressEquipmentsIds
                 },
                 { timeout: 4000 },
             )
-            expect(result.current.loadingEquipmentInProgress).toBe(false)
+            expect(result.current.addingInProgressEquipmentsIds).toEqual([])
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_SAVE_HOUSING_EQUIPMENT_SUCCESS_MESSAGE, {
                 variant: 'success',
             })
@@ -225,14 +244,14 @@ describe('EquipmentHooks test', () => {
         //             name: 'test equipment',
         //         })
         //     })
-        //     expect(result.current.isaAdEquipmentLoading).toBe(true)
+        //     expect(result.current.isAddEquipmentLoading).toBe(true)
         //     await waitForValueToChange(
         //         () => {
-        //             return result.current.isaAdEquipmentLoading
+        //             return result.current.isAddEquipmentLoading
         //         },
         //         { timeout: 4000 },
         //     )
-        //     expect(result.current.isaAdEquipmentLoading).toBe(false)
+        //     expect(result.current.isAddEquipmentLoading).toBe(false)
         //     // eslint-disable-next-line sonarjs/no-identical-functions
         //     act(async () => {
         //         try {
@@ -248,5 +267,133 @@ describe('EquipmentHooks test', () => {
         //         variant: 'success',
         //     })
         // })
+    })
+})
+
+const CAMEL_CASED_TEST_INSTALLATION = applyCamelCase(TEST_INSTALLATION)
+const CAMEL_CASED_TEST_NEW_INSTALLATION = applyCamelCase(TEST_NEW_INSTALLATION)
+
+describe('installation hook test', () => {
+    describe('get installation informations', () => {
+        // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars
+        const callGetInstallationInfos = async (result: any) => {
+            try {
+                await result.current.getInstallationInfos()
+            } catch (err) {}
+        }
+
+        test('when the get installation request fail and there is error message from backend', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken('failed with message')
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallation(1))
+
+            act(async () => callGetInstallationInfos(result))
+            expect(result.current.getInstallationInfosInProgress).toBe(true)
+            await waitForValueToChange(() => result.current.getInstallationInfosInProgress, { timeout: 2000 })
+            expect(result.current.getInstallationInfosInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_GET_INSTALLATION_BACKEND_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+            expect(result.current.installationInfos).toBe(null)
+        }, 5000)
+
+        test('when the get installation request fail with no error message from backend', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken('failed')
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallation(1))
+
+            act(async () => callGetInstallationInfos(result))
+            expect(result.current.getInstallationInfosInProgress).toBe(true)
+            await waitForValueToChange(() => result.current.getInstallationInfosInProgress, { timeout: 2000 })
+            expect(result.current.getInstallationInfosInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(GET_INSTALLATION_DEFAULT_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+            expect(result.current.installationInfos).toBe(null)
+        }, 5000)
+
+        test('when the get installation request success', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(null)
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallation(1))
+
+            act(async () => callGetInstallationInfos(result))
+            expect(result.current.getInstallationInfosInProgress).toBe(true)
+            await waitForValueToChange(() => result.current.getInstallationInfosInProgress, { timeout: 2000 })
+            expect(result.current.getInstallationInfosInProgress).toBe(false)
+            expect(result.current.installationInfos).toStrictEqual(CAMEL_CASED_TEST_INSTALLATION)
+        }, 5000)
+    })
+
+    describe('add or update installation informations', () => {
+        // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars
+        const callAddUpdateInstallationInfos = async (result: any) => {
+            try {
+                await result.current.addUpdateInstallationInfos(CAMEL_CASED_TEST_NEW_INSTALLATION)
+            } catch (err) {}
+        }
+
+        test('when the add/update installation request fail and there is error message from backend', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken('failed with message')
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallation(1))
+
+            act(async () => callAddUpdateInstallationInfos(result))
+            expect(result.current.addUpdateInstallationInfosInProgress).toBe(true)
+            await waitForValueToChange(() => result.current.addUpdateInstallationInfosInProgress, { timeout: 2000 })
+            expect(result.current.addUpdateInstallationInfosInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(TEST_ADD_UPDATE_INSTALLATION_BACKEND_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+            expect(result.current.installationInfos).toBe(null)
+        }, 5000)
+
+        test('when the add/update installation request fail with no error message from backend', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken('failed')
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallation(1))
+
+            act(async () => callAddUpdateInstallationInfos(result))
+            expect(result.current.addUpdateInstallationInfosInProgress).toBe(true)
+            await waitForValueToChange(() => result.current.addUpdateInstallationInfosInProgress, { timeout: 2000 })
+            expect(result.current.addUpdateInstallationInfosInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ADD_UPDATE_INSTALLATION_DEFAULT_ERROR_MESSAGE, {
+                variant: 'error',
+            })
+            expect(result.current.installationInfos).toBe(null)
+        }, 5000)
+
+        test('when the add/update installation request success', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken()
+
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useInstallation(1))
+
+            act(async () => callAddUpdateInstallationInfos(result))
+            expect(result.current.addUpdateInstallationInfosInProgress).toBe(true)
+            await waitForValueToChange(() => result.current.addUpdateInstallationInfosInProgress, { timeout: 5000 })
+            expect(result.current.addUpdateInstallationInfosInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(ADD_UPDATE_INSTALLATION_SUCCESS_MESSAGE, {
+                variant: 'success',
+            })
+            expect(result.current.installationInfos).toStrictEqual(CAMEL_CASED_TEST_NEW_INSTALLATION)
+        }, 5000)
     })
 })

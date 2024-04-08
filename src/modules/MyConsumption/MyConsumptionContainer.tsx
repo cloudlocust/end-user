@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
+import { useTheme, CircularProgress, Box } from '@mui/material'
 import { formatMetricFilter, getRangeV2 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { useTheme } from '@mui/material'
 import { metricRangeType, metricFiltersType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
@@ -16,8 +14,6 @@ import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
 import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
@@ -29,22 +25,25 @@ import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/compo
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
+import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * MyConsumptionContainer.
  * Parent component.
  *
+ * @param root0 MyConsumptionContainer props.
+ * @param root0.defaultPeriod The default period will be displayed on the page.
  * @returns MyConsumptionContainer and its children.
  */
-export const MyConsumptionContainer = () => {
+export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyConsumptionContainerProps) => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
-    const [period, setPeriod] = useState<PeriodEnum>(PeriodEnum.DAILY)
+    const [period, setPeriod] = useState<PeriodEnum>(defaultPeriod)
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { consumptionToggleButton } = useMyConsumptionStore()
     const { elementList: contractList } = useContractList(currentHousing?.id as number)
+    const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -75,12 +74,26 @@ export const MyConsumptionContainer = () => {
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
+    const metricsIntervalWhenConsumptionButtonIsProduction = useMemo(() => {
+        if (
+            period === 'daily' &&
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        ) {
+            return '30m'
+        }
+        return metricsInterval
+    }, [consumptionToggleButton, metricsInterval, period])
+
     // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (!currentHousing?.id) return
         setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
-    }, [setFilters, getConsents, currentHousing?.id])
+
+        return () => {
+            resetToDefault()
+        }
+    }, [setFilters, getConsents, currentHousing?.id, resetToDefault])
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -91,6 +104,7 @@ export const MyConsumptionContainer = () => {
         () => !!(contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false),
         [contractList],
     )
+    const isIdleShown = isSolarProductionConsentOff
 
     if (consentsLoading)
         return (
@@ -117,7 +131,7 @@ export const MyConsumptionContainer = () => {
 
     return (
         <>
-            <div style={{ background: theme.palette.primary.dark }} className="p-12 sm:p-24">
+            <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
                 {nrlinkOff && enedisOff ? (
                     <ChartErrorMessage
                         nrLinkEnedisOff={nrlinkOff && enedisOff}
@@ -125,29 +139,19 @@ export const MyConsumptionContainer = () => {
                         linkTo={`/my-houses/${currentHousing?.id}`}
                     />
                 ) : (
-                    <>
-                        <div className="mb-24">
-                            <MyConsumptionPeriod
-                                setPeriod={setPeriod}
-                                setRange={setRange}
-                                setMetricsInterval={setMetricsInterval}
-                                period={period}
-                                range={range}
-                            />
-                            <MyConsumptionDatePicker period={period} setRange={setRange} range={range} />
-                        </div>
-
-                        <ConsumptionChartContainer
-                            period={period}
-                            hasMissingHousingContracts={hasMissingHousingContracts}
-                            range={range}
-                            filters={filters}
-                            isSolarProductionConsentOff={isSolarProductionConsentOff}
-                            enedisSgeConsent={enedisSgeConsent}
-                            metricsInterval={metricsInterval}
-                            setMetricsInterval={setMetricsInterval}
-                        />
-                    </>
+                    <ConsumptionChartContainer
+                        period={period}
+                        hasMissingHousingContracts={hasMissingHousingContracts}
+                        range={range}
+                        filters={filters}
+                        isSolarProductionConsentOff={isSolarProductionConsentOff}
+                        enedisSgeConsent={enedisSgeConsent}
+                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                        isIdleShown={isIdleShown}
+                        setMetricsInterval={setMetricsInterval}
+                        onPeriodChange={setPeriod}
+                        onRangeChange={setRange}
+                    />
                 )}
 
                 {/* Production Chart */}
@@ -158,7 +162,7 @@ export const MyConsumptionContainer = () => {
                         filters={filters}
                         isProductionConsentOff={isSolarProductionConsentOff}
                         isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                        metricsInterval={metricsInterval}
+                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
                     />
                 )}
             </div>
@@ -175,6 +179,7 @@ export const MyConsumptionContainer = () => {
                         // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
                         enphaseOff={isSolarProductionConsentOff}
                         enedisOff={enedisOff}
+                        isIdleWidgetShown={isIdleShown && period !== PeriodEnum.DAILY}
                     />
                 </ConsumptionWidgetsMetricsProvider>
             )}

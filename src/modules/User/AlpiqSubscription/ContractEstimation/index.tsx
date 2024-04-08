@@ -15,8 +15,9 @@ import { ButtonLoader } from 'src/common/ui-kit'
 import { NavigateNext } from '@mui/icons-material'
 import { useState } from 'react'
 import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
+import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 
 /**
  * ContractEstimation step in alpiq.
@@ -38,6 +39,7 @@ const ContractEstimation = ({
     handleNext: () => void
 }) => {
     const theme = useTheme()
+    const dispatch = useDispatch<Dispatch>()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const { formatMessage } = useIntl()
     const [monthlyEstimation, setMonthlyEstimation] = useState<number | undefined>(undefined)
@@ -72,61 +74,73 @@ const ContractEstimation = ({
 
         if (monthlyEstimationResponse) {
             setMonthlyEstimation(monthlyEstimationResponse)
+            // save them for next step
+            dispatch.housingModel.setAlpiqSubscriptionSpecs({
+                puissanceSouscrite: data.power,
+                optionTarifaire: data.contractType,
+                mensualite: monthlyEstimationResponse,
+            })
         }
     }
 
     return (
         <div className="flex flex-col w-full items-center justify-start">
-            <div className={`flex items-center justify-center mb-32 md:mb-48 ${isMobile && 'flex-col'}`}>
+            <div className="flex items-center justify-center mb-32 md:mb-48 flex-col">
                 <TypographyFormatMessage
                     color={theme.palette.primary.main}
                     textAlign="center"
                     variant={isMobile ? 'body1' : 'h6'}
                     fontWeight={600}
                 >
-                    {`Mon contrat BôWatts par alpiq ${!isMobile ? "L'electricité verte de beaujolais" : ''}`}
+                    Mon contrat BôWatts par Alpiq
                 </TypographyFormatMessage>
-                {isMobile && (
-                    <TypographyFormatMessage
-                        color={theme.palette.primary.main}
-                        textAlign="center"
-                        variant={isMobile ? 'body1' : 'h6'}
-                        fontWeight={600}
-                    >
-                        L'electricité verte de beaujolais
-                    </TypographyFormatMessage>
-                )}
+                <TypographyFormatMessage
+                    color={theme.palette.primary.main}
+                    textAlign="center"
+                    variant={isMobile ? 'body1' : 'h6'}
+                    fontWeight={600}
+                >
+                    L'électricité verte de beaujolais
+                </TypographyFormatMessage>
             </div>
             <div className="flex flex-col items-center justify-center w-full">
                 <div className="flex flex-col w-full items-center mb-20 mx-0 md:mx-20">
                     <div className="w-full flex-col mb-12 md:mb-24">
-                        <TypographyFormatMessage
-                            color={theme.palette.primary.main}
-                            textAlign="center"
-                            variant="body1"
-                            fontWeight={600}
+                        <div
+                            className={`flex w-full ${
+                                isMobile ? 'justify-center' : 'justify-start'
+                            } items-center ml-10`}
                         >
-                            Paramétrez votre contrat Alpiq:
-                        </TypographyFormatMessage>
-                        <Form onSubmit={onSubmit}>
-                            <div className="flex w-full flex-col md:flex-row items-center justify-start">
-                                <SelectAlpiqContractForm
-                                    title="Type de contrat"
-                                    options={AlpiqContractTypeSelectOptions}
-                                    name="contractType"
-                                />
-                                <SelectAlpiqContractForm
-                                    title="Puissance"
-                                    options={AlpiqPowerValuesSelectOptions}
-                                    name="power"
-                                />
-                                <div className="flex items-center justify-center flex-1 mx-10">
-                                    <ButtonLoader inProgress={loadingInProgress} type="submit">
-                                        Estimer ma mensualité
-                                    </ButtonLoader>
+                            <TypographyFormatMessage
+                                color={theme.palette.primary.main}
+                                textAlign="center"
+                                variant="body1"
+                                fontWeight={600}
+                            >
+                                Paramétrez votre contrat Bôwatts :
+                            </TypographyFormatMessage>
+                        </div>
+                        <div className="w-full">
+                            <Form onSubmit={onSubmit}>
+                                <div className="flex w-full flex-col md:flex-row items-center justify-start">
+                                    <SelectAlpiqContractForm
+                                        title="Type de contrat"
+                                        options={AlpiqContractTypeSelectOptions}
+                                        name="contractType"
+                                    />
+                                    <SelectAlpiqContractForm
+                                        title="Puissance"
+                                        options={AlpiqPowerValuesSelectOptions}
+                                        name="power"
+                                    />
+                                    <div className="flex items-center justify-center flex-1 mx-10">
+                                        <ButtonLoader inProgress={loadingInProgress} type="submit">
+                                            Estimer ma mensualité
+                                        </ButtonLoader>
+                                    </div>
                                 </div>
-                            </div>
-                        </Form>
+                            </Form>
+                        </div>
                     </div>
                 </div>
                 <div
@@ -135,7 +149,7 @@ const ContractEstimation = ({
                     }`}
                 >
                     <Card
-                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-20 w-full h-200 md:h-200 md:w-400 flex flex-col justify-center ${
+                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full md:w-400 h-256 lg:h-224 flex flex-col justify-center ${
                             isMobile && 'mb-20'
                         }`}
                     >
@@ -153,12 +167,18 @@ const ContractEstimation = ({
                                 color={theme.palette.common.black}
                                 fontWeight={400}
                             >
-                                Mensualité calculée à partir de votre historique de consommation.
+                                Mensualité calculée à partir de vos consommations passées.
                             </TypographyFormatMessage>
                         </div>
                         <TypographyFormatMessage color={theme.palette.primary.main} textAlign="center" variant="h6">
                             {`${monthlyEstimation ?? '--'} €TTC/Mois`}
                         </TypographyFormatMessage>
+                        <div className="w-11/12 ml-10 mt-12">
+                            <TypographyFormatMessage variant="caption" sx={{ color: textNrlinkColor }}>
+                                * Votre mensualité pourra être ajustée dans votre espace client ALPIQ 2 mois après votre
+                                souscription
+                            </TypographyFormatMessage>
+                        </div>
                     </Card>
                     <div className={`${!isMobile ? 'px-20' : 'w-full'} flex justify-end items-center`}>
                         <ButtonLoader
@@ -221,6 +241,9 @@ const SelectAlpiqContractForm = ({
                     width: '100%',
                 }}
                 validateFunctions={[requiredBuilder()]}
+                formControlProps={{
+                    margin: 'normal',
+                }}
             >
                 {options.map((option, _index) => (
                     <MenuItem key={_index} value={option.value}>

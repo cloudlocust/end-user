@@ -78,8 +78,3 @@ export const mockSuggestionAddressesData = [
         },
     },
 ]
-
-/**
- * Password input field selector.
- */
-export const passwordQuerySelector = 'input[name="password"]'

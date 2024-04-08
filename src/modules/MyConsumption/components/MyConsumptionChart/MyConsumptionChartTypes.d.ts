@@ -3,6 +3,7 @@ import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Me
 import { Dispatch, SetStateAction } from 'react'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import ReactECharts from 'echarts-for-react'
+import { TooltipFormatter } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
 
 /**
  * Period of time type, with start and end time.
@@ -87,23 +88,75 @@ export type getTargetsYAxisValueFormattersType = (
  * ConsumptionChartContainer Props.
  */
 export interface ConsumptionChartContainerProps {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    period: periodType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Indicates the current selected Period if it's monthly or daily or yearly or weekly so that we format tooltip and xAxis of chart according to the period.
+     */
+    period: PeriodEnum
+    /**
+     * Current range so that we handle the xAxis values according to period and range selected.
+     */
     range: metricRangeType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean state to know whether the stacked option is true or false.
+     */
     metricsInterval: metricIntervalType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Consumption or production chart type.
+     */
     filters: metricFiltersType
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating if there are missing housing contracts.
+     */
     hasMissingHousingContracts: boolean | null
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Enedis SGE consent.
+     */
     enedisSgeConsent?: IEnedisSgeConsent
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating if solar production consent is off.
+     */
     isSolarProductionConsentOff: boolean
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    /**
+     * Boolean indicating whether the idle chart is shown or not.
+     */
+    isIdleShown: boolean
+    /**
+     * Set metrics interval.
+     */
     setMetricsInterval: Dispatch<SetStateAction<metricIntervalType>>
+
+    /**
+     * Callback function for period change.
+     *
+     * @param period The new period value.
+     */
+    onPeriodChange: (period: PeriodEnum) => void
+
+    /**
+     * Callback function for range change.
+     *
+     * @param range The new range value.
+     */
+    onRangeChange: (range: metricRangeType) => void
 }
+
+/**
+ * Represents the total measurement value and unit.
+ */
+type TotalMeasurement =
+    /**
+     * TotalMeasurement.
+     */
+    {
+        /**
+         * The numeric value of the measurement.
+         */
+        value: number
+        /**
+         * The unit of the measurement.
+         */
+        unit: string
+    }
 
 /**
  * ConsumptionChart Props.
@@ -133,4 +186,12 @@ export interface ConsumptionChartProps {
      * Set Input period Time.
      */
     setInputPeriodTime?: (periodTime: IPeriodTime) => void
+    /**
+     * Formatter function for override the tooltip.
+     */
+    tooltipFormatter?: TooltipFormatter
+    /**
+     * Indicates if the chart is for the labelization.
+     */
+    isLabelizationChart?: boolean
 }

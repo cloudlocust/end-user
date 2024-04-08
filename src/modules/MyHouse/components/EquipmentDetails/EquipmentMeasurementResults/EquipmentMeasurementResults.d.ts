@@ -5,9 +5,9 @@ export interface EquipmentMeasurementResultsProps {
     /**
      * The list of measurement modes for the equipment.
      */
-    measurementModes?: string[]
+    measurementModes?: string[] | null
     /**
-     * The global equipment id.
+     * The housing equipment id.
      */
     housingEquipmentId: number
     /**

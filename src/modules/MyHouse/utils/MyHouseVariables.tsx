@@ -2,13 +2,11 @@ import { chunk, filter, zip } from 'lodash'
 import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { SvgIcon, Theme } from '@mui/material'
-import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
-import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
 import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
 import { ReactComponent as FontElectrique } from 'src/assets/images/content/housing/FontElectrique.svg'
 import { API_RESOURCES_URL } from 'src/configs'
-import { Groups } from '@mui/icons-material'
+import { GroupsOutlined as Groups, Bolt as ElectricityIcon, MoreHoriz as OtherIcon } from '@mui/icons-material'
 import { EquipmentOptionsType } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { EquipmentIcon } from 'src/modules/MyHouse/components/Equipments/EquipmentIcon'
 
@@ -26,9 +24,6 @@ export const ACCESS_RIGHTS_API = (housingId: number) => `${API_RESOURCES_URL}/ac
 export const accomodationLabelOptions = {
     house: 'Maison',
     apartment: 'Appartement',
-    before1950: 'Avant 1950',
-    from1950to1975: '1950 - 1975',
-    after1975: 'Après 1975',
     main: 'Principale',
     secondary: 'Secondaire',
     energeticPerformance: 'Performance énergétique',
@@ -41,15 +36,82 @@ export const accomodationLabelOptions = {
  */
 export const accomodationNames = {
     houseType: 'houseType',
+    houseLocation: 'houseLocation',
+    numberOfLevels: 'numberOfLevels',
     houseYear: 'houseYear',
     residenceType: 'residenceType',
     energyPerformanceIndex: 'energyPerformanceIndex',
     isolationLevel: 'isolationLevel',
     numberOfInhabitants: 'numberOfInhabitants',
     houseArea: 'houseArea',
+    numberOfWindows: 'numberOfWindows',
+    isGlazedWindows: 'isGlazedWindows',
     meterId: 'meterId',
     ownershipStatus: 'ownershipStatus',
 }
+/**
+ * Number of levels options.
+ */
+export const numberOfLevelsOptions = [
+    {
+        label: '1 niveau',
+        value: 1,
+    },
+    {
+        label: '2 niveaux',
+        value: 2,
+    },
+    {
+        label: '3 niveaux',
+        value: 3,
+    },
+]
+/**
+ * House location options.
+ */
+export const houseLocationOptions = [
+    {
+        label: 'Isolée',
+        value: 'isolated',
+    },
+    {
+        label: 'Mitoyenne 1 côté',
+        value: 'one_sided_attached_house',
+    },
+    {
+        label: 'Mitoyenne 2 côtés',
+        value: 'two_sided_attached_house',
+    },
+]
+/**
+ * House year options.
+ */
+export const houseYearOptions = [
+    {
+        label: 'Ne sais pas',
+        value: 'Do_not_know',
+    },
+    {
+        label: 'Avant 1950',
+        value: 'Avant_1950',
+    },
+    {
+        label: '1950 - 1975',
+        value: 'Entre_1950_1975',
+    },
+    {
+        label: '1976 - 1995',
+        value: 'Entre_1976_1995',
+    },
+    {
+        label: '1996 - 2005',
+        value: 'Entre_1996_2005',
+    },
+    {
+        label: 'Après 2005',
+        value: 'Apres_2005',
+    },
+]
 /**
  * Performance options.
  */
@@ -59,15 +121,14 @@ export const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
  */
 export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
-const buttonStyleLast = 'w-160 mt-16 mr-12 flex flex-col'
-const buttonStyle = `${buttonStyleLast}`
-const wrapperStyles = 'flex flex-row justify-center'
+const buttonStyle = 'p-16 w-full flex flex-col col-span-12 sm:col-span-4'
+const wrapperStyles = 'grid grid-cols-12 gap-14 mt-10'
 const iconStyles = 'my-5 h-56'
 const customSvgIconsStyling = {
     marginTop: '5px',
     marginBottom: '5px',
-    height: '56px',
-    width: '56px',
+    height: '50px',
+    width: '50px',
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -83,7 +144,7 @@ export const heaterEquipment: ISelectButtons = {
                     <Groups />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'collective',
         },
@@ -94,7 +155,7 @@ export const heaterEquipment: ISelectButtons = {
                     <ElectricityIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'individual',
         },
@@ -105,7 +166,7 @@ export const heaterEquipment: ISelectButtons = {
                     <OtherIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'other',
         },
@@ -125,7 +186,7 @@ export const sanitaryEquipment: ISelectButtons = {
                     <Groups />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'collective',
         },
@@ -136,7 +197,7 @@ export const sanitaryEquipment: ISelectButtons = {
                     <ElectricityIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'individual',
         },
@@ -147,7 +208,7 @@ export const sanitaryEquipment: ISelectButtons = {
                     <OtherIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle,
             iconStyles,
             value: 'other',
         },
@@ -157,7 +218,7 @@ export const sanitaryEquipment: ISelectButtons = {
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const hotPlateEquipment: ISelectButtons = {
     name: 'hotplate',
-    wrapperStyles: `${wrapperStyles} flex-wrap`,
+    wrapperStyles,
     titleLabel: 'Type de plaques de cuisson :',
     formOptions: [
         {
@@ -167,7 +228,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <InductionIcon />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: `${buttonStyle} sm:col-span-7`,
             iconStyles,
             value: 'induction',
         },
@@ -178,7 +239,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <FontElectrique />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: `${buttonStyle} sm:col-span-5`,
             iconStyles,
             value: 'electricity',
         },
@@ -189,7 +250,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <VitroceramicIcon />
                 </SvgIcon>
             ),
-            buttonStyle,
+            buttonStyle: `${buttonStyle} sm:col-span-5`,
             iconStyles,
             value: 'vitroceramic',
         },
@@ -200,7 +261,7 @@ export const hotPlateEquipment: ISelectButtons = {
                     <OtherIcon />
                 </SvgIcon>
             ),
-            buttonStyle: buttonStyleLast,
+            buttonStyle: `${buttonStyle} sm:col-span-7`,
             iconStyles,
             value: 'other',
         },
@@ -274,7 +335,7 @@ export const myEquipmentOptions = [
     },
     {
         name: 'dishwasher',
-        labelTitle: 'Lave-vaisselle',
+        labelTitle: 'Lave-vaiselle',
         // eslint-disable-next-line jsdoc/require-jsdoc
         iconComponent: (theme: Theme, isDisabled?: boolean, fill?: string) => (
             <EquipmentIcon equipmentName="dishwasher" theme={theme} isDisabled={isDisabled} fill={fill} />
@@ -499,7 +560,7 @@ export const mapppingEquipmentToLabel = {
     oven: 'Four',
     microwave: 'Micro-onde',
     fridge: 'Congélateur',
-    dishwasher: 'Lave-vaisselle',
+    dishwasher: 'Lave-vaiselle',
     washingmachine: 'Lave linge',
     dryer: 'Sèche linge',
     laptop: 'PC Portable',

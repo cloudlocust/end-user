@@ -52,7 +52,7 @@ describe('EnergyStatusWidget', () => {
             value: 2,
         }
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
-        expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
+        expect(screen.getByText('Dernière puissance consommée')).toBeInTheDocument()
         expect(screen.getByText('bolt.svg')).toBeInTheDocument()
     })
 
@@ -63,7 +63,7 @@ describe('EnergyStatusWidget', () => {
         }
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
         expect(screen.getByText('Dernière puissance injectée')).toBeInTheDocument()
-        expect(screen.getByText('electric-tower.svg')).toBeInTheDocument()
+        expect(screen.getByText('sun.svg')).toBeInTheDocument()
         expect(() => screen.getByText('€/h')).toThrow()
     })
     test('when nrlink is connected and there is last power data', async () => {
@@ -78,7 +78,7 @@ describe('EnergyStatusWidget', () => {
         }
         defaultProps.pricePerKwh = 0.22
         reduxedRender(<EnergyStatusWidget {...defaultProps} />)
-        expect(screen.getByText('Dernière puissance remontée')).toBeInTheDocument()
+        expect(screen.getByText('Dernière puissance consommée')).toBeInTheDocument()
         expect(screen.getByText('22')).toBeInTheDocument()
         expect(screen.getByText('W')).toBeInTheDocument()
         expect(screen.getByText('€/h')).toBeInTheDocument()

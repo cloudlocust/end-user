@@ -60,7 +60,7 @@ const StyledNavBarMobile = styled(SwipeableDrawer)(() => ({
     '& .MuiDrawer-paper': {
         '& #fuse-navbar-side-panel': {
             minWidth: 'auto',
-            wdith: 'auto',
+            width: 'auto',
         },
         '& #fuse-navbar-panel': {
             opacity: '1!important',

@@ -26,6 +26,8 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.selectedLabelPeriod Selected Label Period.
  * @param props.chartRef ChartRef.
  * @param props.setInputPeriodTime SetInputPeriodTime.
+ * @param props.tooltipFormatter Callback to format the tooltip.
+ * @param props.isLabelizationChart Indicates if the chart is for the labelization.
  * @returns MyConsumptionChart Component.
  */
 const MyConsumptionChart = ({
@@ -35,6 +37,8 @@ const MyConsumptionChart = ({
     selectedLabelPeriod,
     chartRef,
     setInputPeriodTime,
+    tooltipFormatter,
+    isLabelizationChart,
 }: ConsumptionChartProps) => {
     const theme = useTheme()
     const { consumptionToggleButton } = useMyConsumptionStore()
@@ -53,7 +57,7 @@ const MyConsumptionChart = ({
 
     // EchartsConsumptionChart Option.
     const option = useMemo(() => {
-        return getEchartsConsumptionChartOptions(
+        const options = getEchartsConsumptionChartOptions(
             timestamps,
             values,
             theme,
@@ -61,9 +65,34 @@ const MyConsumptionChart = ({
             isMobile,
             period,
             axisColor,
+            tooltipFormatter,
             selectedLabelPeriod,
         )
-    }, [timestamps, values, theme, consumptionToggleButton, isMobile, period, axisColor, selectedLabelPeriod])
+        return {
+            ...options,
+            ...(isLabelizationChart
+                ? {
+                      dataZoom: [
+                          {
+                              type: 'inside',
+                              disabled: true,
+                          },
+                      ],
+                  }
+                : {}),
+        }
+    }, [
+        timestamps,
+        values,
+        theme,
+        consumptionToggleButton,
+        isMobile,
+        period,
+        axisColor,
+        selectedLabelPeriod,
+        tooltipFormatter,
+        isLabelizationChart,
+    ])
 
     const handleBrushSelected = useCallback(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
