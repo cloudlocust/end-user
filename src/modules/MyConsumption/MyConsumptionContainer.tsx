@@ -88,7 +88,7 @@ export const MyConsumptionContainer = () => {
 
     // check if the user has a tempo contract
     const doesUserHasTempoContract = useMemo(
-        () => contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false,
+        () => !!(contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false),
         [contractList],
     )
 

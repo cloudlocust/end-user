@@ -49,7 +49,7 @@ export const FAQ: FC<FAQProps> = ({ items, title, style }) => {
         <div className="w-full" data-testid="faq">
             <Card className="w-full rounded-20 shadow sm:m-4 pb-8 px-12" variant="outlined" style={style}>
                 <div className="p-16 h-full">
-                    <Typography className="text-13 font-medium md:text-17 flex items-center">{title}</Typography>
+                    <Typography className="text-14 font-medium md:text-17 flex items-center">{title}</Typography>
                 </div>
                 <div className="w-full">
                     {items.map((item, index) => (
@@ -60,10 +60,10 @@ export const FAQ: FC<FAQProps> = ({ items, title, style }) => {
                             elevation={0}
                         >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography className="text-13 font-medium">{item.title}</Typography>
+                                <Typography className="text-12 md:text-13 font-medium">{item.title}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <Typography>{item.content}</Typography>
+                                <Typography className="whitespace-pre-wrap">{item.content}</Typography>
                             </AccordionDetails>
                         </Accordion>
                     ))}

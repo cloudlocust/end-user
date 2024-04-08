@@ -2,6 +2,7 @@ import { useMemo, FC } from 'react'
 import { FAQ } from 'src/modules/shared/FAQ'
 import { FAQProps } from 'src/modules/MyConsumption/components/ChartFAQ/ChartFAQ.types'
 import { getFAQItemsByPeriodAndContractType } from 'src/modules/MyConsumption/components/ChartFAQ/ChartFAQFunctions'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 /**
  * ChartFAQ Component used to help understand the charts.
@@ -16,5 +17,9 @@ export const ChartFAQ: FC<FAQProps> = ({ period, hasTempoContract }) => {
         () => getFAQItemsByPeriodAndContractType(period, hasTempoContract),
         [period, hasTempoContract],
     )
-    return <FAQ items={faqItems} title={faqTitle} style={{ maxWidth: '625px', margin: 'auto' }} />
+    // todo: activate later when the FAQ content be ready
+    if (period !== PeriodEnum.DAILY || hasTempoContract) {
+        return null
+    }
+    return <FAQ items={faqItems} title={faqTitle} />
 }

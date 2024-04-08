@@ -9,11 +9,11 @@ export type FAQItem =
         /**
          * The title of FAQ item.
          */
-        title: string
+        title: string | JSX.Element
         /**
          * The content of the FAQ item.
          */
-        content: string
+        content: string | JSX.Element
     }
 
 /**
@@ -27,7 +27,7 @@ export type FAQProps =
         /**
          * The title of the FAQ.
          */
-        title: string
+        title: string | JSX.Element
         /**
          * The items of the FAQ (question, answer).
          */
