@@ -21,7 +21,7 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 export const getFAQItemsByPeriodAndContractType = (
     period: PeriodEnum,
     hasTempoContract: boolean,
-): [Array<FAQItem>, string] => {
+): [Array<FAQItem>, string | JSX.Element] => {
     switch (period) {
         case PeriodEnum.DAILY:
             return hasTempoContract
