@@ -16,6 +16,22 @@ export type equipmentNameType =
     | 'laptop'
     | 'desktopcomputer'
     | 'solarpanel'
+    | 'freezer'
+    | 'kettle'
+    | 'coffee_machine'
+    | 'swimmingpool'
+    | 'heatpump'
+    | 'reversible_heatpump'
+    | 'swimmingpool_heatpump'
+    | 'electric_car'
+    | 'aquarium'
+    | 'ceramic_hob'
+    | 'iron_plate'
+    | 'induction_plate'
+    | 'radiator'
+    | 'air_conditioner'
+    | 'dry_towel'
+    | 'water_heater'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentAllowedTypeT =
@@ -25,6 +41,7 @@ export type equipmentAllowedTypeT =
     | 'vitroceramic'
     | 'existant'
     | 'nonexistant'
+    | 'possibly'
     | 'collective'
     | 'individual'
 
@@ -35,7 +52,7 @@ export type equipmentMeterType = {
      */
     equipmentId: number
     /**
-     * The global equipment id.
+     * The housing equipment id.
      */
     id?: number
     /**
@@ -63,13 +80,17 @@ export type equipmentType = {
      */
     allowedType: equipmentAllowedTypeT[]
     /**
-     * Measurement modes for the Equipment.
-     */
-    measurementModes?: string[]
-    /**
      * Customer id related to the equipment.
      */
     customerId?: number | null
+    /**
+     * Measurement duration for the Equipment.
+     */
+    measurementDuration?: string | null
+    /**
+     * Measurement modes for the Equipment.
+     */
+    measurementModes?: string[] | null
 }
 
 /**
@@ -109,4 +130,138 @@ export type addEquipmentType = {
      * Allowed type for the equipment.
      */
     allowedType?: ['electricity']
+}
+
+/**
+ * Solar installation informations type.
+ */
+export interface solarInstallationInfosType {
+    /**
+     * The title of the installation.
+     */
+    title?: string
+    /**
+     * The date of the installation.
+     */
+    installationDate?: string
+    /**
+     * The type of the solar panel.
+     */
+    solarPanelType?: string
+    /**
+     * The orientation value for the solar panel.
+     */
+    orientation?: number
+    /**
+     * The brand of the solar panel.
+     */
+    solarPanelBrand?: string
+    /**
+     * The brand of the inverter.
+     */
+    inverterBrand?: string
+    /**
+     * The inclination value for the solar panel.
+     */
+    inclination?: number
+    /**
+     * The power value for the solar panel.
+     */
+    power?: number
+    /**
+     * Boolean indicating if the customer has a resale contract.
+     */
+    hasResaleContract?: boolean
+    /**
+     * The resale tariff value.
+     */
+    resaleTariff?: number
+    /**
+     * The status of the consumer when wanting a solar panel.
+     */
+    statusWhenWantingSolarPanel?: string
+}
+
+/**
+ * Installation informations type.
+ */
+export interface installationInfosType {
+    /**
+     * The list of housing equipments.
+     */
+    housingEquipments: equipmentMeterType[]
+    /**
+     * The solar installation informations.
+     */
+    solarInstallation?: solarInstallationInfosType
+}
+
+/**
+ * Solar installation informations type.
+ */
+export interface installationFormFieldsType {
+    /**
+     * The heater status.
+     */
+    heater?: string
+    /**
+     * The hotplate status.
+     */
+    hotplate?: string
+    /**
+     * The sanitary status.
+     */
+    sanitary?: string
+    /**
+     * The solarpanel status.
+     */
+    solarpanel?: string
+    /**
+     * The title of the installation.
+     */
+    title?: string
+    /**
+     * The date of the installation.
+     */
+    installationDate?: string
+    /**
+     * The type of the solar panel.
+     */
+    solarPanelType?: string
+    /**
+     * The custom value for the solar panel type.
+     */
+    otherSolarPanelType?: string
+    /**
+     * The orientation value for the solar panel.
+     */
+    orientation?: number
+    /**
+     * The brand of the solar panel.
+     */
+    solarPanelBrand?: string
+    /**
+     * The brand of the inverter.
+     */
+    inverterBrand?: string
+    /**
+     * The inclination value for the solar panel.
+     */
+    inclination?: number
+    /**
+     * The power value for the solar panel.
+     */
+    power?: number
+    /**
+     * Boolean indicating if the customer has a resale contract.
+     */
+    hasResaleContract?: boolean
+    /**
+     * The resale tariff value.
+     */
+    resaleTariff?: number
+    /**
+     * The status of the consumer when wanting a solar panel.
+     */
+    statusWhenWantingSolarPanel?: string
 }

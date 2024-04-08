@@ -21,7 +21,7 @@ export type RootState = RematchRootState<RootModel>
 
 // you want to store only a subset of your state of reducer one
 const persistUserAttributes = createFilter('userModel', ['user', 'authenticationToken'])
-const persistHousingAttributes = createFilter('housingModel', ['currentHousing'])
+const persistHousingAttributes = createFilter('housingModel', ['currentHousing', 'alpiqSubscriptionSpecs'])
 
 /**
  * Used to define parts of redux states persisted.

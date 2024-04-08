@@ -130,18 +130,38 @@ export const computeInternallTemperature = (data: IMetric[]): { value: number; u
  * Function that computes total euros.
  *
  * @param data Metrics data.
+ * @param target Metric Target that define which type of euro target that we need to calculate (it's `eurosConsumption` for Default).
  * @returns Total Euros rounded.
  */
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const computeTotalEuros = (data: IMetric[]): { value: number | string; unit: '€' } => {
-    const values = getDataFromYAxis(data, metricTargetsEnum.eurosConsumption)
+export const computeTotalEuros = (
+    data: IMetric[],
+    target: metricTargetType = metricTargetsEnum.eurosConsumption,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+): { value: number; unit: '€' } => {
+    const values = getDataFromYAxis(data, target)
     /**
      * Lodash sum when array is [null] returns null, weird library behaviour however when its sum([null, null, ...etc]) returns 0, so for the case where values are [null], 0 is assigned.
      *
      * @see https://github.com/lodash/lodash/issues/4110#issuecomment-463725975
      */
-    const totalEuros = sum(values) ? sum(values).toFixed(2) : 0
+    const totalEuros = sum(values) ? Number(sum(values).toFixed(2)) : 0
     return { value: totalEuros, unit: '€' }
+}
+
+/**
+ * Function that computes total euros with total subscription price.
+ *
+ * @param data Metrics data.
+ * @returns Total Euros rounded.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const computeTotalEurosWithSubscriptionPrice = (data: IMetric[]): { value: number; unit: '€' } => {
+    const { value: totalEuros } = computeTotalEuros(data)
+    const { value: totalSubscriptionPrice } = computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
+
+    const totalEurosWithSubscription = Number((totalEuros + totalSubscriptionPrice).toFixed(2))
+
+    return { value: totalEurosWithSubscription, unit: '€' }
 }
 
 /**
@@ -209,6 +229,8 @@ export const computeWidgetAssets = (data: IMetric[], type: metricTargetType) => 
             return computeTotalAutoconsumption(data)!
         case metricTargetsEnum.idleConsumption:
             return computeAverageIdleConsumption(data)!
+        case metricTargetsEnum.subscriptionPrices:
+            return computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)!
         default:
             throw Error(WRONG_TARGET_TEXT)
     }
@@ -252,10 +274,6 @@ export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean
                 : 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
-        case metricTargetsEnum.externalTemperature:
-            return 'Température Extérieure'
-        case metricTargetsEnum.internalTemperature:
-            return 'Température Intérieure'
         case metricTargetsEnum.eurosConsumption:
             return 'Coût Total'
         case metricTargetsEnum.totalProduction:
@@ -362,6 +380,7 @@ export const getWidgetIndicatorColor = (target: metricTargetType, percentageChan
         case metricTargetsEnum.internalTemperature:
         case metricTargetsEnum.eurosConsumption:
         case metricTargetsEnum.idleConsumption:
+        case metricTargetsEnum.subscriptionPrices:
             return percentageChange > 0 ? 'error' : 'success'
         default:
             throw Error(WRONG_TARGET_TEXT)

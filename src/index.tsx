@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
-import { BASENAME_URL, MSW_MOCK } from './configs'
+import { BASENAME_URL, MSW_MOCK, SENTRY_DSN, CLIENT_ENVIRONNEMENT } from './configs'
 import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'typeface-poppins'
@@ -10,7 +10,7 @@ import 'src/common/ui-kit/fuse/styles/app-utilities.css'
 import { StyledEngineProvider } from '@mui/material/styles'
 import App from './App'
 import { store } from './redux'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { Router, BrowserRouter, matchPath } from 'react-router-dom'
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { getPersistor } from '@rematch/persist'
 import { TranslatitonProvider, LOAD_TRANSLATIONS } from 'src/common/react-platform-translation'
@@ -19,6 +19,14 @@ import { pwaTrackingListeners } from './pwaEventlisteners'
 import TagManager from 'react-gtm-module'
 import { TAG_MANAGER_CONFIG } from 'src/configs'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { createBrowserHistory } from 'history'
+import { routes } from 'src/routes'
+import { initializeSentry } from 'src/monitoring/sentry'
+
+/**
+ * The history object for browser navigation.
+ */
+const history = createBrowserHistory()
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -48,10 +56,12 @@ const Application: FC<any> = () => {
                     <Provider store={store}>
                         <PersistGate persistor={getPersistor()}>
                             <TranslatitonProvider>
-                                <Router basename={BASENAME_URL}>
-                                    <SnackbarProvider>
-                                        <App />
-                                    </SnackbarProvider>
+                                <Router history={history}>
+                                    <BrowserRouter basename={BASENAME_URL} getUserConfirmation={() => {}}>
+                                        <SnackbarProvider>
+                                            <App />
+                                        </SnackbarProvider>
+                                    </BrowserRouter>
                                 </Router>
                             </TranslatitonProvider>
                         </PersistGate>
@@ -76,6 +86,17 @@ async function bootstrapApplication() {
 
 // Initialize google tag manager
 TagManager.initialize(TAG_MANAGER_CONFIG)
+
+if (process.env.NODE_ENV === 'production') {
+    // Initialize sentry for bugs tracking.
+    initializeSentry({
+        dsn: SENTRY_DSN,
+        environment: CLIENT_ENVIRONNEMENT,
+        history,
+        matchPath,
+        routes: routes.map((route) => ({ path: route.path })),
+    })
+}
 
 bootstrapApplication().then((app) => {
     ReactDOM.render(app, document.getElementById('root'))

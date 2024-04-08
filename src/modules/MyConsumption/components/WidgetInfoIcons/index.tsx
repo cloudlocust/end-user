@@ -66,19 +66,6 @@ export const ProductionWidgetErrorIcon = () => {
 }
 
 /**
- * InjectedProductionWidgetErrorInfoIcon Component.
- *
- * @returns InjectedProductionWidgetErrorInfoIcon Component.
- */
-export const InjectedProductionWidgetErrorIcon = () => {
-    return (
-        <IconButton sx={{ p: 0 }}>
-            <ErrorOutlineIcon sx={{ color: linksColor || warningMainHashColor, width: '32px', height: '32px' }} />
-        </IconButton>
-    )
-}
-
-/**
  * PMaxWidgetInfoIcon Component.
  *
  * @returns PMaxWidgetInfoIcon Component.
@@ -156,7 +143,6 @@ export const getWidgetInfoIcon = ({
     if (hasMissingContracts && widgetTarget === metricTargetsEnum.eurosConsumption) return <EuroWidgetInfoIcon />
     if (enedisSgeOff && widgetTarget === metricTargetsEnum.pMax) return <PMaxWidgetInfoIcon />
     if (enphaseOff && widgetTarget === metricTargetsEnum.totalProduction) return <ProductionWidgetErrorIcon />
-    if (widgetTarget === metricTargetsEnum.injectedProduction) return <InjectedProductionWidgetErrorIcon />
     // Otherwise any icon doesn't be shown in the Widget.
     return null
 }

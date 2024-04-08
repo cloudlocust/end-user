@@ -33,4 +33,8 @@ export interface ConsumptionWidgetsContainerProps {
      * Boolean for EnedisSge Consent is not Connected.
      */
     enedisOff: boolean
+    /**
+     * Boolean indicating whether the idle widget is shown or not.
+     */
+    isIdleWidgetShown: boolean
 }

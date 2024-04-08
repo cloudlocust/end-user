@@ -14,17 +14,35 @@ import { equipmentNameType, equipmentType } from 'src/modules/MyHouse/components
  * AddEquipmentPopup component.
  *
  * @param props N/A.
+ * @param props.isOpen Boolean for popup open or not.
+ * @param props.onClosePopup Callback to close popup.
+ * @param props.equipmentsList Equipments list.
+ * @param props.addEquipment Add equipment function.
+ * @param props.addHousingEquipment Add housing equipment function.
+ * @param props.isAddEquipmentLoading Loading boolean for adding equipment.
+ * @param props.onAddingEquipmentSuccess Callback to call when the equipment is added successfully.
  * @returns AddEquipmentPopup JSX.
  */
-export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
-    const { isOpen, onClosePopup, equipmentsList, addEquipment, addHousingEquipment, isaAdEquipmentLoading } = props
+export const AddEquipmentPopup = ({
+    isOpen,
+    onClosePopup,
+    equipmentsList,
+    addEquipment,
+    addHousingEquipment,
+    isAddEquipmentLoading,
+    onAddingEquipmentSuccess,
+}: AddEquipmentPopupProps) => {
     const { formatMessage } = useIntl()
     const [equipmentValue, setEquipmentValue] = useState<equipmentType | 'other' | string>('')
     const [customEquipmentValue, setCustomEquipmentValue] = useState('')
 
     const orderedEquipmentsList = useMemo(() => {
         return [
-            ...orderBy(equipmentsList, (el) => el.name, 'asc'),
+            ...orderBy(
+                equipmentsList?.length! > 0 ? equipmentsList : [],
+                (el) => mapppingEquipmentToLabel[el.name as unknown as equipmentNameType],
+                'asc',
+            ),
             { id: Math.random(), name: 'other', allowed_type: ['electricity'] } as unknown as equipmentType,
         ]
     }, [equipmentsList])
@@ -56,13 +74,17 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                             setEquipmentValue(event.target.value as equipmentType)
                         }}
                         fullWidth
-                        data-testid={'equipments-select'}
+                        data-testid="equipments-select"
                     >
                         {orderedEquipmentsList.length > 0 &&
                             orderedEquipmentsList.map((option) => {
                                 if (!mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]) return null
                                 return (
-                                    <MenuItem key={option.id} value={option as unknown as string}>
+                                    <MenuItem
+                                        key={option.id}
+                                        value={option as unknown as string}
+                                        data-testid="equipment-option"
+                                    >
                                         {formatMessage({
                                             id: mapppingEquipmentToLabel[option.name as unknown as equipmentNameType]!,
                                             defaultMessage:
@@ -92,22 +114,29 @@ export const AddEquipmentPopup = (props: AddEquipmentPopupProps) => {
                         }
                         onClick={async () => {
                             // Else it's a predefined equipment
-                            if (Object.values(equipmentValue).includes('other')) {
-                                await addEquipment({
-                                    name: customEquipmentValue,
-                                    allowedType: ['electricity'],
-                                })
-                            } else if (typeof equipmentValue === 'object') {
-                                await addHousingEquipment([
-                                    {
-                                        equipmentId: equipmentValue.id,
-                                        equipmentType: 'electricity',
-                                    },
-                                ])
+                            try {
+                                let equipment = null
+                                if (Object.values(equipmentValue).includes('other')) {
+                                    equipment = await addEquipment({
+                                        name: customEquipmentValue,
+                                        allowedType: ['electricity'],
+                                    })
+                                } else if (typeof equipmentValue === 'object') {
+                                    equipment = await addHousingEquipment([
+                                        {
+                                            equipmentId: equipmentValue.id,
+                                            equipmentType: 'electricity',
+                                        },
+                                    ])
+                                }
+                                if (equipment && equipment.length > 0 && onAddingEquipmentSuccess) {
+                                    onAddingEquipmentSuccess(equipment[0].equipmentId)
+                                }
+                            } finally {
+                                onClosePopup()
                             }
-                            onClosePopup()
                         }}
-                        inProgress={isaAdEquipmentLoading}
+                        inProgress={isAddEquipmentLoading}
                     >
                         <TypographyFormatMessage>Enregistrer</TypographyFormatMessage>
                     </ButtonLoader>

@@ -1,6 +1,7 @@
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes'
+import { IAlpiqSubscriptionSpecs } from 'src/modules/User/AlpiqSubscription'
 
 /**
  * The Type of a logement.
@@ -40,4 +41,8 @@ export interface IHousingState {
      * Current Housing Scope.
      */
     currentHousingScopes: ScopesTypesEnum[]
+    /**
+     * Alpiq contract subscription specs.
+     */
+    alpiqSubscriptionSpecs: IAlpiqSubscriptionSpecs | null
 }

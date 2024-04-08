@@ -22,9 +22,13 @@ export interface IMyConsumptionPeriod {
      */
     range: metricRangeType
     /**
-     * Current Period.
+     * The current period.
      */
     period: periodType
+    /**
+     * List of periods to hide.
+     */
+    hidePeriods?: any[]
 }
 /**
  * Range value type.
@@ -100,6 +104,21 @@ export interface IMyConsumptionDatePicker {
      * Represent the maximum date in the DatePicker.
      */
     maxDate?: Date
+    /**
+     * Color of the date picker, by default is secondary.light.
+     */
+    color?: string
+    /**
+     * Boolean used to enable or disable the previous button.
+     */
+    isPreviousButtonDisabling?: boolean
+    /**
+     * Callback function use it for disable or enable a years in the calender.
+     *
+     * @param date Date that we want to check it for.
+     * @returns True if current year is enable else false.
+     */
+    handleYears?: (date: Date) => boolean
 }
 
 /**
@@ -249,3 +268,17 @@ export type ProductionChartContainerProps = Omit<
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type getChartSpecifitiesType = ApexYAxis & { label?: string }
+
+/**
+ *
+ */
+type MyConsumptionContainerProps =
+    /**
+     * MyConsumptionContainer Props.
+     */
+    {
+        /**
+         * The default period will be displayed on the page.
+         */
+        defaultPeriod?: PeriodEnum
+    }

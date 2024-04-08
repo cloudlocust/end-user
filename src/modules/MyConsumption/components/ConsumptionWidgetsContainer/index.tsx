@@ -12,9 +12,7 @@ import WidgetIdleConsumption from 'src/modules/MyConsumption/components/WidgetId
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { endOfDay, startOfDay } from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
+import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -27,6 +25,7 @@ import { utcToZonedTime } from 'date-fns-tz'
  * @param props.hasMissingHousingContracts Flag HasMissingContracts.
  * @param props.enphaseOff Enphase Consent is inactive.
  * @param props.enedisOff EnedisSge Consent is not Connected.
+ * @param props.isIdleWidgetShown Boolean indicating whether the idle widget is shown or not.
  * @returns Consumption Widgets List Component.
  */
 const ConsumptionWidgetsContainer = ({
@@ -37,6 +36,7 @@ const ConsumptionWidgetsContainer = ({
     hasMissingHousingContracts,
     enphaseOff,
     enedisOff,
+    isIdleWidgetShown,
 }: ConsumptionWidgetsContainerProps) => {
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
@@ -47,29 +47,19 @@ const ConsumptionWidgetsContainer = ({
     )
 
     const widgetsToRender = useMemo<metricTargetType[]>(() => {
-        let widgetsToRender: metricTargetType[] = [metricTargetsEnum.eurosConsumption, metricTargetsEnum.pMax]
+        let widgetsToRender: metricTargetType[] = []
 
-        const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-        if (
-            period === 'daily' &&
-            range.from === getDateWithoutTimezoneOffset(startOfDay(currentTime)) &&
-            range.to === getDateWithoutTimezoneOffset(endOfDay(currentTime))
-        ) {
-            widgetsToRender = [
-                ...widgetsToRender,
-                metricTargetsEnum.externalTemperature,
-                metricTargetsEnum.internalTemperature,
-            ]
+        if (period !== 'daily') {
+            // When the period is not daily we show the Pmax widget
+            widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
         }
 
         if (isProductionEnabled) {
             widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
-        } else {
-            widgetsToRender = [metricTargetsEnum.consumption, ...widgetsToRender]
         }
 
         return widgetsToRender
-    }, [isProductionEnabled, period, range.from, range.to])
+    }, [isProductionEnabled, period])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
@@ -78,18 +68,6 @@ const ConsumptionWidgetsContainer = ({
     useEffect(() => {
         resetMetricsWidgetData()
     }, [range, filters, metricsInterval, period, resetMetricsWidgetData])
-
-    /**
-     * This function is to filter special metrics interval, for example the consumption_metrics in week, need to be treated as one value for the 7d.
-     *
-     * @param target Target that we want to get the metricsInterval for.
-     * @returns Metrics Interval.
-     */
-    const getMetricIntervalForWidget = (target: metricTargetType) => {
-        // for consumption metrics we want to get one value for all the week, their is no 1w so we use 7d
-        if (target === metricTargetsEnum.consumption && period === 'weekly') return '7d'
-        else return metricsInterval
-    }
 
     return (
         <div className="p-12 sm:p-24">
@@ -107,12 +85,30 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isProductionEnabled && (
+                    {isProductionEnabled ? (
                         <WidgetConsumption
                             targets={[metricTargetsEnum.consumption]}
                             range={range}
                             filters={filters}
-                            metricsInterval={getMetricIntervalForWidget(metricTargetsEnum.consumption)}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcons={{
+                                [metricTargetsEnum.consumption]: getWidgetInfoIcon({
+                                    widgetTarget: metricTargetsEnum.consumption,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                    enphaseOff,
+                                    enedisSgeOff: enedisOff,
+                                }),
+                            }}
+                            enphaseOff={enphaseOff}
+                        />
+                    ) : (
+                        // to keep consumption widget always at the beginning, we render the consumption widget here with the normal widget component instead of ebder it inside the loop
+                        <Widget
+                            targets={[metricTargetsEnum.consumption]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
                             period={period}
                             infoIcons={{
                                 [metricTargetsEnum.consumption]: getWidgetInfoIcon({
@@ -126,18 +122,39 @@ const ConsumptionWidgetsContainer = ({
                         />
                     )}
 
-                    <WidgetIdleConsumption
-                        targets={[metricTargetsEnum.idleConsumption]}
+                    {isIdleWidgetShown && (
+                        <WidgetIdleConsumption
+                            targets={[metricTargetsEnum.idleConsumption]}
+                            range={range}
+                            filters={filters}
+                            metricsInterval={metricsInterval}
+                            period={period}
+                            infoIcons={{
+                                [metricTargetsEnum.idleConsumption.toString()]: getWidgetInfoIcon({
+                                    widgetTarget: metricTargetsEnum.idleConsumption,
+                                    hasMissingContracts: hasMissingHousingContracts,
+                                }),
+                            }}
+                        />
+                    )}
+
+                    <WidgetCost
+                        key={metricTargetsEnum.eurosConsumption}
+                        targets={[metricTargetsEnum.eurosConsumption]}
                         range={range}
                         filters={filters}
                         metricsInterval={metricsInterval}
                         period={period}
                         infoIcons={{
-                            [metricTargetsEnum.idleConsumption.toString()]: getWidgetInfoIcon({
-                                widgetTarget: metricTargetsEnum.idleConsumption,
+                            [metricTargetsEnum.eurosConsumption]: getWidgetInfoIcon({
+                                widgetTarget: metricTargetsEnum.eurosConsumption,
                                 hasMissingContracts: hasMissingHousingContracts,
+                                enphaseOff,
+                                enedisSgeOff: enedisOff,
                             }),
                         }}
+                        enphaseOff={enphaseOff}
+                        childrenPosition="bottom"
                     />
 
                     {/** Display the other targets with Widget Component. */}
@@ -157,12 +174,6 @@ const ConsumptionWidgetsContainer = ({
                                         enphaseOff,
                                         enedisSgeOff: enedisOff,
                                     }),
-                                    [metricTargetsEnum.injectedProduction]: getWidgetInfoIcon({
-                                        widgetTarget: metricTargetsEnum.injectedProduction,
-                                        hasMissingContracts: hasMissingHousingContracts,
-                                        enphaseOff,
-                                        enedisSgeOff: enedisOff,
-                                    }),
                                 }}
                                 enphaseOff={enphaseOff}
                             />
@@ -172,7 +183,7 @@ const ConsumptionWidgetsContainer = ({
                                 targets={[target]}
                                 range={range}
                                 filters={filters}
-                                metricsInterval={getMetricIntervalForWidget(target)}
+                                metricsInterval={metricsInterval}
                                 period={period}
                                 infoIcons={{
                                     [target]: getWidgetInfoIcon({

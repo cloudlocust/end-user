@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
@@ -52,6 +53,7 @@ const CustomOrderedListItem = ({ children, order }: CustomOrderedListItemProps) 
  */
 export const InfosPage = ({ stepSetter }: InfosPageProps) => {
     const { formatMessage } = useIntl()
+    const theme = useTheme()
 
     const testSteps = [
         "Choisissez le réglage de l'appareil que vous souhaitez mesurer",
@@ -86,6 +88,15 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
 
             {/* Content */}
             <div className="flex-1 flex flex-col justify-center gap-14">
+                {/* Info message */}
+                <div className="flex mb-24">
+                    <TypographyFormatMessage fontWeight="500" color={theme.palette.grey['500']}>
+                        Cette fonctionnalité est en phase de test, ce qui signifie que vos résultats peuvent varier.
+                        Pour obtenir un résultat optimal, veuillez ne pas utiliser d'autres appareils dans les 2 à 3
+                        minutes précédentes ou pendant le test.
+                    </TypographyFormatMessage>
+                </div>
+
                 <div className="flex gap-7 mb-20">
                     <ListItemCircle />
                     <TypographyFormatMessage fontWeight="500">

@@ -1,5 +1,5 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MyConsumptionContainer } from 'src/modules/MyConsumption//MyConsumptionContainer'
+import { MyConsumptionContainer } from 'src/modules/MyConsumption/MyConsumptionContainer'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { waitFor } from '@testing-library/react'
 import { formatMetricFilter } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'

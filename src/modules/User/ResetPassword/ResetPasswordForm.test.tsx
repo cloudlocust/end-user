@@ -2,7 +2,6 @@ import { ResetPasswordForm } from 'src/modules/User/ResetPassword/ResetPasswordF
 import { waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
-import { passwordQuerySelector } from 'src/modules/User/Register/RegisterForm.test'
 
 const fakeToken = '123456ABCD'
 
@@ -39,7 +38,7 @@ describe('RestPasswordForm component test', () => {
 
     test('when password field is invalid', async () => {
         const { container, getByText, getAllByText } = reduxedRender(<ResetPasswordForm token={fakeToken} />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
+        const passwordField = container.querySelector('input[name="password"]') as Element
         userEvent.type(passwordField, '123')
         userEvent.click(getByText(SUBMIT_TEXT))
         await waitFor(() => expect(getAllByText(INVALID_PASSWORD_FIELD_ERROR).length).toBe(1))

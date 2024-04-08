@@ -5,7 +5,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { store } from 'src/redux'
-import { applyCamelCase } from 'src/common/react-platform-components'
+import { applyCamelCase, axios } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -42,171 +42,232 @@ const connectedState = 'CONNECTED'
 const TEST_ENEDIS_NRLINK_ENPHASE_ERROR =
     'Nous rencontrons une erreur lors de la récupération de vos consentements d’un de vos compteurs ou capteurs. Veuillez réessayer plus tard'
 
+// TODO - Add tests for onAfterEnedisConsent creation callback.
 describe('useConsents test', () => {
-    test('when getConsents is called, state changes', async () => {
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents(), {
-            initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
-        })
-        act(() => {
-            result.current.getConsents(TEST_HOUSING_ID)
-        })
-        await waitForValueToChange(
-            () => {
-                return result.current.consentsLoading
-            },
-            { timeout: 6000 },
-        )
-        expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
-        expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(connectedState)
-        expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
-    }, 8000)
-    test('when there is server error while fetching consents, snackbar is shown only once', async () => {
-        store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
-        store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
+    describe('test getConsents request', () => {
+        test('when getConsents is called, state changes', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: TEST_METER_GUID } } } },
+            })
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.nrlinkConsent.nrlinkConsentState).toStrictEqual(connectedState)
+            expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(connectedState)
+            expect(result.current.enphaseConsent.enphaseConsentState).toStrictEqual('ACTIVE')
+        }, 8000)
+        test('when there is server error while fetching consents, snackbar is shown only once', async () => {
+            store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+            store.dispatch.housingModel.setHousingModelState(LIST_OF_HOUSES)
 
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents(), { store })
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents(), { store })
 
-        act(() => {
-            result.current.getConsents(TEST_HOUSING_ID)
-        })
-        await waitForValueToChange(
-            () => {
-                return result.current.consentsLoading
-            },
-            { timeout: 6000 },
-        )
-        expect(mockEnqueueSnackbar).toHaveBeenNthCalledWith(1, TEST_ENEDIS_NRLINK_ENPHASE_ERROR, {
-            autoHideDuration: 5000,
-            variant: 'error',
-        })
-    }, 8000)
-    test('when verifyMater request is performed succesfully', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
-        act(() => {
-            result.current.verifyMeter(TEST_HOUSES[0].id)
-        })
-        await waitForValueToChange(
-            () => {
-                return result.current.isMeterVerifyLoading
-            },
-            { timeout: 6000 },
-        )
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.VERIFIED)
-    }, 8000)
-    test('when verifyMeter request fails', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
-        act(() => {
-            result.current.verifyMeter(TEST_HOUSES[0].id)
-        })
-        await waitForValueToChange(
-            () => {
-                return result.current.isMeterVerifyLoading
-            },
-            { timeout: 6000 },
-        )
-        expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la vérification de votre compteur', {
-            autoHideDuration: 5000,
-            variant: 'error',
-        })
-    }, 10000)
-    test('when createEnedisSgeConsent request is performed successfully', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
-        expect(result.current.isCreateEnedisSgeConsentLoading).toBeFalsy()
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.consentsLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(mockEnqueueSnackbar).toHaveBeenNthCalledWith(1, TEST_ENEDIS_NRLINK_ENPHASE_ERROR, {
+                autoHideDuration: 5000,
+                variant: 'error',
+            })
+        }, 8000)
+        test('when getConsents is called, and housingId is null, state should be reset to undefined', async () => {
+            const axiosGetMock = jest.spyOn(axios, 'get')
+            // Mocking axios.get to resolve with an empty object
+            axiosGetMock.mockImplementation(() => Promise.resolve({}))
 
-        act(() => {
-            result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
-        })
-        expect(result.current.isCreateEnedisSgeConsentLoading).toBeTruthy()
-        await waitForValueToChange(
-            () => {
-                return result.current.isCreateEnedisSgeConsentLoading
-            },
-            { timeout: 6000 },
-        )
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: null } },
+            })
+            act(() => {
+                result.current.getConsents(null)
+            })
 
-        expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(
-            TEST_SUCCESS_ENEDIS_SGE_CONSENT.enedis_sge_consent_state,
-        )
-    }, 8000)
-    test('when createEnedisSgeConsent request fails', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
-        expect(result.current.isCreateEnedisSgeConsentLoading).toBeFalsy()
-        expect(result.current.createEnedisSgeConsentError).toBe(false)
+            expect(result.current.consentsLoading).toBe(false)
 
-        act(() => {
-            result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
+            expect(axiosGetMock).not.toHaveBeenCalled()
+
+            expect(result.current.nrlinkConsent).toStrictEqual(undefined)
+            expect(result.current.enedisSgeConsent).toStrictEqual(undefined)
+            expect(result.current.enphaseConsent).toStrictEqual(undefined)
+
+            // Restore original implementation
+            axiosGetMock.mockRestore()
         })
-        expect(result.current.isCreateEnedisSgeConsentLoading).toBeTruthy()
-        await waitForValueToChange(
-            () => {
-                return result.current.isCreateEnedisSgeConsentLoading
-            },
-            { timeout: 6000 },
-        )
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre compteur', {
-            autoHideDuration: 5000,
-            variant: 'error',
-        })
-    }, 8000)
-    test('when getEnphaseLink resolves', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken()
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useConsents())
-        expect(result.current.enphaseLink).toBeFalsy()
-        act(() => {
-            result.current.getEnphaseLink(TEST_HOUSES[0].id)
-        })
-        await waitForValueToChange(
-            () => {
-                return result.current.enphaseLink
-            },
-            { timeout: 6000 },
-        )
-        expect(result.current.enphaseLink).toBe('https://enlighten.enphaseenergy.com/')
-    }, 8000)
-    test('when getEnphaseLink fails', async () => {
-        const { store } = require('src/redux')
-        await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
-        const {
-            renderedHook: { result },
-        } = reduxedRenderHook(() => useConsents())
-        expect(result.current.enphaseLink).toBeFalsy()
-        act(() => {
-            result.current.getEnphaseLink()
-        })
-        expect(result.current.enphaseLink).toBe('')
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Erreur lors de la récupération du lien d'Enphase", {
-            autoHideDuration: 5000,
-            variant: 'error',
+        test('when getConsents is called, and there is no meter, state should be reset to undefined', async () => {
+            const axiosGetMock = jest.spyOn(axios, 'get')
+            // Mocking axios.get to resolve with an empty object
+            axiosGetMock.mockImplementation(() => Promise.resolve({}))
+
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useConsents(), {
+                initialState: { housingModel: { currentHousing: { meter: { guid: null } } } },
+            })
+            act(() => {
+                result.current.getConsents(TEST_HOUSING_ID)
+            })
+
+            expect(result.current.consentsLoading).toBe(false)
+
+            expect(axiosGetMock).not.toHaveBeenCalled()
+
+            expect(result.current.nrlinkConsent).toStrictEqual(undefined)
+            expect(result.current.enedisSgeConsent).toStrictEqual(undefined)
+            expect(result.current.enphaseConsent).toStrictEqual(undefined)
+
+            // Restore original implementation
+            axiosGetMock.mockRestore()
         })
     })
 
-    describe('revoke enphase consent', () => {
+    describe('test verifyMater request', () => {
+        test('when verifyMater request is performed succesfully', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+            expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
+            act(() => {
+                result.current.verifyMeter(TEST_HOUSES[0].id)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.isMeterVerifyLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.VERIFIED)
+        }, 8000)
+        test('when verifyMeter request fails', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+            expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
+            act(() => {
+                result.current.verifyMeter(TEST_HOUSES[0].id)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.isMeterVerifyLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.meterVerification).toStrictEqual(MeterVerificationEnum.NOT_VERIFIED)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la vérification de votre compteur', {
+                autoHideDuration: 5000,
+                variant: 'error',
+            })
+        }, 10000)
+    })
+
+    describe('test createEnedisSgeConsent request', () => {
+        test('when createEnedisSgeConsent request is performed successfully', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+            expect(result.current.isCreateEnedisSgeConsentLoading).toBeFalsy()
+
+            act(() => {
+                result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
+            })
+            expect(result.current.isCreateEnedisSgeConsentLoading).toBeTruthy()
+            await waitForValueToChange(
+                () => {
+                    return result.current.isCreateEnedisSgeConsentLoading
+                },
+                { timeout: 6000 },
+            )
+
+            expect(result.current.enedisSgeConsent.enedisSgeConsentState).toStrictEqual(
+                TEST_SUCCESS_ENEDIS_SGE_CONSENT.enedis_sge_consent_state,
+            )
+        }, 8000)
+        test('when createEnedisSgeConsent request fails', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_SNACKBAR_ERROR)
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+            expect(result.current.isCreateEnedisSgeConsentLoading).toBeFalsy()
+            expect(result.current.createEnedisSgeConsentError).toBe(false)
+
+            act(() => {
+                result.current.createEnedisSgeConsent(TEST_HOUSES[0].id)
+            })
+            expect(result.current.isCreateEnedisSgeConsentLoading).toBeTruthy()
+            await waitForValueToChange(
+                () => {
+                    return result.current.isCreateEnedisSgeConsentLoading
+                },
+                { timeout: 6000 },
+            )
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre compteur', {
+                autoHideDuration: 5000,
+                variant: 'error',
+            })
+        }, 8000)
+    })
+    describe('test getEnphaseLink request', () => {
+        test('when getEnphaseLink resolves', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken()
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useConsents())
+            expect(result.current.enphaseLink).toBeFalsy()
+            act(() => {
+                result.current.getEnphaseLink(TEST_HOUSES[0].id)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.enphaseLink
+                },
+                { timeout: 6000 },
+            )
+            expect(result.current.enphaseLink).toBe('https://enlighten.enphaseenergy.com/')
+        }, 8000)
+        test('when getEnphaseLink fails', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken(TEST_ERROR)
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useConsents())
+            expect(result.current.enphaseLink).toBeFalsy()
+            act(() => {
+                result.current.getEnphaseLink()
+            })
+            expect(result.current.enphaseLink).toBe('')
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Erreur lors de la récupération du lien d'Enphase", {
+                autoHideDuration: 5000,
+                variant: 'error',
+            })
+        })
+    })
+
+    describe('test revoke enphase consent request', () => {
         test('when its success', async () => {
             const { store } = require('src/redux')
             await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)
@@ -283,7 +344,7 @@ describe('useConsents test', () => {
         }, 8000)
     })
 
-    describe('revoke nrlink consent', () => {
+    describe('test revoke nrlink consent request', () => {
         test('when its success', async () => {
             const { store } = require('src/redux')
             await store.dispatch.userModel.setAuthenticationToken(TEST_SUCCESS)

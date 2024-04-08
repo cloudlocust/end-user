@@ -2,89 +2,9 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { RegisterForm } from 'src/modules/User/Register/RegisterForm'
 import { act } from 'react-dom/test-utils'
-import { ADDRESS_TESTID } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField.test'
 import userEvent from '@testing-library/user-event'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
-import dayjs from 'dayjs'
-
-// ============================================ this part is for required data to mock the address field ===============
-/**
- *
- */
-export const suggestionData = [
-    {
-        description: 'Rue Général Lotz 37, Uccle, Belgique',
-        place_id: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
-        structured_formatting: {
-            main_text: 'Rue Général Lotz 37',
-            secondary_text: 'Uccle, Belgique',
-            main_text_matched_substrings: [
-                {
-                    length: 7,
-                    offset: 0,
-                },
-                {
-                    length: 2,
-                    offset: 17,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Général de Larminat, Bordeaux, France',
-        place_id: 'ChIJUXSNwe0nVQ0RJu1MfaIwZbY',
-        structured_formatting: {
-            main_text: '37 Rue Général de Larminat',
-            secondary_text: 'Bordeaux, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Général Mangin, Grenoble, France',
-        place_id: 'ChIJo1WQ1pn0ikcR8eXMBbeo_5s',
-        structured_formatting: {
-            main_text: '37 Rue Général Mangin',
-            secondary_text: 'Grenoble, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-    {
-        description: '37 Rue Genton, Lyon, France',
-        place_id: 'ChIJTy9oE_LB9EcR7mmGhV5S1dY',
-        structured_formatting: {
-            main_text: '37 Rue Genton',
-            secondary_text: 'Lyon, France',
-            main_text_matched_substrings: [
-                {
-                    length: 2,
-                    offset: 0,
-                },
-                {
-                    length: 7,
-                    offset: 3,
-                },
-            ],
-        },
-    },
-]
+import { mockSuggestionAddressesData } from 'src/helpers/testVariables'
 
 const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
@@ -95,9 +15,11 @@ const INVALID_PASSWORD_FIELD_ERROR =
 const formatted_test_country = 'test country'
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
-export const passwordQuerySelector = 'input[name="password"]'
 const VALIDER_TEXT = 'Valider'
+
 const BIRTHDATE_lABEL = 'Date de naissance (optionnel)'
+const ADDRESS_TESTID = 'AddressAutoCompleteField'
+const INPUT_SECRET_QUERY_SELECTOR = 'input[name="password"]'
 
 jest.mock('use-places-autocomplete', () => ({
     ...jest.requireActual('use-places-autocomplete'),
@@ -106,7 +28,7 @@ jest.mock('use-places-autocomplete', () => ({
     default: () => ({
         setValue: mockSetValue,
         suggestions: {
-            data: suggestionData,
+            data: mockSuggestionAddressesData,
         },
         init: mockInit,
     }),
@@ -165,9 +87,9 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     userEvent.type(companyName, TEST_SUCCESS_USER.company_name)
     const siren = getByRole('textbox', { name: 'Siren' })
     userEvent.type(siren, TEST_SUCCESS_USER.siren)
-    const firstNameField = getByRole('textbox', { name: 'Prénom' })
+    const firstNameField = getByRole('textbox', { name: "Prénom présent sur votre facture d'électricité" })
     userEvent.type(firstNameField, 'test prénom')
-    const lastNameField = getByRole('textbox', { name: 'Nom' })
+    const lastNameField = getByRole('textbox', { name: "Nom présent sur votre facture d'électricité" })
     userEvent.type(lastNameField, 'test nom')
     const emailField = getByRole('textbox', { name: 'Email' })
     userEvent.type(emailField, TEST_EMAIL)
@@ -176,7 +98,7 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     // Be careful password is not a role
     // https://github.com/testing-library/dom-testing-library/issues/567
     // To get the element password you can use this: const getByLabelText(/password/i)
-    const passwordField = container.querySelector(passwordQuerySelector) as Element
+    const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR) as Element
     userEvent.type(passwordField, 'P@ssword1')
     const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
     userEvent.type(repeatPasswordField, 'P@ssword1')
@@ -258,7 +180,7 @@ describe('test registerForm', () => {
 
     test('Password field is invalid', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
+        const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR) as Element
         userEvent.type(passwordField, '12345678')
         userEvent.click(screen.getByText(VALIDER_TEXT))
         await waitFor(() => expect(getAllByText(INVALID_PASSWORD_FIELD_ERROR).length).toBe(1))
@@ -266,7 +188,7 @@ describe('test registerForm', () => {
     test('Repeat password validation', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
         await act(async () => {
-            const passwordField = container.querySelector(passwordQuerySelector)
+            const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR)
             expect(passwordField).not.toBe(null)
             // This condition is only to prevent tscript from yelling.
             if (passwordField !== null) {
@@ -283,7 +205,7 @@ describe('test registerForm', () => {
         expect(mockOnSubmit).not.toHaveBeenCalled()
         expect(getAllByText('Les mot de passes ne correspondent pas.').length).toBe(1)
     })
-    test('Normal case with call to submit', async () => {
+    test('Normal case, no zipCode blocage with call to submit', async () => {
         const { getByRole, getByTestId, container, getByLabelText, getAllByRole, getByText } = reduxedRender(
             <RegisterForm defaultRole="defaultRle" />,
         )
@@ -304,37 +226,33 @@ describe('test registerForm', () => {
         expect(screen.getByText('Valider')).toBeTruthy()
         await waitFor(
             () => {
-                expect(mockOnSubmit).toHaveBeenCalledWith({
-                    companyName: TEST_SUCCESS_USER.company_name,
-                    siren: TEST_SUCCESS_USER.siren,
-                    civility: TEST_CIVILITY_OPTION.value,
-                    email: TEST_EMAIL,
-                    firstName: 'test prénom',
-                    lastName: 'test nom',
-                    phone: TEST_SUCCESS_USER.phone,
-                    /**
-                     * TODO: Rewrite the birthdate test.
-                     * There is a difficult in simulating the datepicker.
-                     * When it's clicked using userEvent.click
-                     * It takes the current date.
-                     */
-                    birthdate: dayjs().format('DD/MM/YYYY'),
-                    password: 'P@ssword1',
-                    address: {
-                        city: 'test locality',
-                        country: 'test country',
-                        lat: 1,
-                        lng: 2,
-                        name: 'normal formatted_address',
-                        placeId: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
-                        zipCode: '1234',
+                expect(mockOnSubmit).toHaveBeenCalledWith(
+                    {
+                        companyName: TEST_SUCCESS_USER.company_name,
+                        siren: TEST_SUCCESS_USER.siren,
+                        civility: TEST_CIVILITY_OPTION.value,
+                        email: TEST_EMAIL,
+                        firstName: 'test prénom',
+                        lastName: 'test nom',
+                        phone: TEST_SUCCESS_USER.phone,
+                        password: 'P@ssword1',
+                        address: {
+                            city: 'test locality',
+                            country: 'test country',
+                            lat: 1,
+                            lng: 2,
+                            name: 'normal formatted_address',
+                            placeId: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
+                            zipCode: '1234',
+                        },
+                        role: 'defaultRle',
                     },
-                    role: 'defaultRle',
-                })
+                    undefined,
+                )
             },
             { timeout: 3000 },
         )
-    }, 25000)
+    }, 50000)
     test('if siren field is invalid', async () => {
         const { getByRole, getByText, getAllByRole, getByLabelText } = reduxedRender(<RegisterForm />)
         handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)

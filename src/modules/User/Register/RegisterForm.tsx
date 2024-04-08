@@ -15,12 +15,11 @@ import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import { MenuItem, TextField as MuiTextFieldSelect } from '@mui/material'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
-import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { isProfessionalRegisterFeature, allowedZipCodesInRegistration } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
-import dayjs from 'dayjs'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
@@ -74,20 +73,22 @@ export const RegisterForm = ({
      *
      * @param param0 N/A.
      * @param param0.repeatPwd Repeated password.
-     * @param param0.birthdate Birthdate.
      * @returns OnSubmit.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    const onSubmitWrapper = async ({ repeatPwd, birthdate, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
+    const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
             setRgpdCheckboxState('')
             return
         }
 
-        // ! DatePicker throws an error when passing DD/MM/YYYY format to valideFormat props.
-        const formattedBirthdate = dayjs(birthdate).format('DD/MM/YYYY')
-
-        onSubmit({ ...cleanData, birthdate: formattedBirthdate, role: defaultRole })
+        onSubmit(
+            {
+                ...cleanData,
+                role: defaultRole,
+            },
+            allowedZipCodesInRegistration,
+        )
     }
 
     return (
@@ -140,9 +141,21 @@ export const RegisterForm = ({
                     children={civilityOptionsList.map((civility) => {
                         return <MenuItem value={civility.value}>{civility.label}</MenuItem>
                     })}
+                    formControlProps={{
+                        margin: 'normal',
+                    }}
                 />
-                <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
-                <TextField name="lastName" label="Nom" validateFunctions={[requiredBuilder()]} />
+                <TextField
+                    name="firstName"
+                    label="Prénom présent sur votre facture d'électricité"
+                    validateFunctions={[requiredBuilder()]}
+                    variant="outlined"
+                />
+                <TextField
+                    name="lastName"
+                    label="Nom présent sur votre facture d'électricité"
+                    validateFunctions={[requiredBuilder()]}
+                />
                 <TextField name="email" label="Email" validateFunctions={[requiredBuilder(), email()]} />
                 <PhoneNumber
                     name="phone"

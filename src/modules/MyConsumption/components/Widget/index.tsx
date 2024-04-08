@@ -12,8 +12,9 @@ import { computePercentageChange } from 'src/modules/Analysis/utils/computationF
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 const emptyValueUnit = { value: 0, unit: '' }
 
 /**
@@ -30,11 +31,23 @@ export const DEFAULT_NO_VALUE_MESSAGE = 'Aucune donnée disponible'
  * @param props.infoIcons InfoIcon showed in top right of widgets.
  * @param props.targets Targets of the widget.
  * @param props.period Current Period.
+ * @param props.childrenPosition .
  * @returns Widget Component.
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Widget = memo(
-    ({ filters, range, infoIcons, metricsInterval, targets, period, enphaseOff, children }: IWidgetProps) => {
+    ({
+        filters,
+        range,
+        infoIcons,
+        metricsInterval,
+        targets,
+        period,
+        enphaseOff,
+        children,
+        childrenPosition = 'top',
+    }: // eslint-disable-next-line sonarjs/cognitive-complexity
+    IWidgetProps) => {
+        const { consumptionToggleButton } = useMyConsumptionStore()
         const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
             interval: metricsInterval,
             range: getWidgetRange(range, period),
@@ -58,7 +71,7 @@ export const Widget = memo(
             filters,
         })
 
-        const { storeWidgetMetricsData } = useContext(ConsumptionWidgetsMetricsContext)
+        const { storeWidgetMetricsData, currentRangeMetricWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
 
         useEffect(() => {
             storeWidgetMetricsData(data)
@@ -82,7 +95,14 @@ export const Widget = memo(
                     oldValue,
                     percentageChange,
                 }
-                targetsInfos[target] = targetInfos
+                if (target === metricTargetsEnum.injectedProduction) {
+                    // in injection production we display the target only if value of it exists.
+                    if (value) {
+                        targetsInfos[target] = targetInfos
+                    }
+                } else {
+                    targetsInfos[target] = targetInfos
+                }
             })
             return targetsInfos
         }, [data, oldData, targets])
@@ -114,8 +134,29 @@ export const Widget = memo(
             }
         }, [period, range, setRange, setRangePrevious])
 
+        // We use this hook to check if the injectedProduction metrics exists in the currentRangeMetricWidgetsData and their value are not null.
+        const isInjectedProductionAvailable = useMemo(() => {
+            if (targets.includes(metricTargetsEnum.autoconsumption)) {
+                const injectedProductionMetrics = currentRangeMetricWidgetsData.find(
+                    (item) => item.target === metricTargetsEnum.injectedProduction,
+                )
+                return injectedProductionMetrics?.datapoints.some((item) => item[0] !== null) ?? false
+            }
+            return false
+        }, [currentRangeMetricWidgetsData, targets])
+
+        const isAutoconsmptionProductionTab =
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        // display the widget autoconsumption only if isInjectedProductionAvailable is true.
+        if (
+            targets.includes(metricTargetsEnum.autoconsumption) &&
+            isAutoconsmptionProductionTab &&
+            !isInjectedProductionAvailable
+        )
+            return null
+
         return (
-            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex">
+            <Grid item xs={6} sm={6} md={4} lg={3} xl={3} className="flex" data-testid="widget">
                 <Card className="w-full rounded-20 shadow sm:m-4" variant="outlined" style={{ minHeight: '170px' }}>
                     <>
                         {isMetricsLoading ? (
@@ -127,7 +168,7 @@ export const Widget = memo(
                             </div>
                         ) : (
                             <div className="h-full flex flex-col">
-                                {children}
+                                {childrenPosition === 'top' ? children : <></>}
                                 {(Object.keys(targetsInfos) as metricTargetType[]).map((target, index) => (
                                     <WidgetItem
                                         key={index}
@@ -137,21 +178,14 @@ export const Widget = memo(
                                         value={targetsInfos[target].value}
                                         unit={targetsInfos[target].unit}
                                         percentageChange={targetsInfos[target].percentageChange}
-                                        period={period}
                                         noValueMessage={
-                                            target === metricTargetsEnum.pMax && period === PeriodEnum.DAILY ? (
-                                                // maxWidth to have a more balanced text.
-                                                <TypographyFormatMessage style={{ maxWidth: '90%' }}>
-                                                    La puissance maximale n'est pas disponible sur la journée en cours
-                                                </TypographyFormatMessage>
-                                            ) : (
-                                                <TypographyFormatMessage>
-                                                    {DEFAULT_NO_VALUE_MESSAGE}
-                                                </TypographyFormatMessage>
-                                            )
+                                            <TypographyFormatMessage>
+                                                {DEFAULT_NO_VALUE_MESSAGE}
+                                            </TypographyFormatMessage>
                                         }
                                     />
                                 ))}
+                                {childrenPosition === 'bottom' ? children : <></>}
                             </div>
                         )}
                     </>

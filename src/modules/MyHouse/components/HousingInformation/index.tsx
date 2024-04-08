@@ -4,29 +4,29 @@ import { Button, Icon } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { AccomodationForm } from 'src/modules/MyHouse/components/Accomodation/AccomodationForm'
-import { InstallationForm } from 'src/modules/MyHouse/components/Installation/InstallationForm'
+import { AccomodationTab } from 'src/modules/MyHouse/components/Accomodation/AccomodationTab'
+import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 
 /**
  * Page component for housing information.
  *
  * It regroups Accomodation tab & Equipments tab component.
  *
- * @returns HHousing information tabs page.
+ * @returns Housing information tabs page.
  */
 export const HousingInformation = () => {
     const theme = useTheme()
     const history = useHistory()
     const tabsContent = [
         {
-            tabTitle: 'Info Logement',
+            tabTitle: 'Ma maison',
             tabSlug: 'accomodation',
-            tabContent: <AccomodationForm />,
+            tabContent: <AccomodationTab />,
         },
         {
             tabTitle: 'Info Installation',
             tabSlug: 'installation',
-            tabContent: <InstallationForm />,
+            tabContent: <InstallationTab />,
         },
     ]
 

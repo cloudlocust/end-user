@@ -7,8 +7,6 @@ import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 export type widgetTitleType =
     | 'Consommation Totale'
     | 'Puissance Maximale'
-    | 'Température Intérieure'
-    | 'Température Extérieure'
     | 'Coût Total'
     | 'Production Totale'
     | 'Injectée'
@@ -57,6 +55,10 @@ export interface IWidgetProps {
      * Children of the Widget.
      */
     children?: ReactNode | ReactElement
+    /**
+     * Position of the children.
+     */
+    childrenPosition?: 'top' | 'bottom'
 }
 
 /**

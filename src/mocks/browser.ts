@@ -7,67 +7,80 @@ import { setupWorker } from 'msw'
 // const handlers: any = []
 
 /** Mock requests. */
-import { userEndpoints } from './handlers/user'
-import { metersEndpoints } from './handlers/meters'
-import { nrlinkEndpoints } from './handlers/nrlink'
-import { equipmentsEndpoints } from './handlers/equipments'
-import { accomodationEndpoints } from './handlers/accomodation'
-import { metricsEndpoints } from './handlers/metrics'
+import { userEndpoints } from 'src/mocks/handlers/user'
+import { metersEndpoints } from 'src/mocks/handlers/meters'
+import { nrlinkEndpoints } from 'src/mocks/handlers/nrlink'
+import { equipmentsEndpoints } from 'src/mocks/handlers/equipments'
+import { accomodationEndpoints } from 'src/mocks/handlers/accomodation'
+import { metricsEndpoints } from 'src/mocks/handlers/metrics'
 import { consentsEndpoints } from 'src/mocks/handlers/consents'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
-import { contractsEndpoints } from './handlers/contracts'
+import { contractsEndpoints } from 'src/mocks/handlers/contracts'
 import { commercialOfferEndpoints } from 'src/mocks/handlers/commercialOffer'
 import { installationRequestsEndpoints } from 'src/mocks/handlers/installationRequests'
 import { solarEquipmentsEndpoints } from 'src/mocks/handlers/solarEquipments'
 import { ecowattEndpoints } from 'src/mocks/handlers/ecowatt'
 import { consumptionAlertsEndpoints } from 'src/mocks/handlers/consumptionAlerts'
-import { ecogestesEndpoints } from './handlers/ecogestes'
+import { ecogestesEndpoints } from 'src/mocks/handlers/ecogestes'
 import { novuALertPreferencesEndpoints } from 'src/mocks/handlers/novuAlertPreferences'
 import { connectedPlugsEndpoints } from 'src/mocks/handlers/connectedPlugs'
-import { accessRightsEndpoints } from './handlers/accessRights'
+import { accessRightsEndpoints } from 'src/mocks/handlers/accessRights'
+import { activitiesEndpoints } from 'src/mocks/handlers/labelization'
 import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
+import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
+import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
+import { installationEndpoints } from 'src/mocks/handlers/installation'
 
 /**
  * Handlers to mock urls for tests.
  */
 export const handlers = [
-    /******User REQUESTS*****/
+    /***** User endpoints *****/
     ...userEndpoints,
-    /******Meters REQUESTS*****/
+    /***** Meters endpoints *****/
     ...metersEndpoints,
-    /******NrLink REQUESTS*****/
+    /***** NrLink endpoints *****/
     ...nrlinkEndpoints,
-    /******Equipments REQUESTS*****/
+    /***** Equipments endpoints *****/
     ...equipmentsEndpoints,
-    /******accomodation REQUESTS*****/
+    /***** accomodation endpoints *****/
     ...accomodationEndpoints,
-    /******Metrics REQUESTS*****/
+    /***** Metrics endpoints *****/
     ...metricsEndpoints,
-    /******Consents REQUESTS*****/
+    /***** Consents endpoints *****/
     ...consentsEndpoints,
-    /******Housing REQUESTS*****/
+    /***** Housing endpoints *****/
     ...housingEndpoints,
-    /******Contracts REQUESTS*****/
+    /***** Contracts endpoints *****/
     ...contractsEndpoints,
-    /******Commercial Offer REQUEST*****/
+    /***** Commercial Offer endpoints *****/
     ...commercialOfferEndpoints,
-    /******Installation Requests *****/
+    /***** Installation endpoints *****/
     ...installationRequestsEndpoints,
-    /*** Solar Equipment requets */
+    /***** Solar Equipment endpoints *****/
     ...solarEquipmentsEndpoints,
-    /** Ecowatt requests. */
+    /***** Ecowatt endpoints. *****/
     ...ecowattEndpoints,
-    /** Consumption Alerts. */
+    /***** Consumption Alerts endpoints. *****/
     ...consumptionAlertsEndpoints,
-    /** Ecogestes and categories. */
+    /***** Ecogestes and categories endpoints. *****/
     ...ecogestesEndpoints,
-    /**** Novu Alert Preferences endpoint. */
+    /***** Novu Alert Preferences endpoints. *****/
     ...novuALertPreferencesEndpoints,
-    /***** Connected Plug Consent State endpoint. */
+    /***** Connected Plug Consent State endpoints. *****/
     ...connectedPlugsEndpoints,
-    /****** Access rights endpiont. */
+    /***** Access rights endpoints. *****/
     ...accessRightsEndpoints,
+    /***** Activities endpoints. *****/
+    ...activitiesEndpoints,
+    /***** Dashboard endpoints. *****/
     ...DashboardEndpoints,
+    /***** SolarSizing endpoints. *****/
+    ...solarSizingEndpoints,
+    /***** Alpiq Subscription Endpoints. *****/
+    ...AlpiqSubscriptionEndpoints,
+    /***** Installation informations Endpoints. *****/
+    ...installationEndpoints,
 ]
 
 /**
