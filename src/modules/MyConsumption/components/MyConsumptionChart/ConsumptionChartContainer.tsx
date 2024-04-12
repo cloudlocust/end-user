@@ -373,6 +373,12 @@ ConsumptionChartContainerProps) => {
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
         return getMessageOfSuccessiveMissingDataOfCurrentDay(consumptionChartData, period, range)
     }, [consumptionChartData, period, range])
+
+    // Callback to check if the range is in the current year.
+    const isRangeInCurrentYear = useCallback(() => {
+        return new Date(range.from).getFullYear() === new Date().getFullYear()
+    }, [range])
+
     /**
      * Checks if all yearly consumption data is available.
      *
@@ -382,17 +388,14 @@ ConsumptionChartContainerProps) => {
         return (
             consumptionChartData.length > 0 &&
             Array.from({ length: 12 }).every((_element, index) => {
+                // In the current year, we ignore the future months.
+                if (isRangeInCurrentYear() && index > new Date().getMonth()) return true
                 return consumptionChartData.some((item) => {
                     return item.datapoints[index] && !!item.datapoints[index][0]
                 })
             })
         )
-    }, [consumptionChartData])
-
-    // Callback to check if the range is in the current year.
-    const isRangeInCurrentYear = useCallback(() => {
-        return new Date(range.from).getFullYear() === new Date().getFullYear()
-    }, [range])
+    }, [consumptionChartData, isRangeInCurrentYear])
 
     /**
      * Handles the selection of years in the date picker.
@@ -443,8 +446,7 @@ ConsumptionChartContainerProps) => {
     const onDisplayTooltipLabel = useCallback((label) => {
         return label.value !== null && label.value !== undefined
     }, [])
-    const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
-    const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
+
     // We disable the consumption identifier button temporarily, must remove this const when you enable it.
     const isConsumptionIdentifierButtonDisablingTemporarily = true
 
@@ -589,11 +591,9 @@ ConsumptionChartContainerProps) => {
                     />
                 </>
             )}
-            {period === PeriodEnum.YEARLY &&
-                !isDefaultContractWarningShown &&
-                !isConsumptionEnedisSgeWarningShown &&
-                !isMetricsLoading &&
-                !checkIfAllYearlyDataExist() && <MissingDataWarning />}
+            {period === PeriodEnum.YEARLY && !isMetricsLoading && !checkIfAllYearlyDataExist() && (
+                <MissingDataWarning />
+            )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
             {!isConsumptionIdentifierButtonDisablingTemporarily && mdDown && period === 'daily' && (
