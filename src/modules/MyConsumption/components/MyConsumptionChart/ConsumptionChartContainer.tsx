@@ -377,7 +377,7 @@ ConsumptionChartContainerProps) => {
     // Callback to check if the range is in the current year.
     const isRangeInCurrentYear = useCallback(() => {
         return new Date(range.from).getFullYear() === new Date().getFullYear()
-    }, [range])
+    }, [range.from])
 
     /**
      * Checks if all yearly consumption data is available.
