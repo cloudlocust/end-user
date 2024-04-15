@@ -46,6 +46,7 @@ import {
 import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
 import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { SolarInstallationRecommendationButton } from 'src/modules/MyConsumption/components/SolarInstallationRecommendationButton'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -501,12 +502,17 @@ ConsumptionChartContainerProps) => {
     return (
         <div className="mb-12">
             {(isIdleShown || isAutoConsumptionProductionShown) && (
-                <div className="pb-16 w-full flex justify-center">
+                <div className="pb-8 w-full flex justify-center">
                     <SwitchConsumptionButton
                         onSwitchConsumptionButton={onSwitchConsumptionButton}
                         isIdleShown={isIdleShown}
                         isAutoConsumptionProductionShown={isAutoConsumptionProductionShown}
                     />
+                </div>
+            )}
+            {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
+                <div className="pb-8 w-full flex">
+                    <SolarInstallationRecommendationButton />
                 </div>
             )}
             <div
