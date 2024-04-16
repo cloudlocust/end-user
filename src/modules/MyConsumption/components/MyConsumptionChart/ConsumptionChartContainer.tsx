@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import dayjs from 'dayjs'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
-import { useTheme, useMediaQuery, Typography } from '@mui/material'
+import { useTheme, Typography } from '@mui/material'
 import { IMetric, metricTargetsEnum, metricTargetType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -86,7 +86,6 @@ export const ConsumptionChartContainer = ({
 ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
@@ -448,9 +447,6 @@ ConsumptionChartContainerProps) => {
         return label.value !== null && label.value !== undefined
     }, [])
 
-    // We disable the consumption identifier button temporarily, must remove this const when you enable it.
-    const isConsumptionIdentifierButtonDisablingTemporarily = true
-
     /**
      *  Function for rendering a component when all labels are missing in the tooltip.
      */
@@ -510,6 +506,12 @@ ConsumptionChartContainerProps) => {
                     />
                 </div>
             )}
+
+            {period === 'daily' && (
+                <div className="pt-2 w-full flex">
+                    <ConsumptionIdentifierButton size="small" className="px-16" />
+                </div>
+            )}
             {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
                 <div className="pb-8 w-full flex">
                     <SolarInstallationRecommendationButton />
@@ -545,9 +547,6 @@ ConsumptionChartContainerProps) => {
                     hidePmax={hidePmax}
                     activeButton={targetMenuActiveButton}
                 />
-                {!isConsumptionIdentifierButtonDisablingTemporarily && !mdDown && period === 'daily' && (
-                    <ConsumptionIdentifierButton size="small" className="px-16" />
-                )}
             </div>
             <div>
                 <MyConsumptionDatePicker
@@ -602,11 +601,6 @@ ConsumptionChartContainerProps) => {
             )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-            {!isConsumptionIdentifierButtonDisablingTemporarily && mdDown && period === 'daily' && (
-                <div className="flex justify-center px-24 py-8">
-                    <ConsumptionIdentifierButton fullWidth />
-                </div>
-            )}
         </div>
     )
 }
