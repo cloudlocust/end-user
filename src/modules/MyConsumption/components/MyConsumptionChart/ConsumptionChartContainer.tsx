@@ -506,14 +506,14 @@ ConsumptionChartContainerProps) => {
                     />
                 </div>
             )}
-            {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
-                <div className="pb-8 w-full flex">
-                    <SolarInstallationRecommendationButton />
-                </div>
-            )}
             {period === 'daily' && (
                 <div className="pt-2 w-full flex">
                     <ConsumptionIdentifierButton size="small" className="px-16" />
+                </div>
+            )}
+            {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
+                <div className="pb-8 pt-8 w-full flex">
+                    <SolarInstallationRecommendationButton />
                 </div>
             )}
             <div
