@@ -23,6 +23,7 @@ import { SwitchConsumptionButtonLabelEnum } from 'src/modules/MyConsumption/comp
 import { NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { screen, within } from '@testing-library/react'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -186,6 +187,22 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     get manualContractFillingIsEnabled() {
         return mockManualContractFillingIsEnabled
     },
+}))
+
+let mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    /**
+     * Mock useMyConsumptionStore hook for we can change between tabs.
+     *
+     * @returns Current tab.
+     */
+    useMyConsumptionStore: () => ({
+        consumptionToggleButton: mockMyConsumptionTab,
+        isPartiallyYearlyDataExist: true,
+        setPartiallyYearlyDataExist: jest.fn(),
+        resetToDefault: jest.fn(),
+        setConsumptionToggleButton: jest.fn(),
+    }),
 }))
 
 // Now, when you import and use echarts-for-react in your Jest tests
@@ -586,6 +603,21 @@ describe('MyConsumptionContainer test', () => {
 
             // test with General Properties, because it is always shown.
             expect(() => getByText(SwitchConsumptionButtonLabelEnum.General)).toThrow()
+        })
+    })
+
+    describe('SolarInstallationRecommendationButton Test', () => {
+        test('should SolarInstallationRecommendation Button must be shown on production view', async () => {
+            echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+            mockEnedisConsent = mockEnedisSgeConsentConnected
+            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            expect(getByTestId('solarInstallationRecommendationButton')).toBeInTheDocument()
         })
     })
 })
