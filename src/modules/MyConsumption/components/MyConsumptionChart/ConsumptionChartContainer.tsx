@@ -513,7 +513,7 @@ ConsumptionChartContainerProps) => {
                 </div>
             )}
             {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
-                <div className="pb-8 w-full flex">
+                <div className="pb-8 pt-8 w-full flex">
                     <SolarInstallationRecommendationButton />
                 </div>
             )}
