@@ -506,7 +506,6 @@ ConsumptionChartContainerProps) => {
                     />
                 </div>
             )}
-
             {period === 'daily' && (
                 <div className="pt-2 w-full flex">
                     <ConsumptionIdentifierButton size="small" className="px-16" />
