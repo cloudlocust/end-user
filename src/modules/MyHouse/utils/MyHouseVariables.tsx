@@ -1,14 +1,10 @@
 import { chunk, filter, zip } from 'lodash'
-import { ISelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtonsTypes'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
-import { SvgIcon, Theme } from '@mui/material'
-import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
-import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/housing/Vitroceramic.svg'
-import { ReactComponent as FontElectrique } from 'src/assets/images/content/housing/FontElectrique.svg'
+import { Theme } from '@mui/material'
 import { API_RESOURCES_URL } from 'src/configs'
-import { GroupsOutlined as Groups, Bolt as ElectricityIcon, MoreHoriz as OtherIcon } from '@mui/icons-material'
-import { EquipmentOptionsType } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
+import { EquipmentOptionsType, SelectFormOptions } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { EquipmentIcon } from 'src/modules/MyHouse/components/Equipments/EquipmentIcon'
+import { FormattedMessage } from 'src/common/react-platform-translation'
 
 /**
  * Access rights url.
@@ -121,148 +117,128 @@ export const performanceOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
  */
 export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 
-const buttonStyle = 'p-16 w-full flex flex-col col-span-12 sm:col-span-4'
-const wrapperStyles = 'grid grid-cols-12 gap-14 mt-10'
-const iconStyles = 'my-5 h-56'
-const customSvgIconsStyling = {
-    marginTop: '5px',
-    marginBottom: '5px',
-    height: '50px',
-    width: '50px',
-}
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const heaterEquipment: ISelectButtons = {
+/**
+ * Heater options.
+ */
+export const heaterEquipment: SelectFormOptions = {
     name: 'heater',
-    wrapperStyles,
-    titleLabel: 'Type de chauffage :',
-    formOptions: [
-        {
-            label: 'Collectif',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <Groups />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'collective',
-        },
-        {
-            label: 'Individuel Electrique',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <ElectricityIcon />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'individual',
-        },
-        {
-            label: 'Autre',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <OtherIcon />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'other',
-        },
-    ],
-}
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const sanitaryEquipment: ISelectButtons = {
-    name: 'sanitary',
-    wrapperStyles,
-    titleLabel: 'Eau chaude sanitaire :',
+    titleLabel: <FormattedMessage id="Type" defaultMessage="Type" />,
     formOptions: [
         {
-            label: 'Collectif',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <Groups />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'collective',
-        },
-        {
-            label: 'Individuel Electrique',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <ElectricityIcon />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'individual',
-        },
-        {
-            label: 'Autre',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <OtherIcon />
-                </SvgIcon>
-            ),
-            buttonStyle,
-            iconStyles,
-            value: 'other',
-        },
-    ],
-}
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-export const hotPlateEquipment: ISelectButtons = {
-    name: 'hotplate',
-    wrapperStyles,
-    titleLabel: 'Type de plaques de cuisson :',
-    formOptions: [
-        {
-            label: 'Induction',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <InductionIcon />
-                </SvgIcon>
-            ),
-            buttonStyle: `${buttonStyle} sm:col-span-7`,
-            iconStyles,
-            value: 'induction',
-        },
-        {
-            label: 'Électrique (fonte)',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <FontElectrique />
-                </SvgIcon>
-            ),
-            buttonStyle: `${buttonStyle} sm:col-span-5`,
-            iconStyles,
+            label: <FormattedMessage id="Électricité" defaultMessage="Électricité" />,
             value: 'electricity',
         },
         {
-            label: 'Vitrocéramique',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <VitroceramicIcon />
-                </SvgIcon>
-            ),
-            buttonStyle: `${buttonStyle} sm:col-span-5`,
-            iconStyles,
+            label: <FormattedMessage id="Gaz" defaultMessage="Gaz" />,
+            value: 'gas',
+        },
+        {
+            label: <FormattedMessage id="Collectif" defaultMessage="Collectif" />,
+            value: 'collective',
+        },
+        {
+            label: <FormattedMessage id="Propane en citerne" defaultMessage="Propane en citerne" />,
+            value: 'propane_tank',
+        },
+        {
+            label: <FormattedMessage id="Fioul en cuve" defaultMessage="Fioul en cuve" />,
+            value: 'fuel_oil_tank',
+        },
+        {
+            label: <FormattedMessage id="Poêle à granulés" defaultMessage="Poêle à granulés" />,
+            value: 'pellet_stove',
+        },
+        {
+            label: <FormattedMessage id="Cheminée" defaultMessage="Cheminée" />,
+            value: 'chimney',
+        },
+        {
+            label: <FormattedMessage id="Pompe à chaleur" defaultMessage="Pompe à chaleur" />,
+            value: 'heat_pump',
+        },
+        {
+            label: <FormattedMessage id="Autre" defaultMessage="Autre" />,
+            value: 'other',
+        },
+    ],
+}
+
+/**
+ * Sanitary options.
+ */
+export const sanitaryEquipment: SelectFormOptions = {
+    name: 'sanitary',
+    titleLabel: <FormattedMessage id="Type" defaultMessage="Type" />,
+    formOptions: [
+        {
+            label: <FormattedMessage id="Électricité" defaultMessage="Électricité" />,
+            value: 'electricity',
+        },
+        {
+            label: <FormattedMessage id="Gaz" defaultMessage="Gaz" />,
+            value: 'gas',
+        },
+        {
+            label: <FormattedMessage id="Collectif" defaultMessage="Collectif" />,
+            value: 'collective',
+        },
+        {
+            label: <FormattedMessage id="Chauffe-eau solaire" defaultMessage="Chauffe-eau solaire" />,
+            value: 'solar',
+        },
+        {
+            label: <FormattedMessage id="Chauffe-eau thermodynamique" defaultMessage="Chauffe-eau thermodynamique" />,
+            value: 'thermodynamic',
+        },
+        {
+            label: <FormattedMessage id="Propane en citerne" defaultMessage="Propane en citerne" />,
+            value: 'propane_tank',
+        },
+        {
+            label: <FormattedMessage id="Fioul en cuve" defaultMessage="Fioul en cuve" />,
+            value: 'fuel_oil_tank',
+        },
+        {
+            label: <FormattedMessage id="Autre" defaultMessage="Autre" />,
+            value: 'other',
+        },
+    ],
+}
+
+/**
+ * Hotplate options.
+ */
+export const hotPlateEquipment: SelectFormOptions = {
+    name: 'hotplate',
+    titleLabel: <FormattedMessage id="Type" defaultMessage="Type" />,
+    formOptions: [
+        {
+            label: <FormattedMessage id="Électricité" defaultMessage="Électricité" />,
+            value: 'electricity',
+        },
+        {
+            label: <FormattedMessage id="Gaz" defaultMessage="Gaz" />,
+            value: 'gas',
+        },
+        {
+            label: <FormattedMessage id="Gaz en bouteille" defaultMessage="Gaz en bouteille" />,
+            value: 'bottled_gas',
+        },
+        {
+            label: <FormattedMessage id="Électricité & gaz" defaultMessage="Électricité & gaz" />,
+            value: 'electricity_and_gaz',
+        },
+        {
+            label: <FormattedMessage id="Vitrocéramique" defaultMessage="Vitrocéramique" />,
             value: 'vitroceramic',
         },
         {
-            label: 'Autre',
-            icon: (
-                <SvgIcon sx={customSvgIconsStyling}>
-                    <OtherIcon />
-                </SvgIcon>
-            ),
-            buttonStyle: `${buttonStyle} sm:col-span-7`,
-            iconStyles,
+            label: <FormattedMessage id="Induction" defaultMessage="Induction" />,
+            value: 'induction',
+        },
+        {
+            label: <FormattedMessage id="Autre" defaultMessage="Autre" />,
             value: 'other',
         },
     ],

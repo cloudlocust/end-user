@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CircularProgress, Radio, RadioGroup, FormControlLabel, useTheme, Container, Typography } from '@mui/material'
-import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+import {
+    CircularProgress,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    useTheme,
+    Container,
+    Typography,
+    Grid,
+} from '@mui/material'
+// import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { heaterEquipment, sanitaryEquipment, hotPlateEquipment } from 'src/modules/MyHouse/utils/MyHouseVariables'
@@ -19,6 +28,7 @@ import {
     installationFormFieldsType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import isEqual from 'lodash/isEqual'
+import { SelectOption } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const SOLAR_PANEL_TYPES = {
@@ -226,6 +236,20 @@ export const InstallationTab = () => {
         })
     }
 
+    /**
+     * Function to render the options of the select component.
+     *
+     * @param options The options to render.
+     * @returns The rendered options.
+     */
+    const renderOptions = (options: SelectOption[]) => {
+        return options.map((option, _index) => (
+            <MenuItem key={option.value} value={option.value}>
+                {option.label}
+            </MenuItem>
+        ))
+    }
+
     if (getInstallationInfosInProgress)
         return (
             <div className="flex flex-col justify-center items-center w-full" style={{ minHeight: '60vh' }}>
@@ -269,19 +293,76 @@ export const InstallationTab = () => {
                         </TypographyFormatMessage>
 
                         {/***** The heater state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...heaterEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Type de chauffage :',
+                                        defaultMessage: 'Type de chauffage :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid md={6} xs={12}>
+                                <Select
+                                    name={heaterEquipment.name}
+                                    label={heaterEquipment.titleLabel}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(heaterEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
 
                         {/***** The sanitary state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...sanitaryEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Eau chaude sanitaire :',
+                                        defaultMessage: 'Eau chaude sanitaire :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid md={6} xs={12}>
+                                <Select
+                                    name={sanitaryEquipment.name}
+                                    label={sanitaryEquipment.titleLabel}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(sanitaryEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
 
                         {/***** The hot plate state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...hotPlateEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Type de plaques de cuisson :',
+                                        defaultMessage: 'Type de plaques de cuisson :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid className="flex-1">
+                                <Select
+                                    name={hotPlateEquipment.name}
+                                    label={hotPlateEquipment.titleLabel!}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(hotPlateEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
                     </div>
                     <div className="mb-40">
                         <TypographyFormatMessage className="text-15 font-600">
