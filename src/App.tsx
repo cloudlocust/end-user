@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -20,7 +20,7 @@ import { getTokenFromFirebase } from 'src/firebase'
 import { URL_ALPIQ_SUBSCRIPTION_FORM } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import AlpiqSubscriptionStepper from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
+import { URL_ONBOARDING } from 'src/modules/Onboarding/OnboardingConfig'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -86,8 +86,11 @@ const Routes = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { getConsents } = useConsents()
+    const { getConsents, nrlinkConsent } = useConsents()
     const isInitialMount = useRef(true)
+    const history = useHistory()
+    // Ref used to check if we already passed by onboarding page of avoid infinite cycle of redirection.
+    const isPassedThroughOnboarding = useRef(false)
 
     // TODO - DELETE IT !
     useEffect(() => {
@@ -106,6 +109,23 @@ const Routes = () => {
         updateLastVisitTime(dayjs().toISOString())
     }, [location.pathname, updateLastVisitTime, user])
 
+    useEffect(() => {
+        if (!isMaintenanceMode && user) {
+            // Check if the user is in alpiq subscription or not.
+            if (isAlpiqSubscriptionForm && !user.isProviderSubscriptionCompleted) {
+                location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && history.push(URL_ALPIQ_SUBSCRIPTION_FORM)
+            } else if (
+                // Check if the user not configured his nrlink
+                (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') &&
+                location.pathname !== URL_ONBOARDING &&
+                !isPassedThroughOnboarding.current
+            ) {
+                isPassedThroughOnboarding.current = true
+                history.push(URL_ONBOARDING)
+            }
+        }
+    }, [user, location.pathname, history, nrlinkConsent])
+
     const { hasAccess, getUrlRedirection } = useAuth()
 
     const navbarContent: navbarItemType[] = []
@@ -117,20 +137,6 @@ const Routes = () => {
 
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
-
-    if (
-        isAlpiqSubscriptionForm &&
-        !isMaintenanceMode &&
-        user &&
-        !user.isProviderSubscriptionCompleted &&
-        location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM
-    ) {
-        return (
-            <ThemingProvider>
-                <AlpiqSubscriptionStepper />
-            </ThemingProvider>
-        )
-    }
 
     return (
         <Switch>

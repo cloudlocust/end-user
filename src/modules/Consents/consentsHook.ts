@@ -138,13 +138,17 @@ export function useConsents() {
      * @returns Whether meter is verified or not.
      */
     const verifyMeter = useCallback(
-        async (housingId: number) => {
+        async (housingId: number, onAfterVerify?: (status: MeterVerificationEnum) => void) => {
             try {
                 if (!housingId) throw new Error('No housing id provided')
                 setIsMeterVerifyLoading(true)
                 const response = await axios.get(`${API_RESOURCES_URL}/enedis-sge/consent/${housingId}/check`)
-                if (response.status === 200) setMeterVerification(MeterVerificationEnum.VERIFIED)
+                if (response.status === 200) {
+                    setMeterVerification(MeterVerificationEnum.VERIFIED)
+                    if (onAfterVerify) onAfterVerify(MeterVerificationEnum.VERIFIED)
+                }
                 setIsMeterVerifyLoading(false)
+                if (onAfterVerify) onAfterVerify(MeterVerificationEnum.NOT_VERIFIED)
             } catch (error: any) {
                 setIsMeterVerifyLoading(false)
                 setMeterVerification(MeterVerificationEnum.NOT_VERIFIED)
@@ -164,6 +168,7 @@ export function useConsents() {
                         variant: 'error',
                     },
                 )
+                if (onAfterVerify) onAfterVerify(MeterVerificationEnum.NOT_VERIFIED)
             }
         },
         [enqueueSnackbar, formatMessage],

@@ -16,3 +16,5 @@ export type textFieldCommonTypes =
     | 'onChange'
     | 'ref'
     | 'value'
+    | 'placeholder'
+    | 'fullWidth'

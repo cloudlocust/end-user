@@ -40,14 +40,14 @@ export const nrlinkEndpoints = [
         `${API_RESOURCES_URL}/nrlink/authorize`,
         (req, res, ctx) => {
             // No Data received in NrLink
-            if (req.body.nrlink_guid === 'aaaaa1aaaaa1aaaa')
+            if (req.body.nrlink_guid.includes('a1aaaa'))
                 return res(
                     ctx.status(400),
                     ctx.delay(1000),
                     ctx.json({ detail: "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi" }),
                 )
             // Already connected nrLINK
-            if (req.body.nrlink_guid === 'bbbbb2bbbbb2bbbb')
+            if (req.body.nrlink_guid.includes('b2bbbb'))
                 return res(
                     ctx.status(400),
                     ctx.delay(1000),
@@ -56,7 +56,7 @@ export const nrlinkEndpoints = [
                     }),
                 )
             // Other error
-            if (req.body.nrlink_guid === 'ccccc3ccccc3cccc') return res(ctx.status(400), ctx.delay(1000))
+            if (req.body.nrlink_guid.includes('c3cccc')) return res(ctx.status(400), ctx.delay(1000))
             // Success
             return res(ctx.status(200), ctx.delay(1000))
         },

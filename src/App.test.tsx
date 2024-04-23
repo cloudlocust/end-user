@@ -10,7 +10,7 @@ import { applyCamelCase } from './common/react-platform-components'
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const MAINTENANCE_INFO_TEXT = 'Une maintenance est en cours. Nous revenons au plus vite.'
 const ADD_NRLINK_CONNECTION_TEXT =
-    'Connectez votre capteur à votre compteur et configurez votre afficheur nrLINK pour commencer à suivre votre consommation !'
+    "C'est le début d'une grande aventure pour comprendre & maîtriser votre consommation d'électricité chez vous !"
 const STEPPER_FIRST_STEP_TEXT = 'Connectons votre compteur électrique'
 
 let mockIsMaintenanceMode = true
@@ -59,6 +59,29 @@ jest.mock('src/modules/User/AlpiqSubscription/index.d', () => ({
     },
 }))
 
+const ROUTES_FILE_PATH = 'src/routes'
+
+/**
+ * Mock the alpiq subscription route.
+ */
+jest.mock(ROUTES_FILE_PATH, () => ({
+    ...jest.requireActual(ROUTES_FILE_PATH),
+    //eslint-disable-next-line
+    get routes() {
+        return jest.requireActual(ROUTES_FILE_PATH).routes.map((route: any) => {
+            if (route.path === '/energy-provider-subscription') {
+                return {
+                    ...route,
+                    settings: {
+                        disabled: !mockIsAlpiqSubscriptionForm,
+                    },
+                }
+            }
+            return route
+        })
+    },
+}))
+
 jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
     ...jest.requireActual('src/modules/nrLinkConnection/NrLinkConnectionHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -67,6 +90,17 @@ jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
         isGetShowNrLinkLoading: false,
     }),
 }))
+
+/**
+ * Mocked Lottie component.
+ *
+ * @returns Mocked Lottie component.
+ */
+function MockedLottie() {
+    return <div />
+}
+// Mock Lottie.
+jest.mock('react-lottie', () => MockedLottie)
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 const renderAppComponent = (initialState?: {}) => {
@@ -110,7 +144,7 @@ describe('test App', () => {
         })
     })
     test('when the user is authenticated, the device token was sent to the back', () => {
-        renderAppComponent({ userModel: { user: { id: 'user_1' } } })
+        renderAppComponent({ userModel: { user: { id: 'user_1' }, authenticationToken: 'token' } })
 
         expect(mockGetTokenFromFirebase).toHaveBeenCalledTimes(1)
     })
@@ -133,18 +167,19 @@ describe('test App', () => {
             expect(queryByText(MAINTENANCE_INFO_TEXT)).not.toBeInTheDocument()
             expect(getByText('Connexion')).toBeInTheDocument()
         })
-        test('when maintenance mode is false, and the user is authenticated, and show nrlink popup is true, nrlink connection page is showing.', () => {
+        test('when maintenance mode is false, and the user is authenticated, and show enedis consent not exist show the onboarding page.', () => {
             mockIsMaintenanceMode = false
+            mockIsNrlinkPopupShowing = true
             const { queryByText, getByText } = renderAppComponent({
                 userModel: { user: { id: 'user_1' }, authenticationToken: 'token' },
             })
 
-            // expect(console.log).toHaveBeenCalledWith('Hello, world!')
             expect(queryByText(MAINTENANCE_INFO_TEXT)).not.toBeInTheDocument()
             expect(getByText(ADD_NRLINK_CONNECTION_TEXT)).toBeInTheDocument()
         })
         test('when maintenance mode is false, and the user is authenticated, and show nrlink popup is false, dashboard page with message of missing housing & meter.', () => {
             mockIsNrlinkPopupShowing = false
+            mockIsMaintenanceMode = false
             const { queryByText, getByText } = renderAppComponent({
                 userModel: { user: { id: 'user_1' }, authenticationToken: 'token' },
             })
