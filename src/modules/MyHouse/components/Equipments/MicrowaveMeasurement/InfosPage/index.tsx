@@ -131,7 +131,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
             <div className="flex justify-center">
                 <Button
                     variant="contained"
-                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                     onClick={handleBtnClick}
                 >
                     {formatMessage({

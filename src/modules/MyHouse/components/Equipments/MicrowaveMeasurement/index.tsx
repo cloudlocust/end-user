@@ -22,8 +22,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * @param root0.equipmentsNumber The number of microwaves.
  * @param root0.measurementModes Measurement modes for the Equipment.
  * @param root0.isMeasurementModalOpen The state of the modal.
- * @param root0.showingOldResult Boolean indicating whether we want to display an old result.
- * @param root0.startMeasurementFromEquipmentsDetailsPage Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
+ * @param root0.stepToStartFrom The measurement step to start from.
  * @param root0.updateEquipmentMeasurementResults Function that update the measurement results in the equipment details page.
  * @param root0.defaultMicrowaveNumber Default value for the microwave number.
  * @param root0.defaultMeasurementMode Default value for the measurement mode.
@@ -50,8 +49,7 @@ export const MicrowaveMeasurement = ({
     equipmentsNumber,
     measurementModes,
     isMeasurementModalOpen,
-    showingOldResult,
-    startMeasurementFromEquipmentsDetailsPage,
+    stepToStartFrom,
     updateEquipmentMeasurementResults,
     defaultMicrowaveNumber,
     defaultMeasurementMode,
@@ -59,24 +57,20 @@ export const MicrowaveMeasurement = ({
     onCloseMeasurementModal,
     navigateToEquipmentDetailsPage,
 }: MicrowaveMeasurementProps) => {
-    const [currentStep, setCurrentStep] = useState(
-        showingOldResult ? 4 : startMeasurementFromEquipmentsDetailsPage ? 1 : 0,
-    )
+    const [currentStep, setCurrentStep] = useState(0)
     const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
     const [measurementMode, setMeasurementMode] = useState(defaultMeasurementMode || '')
 
     useEffect(() => {
-        if (showingOldResult || startMeasurementFromEquipmentsDetailsPage) {
+        setCurrentStep(stepToStartFrom ?? 0)
+    }, [stepToStartFrom])
+
+    useEffect(() => {
+        if (stepToStartFrom) {
             setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
             setMeasurementMode(defaultMeasurementMode || '')
         }
-    }, [
-        defaultMeasurementMode,
-        defaultMicrowaveNumber,
-        equipmentsNumber,
-        showingOldResult,
-        startMeasurementFromEquipmentsDetailsPage,
-    ])
+    }, [defaultMeasurementMode, defaultMicrowaveNumber, equipmentsNumber, stepToStartFrom])
 
     const theme = useTheme()
 
@@ -102,15 +96,11 @@ export const MicrowaveMeasurement = ({
     const handleRestartingMeasurement = useCallback(
         async (microwaveNumber?: number, measurementMode?: string) => {
             await setMeasurementStatus(null)
-            if (showingOldResult) {
-                setCurrentStep(2)
-            } else {
-                setCurrentStep(1)
-            }
+            setCurrentStep(1)
             setMicrowaveNumber(microwaveNumber || (equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0))
             setMeasurementMode(measurementMode || defaultMeasurementMode || '')
         },
-        [defaultMeasurementMode, defaultMicrowaveNumber, equipmentsNumber, setMeasurementStatus, showingOldResult],
+        [defaultMeasurementMode, defaultMicrowaveNumber, equipmentsNumber, setMeasurementStatus],
     )
 
     /**
@@ -118,13 +108,7 @@ export const MicrowaveMeasurement = ({
      */
     const handleCloseMeasurementModal = useCallback(async () => {
         await setMeasurementStatus(null)
-        if (showingOldResult) {
-            setCurrentStep(4)
-        } else if (startMeasurementFromEquipmentsDetailsPage) {
-            setCurrentStep(1)
-        } else {
-            setCurrentStep(0)
-        }
+        setCurrentStep(stepToStartFrom ?? 0)
         setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
         setMeasurementMode(defaultMeasurementMode || '')
         if (updateEquipmentMeasurementResults) {
@@ -137,8 +121,7 @@ export const MicrowaveMeasurement = ({
         equipmentsNumber,
         onCloseMeasurementModal,
         setMeasurementStatus,
-        showingOldResult,
-        startMeasurementFromEquipmentsDetailsPage,
+        stepToStartFrom,
         updateEquipmentMeasurementResults,
     ])
 
@@ -168,8 +151,8 @@ export const MicrowaveMeasurement = ({
             <div
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-auto flex flex-col px-20 py-20 rounded-12 bg-white"
                 style={{
-                    height: 'calc(100% - 20px)',
-                    maxHeight: currentStep === 0 ? '540px' : '455px',
+                    maxHeight: 'calc(100% - 20px)',
+                    minHeight: '455px',
                     width: 'calc(100% - 20px)',
                     maxWidth: '400px',
                 }}
@@ -196,7 +179,7 @@ export const MicrowaveMeasurement = ({
                         microwaveNumber={microwaveNumber}
                         measurementMode={measurementMode}
                         measurementResult={measurementResult}
-                        showingOldResult={showingOldResult}
+                        showingOldResult={stepToStartFrom === 4}
                         closeMeasurementModal={handleCloseMeasurementModal}
                         navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
                         restartMeasurementFromBeginning={handleRestartingMeasurement}

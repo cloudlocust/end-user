@@ -19,13 +19,9 @@ export interface MicrowaveMeasurementProps {
      */
     isMeasurementModalOpen: boolean
     /**
-     * Boolean indicating whether we want to display an old result.
+     * The measurement step to start from.
      */
-    showingOldResult?: boolean
-    /**
-     * Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
-     */
-    startMeasurementFromEquipmentsDetailsPage?: boolean
+    stepToStartFrom?: number
     /**
      *  Function that update the measurement results in the equipment details page.
      */

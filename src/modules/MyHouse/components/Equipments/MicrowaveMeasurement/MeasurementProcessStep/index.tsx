@@ -102,7 +102,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
                         variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                         onClick={handleFinishButtonClick}
                         disabled={measurementStatus?.status !== measurementStatusEnum.SUCCESS}
                         children={formatMessage({
@@ -113,7 +113,7 @@ export const MeasurementProcessStep = ({
                 ) : (
                     <Button
                         variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                         onClick={() => restartMeasurementFromBeginning()}
                         children={formatMessage({
                             id: 'Recommencer la mesure',

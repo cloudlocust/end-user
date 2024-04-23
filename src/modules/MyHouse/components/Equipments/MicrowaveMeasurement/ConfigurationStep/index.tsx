@@ -139,6 +139,7 @@ export const ConfigurationStep = ({
                     </TypographyFormatMessage>
                     <CustomRadioGroup
                         elements={measurementModesOptions || defaultMicrowaveMeasurementModesOptions}
+                        initialValue={selectedMeasurementMode}
                         onValueChange={handleRadioGroupChange}
                         boxClassName="w-full flex justify-between gap-10"
                     />
@@ -157,7 +158,7 @@ export const ConfigurationStep = ({
             <div className="flex justify-center">
                 <Button
                     variant="contained"
-                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                     onClick={handleBtnClick}
                     disabled={!selectedMicrowave || !selectedMeasurementMode}
                 >

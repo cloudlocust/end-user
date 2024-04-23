@@ -26,7 +26,7 @@ import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/E
 export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsContentProps) => {
     const { formatMessage } = useIntl()
     const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
-    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : null)
+    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(1)
     const { measurementResults, isLoadingMeasurements, updateEquipmentMeasurementResults } =
         useEquipmentMeasurementResults()
     const {
@@ -73,10 +73,10 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
 
     return (
         <>
-            <div className="flex flex-col h-full p-16">
+            <div className="flex flex-col h-full p-16 max-w-640 mx-auto">
                 {/* The equipment select input */}
                 {equipmentDetails.number && equipmentDetails.number > 1 && (
-                    <div className="w-full max-w-640 mx-auto mb-36">
+                    <div className="w-full max-w-400 mx-auto mb-20 sm:my-20">
                         <FormControl fullWidth>
                             <InputLabel
                                 id="equipment-select-label"
@@ -119,25 +119,22 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 )}
 
                 {/* Measurement result list */}
-                <div className="flex-1">
-                    {equipmentDetails.number && (
-                        <EquipmentMeasurementResults
-                            measurementModes={equipmentDetails.measurementModes}
-                            housingEquipmentId={equipmentDetails.housingEquipmentId!}
-                            equipmentsNumber={equipmentDetails.number}
-                            equipmentNumber={selectedEquipmentNumber}
-                            measurementResults={measurementResults}
-                            isLoadingMeasurements={isLoadingMeasurements}
-                            updateEquipmentMeasurementResults={updateEquipmentMeasurementResults}
-                        />
-                    )}
-                </div>
+                {equipmentDetails.number && (
+                    <EquipmentMeasurementResults
+                        measurementModes={equipmentDetails.measurementModes}
+                        housingEquipmentId={equipmentDetails.housingEquipmentId!}
+                        equipmentsNumber={equipmentDetails.number}
+                        equipmentNumber={selectedEquipmentNumber}
+                        measurementResults={measurementResults}
+                        isLoadingMeasurements={isLoadingMeasurements}
+                        updateEquipmentMeasurementResults={updateEquipmentMeasurementResults}
+                    />
+                )}
 
                 {/* Buttons */}
-                <div className={`flex justify-end`}>
+                <div className="flex justify-end mt-28">
                     <Button
                         variant="contained"
-                        size="large"
                         className={'flex-1 sm:flex-none'}
                         onClick={onOpenMeasurementModal}
                         disabled={!isMeasurementButtonShown}
@@ -159,7 +156,6 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                     onCloseMeasurementModal={onCloseMeasurementModal}
                     defaultMicrowaveNumber={selectedEquipmentNumber}
                     updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
-                    startMeasurementFromEquipmentsDetailsPage
                 />
             )}
         </>

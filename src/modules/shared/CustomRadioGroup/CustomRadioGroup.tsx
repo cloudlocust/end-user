@@ -9,6 +9,7 @@ import { CustomRadioButton } from 'src/modules/shared/CustomRadioButton/CustomRa
  * @param root0 N/A.
  * @param root0.elements The parameters of the CustomRadioButton children components.
  * @param root0.onValueChange Function triggered when the radio group value change.
+ * @param root0.initialValue The radio group initial value.
  * @param root0.boxProps Props of the MUI Box component.
  * @param root0.boxClassName The class name of the MUI Box component.
  * @returns CustomRadioGroup component.
@@ -16,20 +17,21 @@ import { CustomRadioButton } from 'src/modules/shared/CustomRadioButton/CustomRa
 export const CustomRadioGroup = ({
     elements,
     onValueChange,
+    initialValue,
     boxProps,
     boxClassName,
 }: CustomRadioGroupProps): JSX.Element => {
-    const [selectedValue, setSelectedValue] = useState('')
+    const [selectedValue, setSelectedValue] = useState(initialValue ?? '')
 
     /**
      * Click handler for the radio button.
      *
-     * @param v The value of the radio button clicked.
+     * @param value The value of the radio button clicked.
      */
-    const handleRadioBtnClick = (v: string) => {
-        setSelectedValue(v)
+    const handleRadioBtnClick = (value: string) => {
+        setSelectedValue(value)
         if (onValueChange) {
-            onValueChange(v)
+            onValueChange(value)
         }
     }
 
