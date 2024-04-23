@@ -560,7 +560,7 @@ export const mapppingEquipmentToLabel = {
     oven: 'Four',
     microwave: 'Micro-onde',
     fridge: 'Réfrigérateur',
-    dishwasher: 'Lave-vaiselle',
+    dishwasher: 'Lave-vaisselle',
     washingmachine: 'Lave linge',
     dryer: 'Sèche linge',
     laptop: 'PC Portable',
