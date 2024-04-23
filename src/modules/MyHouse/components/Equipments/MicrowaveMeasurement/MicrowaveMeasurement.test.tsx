@@ -29,13 +29,13 @@ describe('MicrowaveMeasurement tests', () => {
     })
 
     test('renders correctly when showing an old mesurement test result', async () => {
-        reduxedRender(<MicrowaveMeasurement {...props} showingOldResult />)
+        reduxedRender(<MicrowaveMeasurement {...props} stepToStartFrom={4} />)
 
         expect(screen.getByText('Résultats')).toBeInTheDocument()
     })
 
     test('renders correctly when we start the mesurement from EquipmentsDetails Page', async () => {
-        reduxedRender(<MicrowaveMeasurement {...props} startMeasurementFromEquipmentsDetailsPage />)
+        reduxedRender(<MicrowaveMeasurement {...props} stepToStartFrom={1} />)
 
         expect(screen.getByText('Configuration')).toBeInTheDocument()
     })
