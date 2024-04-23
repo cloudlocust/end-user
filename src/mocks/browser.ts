@@ -12,7 +12,7 @@ import { metersEndpoints } from 'src/mocks/handlers/meters'
 import { nrlinkEndpoints } from 'src/mocks/handlers/nrlink'
 import { equipmentsEndpoints } from 'src/mocks/handlers/equipments'
 import { accomodationEndpoints } from 'src/mocks/handlers/accomodation'
-import { metricsEndpoints } from 'src/mocks/handlers/metrics'
+import { metricsEndpoints, currentDayConsumptionEndpoints } from 'src/mocks/handlers/metrics'
 import { consentsEndpoints } from 'src/mocks/handlers/consents'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
 import { contractsEndpoints } from 'src/mocks/handlers/contracts'
@@ -81,6 +81,8 @@ export const handlers = [
     ...AlpiqSubscriptionEndpoints,
     /***** Installation informations Endpoints. *****/
     ...installationEndpoints,
+    /***** Current day consumption Endpoints. *****/
+    ...currentDayConsumptionEndpoints,
 ]
 
 /**

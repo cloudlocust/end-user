@@ -1,7 +1,7 @@
 import { memo, useMemo, useEffect, useRef, useContext } from 'react'
 import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import { IWidgetProps, targetsInfosType } from 'src/modules/MyConsumption/components/Widget/Widget'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
+import { useMetrics, useCurrentDayConsumption } from 'src/modules/Metrics/metricsHook'
 import {
     computeWidgetAssets,
     getWidgetPreviousRange,
@@ -16,6 +16,9 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { utcToZonedTime } from 'date-fns-tz'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 const emptyValueUnit = { value: 0, unit: '' }
 
 /**
@@ -49,17 +52,30 @@ export const Widget = memo(
     }: // eslint-disable-next-line sonarjs/cognitive-complexity
     IWidgetProps) => {
         const { consumptionToggleButton } = useMyConsumptionStore()
+        const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+        const {
+            currentDayConsumption,
+            currentDayAutoConsumption,
+            currentDayEuroConsumption,
+            getCurrentDayConsumption,
+            getCurrentDayEuroConsumption,
+        } = useCurrentDayConsumption(currentHousing?.id)
 
-        const isConsumptionTargetAndPreviousDay =
-            (targets.includes(metricTargetsEnum.consumption) ||
-                targets.includes(metricTargetsEnum.autoconsumption) ||
-                targets.includes(metricTargetsEnum.eurosConsumption)) &&
-            period === 'daily' &&
-            utcToZonedTime(new Date(range.from), 'Europe/Paris').getDate() <
-                utcToZonedTime(new Date(), 'Europe/Paris').getDate()
+        const isConsumptionTarget =
+            targets.includes(metricTargetsEnum.consumption) ||
+            targets.includes(metricTargetsEnum.autoconsumption) ||
+            targets.includes(metricTargetsEnum.eurosConsumption)
+
+        const isCurrentDayRange = useMemo(
+            () =>
+                period === 'daily' &&
+                utcToZonedTime(new Date(range.from), 'Europe/Paris').getDate() ===
+                    utcToZonedTime(new Date(), 'Europe/Paris').getDate(),
+            [period, range.from],
+        )
 
         const { data, setMetricsInterval, getMetricsWithParams, setRange, isMetricsLoading } = useMetrics({
-            interval: isConsumptionTargetAndPreviousDay ? '1d' : metricsInterval,
+            interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
             range: getWidgetRange(range, period),
             targets: targets.map((target) => ({
                 target: target,
@@ -73,7 +89,7 @@ export const Widget = memo(
             getMetricsWithParams: getMetricsWithParamsPrevious,
             setRange: setRangePrevious,
         } = useMetrics({
-            interval: isConsumptionTargetAndPreviousDay ? '1d' : metricsInterval,
+            interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
             range: getWidgetPreviousRange(getWidgetRange(range, period), period),
             targets: targets.map((target) => ({
                 target: target,
@@ -94,10 +110,63 @@ export const Widget = memo(
 
         const theme = useTheme()
 
+        useEffect(() => {
+            if (isCurrentDayRange) {
+                if (
+                    targets.includes(metricTargetsEnum.consumption) ||
+                    targets.includes(metricTargetsEnum.autoconsumption)
+                ) {
+                    getCurrentDayConsumption()
+                }
+                if (targets.includes(metricTargetsEnum.eurosConsumption)) {
+                    getCurrentDayEuroConsumption()
+                }
+            }
+        }, [getCurrentDayConsumption, getCurrentDayEuroConsumption, isCurrentDayRange, targets])
+
         const targetsInfos = useMemo(() => {
             const targetsInfos: targetsInfosType = {}
             targets.forEach((target) => {
-                const { unit, value } = !data.length ? emptyValueUnit : computeWidgetAssets(data, target)
+                let unit: string | null = null
+                let value: number | null = null
+                if (
+                    [
+                        metricTargetsEnum.consumption,
+                        metricTargetsEnum.autoconsumption,
+                        metricTargetsEnum.eurosConsumption,
+                    ].includes(target as metricTargetsEnum) &&
+                    isCurrentDayRange
+                ) {
+                    switch (target) {
+                        case metricTargetsEnum.consumption:
+                            if (currentDayConsumption !== null) {
+                                const consumptionWidgetAssets = consumptionWattUnitConversion(currentDayConsumption)
+                                unit = consumptionWidgetAssets.unit
+                                value = consumptionWidgetAssets.value
+                            }
+                            break
+                        case metricTargetsEnum.autoconsumption:
+                            if (currentDayAutoConsumption !== null) {
+                                const autoConsumptionWidgetAssets =
+                                    consumptionWattUnitConversion(currentDayAutoConsumption)
+                                unit = autoConsumptionWidgetAssets.unit
+                                value = autoConsumptionWidgetAssets.value
+                            }
+                            break
+                        case metricTargetsEnum.eurosConsumption:
+                            if (currentDayEuroConsumption !== null) {
+                                unit = '€'
+                                value = currentDayEuroConsumption
+                            }
+                            break
+                    }
+                }
+                if (value === null || unit === null) {
+                    const widgetAssets = !data.length ? emptyValueUnit : computeWidgetAssets(data, target)
+                    unit = widgetAssets.unit
+                    value = widgetAssets.value
+                }
+
                 const { value: oldValue } = !oldData.length ? emptyValueUnit : computeWidgetAssets(oldData, target)
                 const percentageChange = computePercentageChange(oldValue as number, value as number)
                 const targetInfos = {
@@ -116,7 +185,15 @@ export const Widget = memo(
                 }
             })
             return targetsInfos
-        }, [data, oldData, targets])
+        }, [
+            currentDayAutoConsumption,
+            currentDayConsumption,
+            currentDayEuroConsumption,
+            data,
+            isCurrentDayRange,
+            oldData,
+            targets,
+        ])
 
         // Props to track the change of range change, so that we call getMetrics only when range change, instead of when both range and period change.
         const isRangeChanged = useRef(false)
@@ -128,10 +205,11 @@ export const Widget = memo(
 
         // get metrics when metricsInterval change.
         useEffect(() => {
-            setMetricsInterval(isConsumptionTargetAndPreviousDay ? '1d' : metricsInterval)
-            setMetricsIntervalPrevious(isConsumptionTargetAndPreviousDay ? '1d' : metricsInterval)
+            setMetricsInterval(isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval)
+            setMetricsIntervalPrevious(isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval)
         }, [
-            isConsumptionTargetAndPreviousDay,
+            isConsumptionTarget,
+            isCurrentDayRange,
             metricsInterval,
             period,
             range,
@@ -142,13 +220,13 @@ export const Widget = memo(
         // get metrics when consumptionToggleButton change.
         useEffect(() => {
             getMetricsWithParams({
-                interval: isConsumptionTargetAndPreviousDay ? '1d' : metricsInterval,
+                interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
                 range: getWidgetRange(range, period),
                 targets: targets,
                 filters,
             })
             getMetricsWithParamsPrevious({
-                interval: isConsumptionTargetAndPreviousDay ? '1d' : metricsInterval,
+                interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
                 range: getWidgetPreviousRange(getWidgetRange(range, period), period),
                 targets: targets,
                 filters,
