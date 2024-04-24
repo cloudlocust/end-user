@@ -35,7 +35,11 @@ import { subtract, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { allTempoMetrics, temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    allTempoMetrics,
+    allEuroTempoMetrics,
+    temperatureOrPmaxTargets,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
@@ -884,6 +888,63 @@ export const filterMetricsData = (
     const isEuroTarget = data.some((metric) =>
         [metricTargetsEnum.eurosConsumption].includes(metric.target as metricTargetsEnum),
     )
+
+    // handle yearly period
+    if (period === PeriodEnum.YEARLY) {
+        if (isEuroTarget) {
+            // euro consumption metric case.
+            const euroConsumptionMetric = data.find((metric) => metric.target === metricTargetsEnum.eurosConsumption)
+            const subscriptionPricesTarget = data.find(
+                (metric) => metric.target === metricTargetsEnum.subscriptionPrices,
+            )
+            // Get non empty metrics data to display all contracts types (tempo, hp hc, base)
+            const nonEmptyMetricsData = data.filter(
+                (metric) =>
+                    [
+                        metricTargetsEnum.baseEuroConsumption,
+                        metricTargetsEnum.euroPeakHourConsumption,
+                        metricTargetsEnum.euroOffPeakConsumption,
+                        ...allEuroTempoMetrics,
+                    ].includes(metric.target as metricTargetsEnum) && !isEmptyMetricsData([metric]),
+            )
+
+            if (nonEmptyMetricsData.length) {
+                return [
+                    ...nonEmptyMetricsData,
+                    ...(subscriptionPricesTarget ? [subscriptionPricesTarget] : []),
+                    ...(euroConsumptionMetric ? [euroConsumptionMetric] : []),
+                    ...temperatureOrPmaxMetricsData,
+                ]
+            } else {
+                // If all data are empty we display only euro consumption metric instead.
+                const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
+                if (onlyEuroConsimption && subscriptionPricesTarget)
+                    return [onlyEuroConsimption, subscriptionPricesTarget, ...temperatureOrPmaxMetricsData]
+            }
+        } else {
+            // consumption metric case.
+            // Get non empty metrics data to display all contracts types (tempo, hp hc, base)
+            const nonEmptyMetricsData = data.filter(
+                (metric) =>
+                    [
+                        metricTargetsEnum.baseConsumption,
+                        metricTargetsEnum.peakHourConsumption,
+                        metricTargetsEnum.offPeakHourConsumption,
+                        ...allTempoMetrics,
+                    ].includes(metric.target as metricTargetsEnum) && !isEmptyMetricsData([metric]),
+            )
+            if (nonEmptyMetricsData.length) {
+                return [...nonEmptyMetricsData, ...temperatureOrPmaxMetricsData]
+            } else {
+                // If all data are empty we display consumption metric instead.
+                const onlyConsumption = getOnlyConsumptionMetrics(data)
+                if (onlyConsumption) {
+                    return [onlyConsumption, ...temperatureOrPmaxMetricsData]
+                }
+            }
+        }
+        return []
+    }
 
     const isBasePeakOffPeakConsumptionTargets = data.some((metric) =>
         [metricTargetsEnum.peakHourConsumption, metricTargetsEnum.offPeakHourConsumption].includes(
