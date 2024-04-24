@@ -12,7 +12,7 @@ import { metersEndpoints } from 'src/mocks/handlers/meters'
 import { nrlinkEndpoints } from 'src/mocks/handlers/nrlink'
 import { equipmentsEndpoints } from 'src/mocks/handlers/equipments'
 import { accomodationEndpoints } from 'src/mocks/handlers/accomodation'
-import { metricsEndpoints, currentDayConsumptionEndpoints } from 'src/mocks/handlers/metrics'
+import { metricsEndpoints } from 'src/mocks/handlers/metrics'
 import { consentsEndpoints } from 'src/mocks/handlers/consents'
 import { housingEndpoints } from 'src/mocks/handlers/houses'
 import { contractsEndpoints } from 'src/mocks/handlers/contracts'
@@ -30,6 +30,7 @@ import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
 import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
 import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 import { installationEndpoints } from 'src/mocks/handlers/installation'
+import { currentDayConsumptionEndpoints } from 'src/mocks/handlers/currentDayConsumption'
 
 /**
  * Handlers to mock urls for tests.

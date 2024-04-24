@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef } from 'react'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
-import { useCurrentDayConsumption, useMetrics } from 'src/modules/Metrics/metricsHook'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import {
@@ -13,6 +13,7 @@ import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsump
 import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 
 const emptyValueUnit = { value: 0, unit: '' }
 const parisTimeZone = 'Europe/Paris'

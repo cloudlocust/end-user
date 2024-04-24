@@ -11,7 +11,7 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
 import { generateXAxisValues, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import Chance from 'chance'
-import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+
 /**
  * Data of one day with 2min interval.
  */
@@ -549,33 +549,5 @@ export const metricsEndpoints = [
         if (difference >= 365 && difference <= 392)
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SUCCESS_YEAR_METRICS(targets, range)))
         return res(ctx.status(400), ctx.delay(1000), ctx.json(TEST_SUCCESS_MONTH_METRICS))
-    }),
-]
-
-/**
- * Current day consumption api requests.
- */
-export const currentDayConsumptionEndpoints = [
-    // Get the current day consumption and auto consumption.
-    rest.get(`${HOUSING_API}/:id/current-day-consumption`, (_, res, ctx) => {
-        return res(
-            ctx.status(200),
-            ctx.delay(1000),
-            ctx.json({
-                consumption: 1000,
-                auto_consumption: 500,
-            }),
-        )
-    }),
-
-    // Get the current day euro consumption.
-    rest.get(`${HOUSING_API}/:id/current-day-euro-consumption`, (_, res, ctx) => {
-        return res(
-            ctx.status(200),
-            ctx.delay(1000),
-            ctx.json({
-                euro_consumption: 500,
-            }),
-        )
     }),
 ]

@@ -10,8 +10,8 @@ import convert from 'convert-units'
 import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { useCurrentDayConsumption } from 'src/modules/Metrics/metricsHook'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 
 const emptyValueUnit = { value: 0, unit: 'Wh' as totalConsumptionUnits }
 

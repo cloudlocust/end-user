@@ -1,7 +1,7 @@
 import { memo, useMemo, useEffect, useRef, useContext } from 'react'
 import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import { IWidgetProps, targetsInfosType } from 'src/modules/MyConsumption/components/Widget/Widget'
-import { useMetrics, useCurrentDayConsumption } from 'src/modules/Metrics/metricsHook'
+import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import {
     computeWidgetAssets,
     getWidgetPreviousRange,
@@ -20,6 +20,7 @@ import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/compo
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 const emptyValueUnit = { value: 0, unit: '' }
 
 /**
