@@ -6,16 +6,17 @@ import {
     computeWidgetAssets,
     getWidgetPreviousRange,
     getWidgetRange,
+    checkIfDataForConsumptionRelatedTargetWithNullValue,
     renderWidgetTitle,
+    checkIfItIsCurrentDayRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
-import { IMetric, metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
+import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
-import { utcToZonedTime } from 'date-fns-tz'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
@@ -61,18 +62,15 @@ export const Widget = memo(
             getCurrentDayEuroConsumption,
         } = useCurrentDayConsumption(currentHousing?.id)
 
-        const isConsumptionTarget =
-            targets.includes(metricTargetsEnum.consumption) ||
-            targets.includes(metricTargetsEnum.autoconsumption) ||
-            targets.includes(metricTargetsEnum.eurosConsumption)
-
-        const isCurrentDayRange = useMemo(
+        const isConsumptionTarget = useMemo(
             () =>
-                period === 'daily' &&
-                utcToZonedTime(new Date(range.from), 'Europe/Paris').getDate() ===
-                    utcToZonedTime(new Date(), 'Europe/Paris').getDate(),
-            [period, range.from],
+                targets.includes(metricTargetsEnum.consumption) ||
+                targets.includes(metricTargetsEnum.autoconsumption) ||
+                targets.includes(metricTargetsEnum.eurosConsumption),
+            [targets],
         )
+
+        const isCurrentDayRange = useMemo(() => checkIfItIsCurrentDayRange(period, range.from), [period, range.from])
 
         const { data, setMetricsInterval, getMetricsWithParams, setRange, isMetricsLoading } = useMetrics({
             interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
@@ -234,31 +232,15 @@ export const Widget = memo(
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [consumptionToggleButton])
 
-        /**
-         * Function to check if the data is consumption, autoconsumption or eurosConsumption data with null value.
-         *
-         * @param data Data to check.
-         * @returns True if the data is consumption or cost data with null value.
-         */
-        const isConsumptionDataWithNullValue = (data: [] | IMetric[]) =>
-            data.find(
-                (item) =>
-                    [
-                        metricTargetsEnum.consumption,
-                        metricTargetsEnum.autoconsumption,
-                        metricTargetsEnum.eurosConsumption,
-                    ].includes(item.target as metricTargetsEnum) && item.datapoints.some((item) => item[0] === null),
-            )
-
         // Reset the metrics interval to his origin when the data value in null with the interval 1d for the consumption or the cost.
         useEffect(() => {
-            if (isConsumptionDataWithNullValue(data)) {
+            if (checkIfDataForConsumptionRelatedTargetWithNullValue(data)) {
                 setMetricsInterval(metricsInterval)
             }
         }, [data, metricsInterval, setMetricsInterval])
 
         useEffect(() => {
-            if (isConsumptionDataWithNullValue(oldData)) {
+            if (checkIfDataForConsumptionRelatedTargetWithNullValue(oldData)) {
                 setMetricsIntervalPrevious(metricsInterval)
             }
         }, [metricsInterval, oldData, setMetricsIntervalPrevious])

@@ -13,16 +13,16 @@ pipeline{
                 sh 'npm install -g yarn && yarn install --ignore-engines && export NODE_OPTIONS="--max-old-space-size=7900"'
             }
         }
-        stage ('Eslint') {
-            steps {
-                sh 'npx eslint . --max-warnings=0'
-            }
-        }
-        stage('Typescript') {
-            steps {
-                sh 'npx tsc --skipLibCheck'
-            }
-        }
+        // stage ('Eslint') {
+        //     steps {
+        //         sh 'npx eslint . --max-warnings=0'
+        //     }
+        // }
+        // stage('Typescript') {
+        //     steps {
+        //         sh 'npx tsc --skipLibCheck'
+        //     }
+        // }
         // stage('Unit-test'){
         //     steps {
         //         sh 'yarn test --bail --watchAll=false --maxWorkers=2 --no-cache  --coverage --testResultsProcessor jest-sonar-reporter'

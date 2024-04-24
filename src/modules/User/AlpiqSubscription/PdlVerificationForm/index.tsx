@@ -5,8 +5,8 @@ import { meteGuidNumberRegex, METER_GUID_REGEX_TEXT } from 'src/modules/MyHouse/
 import { ButtonLoader, TextField } from 'src/common/ui-kit'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import { useIntl } from 'react-intl'
-import { RootState } from 'src/redux'
-import { useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { useSnackbar } from 'notistack'
 import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
@@ -45,6 +45,7 @@ const PdlVerificationForm = ({
     const { verifyMeterEligibility, loadingInProgress: isAlpiqVerificationInProgress } = useAlpiqProvider()
     const { enqueueSnackbar } = useSnackbar()
     const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+    const { housingModel } = useDispatch<Dispatch>()
 
     const currentMeterGuid = currentHousing?.meter?.guid
 
@@ -78,9 +79,12 @@ const PdlVerificationForm = ({
         if (!currentMeterGuid) {
             // if their is no meter in the housing, then it's a creation
             response = await addMeter(currentHousing.id, data)
+            // TODO - add a set housing state to avoid fetching back data.
+            housingModel.loadHousingsList()
         } else if (currentMeterGuid !== data.guid) {
             // if their is a meter in the housing, then it's an update
             response = await editMeter(currentHousing?.id, data)
+            housingModel.loadHousingsList()
         } else {
             verifyMeterEligibility(currentHousing.id, handleNext)
             return
