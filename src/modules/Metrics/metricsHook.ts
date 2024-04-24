@@ -205,10 +205,20 @@ export function useAdditionalMetrics(initialState: getMetricType = defaultInitia
     return useMetrics(initialState, immediate)
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Function to get the current day consumption API.
+ *
+ * @param housingId The housing id.
+ * @returns The current day consumption API.
+ */
 export const CURRENT_DAY_CONSUMPTION_API = (housingId: number) => `${HOUSING_API}/${housingId}/current-day-consumption`
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Function to get the current day euro consumption API.
+ *
+ * @param housingId The housing id.
+ * @returns The current day euro consumption API.
+ */
 export const CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
     `${HOUSING_API}/${housingId}/current-day-euro-consumption`
 

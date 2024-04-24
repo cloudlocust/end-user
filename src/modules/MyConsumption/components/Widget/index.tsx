@@ -58,6 +58,7 @@ export const Widget = memo(
             currentDayConsumption,
             currentDayAutoConsumption,
             currentDayEuroConsumption,
+            isGetCurrentDayConsumptionLoading,
             getCurrentDayConsumption,
             getCurrentDayEuroConsumption,
         } = useCurrentDayConsumption(currentHousing?.id)
@@ -111,8 +112,10 @@ export const Widget = memo(
         useEffect(() => {
             if (isCurrentDayRange) {
                 if (
-                    targets.includes(metricTargetsEnum.consumption) ||
-                    targets.includes(metricTargetsEnum.autoconsumption)
+                    (targets.includes(metricTargetsEnum.consumption) ||
+                        targets.includes(metricTargetsEnum.autoconsumption)) &&
+                    !isGetCurrentDayConsumptionLoading &&
+                    currentDayConsumption === null
                 ) {
                     getCurrentDayConsumption()
                 }
@@ -120,7 +123,14 @@ export const Widget = memo(
                     getCurrentDayEuroConsumption()
                 }
             }
-        }, [getCurrentDayConsumption, getCurrentDayEuroConsumption, isCurrentDayRange, targets])
+        }, [
+            currentDayConsumption,
+            getCurrentDayConsumption,
+            getCurrentDayEuroConsumption,
+            isCurrentDayRange,
+            isGetCurrentDayConsumptionLoading,
+            targets,
+        ])
 
         const targetsInfos = useMemo(() => {
             const targetsInfos: targetsInfosType = {}
