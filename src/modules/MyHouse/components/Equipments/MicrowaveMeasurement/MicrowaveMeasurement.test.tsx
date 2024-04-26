@@ -5,7 +5,7 @@ import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/
 import {
     MicrowaveMeasurementProps,
     measurementStepsEnum,
-} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 const HOUSING_EQUIPMENT_ID_TEST = 25
 const EQUIPMENT_NUMBER_TEST = 1
