@@ -15,7 +15,9 @@ import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import {
+    equipmentAllowedTypeT,
     equipmentMeterType,
+    housingInstallationEquipmentsType,
     installationFormFieldsType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import isEqual from 'lodash/isEqual'
@@ -182,7 +184,7 @@ export const InstallationTab = () => {
      * @param data Form data.
      * @returns N/A.
      */
-    const handleFormSubmit = async (data: any) => {
+    const handleFormSubmit = async (data: installationFormFieldsType) => {
         /**
          * Generate the housingEquipments object to pass with the body of the request
          * to add or update the installation infos.
@@ -196,11 +198,17 @@ export const InstallationTab = () => {
                          * Check if the value of the equipment is different from the default value,
                          * if yes, add it to the array of data to send to the backend.
                          */
-                        data[curr.name] !==
-                        formFieldsValuesAccordingToCurrentInstallation[
-                            curr.name as 'heater' | 'hotplate' | 'sanitary' | 'solarpanel'
-                        ]
-                            ? [...prev, { equipmentId: curr.id, equipmentType: data[curr.name] }]
+                        data[curr.name as housingInstallationEquipmentsType] !==
+                        formFieldsValuesAccordingToCurrentInstallation[curr.name as housingInstallationEquipmentsType]
+                            ? [
+                                  ...prev,
+                                  {
+                                      equipmentId: curr.id,
+                                      equipmentType: data[
+                                          curr.name as housingInstallationEquipmentsType
+                                      ] as equipmentAllowedTypeT,
+                                  },
+                              ]
                             : [...prev],
                     [] as equipmentMeterType[],
                 ) ?? []

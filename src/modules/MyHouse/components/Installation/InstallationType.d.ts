@@ -33,6 +33,11 @@ export type equipmentNameType =
     | 'dry_towel'
     | 'water_heater'
 
+/**
+ * Housing Installation Equipments type.
+ */
+export type housingInstallationEquipmentsType = 'heater' | 'hotplate' | 'sanitary' | 'solarpanel'
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentAllowedTypeT =
     | 'induction'
