@@ -26,6 +26,7 @@ import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsump
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 
 /**
  * MyConsumptionContainer.
@@ -60,7 +61,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         isSolarProductionConsentOff = isSolarProductionConsentOff && !isProductionConnectedPlug
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
-    const enedisOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
 
     // Productioon chart should be shown only when user click on Autoconsumption-Production switch button
     const isProductionChartShown =
@@ -104,7 +105,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         () => !!(contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false),
         [contractList],
     )
-    const isIdleShown = isSolarProductionConsentOff
 
     if (consentsLoading)
         return (
@@ -115,12 +115,10 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                 <CircularProgress style={{ color: theme.palette.primary.main }} />
             </Box>
         )
-    // By checking if the metersList is true we make sure that if someone has skipped the step of connecting their PDL, they will see this error message.
-    // Else if they have a PDL, we check its consent.
+
     if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
 
-    // When getConsent fail.
-    if (!nrlinkConsent && !enedisSgeConsent)
+    if ((!nrlinkConsent || nrlinkOff) && (!enedisSgeConsent || enedisSgeOff))
         return (
             <ChartErrorMessage
                 nrLinkEnedisOff={true}
@@ -131,71 +129,76 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     return (
         <>
-            <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
-                {nrlinkOff && enedisOff ? (
-                    <ChartErrorMessage
-                        nrLinkEnedisOff={nrlinkOff && enedisOff}
-                        nrlinkEnedisOffMessage={NRLINK_ENEDIS_OFF_MESSAGE}
-                        linkTo={`/my-houses/${currentHousing?.id}`}
-                    />
-                ) : (
-                    <ConsumptionChartContainer
-                        period={period}
-                        hasMissingHousingContracts={hasMissingHousingContracts}
-                        range={range}
-                        filters={filters}
-                        isSolarProductionConsentOff={isSolarProductionConsentOff}
-                        enedisSgeConsent={enedisSgeConsent}
-                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
-                        isIdleShown={isIdleShown}
-                        setMetricsInterval={setMetricsInterval}
-                        onPeriodChange={setPeriod}
-                        onRangeChange={setRange}
-                    />
-                )}
-
-                {/* Production Chart */}
-                {isProductionChartShown && (
-                    <ProductionChartContainer
-                        period={period}
-                        range={range}
-                        filters={filters}
-                        isProductionConsentOff={isSolarProductionConsentOff}
-                        isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
-                    />
-                )}
-            </div>
-
-            {/* Widget List */}
-            {(!nrlinkOff || !enedisOff) && (
-                <ConsumptionWidgetsMetricsProvider>
-                    <ConsumptionWidgetsContainer
-                        period={period}
-                        range={range}
-                        filters={filters}
-                        hasMissingHousingContracts={hasMissingHousingContracts}
-                        metricsInterval={metricsInterval}
-                        // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
-                        enphaseOff={isSolarProductionConsentOff}
-                        enedisOff={enedisOff}
-                        isIdleWidgetShown={isIdleShown && period !== PeriodEnum.DAILY}
-                    />
-                </ConsumptionWidgetsMetricsProvider>
-            )}
-
-            {/* FAQ used to understand the charts  */}
-            <div className="p-12 sm:p-24">
-                <ChartFAQ period={period} hasTempoContract={doesUserHasTempoContract} />
-            </div>
-
-            {/* Ecowatt Widget */}
-            <div className="p-12 sm:p-24" id="ecowatt-widget">
-                <EcowattWidget
-                    ecowattSignalsData={ecowattSignalsData}
-                    isEcowattDataInProgress={isEcowattDataInProgress}
+            <div style={{ background: theme.palette.common.white }} className="pb-8 w-full flex justify-center">
+                <SwitchConsumptionButton
+                    // TODO: this will be deleted in next PR
+                    onSwitchConsumptionButton={() => {}}
+                    isIdleShown={isSolarProductionConsentOff}
+                    isAutoConsumptionProductionShown={isProductionActiveAndHousingHasAccess(currentHousingScopes)}
                 />
             </div>
+            {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
+            isSolarProductionConsentOff ? (
+                <div>Add links here to add production -in the next PR-</div>
+            ) : (
+                <>
+                    <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
+                        <ConsumptionChartContainer
+                            period={period}
+                            hasMissingHousingContracts={hasMissingHousingContracts}
+                            range={range}
+                            filters={filters}
+                            isSolarProductionConsentOff={isSolarProductionConsentOff}
+                            enedisSgeConsent={enedisSgeConsent}
+                            metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                            isIdleShown={isSolarProductionConsentOff}
+                            setMetricsInterval={setMetricsInterval}
+                            onPeriodChange={setPeriod}
+                            onRangeChange={setRange}
+                        />
+
+                        {/* Production Chart */}
+                        {isProductionChartShown && (
+                            <ProductionChartContainer
+                                period={period}
+                                range={range}
+                                filters={filters}
+                                isProductionConsentOff={isSolarProductionConsentOff}
+                                isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
+                                metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                            />
+                        )}
+                    </div>
+
+                    {/* Widget List */}
+                    <ConsumptionWidgetsMetricsProvider>
+                        <ConsumptionWidgetsContainer
+                            period={period}
+                            range={range}
+                            filters={filters}
+                            hasMissingHousingContracts={hasMissingHousingContracts}
+                            metricsInterval={metricsInterval}
+                            // TODO Change enphaseOff for a more generic naming such as isProductionConsentOff or productionOff...
+                            enphaseOff={isSolarProductionConsentOff}
+                            enedisOff={enedisSgeOff}
+                            isIdleWidgetShown={isSolarProductionConsentOff && period !== PeriodEnum.DAILY}
+                        />
+                    </ConsumptionWidgetsMetricsProvider>
+
+                    {/* FAQ used to understand the charts  */}
+                    <div className="p-12 sm:p-24">
+                        <ChartFAQ period={period} hasTempoContract={doesUserHasTempoContract} />
+                    </div>
+
+                    {/* Ecowatt Widget */}
+                    <div className="p-12 sm:p-24" id="ecowatt-widget">
+                        <EcowattWidget
+                            ecowattSignalsData={ecowattSignalsData}
+                            isEcowattDataInProgress={isEcowattDataInProgress}
+                        />
+                    </div>
+                </>
+            )}
         </>
     )
 }
