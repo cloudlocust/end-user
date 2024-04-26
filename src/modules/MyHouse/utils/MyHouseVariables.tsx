@@ -2,7 +2,7 @@ import { chunk, filter, zip } from 'lodash'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
 import { Theme } from '@mui/material'
 import { API_RESOURCES_URL } from 'src/configs'
-import { EquipmentOptionsType, SelectFormOptions } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
+import { EquipmentOptionsType, SelectForm } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { EquipmentIcon } from 'src/modules/MyHouse/components/Equipments/EquipmentIcon'
 import { FormattedMessage } from 'src/common/react-platform-translation'
 
@@ -120,7 +120,7 @@ export const isolationOptions = ['Faible', 'Moyenne', 'Forte']
 /**
  * Heater options.
  */
-export const heaterEquipment: SelectFormOptions = {
+export const heaterEquipment: SelectForm = {
     name: 'heater',
 
     titleLabel: <FormattedMessage id="Type" defaultMessage="Type" />,
@@ -167,7 +167,7 @@ export const heaterEquipment: SelectFormOptions = {
 /**
  * Sanitary options.
  */
-export const sanitaryEquipment: SelectFormOptions = {
+export const sanitaryEquipment: SelectForm = {
     name: 'sanitary',
     titleLabel: <FormattedMessage id="Type" defaultMessage="Type" />,
     formOptions: [
@@ -209,7 +209,7 @@ export const sanitaryEquipment: SelectFormOptions = {
 /**
  * Hotplate options.
  */
-export const hotPlateEquipment: SelectFormOptions = {
+export const hotPlateEquipment: SelectForm = {
     name: 'hotplate',
     titleLabel: <FormattedMessage id="Type" defaultMessage="Type" />,
     formOptions: [

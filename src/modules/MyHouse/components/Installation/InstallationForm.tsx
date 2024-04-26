@@ -28,7 +28,7 @@ import {
     installationFormFieldsType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import isEqual from 'lodash/isEqual'
-import { SelectOption } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
+import { renderOptions } from 'src/modules/utils/select'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const SOLAR_PANEL_TYPES = {
@@ -234,20 +234,6 @@ export const InstallationTab = () => {
                 statusWhenWantingSolarPanel: data.statusWhenWantingSolarPanel || undefined,
             },
         })
-    }
-
-    /**
-     * Function to render the options of the select component.
-     *
-     * @param options The options to render.
-     * @returns The rendered options.
-     */
-    const renderOptions = (options: SelectOption[]) => {
-        return options.map((option, _index) => (
-            <MenuItem key={option.value} value={option.value}>
-                {option.label}
-            </MenuItem>
-        ))
     }
 
     if (getInstallationInfosInProgress)

@@ -43,26 +43,9 @@ export interface EquipmentOptionsType {
 }
 
 /**
- * Option of the select.
+ * Select field type.
  */
-export type SelectOption =
-    /**
-     * Option of the select.
-     */
-    {
-        /**
-         * Label .
-         */
-        label: JSX.Element
-        /**
-         * Value of the option.
-         */
-        value: string
-    }
-/**
- * Equipment Name type.
- */
-export type SelectFormOptions =
+export type SelectForm =
     /**
      *
      */
