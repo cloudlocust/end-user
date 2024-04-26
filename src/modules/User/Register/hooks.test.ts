@@ -7,6 +7,7 @@ import { RenderResult } from '@testing-library/react-hooks'
 const mockHistoryReplace = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
 let mockUserRegistrationAutoValidate = false
+let mockIsLoginAfterRegister = false
 const REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE =
     'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
 const REGISTRATION_SUCCESS_MESSAGE =
@@ -33,6 +34,14 @@ jest.mock('src/modules/User/configs', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     get USER_REGISTRATION_AUTO_VALIDATE() {
         return mockUserRegistrationAutoValidate
+    },
+}))
+
+jest.mock('src/modules/User/Register/RegisterConfig', () => ({
+    ...jest.requireActual('src/modules/User/Register/RegisterConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get isLoginAfterRegister() {
+        return mockIsLoginAfterRegister
     },
 }))
 
@@ -116,6 +125,24 @@ describe('Testing useRegister hooks', () => {
                 variant: 'error',
             },
         )
+    })
+    test('When activate login after register, dispatch login and no snackbar', async () => {
+        mockIsLoginAfterRegister = true
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456' })
+        })
+        expect(result.current.isRegisterInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isRegisterInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+        mockIsLoginAfterRegister = false
     })
     test('When activate allowedZipCodes and the zipCode fit, register successfully', async () => {
         const {
