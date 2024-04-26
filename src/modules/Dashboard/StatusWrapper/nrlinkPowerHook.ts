@@ -41,6 +41,7 @@ export function useNrlinkMetrics(housingId?: number): UseQueryResult<INrlinkMetr
                 throw error
             },
             refetchInterval: 60000,
+            refetchOnWindowFocus: true,
         },
     )
 }
