@@ -4,6 +4,7 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress/MeasurementProgress.d'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 const HEADER_TEXT_PENDING_OR_IN_PROGRESS = 'Mesure en cours ...'
 const HEADER_TEXT_SUCCESS = 'Mesure effectuée avec succès'
@@ -115,7 +116,7 @@ describe('MeasurementProcessStep Component', () => {
         // Calling stepSetter function on clicking on the button "Voir le résultat"
         userEvent.click(buttonFinish)
         await waitFor(() => {
-            expect(mockStepSetter).toHaveBeenCalledWith(4)
+            expect(mockStepSetter).toHaveBeenCalledWith(measurementStepsEnum.RESULT_STEP)
         })
     })
 

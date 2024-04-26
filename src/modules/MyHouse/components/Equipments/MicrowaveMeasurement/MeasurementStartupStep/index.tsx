@@ -5,6 +5,7 @@ import { ReactComponent as ConnectEquipmentIcon } from 'src/assets/images/conten
 import { useIntl } from 'src/common/react-platform-translation'
 import { MeasurementStartupStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementStartupStep/MeasurementStartupStep'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * MeasurementStartupStep component.
@@ -21,7 +22,7 @@ export const MeasurementStartupStep = ({ measurementMode, stepSetter }: Measurem
      * Click handler for the button Commencer la mesure.
      */
     const handleBtnClick = () => {
-        stepSetter(3)
+        stepSetter(measurementStepsEnum.PROCESS_STEP)
     }
 
     return (

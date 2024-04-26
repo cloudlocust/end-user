@@ -11,7 +11,10 @@ import { ConfigurationStep } from 'src/modules/MyHouse/components/Equipments/Mic
 import { MeasurementStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementStartupStep'
 import { MeasurementProcessStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep'
 import { MeasurementResultStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementResultStep'
-import { MicrowaveMeasurementProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+import {
+    MicrowaveMeasurementProps,
+    measurementStepsEnum,
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurementHook'
 
 /**
@@ -57,12 +60,12 @@ export const MicrowaveMeasurement = ({
     onCloseMeasurementModal,
     navigateToEquipmentDetailsPage,
 }: MicrowaveMeasurementProps) => {
-    const [currentStep, setCurrentStep] = useState(0)
+    const [currentStep, setCurrentStep] = useState(measurementStepsEnum.INFOS_PAGE_STEP)
     const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
     const [measurementMode, setMeasurementMode] = useState(defaultMeasurementMode || '')
 
     useEffect(() => {
-        setCurrentStep(stepToStartFrom ?? 0)
+        setCurrentStep(stepToStartFrom ?? measurementStepsEnum.INFOS_PAGE_STEP)
     }, [stepToStartFrom])
 
     useEffect(() => {
@@ -96,7 +99,7 @@ export const MicrowaveMeasurement = ({
     const handleRestartingMeasurement = useCallback(
         async (microwaveNumber?: number, measurementMode?: string) => {
             await setMeasurementStatus(null)
-            setCurrentStep(1)
+            setCurrentStep(measurementStepsEnum.CONFIGURATION_STEP)
             setMicrowaveNumber(microwaveNumber || (equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0))
             setMeasurementMode(measurementMode || defaultMeasurementMode || '')
         },
@@ -108,7 +111,7 @@ export const MicrowaveMeasurement = ({
      */
     const handleCloseMeasurementModal = useCallback(async () => {
         await setMeasurementStatus(null)
-        setCurrentStep(stepToStartFrom ?? 0)
+        setCurrentStep(stepToStartFrom ?? measurementStepsEnum.INFOS_PAGE_STEP)
         setMicrowaveNumber(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
         setMeasurementMode(defaultMeasurementMode || '')
         if (updateEquipmentMeasurementResults) {
@@ -125,7 +128,10 @@ export const MicrowaveMeasurement = ({
         updateEquipmentMeasurementResults,
     ])
 
-    const stepsContent = [
+    /**
+     * The measurement steps to use with the Stepper component.
+     */
+    const stepperContent = [
         <ConfigurationStep
             equipmentsNumber={equipmentsNumber}
             selectedMicrowave={microwaveNumber}
@@ -172,14 +178,14 @@ export const MicrowaveMeasurement = ({
                 </IconButton>
 
                 {/* The content of the modal */}
-                {currentStep === 0 ? (
+                {currentStep === measurementStepsEnum.INFOS_PAGE_STEP ? (
                     <InfosPage stepSetter={setCurrentStep} />
-                ) : currentStep === 4 ? (
+                ) : currentStep === measurementStepsEnum.RESULT_STEP ? (
                     <MeasurementResultStep
                         microwaveNumber={microwaveNumber}
                         measurementMode={measurementMode}
                         measurementResult={measurementResult}
-                        showingOldResult={stepToStartFrom === 4}
+                        showingOldResult={stepToStartFrom === measurementStepsEnum.RESULT_STEP}
                         closeMeasurementModal={handleCloseMeasurementModal}
                         navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
                         restartMeasurementFromBeginning={handleRestartingMeasurement}
@@ -188,14 +194,14 @@ export const MicrowaveMeasurement = ({
                     <>
                         <div className="mt-0 mb-24 mx-auto w-3/5">
                             <Stepper activeStep={currentStep - 1}>
-                                {stepsContent.map((_, index) => (
+                                {stepperContent.map((_, index) => (
                                     <Step key={index}>
                                         <StepLabel />
                                     </Step>
                                 ))}
                             </Stepper>
                         </div>
-                        {currentStep >= 1 && currentStep <= 3 ? stepsContent[currentStep - 1] : null}
+                        {stepperContent[currentStep - 1]}
                     </>
                 )}
             </div>

@@ -12,6 +12,7 @@ import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
 import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/MeasurementResult'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * EquipmentMeasurementResults compoonent.
@@ -50,7 +51,7 @@ export const EquipmentMeasurementResults = ({
         (measurementMode: string, result: number | null) => {
             setMeasurementMode(measurementMode)
             setMeasurementResult(result)
-            setStepToStartFrom(4)
+            setStepToStartFrom(measurementStepsEnum.RESULT_STEP)
             onOpenMeasurementModal()
         },
         [onOpenMeasurementModal],
@@ -59,7 +60,7 @@ export const EquipmentMeasurementResults = ({
     const handleClickingOnMeasurementButton = useCallback(
         (measurementMode: string) => {
             setMeasurementMode(measurementMode)
-            setStepToStartFrom(1)
+            setStepToStartFrom(measurementStepsEnum.CONFIGURATION_STEP)
             onOpenMeasurementModal()
         },
         [onOpenMeasurementModal],
@@ -131,20 +132,20 @@ export const EquipmentMeasurementResults = ({
                 </Table>
             </TableContainer>
 
-            {/* {equipmentsNumber && stepToStartFrom && ( */}
-            <MicrowaveMeasurement
-                housingEquipmentId={housingEquipmentId!}
-                equipmentsNumber={equipmentsNumber!}
-                measurementModes={measurementModes}
-                isMeasurementModalOpen={isMeasurementModalOpen}
-                onCloseMeasurementModal={onCloseMeasurementModal}
-                defaultMicrowaveNumber={equipmentNumber}
-                defaultMeasurementMode={measurementMode}
-                defaultMeasurementResult={measurementResult}
-                updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
-                stepToStartFrom={stepToStartFrom}
-            />
-            {/* )} */}
+            {equipmentsNumber && stepToStartFrom && (
+                <MicrowaveMeasurement
+                    housingEquipmentId={housingEquipmentId!}
+                    equipmentsNumber={equipmentsNumber!}
+                    measurementModes={measurementModes}
+                    isMeasurementModalOpen={isMeasurementModalOpen}
+                    onCloseMeasurementModal={onCloseMeasurementModal}
+                    defaultMicrowaveNumber={equipmentNumber}
+                    defaultMeasurementMode={measurementMode}
+                    defaultMeasurementResult={measurementResult}
+                    updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
+                    stepToStartFrom={stepToStartFrom}
+                />
+            )}
         </>
     ) : null
 }

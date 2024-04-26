@@ -23,9 +23,9 @@ export interface CustomRadioGroupProps extends BoxProps {
      */
     onValueChange?: (v: string) => void
     /**
-     * The radio group initial value.
+     * The radio group value.
      */
-    initialValue?: string
+    value?: string
     /**
      * Props of the MUI Box component.
      */
