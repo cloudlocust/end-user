@@ -12,7 +12,6 @@ import {
     CircularProgress,
 } from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
-import { useIntl } from 'src/common/react-platform-translation'
 import { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { RootState } from 'src/redux'
@@ -30,7 +29,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
  * @description Equipment Card component that displays individual card for each type of equipment.
  * @param root0 N/A.
  * @param root0.equipment The equipment details object.
- * @param root0.label Equipment label.
+ * @param root0.title Equipment title.
  * @param root0.onEquipmentChange Function that handle the equipment number.
  * @param root0.addingEquipmentInProgress Boolean indicating if adding equipment is in progress.
  * @param root0.iconComponent Icon component.
@@ -38,13 +37,12 @@ import SettingsIcon from '@mui/icons-material/Settings'
  */
 export const EquipmentCard = ({
     equipment,
-    label,
+    title,
     onEquipmentChange,
     addingEquipmentInProgress,
     iconComponent,
 }: EquipmentCardProps) => {
     const theme = useTheme()
-    const { formatMessage } = useIntl()
     const {
         isOpen: isMeasurementModalOpen,
         openModal: onOpenMeasurementModal,
@@ -110,10 +108,7 @@ export const EquipmentCard = ({
                     <div className="flex w-full flex-col justify-between items-end gap-10">
                         <div className="flex w-full justify-between">
                             <Typography className="text-16 md:text-17 font-medium">
-                                {formatMessage({
-                                    id: label,
-                                    defaultMessage: label,
-                                })}
+                                {title || equipment.name}
                             </Typography>
                             <div className="flex flex-row items-center gap-4">
                                 <IconButton
@@ -123,7 +118,7 @@ export const EquipmentCard = ({
                                         if (equipment.number && equipment.number > 0) {
                                             onEquipmentChange([
                                                 {
-                                                    equipmentId: equipment.id,
+                                                    equipmentId: equipment.equipment.id,
                                                     equipmentNumber: equipment.number - 1,
                                                 },
                                             ])
@@ -146,7 +141,10 @@ export const EquipmentCard = ({
                                     onClick={() => {
                                         if (equipment.number) {
                                             onEquipmentChange([
-                                                { equipmentId: equipment.id, equipmentNumber: equipment.number + 1 },
+                                                {
+                                                    equipmentId: equipment.equipment.id,
+                                                    equipmentNumber: equipment.number + 1,
+                                                },
                                             ])
                                         }
                                     }}
@@ -159,11 +157,10 @@ export const EquipmentCard = ({
                                     className="mr-6 cursor-pointer"
                                     onClick={() => {
                                         if (currentHousing?.id) {
-                                            // equipment has to be serilized otherwise it throw an error
-                                            const serializedEquipment = JSON.stringify(equipment)
-                                            history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, {
-                                                equipment: JSON.parse(serializedEquipment),
-                                            })
+                                            const equipementId = equipment.equipment.id
+                                            history.push(
+                                                `${URL_MY_HOUSE}/${currentHousing.id}/equipments/${equipment.housingEquipmentId}/details/${equipementId}`,
+                                            )
                                         }
                                     }}
                                 />

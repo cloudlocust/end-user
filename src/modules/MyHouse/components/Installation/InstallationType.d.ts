@@ -75,6 +75,10 @@ export type equipmentMeterType = {
      * Year of purchase of the Equipment.
      */
     yearOfPurchase?: number | null
+    /**
+     * Equipment label.
+     */
+    equipmentLabel?: string
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc

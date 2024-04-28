@@ -12,6 +12,11 @@ const mockHousingEquipmentsList: HousingEquipmentListType = [
         name: 'equipment 1 name',
         allowedType: ['electricity', 'other'],
         isNumber: true,
+        equipment: {
+            allowedType: ['electricity'],
+            id: 1,
+            name: 'equipment 1 name',
+        },
     },
     {
         id: 2,
@@ -19,6 +24,11 @@ const mockHousingEquipmentsList: HousingEquipmentListType = [
         name: 'equipment 2 name',
         allowedType: ['other'],
         isNumber: true,
+        equipment: {
+            allowedType: ['other'],
+            id: 2,
+            name: 'equipment 2 name',
+        },
     },
     {
         id: 3,
@@ -26,6 +36,11 @@ const mockHousingEquipmentsList: HousingEquipmentListType = [
         name: 'equipment 3 name',
         allowedType: ['electricity'],
         isNumber: true,
+        equipment: {
+            allowedType: ['electricity'],
+            id: 3,
+            name: 'equipment 3 name',
+        },
     },
 ]
 

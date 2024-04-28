@@ -27,15 +27,17 @@ describe('EquipmentCard tests', () => {
     let mockEquipmentCardProps: EquipmentCardProps = {
         equipment: {
             id: 1,
-            housingEquipmentId: 81,
-            name: 'tv',
             allowedType: ['electricity'],
-            number: 5,
+            housingEquipmentId: 1,
             isNumber: true,
-            measurementModes: undefined,
-            customerId: undefined,
+            name: 'microwave',
+            equipment: {
+                id: 1,
+                name: 'microwave',
+                allowedType: ['electricity'],
+            },
         },
-        label: 'Label',
+        title: 'title',
         onEquipmentChange: jest.fn(),
     }
 
@@ -57,7 +59,7 @@ describe('EquipmentCard tests', () => {
                 <EquipmentCard {...mockEquipmentCardProps} />
             </Router>,
         )
-        expect(getByText(mockEquipmentCardProps.label!)).toBeInTheDocument()
+        expect(getByText(mockEquipmentCardProps.title!)).toBeInTheDocument()
     })
 
     test('display the correct number', async () => {
