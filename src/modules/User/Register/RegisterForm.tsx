@@ -15,7 +15,7 @@ import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import { MenuItem, TextField as MuiTextFieldSelect } from '@mui/material'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
-import { isProfessionalRegisterFeature } from 'src/modules/User/Register/RegisterConfig'
+import { isProfessionalRegisterFeature, allowedZipCodesInRegistration } from 'src/modules/User/Register/RegisterConfig'
 import { sirenFieldRegex } from 'src/modules/User/Register/utils'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
@@ -82,10 +82,13 @@ export const RegisterForm = ({
             return
         }
 
-        onSubmit({
-            ...cleanData,
-            role: defaultRole,
-        })
+        onSubmit(
+            {
+                ...cleanData,
+                role: defaultRole,
+            },
+            allowedZipCodesInRegistration,
+        )
     }
 
     return (
@@ -142,9 +145,23 @@ export const RegisterForm = ({
                         margin: 'normal',
                     }}
                 />
-                <TextField name="firstName" label="Prénom" validateFunctions={[requiredBuilder()]} variant="outlined" />
-                <TextField name="lastName" label="Nom" validateFunctions={[requiredBuilder()]} />
-                <TextField name="email" label="Email" validateFunctions={[requiredBuilder(), email()]} />
+                <TextField
+                    name="firstName"
+                    label="Prénom présent sur votre facture d'électricité"
+                    validateFunctions={[requiredBuilder()]}
+                    variant="outlined"
+                />
+                <TextField
+                    name="lastName"
+                    label="Nom présent sur votre facture d'électricité"
+                    validateFunctions={[requiredBuilder()]}
+                />
+                <TextField
+                    inputProps={{ style: { textTransform: 'lowercase' } }}
+                    name="email"
+                    label="Email"
+                    validateFunctions={[requiredBuilder(), email()]}
+                />
                 <PhoneNumber
                     name="phone"
                     label="Numéro de téléphone"

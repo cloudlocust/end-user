@@ -232,4 +232,14 @@ describe('MyConsumptionContainer test', () => {
             expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
         })
     })
+
+    test('should ChartFAQ appear', async () => {
+        const { getByTestId } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        expect(getByTestId('faq')).toBeInTheDocument()
+    })
 })

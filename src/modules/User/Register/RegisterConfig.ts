@@ -40,6 +40,18 @@ export const energyProviderName = window._env_.REACT_APP_ENERGY_PROVIDER_NAME
 export const isProfessionalRegisterFeature = window._env_.REACT_APP_PROFESSIONAL_REGISTER_FEATURE === 'enabled'
 
 /**
+ * Allowed zip code for address when register.
+ */
+export const allowedZipCodesInRegistration = window._env_.REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION.includes('|')
+    ? window._env_.REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION.split('|')
+    : undefined
+
+/**
+ * Is login after registration on.
+ */
+export const isLoginAfterRegister = window._env_.REACT_APP_AUTO_LOGIN_AFTER_REGISTRATION_STATE === 'enabled'
+
+/**
  * Configuration object for the register page. It contains, url, component and its props, and authentication level needed.
  */
 export const RegisterConfig = [

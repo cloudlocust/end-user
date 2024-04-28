@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import dayjs from 'dayjs'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
-import { useTheme, useMediaQuery, Typography } from '@mui/material'
-import { isSameDay } from 'date-fns'
-import { IMetric, metricTargetsEnum, metricTargetType } from 'src/modules/Metrics/Metrics.d'
+import { useTheme, Typography } from '@mui/material'
+import { IMetric, metricTargetsEnum, metricTargetType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import CircularProgress from '@mui/material/CircularProgress'
 import EurosConsumptionButtonToggler from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler'
@@ -10,9 +11,9 @@ import {
     getTotalOffIdleConsumptionData,
     filterMetricsData,
     getDefaultConsumptionTargets,
-    showPerPeriodText,
     nullifyTodayIdleConsumptionValue,
     getDateWithTimezoneOffset,
+    getRangeV2,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import {
     DefaultContractWarning,
@@ -27,18 +28,25 @@ import {
     eurosIdleConsumptionTargets,
     idleConsumptionTargets,
     temperatureOrPmaxTargets,
+    dataConsumptionPeriod,
 } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import MyConsumptionChart from 'src/modules/MyConsumption/components/MyConsumptionChart'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { useIntl } from 'src/common/react-platform-translation'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { getMaxTimeBetweenSuccessiveMissingValue } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
+import { getMessageOfSuccessiveMissingDataOfCurrentDay } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
-import { Title } from 'src/modules/MyConsumption/components/Title'
-import { computeTotalConsumption, computeTotalEuros } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import {
+    EChartTooltipFormatterParams,
+    TooltipValueFormatter,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
+import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { SolarInstallationRecommendationButton } from 'src/modules/MyConsumption/components/SolarInstallationRecommendationButton'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -78,7 +86,6 @@ export const ConsumptionChartContainer = ({
 ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
@@ -86,11 +93,6 @@ ConsumptionChartContainerProps) => {
         getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
     )
     const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
-
-    useEffect(() => {
-        const defaultTargets = getDefaultConsumptionTargets(consumptionToggleButton)
-        setTargets(defaultTargets)
-    }, [consumptionToggleButton])
 
     // Switch consumption button should be reset to consumption when the other two are not shown.
     useEffect(() => {
@@ -255,6 +257,15 @@ ConsumptionChartContainerProps) => {
      */
     const onSwitchConsumptionButton = useCallback(
         (buttonType: SwitchConsumptionButtonTypeEnum) => {
+            // If the user is on daily view and clicks on the idle button, we should switch to weekly view.
+            if (buttonType === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
+                const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find(
+                    (item) => item.period === PeriodEnum.WEEKLY,
+                )!
+                onPeriodChange(dataConsumptionWeeklyPeriod.period)
+                onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
+                setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+            }
             setTargets((prev) => {
                 switch (buttonType) {
                     case SwitchConsumptionButtonTypeEnum.Idle:
@@ -269,7 +280,15 @@ ConsumptionChartContainerProps) => {
                 }
             })
         },
-        [getAutoconsumptionProductionTargets, getConsumptionTargets, isEurosButtonToggled],
+        [
+            getAutoconsumptionProductionTargets,
+            getConsumptionTargets,
+            isEurosButtonToggled,
+            onPeriodChange,
+            onRangeChange,
+            period,
+            setMetricsInterval,
+        ],
     )
 
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
@@ -302,69 +321,64 @@ ConsumptionChartContainerProps) => {
         }
     }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
     /**
-     * Calculates the total consumption based on the additional metrics data.
-     * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items,
-     * the total consumption is computed using the `computeTotalConsumption` function.
+     * Callback to return the total consumption of hovered element based on the additional metrics data.
+     * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items.
      * Otherwise, it returns undefined.
      *
      * @param additionalMetricsData - The additional metrics data used to calculate the total consumption.
      * @param isTotalsOnChartTooltipDisplayed - A flag indicating whether to display the total consumption on the chart tooltip.
      * @returns The total consumption or undefined.
      */
-    const totalConsumption = useMemo(() => {
-        if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
-            return computeTotalConsumption(additionalMetricsData)
-        }
-        return undefined
-    }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
+    const getTotalConsumption = useCallback(
+        (index: number) => {
+            if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
+                const consumptionMetrics = additionalMetricsData.find(
+                    (item) => item.target === metricTargetsEnum.consumption,
+                )
+                const originalValue = consumptionMetrics!.datapoints[index][0]
+                if (originalValue !== null) {
+                    return consumptionWattUnitConversion(originalValue)
+                }
+            }
+        },
+        [additionalMetricsData, isTotalsOnChartTooltipDisplayed],
+    )
 
     /**
-     * Calculates the total cost in euros based on the additional metrics data.
-     * If isTotalsOnChartTooltipDisplayed is true and additionalMetricsData has at least one item,
-     * the total cost is computed using the computeTotalEuros function.
+     * Callback to calculates the total cost in euros of hovered element based on the additional metrics data.
+     * If isTotalsOnChartTooltipDisplayed is true and additionalMetricsData has at least one item.
      * Otherwise, the total cost is undefined.
      *
      * @param additionalMetricsData - The additional metrics data used to calculate the total cost.
      * @param isTotalsOnChartTooltipDisplayed - A flag indicating whether to display the total cost on the chart tooltip.
      * @returns The total cost in euros or undefined.
      */
-    const totalEuroCost = useMemo(() => {
-        if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
-            return computeTotalEuros(additionalMetricsData)
-        }
-        return undefined
-    }, [additionalMetricsData, isTotalsOnChartTooltipDisplayed])
+    const getTotalEuroCost = useCallback(
+        (index: number) => {
+            if (isTotalsOnChartTooltipDisplayed && additionalMetricsData.length > 0) {
+                const eurosConsumptionMetrics = additionalMetricsData.find(
+                    (item) => item.target === metricTargetsEnum.eurosConsumption,
+                )
+                const originalValue = eurosConsumptionMetrics!.datapoints[index][0]
+                if (originalValue !== null)
+                    return {
+                        value: Number(originalValue.toFixed(2)),
+                        unit: '€',
+                    }
+            }
+        },
+        [additionalMetricsData, isTotalsOnChartTooltipDisplayed],
+    )
 
     const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
-        // check if we are in current day and the view is daily.
-        if (consumptionChartData.length && period === PeriodEnum.DAILY && isSameDay(new Date(range.from), new Date())) {
-            const currentTime = Date.now()
-            const datapointsOfMetrics = consumptionChartData.map(({ datapoints }) =>
-                datapoints.filter(([_value, time]) => time <= currentTime),
-            )
-            const time = getMaxTimeBetweenSuccessiveMissingValue(datapointsOfMetrics)
-            if (time >= 10) {
-                return formatMessage(
-                    {
-                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
-                        defaultMessage:
-                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} La connexion avec votre nrLINK semble rompue, vérifiez sur son écran qu’il est bien connecté au wifi et à l’ERL, si besoin n’hésitez pas à le redémarrer, puis patientez quelques minutes.',
-                    },
-                    { break: <br /> },
-                )
-            } else if (time >= 5) {
-                return formatMessage(
-                    {
-                        id: 'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
-                        defaultMessage:
-                            'Oups ! Une partie de vos données sur la journée n’est pas disponible.{break} Il semblerait la connexion avec votre nrLINK ait été rompue pendant plus de 10 minutes.',
-                    },
-                    { break: <br /> },
-                )
-            }
-            return null
-        }
-    }, [consumptionChartData, period, range, formatMessage])
+        return getMessageOfSuccessiveMissingDataOfCurrentDay(consumptionChartData, period, range)
+    }, [consumptionChartData, period, range])
+
+    // Callback to check if the range is in the current year.
+    const isRangeInCurrentYear = useCallback(() => {
+        return new Date(range.from).getFullYear() === new Date().getFullYear()
+    }, [range.from])
+
     /**
      * Checks if all yearly consumption data is available.
      *
@@ -374,17 +388,14 @@ ConsumptionChartContainerProps) => {
         return (
             consumptionChartData.length > 0 &&
             Array.from({ length: 12 }).every((_element, index) => {
+                // In the current year, we ignore the future months.
+                if (isRangeInCurrentYear() && index > new Date().getMonth()) return true
                 return consumptionChartData.some((item) => {
                     return item.datapoints[index] && !!item.datapoints[index][0]
                 })
             })
         )
-    }, [consumptionChartData])
-
-    // Callback to check if the range is in the current year.
-    const isRangeInCurrentYear = useCallback(() => {
-        return new Date(range.from).getFullYear() === new Date().getFullYear()
-    }, [range])
+    }, [consumptionChartData, isRangeInCurrentYear])
 
     /**
      * Handles the selection of years in the date picker.
@@ -432,21 +443,62 @@ ConsumptionChartContainerProps) => {
         )
     }, [enedisSgeOff, period, range])
 
-    const onDisplayTooltipLabel = useCallback(
-        (label) => {
-            return period === PeriodEnum.DAILY ? true : label.value !== null && label.value !== undefined
+    const onDisplayTooltipLabel = useCallback((label) => {
+        return label.value !== null && label.value !== undefined
+    }, [])
+
+    /**
+     *  Function for rendering a component when all labels are missing in the tooltip.
+     */
+    const renderComponentOnMissingLabels = useCallback(
+        (params: EChartTooltipFormatterParams) => {
+            // get the xAxis value.
+            const xAxisValue = params[0].axisValue
+            const xAxisValueDate = parseXAxisLabelToDate(xAxisValue, period, range)
+            const currentDate = dayjs()
+            // check if the xAxis value is in the past using dayjs (in the weekly and monthly periods, we don't have the data for the current day, so we don't count it).
+            const isHoveredOnPastTime = xAxisValueDate.isBefore(
+                // in yealy
+                period === PeriodEnum.DAILY || period === PeriodEnum.YEARLY
+                    ? currentDate
+                    : currentDate.subtract(1, 'day'),
+            )
+            // display message only if the xAxis value is in the past.
+            if (isHoveredOnPastTime) {
+                return (
+                    <div className="py-6 max-w-320 whitespace-pre-wrap">
+                        <p>
+                            {formatMessage({
+                                id: 'Aucune donnée transmise par le Linky ou par le nrLINK',
+                                defaultMessage: 'Aucune donnée transmise par le Linky ou par le nrLINK',
+                            })}
+                        </p>
+                    </div>
+                )
+            }
+            return null
         },
-        [period],
+        [formatMessage, period, range],
     )
-    const isDefaultContractWarningShown = isEurosButtonToggled && Boolean(hasMissingHousingContracts)
-    const isConsumptionEnedisSgeWarningShown = enedisSgeOff && sgeConsentFeatureState
-    // We disable the consumption identifier button temporarily, must remove this const when you enable it.
-    const isConsumptionIdentifierButtonDisablingTemporarily = true
+
+    /**
+     * Handles the change of period.
+     *
+     * @param {PeriodEnum} value - The new period value.
+     */
+    const handlePeriodChange = (value: PeriodEnum) => {
+        // if the user on the idle view and click on the daily button, we should switch to the consumption view.
+        if (value === PeriodEnum.DAILY && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
+            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
+            onSwitchConsumptionButton(SwitchConsumptionButtonTypeEnum.Consumption)
+        }
+        onPeriodChange(value)
+    }
 
     return (
         <div className="mb-12">
             {(isIdleShown || isAutoConsumptionProductionShown) && (
-                <div className="pb-16 w-full flex justify-center">
+                <div className="pb-8 w-full flex justify-center">
                     <SwitchConsumptionButton
                         onSwitchConsumptionButton={onSwitchConsumptionButton}
                         isIdleShown={isIdleShown}
@@ -454,13 +506,16 @@ ConsumptionChartContainerProps) => {
                     />
                 </div>
             )}
-
-            <div className="px-16 sm:py-16 flex justify-center">
-                <Title>
-                    {period === 'daily' ? 'Ma puissance' : 'Ma consommation'}&nbsp;
-                    {showPerPeriodText('consumption', period, isEurosButtonToggled)}
-                </Title>
-            </div>
+            {period === 'daily' && (
+                <div className="pt-2 w-full flex">
+                    <ConsumptionIdentifierButton size="small" className="px-16" />
+                </div>
+            )}
+            {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
+                <div className="pb-8 pt-8 w-full flex">
+                    <SolarInstallationRecommendationButton />
+                </div>
+            )}
             <div
                 className="px-16 mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
@@ -474,10 +529,15 @@ ConsumptionChartContainerProps) => {
                 )}
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={onPeriodChange}
+                        setPeriod={handlePeriodChange}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
+                        period={period}
+                        hidePeriods={
+                            // Hide daily period when the consumption toggle button is on idle.
+                            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle ? [PeriodEnum.DAILY] : []
+                        }
                     />
                 </div>
                 <TargetMenuGroup
@@ -486,9 +546,6 @@ ConsumptionChartContainerProps) => {
                     hidePmax={hidePmax}
                     activeButton={targetMenuActiveButton}
                 />
-                {!isConsumptionIdentifierButtonDisablingTemporarily && !mdDown && period === 'daily' && (
-                    <ConsumptionIdentifierButton size="small" className="px-16" />
-                )}
             </div>
             <div>
                 <MyConsumptionDatePicker
@@ -520,24 +577,29 @@ ConsumptionChartContainerProps) => {
                         data={consumptionChartData}
                         period={period}
                         axisColor={theme.palette.common.black}
-                        totalConsumption={totalConsumption}
-                        totalEuroCost={totalEuroCost}
-                        onDisplayTooltipLabel={onDisplayTooltipLabel}
+                        tooltipFormatter={(
+                            params: EChartTooltipFormatterParams,
+                            valueFormatter?: TooltipValueFormatter,
+                        ) =>
+                            renderToStaticMarkup(
+                                <ConsumptionChartTooltip
+                                    params={params}
+                                    valueFormatter={valueFormatter}
+                                    getTotalConsumption={getTotalConsumption}
+                                    getTotalEuroCost={getTotalEuroCost}
+                                    onDisplayTooltipLabel={onDisplayTooltipLabel}
+                                    renderComponentOnMissingLabels={renderComponentOnMissingLabels}
+                                />,
+                            )
+                        }
                     />
                 </>
             )}
-            {period === PeriodEnum.YEARLY &&
-                !isDefaultContractWarningShown &&
-                !isConsumptionEnedisSgeWarningShown &&
-                !isMetricsLoading &&
-                !checkIfAllYearlyDataExist() && <MissingDataWarning />}
+            {period === PeriodEnum.YEARLY && !isMetricsLoading && !checkIfAllYearlyDataExist() && (
+                <MissingDataWarning />
+            )}
             <DefaultContractWarning isShowWarning={isEurosButtonToggled && Boolean(hasMissingHousingContracts)} />
             <ConsumptionEnedisSgeWarning isShowWarning={enedisSgeOff && sgeConsentFeatureState} />
-            {!isConsumptionIdentifierButtonDisablingTemporarily && mdDown && period === 'daily' && (
-                <div className="flex justify-center px-24 py-8">
-                    <ConsumptionIdentifierButton fullWidth />
-                </div>
-            )}
         </div>
     )
 }

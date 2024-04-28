@@ -1,9 +1,7 @@
-import { useEffect, useCallback } from 'react'
 import 'src/modules/User/Register/register.scss'
 import { Typography } from 'src/common/ui-kit'
 import { useIntl } from 'react-intl'
-import { Link } from 'react-router-dom'
-import { useHistory } from 'react-router'
+import { Link, useHistory } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import { motion } from 'framer-motion'
@@ -12,6 +10,8 @@ import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import { useGetShowNrLinkPopupHook } from 'src/modules/nrLinkConnection/NrLinkConnectionHook'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 /**
  * Get Show NrLink Popup Endpoint.
@@ -31,25 +31,15 @@ const NrLinkConnection = () => {
     const { formatMessage } = useIntl()
     const history = useHistory()
 
-    /**
-     * Get ShowNrLink Popup request handler.
-     */
-    const getShowNrLinkPopup = useCallback(async () => {
-        try {
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            const { data: responseData } = await axios.get<{ showNrlinkPopup: boolean }>(
-                `${GET_SHOW_NRLINK_POPUP_ENDPOINT}`,
-            )
-            if (!responseData.showNrlinkPopup) {
-                history.push(URL_DASHBOARD)
-            }
-        } catch (error) {
-            history.push(URL_DASHBOARD)
-        }
-    }, [history])
-    useEffect(() => {
-        getShowNrLinkPopup()
-    }, [getShowNrLinkPopup])
+    const { isGetShowNrLinkLoading, isNrLinkPopupShowing } = useGetShowNrLinkPopupHook()
+
+    if (isGetShowNrLinkLoading) {
+        return <FuseLoading />
+    }
+
+    if (isNrLinkPopupShowing === false) {
+        history.push(URL_DASHBOARD)
+    }
 
     return (
         <div className="p-24 h-full flex items-center justify-center relative" style={{ flexGrow: 1 }}>

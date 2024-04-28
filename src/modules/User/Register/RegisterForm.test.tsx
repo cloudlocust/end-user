@@ -4,7 +4,7 @@ import { RegisterForm } from 'src/modules/User/Register/RegisterForm'
 import { act } from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
-import { passwordQuerySelector, mockSuggestionAddressesData } from 'src/helpers/testVariables'
+import { mockSuggestionAddressesData } from 'src/helpers/testVariables'
 
 const mockSetValue = jest.fn((_data) => null)
 const mockInit = jest.fn(() => null)
@@ -16,8 +16,10 @@ const formatted_test_country = 'test country'
 const CHECKBOX_RGPD_ERROR_TEXT = 'Ce champ est obligatoire'
 // eslint-disable-next-line jsdoc/require-jsdoc
 const VALIDER_TEXT = 'Valider'
+
 const BIRTHDATE_lABEL = 'Date de naissance (optionnel)'
 const ADDRESS_TESTID = 'AddressAutoCompleteField'
+const INPUT_SECRET_QUERY_SELECTOR = 'input[name="password"]'
 
 jest.mock('use-places-autocomplete', () => ({
     ...jest.requireActual('use-places-autocomplete'),
@@ -85,9 +87,9 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     userEvent.type(companyName, TEST_SUCCESS_USER.company_name)
     const siren = getByRole('textbox', { name: 'Siren' })
     userEvent.type(siren, TEST_SUCCESS_USER.siren)
-    const firstNameField = getByRole('textbox', { name: 'Prénom' })
+    const firstNameField = getByRole('textbox', { name: "Prénom présent sur votre facture d'électricité" })
     userEvent.type(firstNameField, 'test prénom')
-    const lastNameField = getByRole('textbox', { name: 'Nom' })
+    const lastNameField = getByRole('textbox', { name: "Nom présent sur votre facture d'électricité" })
     userEvent.type(lastNameField, 'test nom')
     const emailField = getByRole('textbox', { name: 'Email' })
     userEvent.type(emailField, TEST_EMAIL)
@@ -96,7 +98,7 @@ const fillFormWithData = async (getByRole: Function, container: HTMLElement, get
     // Be careful password is not a role
     // https://github.com/testing-library/dom-testing-library/issues/567
     // To get the element password you can use this: const getByLabelText(/password/i)
-    const passwordField = container.querySelector(passwordQuerySelector) as Element
+    const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR) as Element
     userEvent.type(passwordField, 'P@ssword1')
     const repeatPasswordField = container.querySelector('input[name="repeatPwd"]') as Element
     userEvent.type(repeatPasswordField, 'P@ssword1')
@@ -178,7 +180,7 @@ describe('test registerForm', () => {
 
     test('Password field is invalid', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
-        const passwordField = container.querySelector(passwordQuerySelector) as Element
+        const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR) as Element
         userEvent.type(passwordField, '12345678')
         userEvent.click(screen.getByText(VALIDER_TEXT))
         await waitFor(() => expect(getAllByText(INVALID_PASSWORD_FIELD_ERROR).length).toBe(1))
@@ -186,7 +188,7 @@ describe('test registerForm', () => {
     test('Repeat password validation', async () => {
         const { container, getAllByText } = reduxedRender(<RegisterForm />)
         await act(async () => {
-            const passwordField = container.querySelector(passwordQuerySelector)
+            const passwordField = container.querySelector(INPUT_SECRET_QUERY_SELECTOR)
             expect(passwordField).not.toBe(null)
             // This condition is only to prevent tscript from yelling.
             if (passwordField !== null) {
@@ -203,7 +205,7 @@ describe('test registerForm', () => {
         expect(mockOnSubmit).not.toHaveBeenCalled()
         expect(getAllByText('Les mot de passes ne correspondent pas.').length).toBe(1)
     })
-    test('Normal case with call to submit', async () => {
+    test('Normal case, no zipCode blocage with call to submit', async () => {
         const { getByRole, getByTestId, container, getByLabelText, getAllByRole, getByText } = reduxedRender(
             <RegisterForm defaultRole="defaultRle" />,
         )
@@ -224,30 +226,33 @@ describe('test registerForm', () => {
         expect(screen.getByText('Valider')).toBeTruthy()
         await waitFor(
             () => {
-                expect(mockOnSubmit).toHaveBeenCalledWith({
-                    companyName: TEST_SUCCESS_USER.company_name,
-                    siren: TEST_SUCCESS_USER.siren,
-                    civility: TEST_CIVILITY_OPTION.value,
-                    email: TEST_EMAIL,
-                    firstName: 'test prénom',
-                    lastName: 'test nom',
-                    phone: TEST_SUCCESS_USER.phone,
-                    password: 'P@ssword1',
-                    address: {
-                        city: 'test locality',
-                        country: 'test country',
-                        lat: 1,
-                        lng: 2,
-                        name: 'normal formatted_address',
-                        placeId: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
-                        zipCode: '1234',
+                expect(mockOnSubmit).toHaveBeenCalledWith(
+                    {
+                        companyName: TEST_SUCCESS_USER.company_name,
+                        siren: TEST_SUCCESS_USER.siren,
+                        civility: TEST_CIVILITY_OPTION.value,
+                        email: TEST_EMAIL,
+                        firstName: 'test prénom',
+                        lastName: 'test nom',
+                        phone: TEST_SUCCESS_USER.phone,
+                        password: 'P@ssword1',
+                        address: {
+                            city: 'test locality',
+                            country: 'test country',
+                            lat: 1,
+                            lng: 2,
+                            name: 'normal formatted_address',
+                            placeId: 'ChIJKwNqoPnEw0cRIwMwh9SYOkI',
+                            zipCode: '1234',
+                        },
+                        role: 'defaultRle',
                     },
-                    role: 'defaultRle',
-                })
+                    undefined,
+                )
             },
             { timeout: 3000 },
         )
-    }, 25000)
+    }, 50000)
     test('if siren field is invalid', async () => {
         const { getByRole, getByText, getAllByRole, getByLabelText } = reduxedRender(<RegisterForm />)
         handleProfessionalRegistrationType(getAllByRole, getByText, getByLabelText)

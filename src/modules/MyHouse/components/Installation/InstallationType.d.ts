@@ -1,5 +1,5 @@
 /**
- * Equipment Name type.
+ * The value of the equipments.
  */
 export type equipmentNameType =
     | 'heater'

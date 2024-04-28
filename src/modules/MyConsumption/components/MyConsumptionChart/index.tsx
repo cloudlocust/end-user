@@ -26,9 +26,7 @@ export const consumptionChartClassName = 'consumption-chart-classname'
  * @param props.selectedLabelPeriod Selected Label Period.
  * @param props.chartRef ChartRef.
  * @param props.setInputPeriodTime SetInputPeriodTime.
- * @param props.totalConsumption Total Consumption.
- * @param props.totalEuroCost Total Cost.
- * @param props.onDisplayTooltipLabel Callback to determines whether to display the tooltip label.
+ * @param props.tooltipFormatter Callback to format the tooltip.
  * @param props.isLabelizationChart Indicates if the chart is for the labelization.
  * @returns MyConsumptionChart Component.
  */
@@ -39,9 +37,7 @@ const MyConsumptionChart = ({
     selectedLabelPeriod,
     chartRef,
     setInputPeriodTime,
-    totalConsumption,
-    totalEuroCost,
-    onDisplayTooltipLabel,
+    tooltipFormatter,
     isLabelizationChart,
 }: ConsumptionChartProps) => {
     const theme = useTheme()
@@ -69,9 +65,7 @@ const MyConsumptionChart = ({
             isMobile,
             period,
             axisColor,
-            totalConsumption,
-            totalEuroCost,
-            onDisplayTooltipLabel,
+            tooltipFormatter,
             selectedLabelPeriod,
         )
         return {
@@ -96,9 +90,7 @@ const MyConsumptionChart = ({
         period,
         axisColor,
         selectedLabelPeriod,
-        totalConsumption,
-        totalEuroCost,
-        onDisplayTooltipLabel,
+        tooltipFormatter,
         isLabelizationChart,
     ])
 

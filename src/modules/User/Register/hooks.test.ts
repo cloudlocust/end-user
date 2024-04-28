@@ -7,6 +7,7 @@ import { RenderResult } from '@testing-library/react-hooks'
 const mockHistoryReplace = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
 let mockUserRegistrationAutoValidate = false
+let mockIsLoginAfterRegister = false
 const REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE =
     'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
 const REGISTRATION_SUCCESS_MESSAGE =
@@ -33,6 +34,14 @@ jest.mock('src/modules/User/configs', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     get USER_REGISTRATION_AUTO_VALIDATE() {
         return mockUserRegistrationAutoValidate
+    },
+}))
+
+jest.mock('src/modules/User/Register/RegisterConfig', () => ({
+    ...jest.requireActual('src/modules/User/Register/RegisterConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get isLoginAfterRegister() {
+        return mockIsLoginAfterRegister
     },
 }))
 
@@ -71,7 +80,7 @@ describe('Testing useRegister hooks', () => {
         } = reduxedRenderHook(() => useRegister(), { initialState: {} })
         expect(result.current.isRegisterInProgress).toBe(false)
         act(() => {
-            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456' })
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456', address: { zipCode: '7200' } })
         })
         expect(result.current.isRegisterInProgress).toBe(true)
         await waitForValueToChange(
@@ -99,6 +108,80 @@ describe('Testing useRegister hooks', () => {
         )
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.anything(), {
             variant: 'error',
+        })
+    })
+    test('When activate allowedZipCodes and the zipCode does not fit, show error', async () => {
+        const {
+            renderedHook: { result },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456', address: { zipCode: '72000' } }, [
+                '69007',
+            ])
+        })
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+            "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
+            {
+                variant: 'error',
+            },
+        )
+    })
+    test('When activate login after register, dispatch login and no snackbar', async () => {
+        mockIsLoginAfterRegister = true
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456' })
+        })
+        expect(result.current.isRegisterInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isRegisterInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+        mockIsLoginAfterRegister = false
+    })
+    test('When activate allowedZipCodes and the zipCode fit, register successfully', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456', address: { zipCode: '69007' } }, [
+                '69007',
+            ])
+        })
+        expect(result.current.isRegisterInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isRegisterInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE, {
+            autoHideDuration: 8000,
+            variant: 'success',
+        })
+    })
+    test('When activate allowedZipCodes and the zipCode does not exist, continue the process and ignore the zipCode block', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useRegister(), { initialState: {} })
+        act(() => {
+            result.current.onSubmit({ email: TEST_SUCCESS_MAIL, password: '123456' }, ['69007'])
+        })
+        expect(result.current.isRegisterInProgress).toBe(true)
+        await waitForValueToChange(
+            () => {
+                return result.current.isRegisterInProgress
+            },
+            { timeout: 10000 },
+        )
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(REGISTRATION_AUTO_VALIDATE_SUCCESS_MESSAGE, {
+            autoHideDuration: 8000,
+            variant: 'success',
         })
     })
 })

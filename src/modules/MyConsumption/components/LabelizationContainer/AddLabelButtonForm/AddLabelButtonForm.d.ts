@@ -18,28 +18,17 @@ interface AddLabelButtonFormProps {
     /**
      * Set the input period time.
      */
-    setInputPeriodTime: (inputPeriodTime: IPeriodTime) => void
+    setInputPeriodTime: Dispatch<SetStateAction<IPeriodTime>>
     /**
-     * The equipments list.
+     * Whether adding label is in progress.
      */
-    equipments: /**
-     */
-    {
-        /**
-         * Id of the equipment.
-         */
-        id?: number
-        /**
-         * Name of the equipment.
-         */
-        name: string
-    }[]
-    /**
-     * Weather the creation of labels is disabled.
-     */
-    addingLabelsIsDisabled: boolean
+    isAddingLabelInProgress: boolean
     /**
      * The current range of the metrics.
      */
     range: metricRangeType
+    /**
+     * The chart data.
+     */
+    chartData: IMetric[]
 }

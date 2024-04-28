@@ -1,25 +1,40 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
+import { EChartTooltipFormatterParamsItem } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
 
-const firstChartTooltipParam = {
+const firstChartTooltipParam: EChartTooltipFormatterParamsItem = {
     name: 'title',
     marker: 'marker 1',
     seriesName: 'Series 1',
     value: 10,
     seriesIndex: 0,
+    axisValue: '123456',
+    dataIndex: 0,
 }
 
-const secondChartTooltipParam = {
+const secondChartTooltipParam: EChartTooltipFormatterParamsItem = {
     name: 'title',
     marker: 'marker 2',
     seriesName: 'Series 2',
     value: 10,
     seriesIndex: 1,
+    axisValue: '123456',
+    dataIndex: 0,
 }
 
 const params = [firstChartTooltipParam, secondChartTooltipParam]
-const totalConsumption = { value: 30, unit: 'kWh' }
-const totalEuroCost = { value: 50, unit: 'USD' }
+/**
+ * Callback function for get total consumption.
+ *
+ * @returns Total consumption.
+ */
+const getTotalConsumption = () => ({ value: 30, unit: 'kWh' })
+/**
+ * Callback function for get total euro cost.
+ *
+ * @returns Total euro cost.
+ */
+const getTotalEuroCost = () => ({ value: 50, unit: 'USD' })
 
 const firstChartformatedValue = `${firstChartTooltipParam.value} kWh`
 const secondChartformatedValue = `${firstChartTooltipParam.value} W`
@@ -37,8 +52,8 @@ describe('ConsumptionChartTooltip', () => {
         const { getByText } = reduxedRender(
             <ConsumptionChartTooltip
                 params={params}
-                totalConsumption={totalConsumption}
-                totalEuroCost={totalEuroCost}
+                getTotalConsumption={getTotalConsumption}
+                getTotalEuroCost={getTotalEuroCost}
                 valueFormatter={valueFormatter}
             />,
         )
@@ -78,11 +93,17 @@ describe('ConsumptionChartTooltip', () => {
         expect(getByText(secondChartTooltipParam.marker)).toBeInTheDocument()
         expect(getByText(secondChartTooltipParam.seriesName)).toBeInTheDocument()
     })
-
-    test('should the tooltip component return null when all labels not showing', () => {
-        const { container } = reduxedRender(
-            <ConsumptionChartTooltip params={params} onDisplayTooltipLabel={() => false} />,
+    test('should the tooltip return custom message component when all labels not showing', () => {
+        const message = 'No data to shown'
+        const messageComponent = <div className="empty-data">{message}</div>
+        const { getByText } = reduxedRender(
+            <ConsumptionChartTooltip
+                params={params}
+                onDisplayTooltipLabel={() => false}
+                renderComponentOnMissingLabels={() => messageComponent}
+            />,
         )
-        expect(container.firstChild).toBeNull()
+        expect(getByText(message)).toBeInTheDocument()
+        expect(document.querySelector('.empty-data')).toBeInTheDocument()
     })
 })

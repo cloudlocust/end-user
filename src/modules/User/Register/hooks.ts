@@ -6,11 +6,15 @@ import { IUserRegister } from '../model'
 import { useSnackbar } from 'notistack'
 import {
     energyProviderPopupLink,
+    isLoginAfterRegister,
     isPopupAfterRegistration,
     URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
 } from 'src/modules/User/Register/RegisterConfig'
 import { USER_REGISTRATION_AUTO_VALIDATE } from 'src/modules/User/configs'
 import { convertUserDataToQueryString } from 'src/modules/User/Register/utils'
+import { useIntl } from 'src/common/react-platform-translation'
+import { BuilderUseLogin } from 'src/modules/User/Login/hooks'
+import { AFTER_LOGIN_URL } from '../Login/LoginConfig'
 
 /**
  * Builder to create userRegister hooks. We use a build to easily modify redirect url after register. This function returns a function.
@@ -33,11 +37,19 @@ export const BuilderUseRegister = ({
      *
      * @returns UseRegister hook.
      */
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     function useRegister() {
         const dispatch = useDispatch<Dispatch>()
         const [isRegisterInProgress, setIsRegisterInProgress] = useToggle(false)
         const history = useHistory()
         const { enqueueSnackbar } = useSnackbar()
+        const { formatMessage } = useIntl()
+        // recreated it to use custom login redirection
+        const useLogin = BuilderUseLogin({
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            redirect: () => AFTER_LOGIN_URL,
+        })
+        const { onSubmit: onSubmitLogin } = useLogin()
 
         /**
          * Function that handles what comes after when user has succesfully registered.
@@ -45,6 +57,7 @@ export const BuilderUseRegister = ({
          * @param data User registration data.
          */
         function handleOnAfterSubmit(data: IUserRegister) {
+            // TODO - remove this isPopupAfterRegistration because it's for bowatt and it's will probably not be used anymore since we did an alpiq funnel integration.
             if (isPopupAfterRegistration) {
                 history.push({
                     pathname: URL_REGISTER_ENERGY_PROVIDER_SUCCESS,
@@ -61,22 +74,37 @@ export const BuilderUseRegister = ({
          * Submit function.
          *
          * @param data User registration data from form.
+         * @param allowedZipCodes Allowed zipCode for submition.
          */
-        const onSubmit = async (data: IUserRegister) => {
+        const onSubmit = async (data: IUserRegister, allowedZipCodes?: string[]) => {
+            if (data.address?.zipCode && allowedZipCodes && !allowedZipCodes?.includes(data.address.zipCode)) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
+                        defaultMessage: "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
+                    }),
+                    { variant: 'error' },
+                )
+                return
+            }
             setIsRegisterInProgress(true)
             try {
                 const { user: userResponse } = await dispatch.userModel.register({ data })
                 setIsRegisterInProgress(false)
                 if (userResponse) {
-                    // If it's energy provider, we don't show the snackbar message.
-                    !isPopupAfterRegistration &&
-                        enqueueSnackbar(
-                            Boolean(USER_REGISTRATION_AUTO_VALIDATE)
-                                ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
-                                : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
-                            { variant: 'success', autoHideDuration: 8000 },
-                        )
-                    handleOnAfterSubmit(data)
+                    if (isLoginAfterRegister) {
+                        onSubmitLogin({ email: data.email, password: data.password })
+                    } else {
+                        // If it's energy provider, we don't show the snackbar message.
+                        !isPopupAfterRegistration &&
+                            enqueueSnackbar(
+                                Boolean(USER_REGISTRATION_AUTO_VALIDATE)
+                                    ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
+                                    : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
+                                { variant: 'success', autoHideDuration: 8000 },
+                            )
+                        handleOnAfterSubmit(data)
+                    }
                 }
             } catch (error) {
                 setIsRegisterInProgress(false)

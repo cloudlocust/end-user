@@ -176,7 +176,7 @@ export const HousingDetails = () => {
             },
             {
                 icon: handleEquipmentsIcons('dishwasher'),
-                label: 'Lave-vaiselle',
+                label: 'Lave-vaisselle',
             },
         ])
     }, [housingEquipmentsList])

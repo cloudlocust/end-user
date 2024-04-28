@@ -11,6 +11,10 @@ export type ButtonSwitcherParamsType = {
      * Callback to execute when the Button is clicked.
      */
     clickHandler: () => void
+    /**
+     * Flag indicating whether the Button is selected.
+     */
+    isSelected: boolean
 }
 
 /**

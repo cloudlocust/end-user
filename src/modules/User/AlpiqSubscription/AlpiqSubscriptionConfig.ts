@@ -1,13 +1,9 @@
 import { authTypes } from 'src/common/react-platform-components'
 import AlpiqSubscriptionStepper from './AlpiqSubscriptionStepper'
 import { IRouteDisabled } from 'src/routes'
+import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 
 const URL_ALPIQ_SUBSCRIPTION_FORM = '/energy-provider-subscription'
-
-/**
- * Indicate if when we first connect, we should show the form to enter the PDL before the popup registration.
- */
-export const isAlpiqSubscriptionForm = window._env_.REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE === 'enabled'
 
 const AlpiqSubscriptionConfig = [
     {

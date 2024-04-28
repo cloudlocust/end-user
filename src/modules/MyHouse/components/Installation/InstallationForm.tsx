@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CircularProgress, Radio, RadioGroup, FormControlLabel, useTheme, Container, Typography } from '@mui/material'
-import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+import {
+    CircularProgress,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    useTheme,
+    Container,
+    Typography,
+    Grid,
+} from '@mui/material'
+// import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { heaterEquipment, sanitaryEquipment, hotPlateEquipment } from 'src/modules/MyHouse/utils/MyHouseVariables'
@@ -19,6 +28,7 @@ import {
     installationFormFieldsType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import isEqual from 'lodash/isEqual'
+import { renderOptions } from 'src/modules/utils/select'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const SOLAR_PANEL_TYPES = {
@@ -269,19 +279,76 @@ export const InstallationTab = () => {
                         </TypographyFormatMessage>
 
                         {/***** The heater state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...heaterEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Type de chauffage :',
+                                        defaultMessage: 'Type de chauffage :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid md={6} xs={12}>
+                                <Select
+                                    name={heaterEquipment.name}
+                                    label={heaterEquipment.titleLabel}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(heaterEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
 
                         {/***** The sanitary state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...sanitaryEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Eau chaude sanitaire :',
+                                        defaultMessage: 'Eau chaude sanitaire :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid md={6} xs={12}>
+                                <Select
+                                    name={sanitaryEquipment.name}
+                                    label={sanitaryEquipment.titleLabel}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(sanitaryEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
 
                         {/***** The hot plate state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...hotPlateEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Type de plaques de cuisson :',
+                                        defaultMessage: 'Type de plaques de cuisson :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid className="flex-1">
+                                <Select
+                                    name={hotPlateEquipment.name}
+                                    label={hotPlateEquipment.titleLabel!}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(hotPlateEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
                     </div>
                     <div className="mb-40">
                         <TypographyFormatMessage className="text-15 font-600">
@@ -458,7 +525,7 @@ export const InstallationTab = () => {
                                                             break
                                                     }
                                                 }}
-                                                className="flex-1 grid grid-cols-1 sm:grid-cols-2 sm:max-w-400"
+                                                className="flex sm:max-w-400"
                                             >
                                                 <FormControlLabel
                                                     value={SOLAR_PANEL_TYPES.onRoof}
@@ -701,18 +768,22 @@ export const InstallationTab = () => {
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-x-20 gap-y-10">
                                             <Typography>
                                                 {formatMessage({
-                                                    id: 'Tarif de revente (€)',
-                                                    defaultMessage: 'Tarif de revente (€)',
+                                                    id: 'Tarif de revente',
+                                                    defaultMessage: 'Tarif de revente',
                                                 })}
                                                 &nbsp;:
                                             </Typography>
-                                            <TextField
-                                                name="resaleTariff"
-                                                label="Tarif"
-                                                type="number"
-                                                style={{ marginBottom: 0 }}
-                                                className="w-full sm:w-auto sm:max-w-128"
-                                            />
+                                            <div className="flex flex-row items-center gap-10">
+                                                <TextField
+                                                    name="resaleTariff"
+                                                    label="Tarif"
+                                                    type="number"
+                                                    style={{ marginBottom: 0 }}
+                                                    className="w-full sm:w-auto sm:max-w-128 hide-number-input-arrows"
+                                                    placeholder="0.0000"
+                                                />
+                                                €
+                                            </div>
                                         </div>
                                         <Typography className="text-11 text-grey-700 text-center w-auto sm:max-w-288">
                                             {formatMessage({
