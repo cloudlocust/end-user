@@ -25,7 +25,7 @@ import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 
 //eslint-disable-next-line
-export const datePrelevementOptions: { value: number, label: string}[] = Array.from({length: 28}, (_, index) => ({
+export const datePrelevementOptions: { value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
     value: index + 1,
     label: `${index + 1} du mois`,
 }))
@@ -84,7 +84,11 @@ export const FacturationForm = ({
      */
     const handleOpenCGV = () => {
         // doing it static because it's only a feature for bowatt
-        window.open('https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf', '_blank')
+        window.open(
+            'https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf',
+            '_blank',
+            'noopener noreferrer',
+        )
     }
 
     /**
@@ -92,7 +96,7 @@ export const FacturationForm = ({
      */
     const handleOpenGrilleTariff = () => {
         // doing it static because it's only a feature for bowatt
-        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf', '_blank')
+        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf', '_blank', 'noopener noreferrer')
     }
 
     /**
