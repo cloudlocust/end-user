@@ -36,7 +36,7 @@ export const SolarInstallationRecommendationButton: FC<ButtonProps> = (props) =>
      * Open the solar installation recommendation page on the new tab.
      */
     const handleClick = () => {
-        window.open(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank')
+        window.open(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank', 'noopener noreferrer')
     }
 
     return (
