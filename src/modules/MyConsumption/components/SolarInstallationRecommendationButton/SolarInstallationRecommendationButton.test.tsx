@@ -16,7 +16,7 @@ describe('SolarInstallationRecommendationButton', () => {
         const { getByTestId } = reduxedRender(<SolarInstallationRecommendationButton />)
         const button = getByTestId('solarInstallationRecommendationButton')
         userEvent.click(button)
-        expect(window.open).toHaveBeenCalledWith(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank')
+        expect(window.open).toHaveBeenCalledWith(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank', 'noopener noreferrer')
         window.open = originalOpen
     })
 })

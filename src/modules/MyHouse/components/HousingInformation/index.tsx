@@ -24,7 +24,7 @@ export const HousingInformation = () => {
             tabContent: <AccomodationTab />,
         },
         {
-            tabTitle: 'Info Installation',
+            tabTitle: 'Mes énergies',
             tabSlug: 'installation',
             tabContent: <InstallationTab />,
         },
