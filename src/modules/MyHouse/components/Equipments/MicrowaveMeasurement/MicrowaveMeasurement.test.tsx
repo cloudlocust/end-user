@@ -2,7 +2,10 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
-import { MicrowaveMeasurementProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+import {
+    MicrowaveMeasurementProps,
+    measurementStepsEnum,
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 const HOUSING_EQUIPMENT_ID_TEST = 25
 const EQUIPMENT_NUMBER_TEST = 1
@@ -29,13 +32,13 @@ describe('MicrowaveMeasurement tests', () => {
     })
 
     test('renders correctly when showing an old mesurement test result', async () => {
-        reduxedRender(<MicrowaveMeasurement {...props} showingOldResult />)
+        reduxedRender(<MicrowaveMeasurement {...props} stepToStartFrom={measurementStepsEnum.RESULT_STEP} />)
 
         expect(screen.getByText('Résultats')).toBeInTheDocument()
     })
 
     test('renders correctly when we start the mesurement from EquipmentsDetails Page', async () => {
-        reduxedRender(<MicrowaveMeasurement {...props} startMeasurementFromEquipmentsDetailsPage />)
+        reduxedRender(<MicrowaveMeasurement {...props} stepToStartFrom={measurementStepsEnum.CONFIGURATION_STEP} />)
 
         expect(screen.getByText('Configuration')).toBeInTheDocument()
     })

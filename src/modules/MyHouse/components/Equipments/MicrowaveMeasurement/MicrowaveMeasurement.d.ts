@@ -19,13 +19,9 @@ export interface MicrowaveMeasurementProps {
      */
     isMeasurementModalOpen: boolean
     /**
-     * Boolean indicating whether we want to display an old result.
+     * The measurement step to start from.
      */
-    showingOldResult?: boolean
-    /**
-     * Boolean indicating whether we start the measurement from the EquipmentsDetails Page.
-     */
-    startMeasurementFromEquipmentsDetailsPage?: boolean
+    stepToStartFrom?: measurementStepsEnum
     /**
      *  Function that update the measurement results in the equipment details page.
      */
@@ -50,6 +46,32 @@ export interface MicrowaveMeasurementProps {
      * Function for navigating to the equipment details page.
      */
     navigateToEquipmentDetailsPage?: () => void
+}
+
+/**
+ * Enum for the measurement steps.
+ */
+export enum measurementStepsEnum {
+    /**
+     * Infos page step.
+     */
+    INFOS_PAGE_STEP = 0,
+    /**
+     * Measurement configuration step.
+     */
+    CONFIGURATION_STEP = 1,
+    /**
+     * Measurement startup step.
+     */
+    STARTUP_STEP = 2,
+    /**
+     * Measurement process step.
+     */
+    PROCESS_STEP = 3,
+    /**
+     * Measurement result step.
+     */
+    RESULT_STEP = 4,
 }
 
 /**
