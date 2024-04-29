@@ -106,7 +106,7 @@ export const useAlpiqProvider = () => {
             )
 
             setLoadingInProgress(false)
-            return responseData?.monthlySubscriptionEstimation
+            return responseData
         } catch (error) {
             enqueueSnackbar(
                 formatMessage({
