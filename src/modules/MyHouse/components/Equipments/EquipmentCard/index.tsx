@@ -29,7 +29,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
  * @description Equipment Card component that displays individual card for each type of equipment.
  * @param root0 N/A.
  * @param root0.equipment The equipment details object.
- * @param root0.title Equipment title.
+ * @param root0.title Equipment title represent the label the user give to its equipment.
  * @param root0.onEquipmentChange Function that handle the equipment number.
  * @param root0.addingEquipmentInProgress Boolean indicating if adding equipment is in progress.
  * @param root0.iconComponent Icon component.
@@ -118,7 +118,7 @@ export const EquipmentCard = ({
                                         if (equipment.number && equipment.number > 0) {
                                             onEquipmentChange([
                                                 {
-                                                    equipmentId: equipment.equipment.id,
+                                                    equipmentId: equipment.id,
                                                     equipmentNumber: equipment.number - 1,
                                                 },
                                             ])
@@ -142,7 +142,7 @@ export const EquipmentCard = ({
                                         if (equipment.number) {
                                             onEquipmentChange([
                                                 {
-                                                    equipmentId: equipment.equipment.id,
+                                                    equipmentId: equipment.id,
                                                     equipmentNumber: equipment.number + 1,
                                                 },
                                             ])
@@ -157,7 +157,7 @@ export const EquipmentCard = ({
                                     className="mr-6 cursor-pointer"
                                     onClick={() => {
                                         if (currentHousing?.id) {
-                                            const equipementId = equipment.equipment.id
+                                            const equipementId = equipment.id
                                             history.push(
                                                 `${URL_MY_HOUSE}/${currentHousing.id}/equipments/${equipment.housingEquipmentId}/details/${equipementId}`,
                                             )

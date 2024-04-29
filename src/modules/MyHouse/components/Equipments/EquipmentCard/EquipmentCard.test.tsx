@@ -27,15 +27,13 @@ describe('EquipmentCard tests', () => {
     let mockEquipmentCardProps: EquipmentCardProps = {
         equipment: {
             id: 1,
+            housingEquipmentId: 81,
+            name: 'tv',
             allowedType: ['electricity'],
-            housingEquipmentId: 1,
+            number: 5,
             isNumber: true,
-            name: 'microwave',
-            equipment: {
-                id: 1,
-                name: 'microwave',
-                allowedType: ['electricity'],
-            },
+            measurementModes: undefined,
+            customerId: undefined,
         },
         title: 'title',
         onEquipmentChange: jest.fn(),

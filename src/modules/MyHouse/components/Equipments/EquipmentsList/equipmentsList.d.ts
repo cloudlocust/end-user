@@ -1,7 +1,6 @@
 import { IconComponentType } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
 import {
     equipmentAllowedTypeT,
-    equipmentType,
     postEquipmentInputType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
@@ -42,9 +41,7 @@ export type HousingEquipmentType =
         // eslint-disable-next-line jsdoc/require-jsdoc
         equipmentLabel?: string | null
         // eslint-disable-next-line jsdoc/require-jsdoc
-        equipmentTitle?: string
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        equipment: equipmentType
+        equipmentTitle?: string | null
     }
 
 /**

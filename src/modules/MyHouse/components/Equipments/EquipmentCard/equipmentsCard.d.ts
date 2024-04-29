@@ -27,7 +27,7 @@ export interface EquipmentCardProps {
     /**
      * Equipment title.
      */
-    title?: string
+    title?: string | null
     /**
      * Equipment icon.
      */
