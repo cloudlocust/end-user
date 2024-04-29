@@ -89,10 +89,10 @@ const AlpiqSubscriptionStepper = () => {
     }
 
     const stepsContent = [
-        <PdlVerificationForm handleNext={handleNext} />,
-        <SgeConsentStep handleBack={handleBack} handleNext={handleNext} />,
-        <ContractEstimation handleNext={handleNext} enedisSgeConsent={enedisSgeConsent} />,
-        <FacturationForm handleBack={handleBack} />,
+        <PdlVerificationForm key="1" handleNext={handleNext} />,
+        <SgeConsentStep key="2" handleBack={handleBack} handleNext={handleNext} />,
+        <ContractEstimation key="3" handleNext={handleNext} enedisSgeConsent={enedisSgeConsent} />,
+        <FacturationForm key="4" handleBack={handleBack} />,
     ]
     return (
         <div className="w-full mt-40 flex flex-col justify-center items-center">

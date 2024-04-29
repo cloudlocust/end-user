@@ -1,5 +1,5 @@
 import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
-import { useTheme, RadioGroup, Radio, FormControlLabel, Card } from '@mui/material'
+import { useTheme, RadioGroup, Radio, FormControlLabel, Card, Checkbox as CheckboxMui } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
@@ -9,7 +9,6 @@ import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-field
 import { useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import { useState } from 'react'
-import { Checkbox as CheckboxMui } from '@mui/material'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import { addDays, format } from 'date-fns'
 import { ButtonLoader, TextField, Checkbox, Typography } from 'src/common/ui-kit'
@@ -31,7 +30,7 @@ export const datePrelevementOptions: { value: number; label: string }[] = Array.
 }))
 
 //eslint-disable-next-line
-export const civilityOptions: { value: string, label: string}[] = [
+export const civilityOptions: { value: string; label: string }[] = [
     {
         value: 'MR',
         label: 'MR',
@@ -246,8 +245,8 @@ export const FacturationForm = ({
                             <SectionText text="Je souhaite être prélevé le :" className="mr-10" />
                             <div className="w-120">
                                 <Select name="jourPrelevement" label="">
-                                    {datePrelevementOptions.map((option, _index) => (
-                                        <MenuItem key={_index} value={option.value}>
+                                    {datePrelevementOptions.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>
                                             {formatMessage({
                                                 id: option.label,
                                                 defaultMessage: option.label,
@@ -335,8 +334,8 @@ export const FacturationForm = ({
                                                 margin: 'normal',
                                             }}
                                         >
-                                            {civilityOptions.map((option, _index) => (
-                                                <MenuItem key={_index} value={option.value}>
+                                            {civilityOptions.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
                                                     {formatMessage({
                                                         id: option.label,
                                                         defaultMessage: option.label,
