@@ -62,7 +62,6 @@ export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
  * @param props.filters Consumption or production chart type.
  * @param props.hasMissingHousingContracts Boolean indicating if there are missing housing contracts.
  * @param props.enedisSgeConsent Enedis SGE consent.
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.isIdleShown Boolean indicating whether the idle chart is shown or not.
  * @param props.setMetricsInterval Set metrics interval.
  * @param props.onPeriodChange Callback function for period change.
@@ -76,8 +75,6 @@ export const ConsumptionChartContainer = ({
     filters,
     hasMissingHousingContracts,
     enedisSgeConsent,
-    // TODO: it will be removed in the next PR
-    isSolarProductionConsentOff,
     isIdleShown,
     setMetricsInterval,
     onPeriodChange,

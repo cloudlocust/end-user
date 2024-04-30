@@ -148,7 +148,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                             hasMissingHousingContracts={hasMissingHousingContracts}
                             range={range}
                             filters={filters}
-                            isSolarProductionConsentOff={isSolarProductionConsentOff}
                             enedisSgeConsent={enedisSgeConsent}
                             metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
                             isIdleShown={isSolarProductionConsentOff}
