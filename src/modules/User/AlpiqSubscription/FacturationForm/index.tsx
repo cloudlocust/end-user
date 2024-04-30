@@ -253,7 +253,7 @@ export const FacturationForm = ({
                             <div className="w-120">
                                 <Select name="jourPrelevement" label="">
                                     {datePrelevementOptions.map((option) => (
-                                        <MenuItem key={Math.random()} value={option.value}>
+                                        <MenuItem value={option.value}>
                                             {formatMessage({
                                                 id: option.label,
                                                 defaultMessage: option.label,
@@ -342,7 +342,7 @@ export const FacturationForm = ({
                                             }}
                                         >
                                             {civilityOptions.map((option) => (
-                                                <MenuItem key={Math.random()} value={option.value}>
+                                                <MenuItem value={option.value}>
                                                     {formatMessage({
                                                         id: option.label,
                                                         defaultMessage: option.label,
