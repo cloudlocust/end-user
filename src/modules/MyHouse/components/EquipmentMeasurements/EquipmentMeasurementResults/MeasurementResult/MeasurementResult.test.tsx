@@ -4,12 +4,14 @@ import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/MeasurementResult'
 
 const mockedHandleClickingOnMeasurementResult = jest.fn()
+const mockedHandleClickingOnMeasurementButton = jest.fn()
 
 describe('MeasurementResult', () => {
     test('calling the handleClickingOnMeasurementResult function when clicking on a result value', async () => {
         const { getByText } = reduxedRender(
             <MeasurementResult
                 handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
+                handleClickingOnMeasurementButton={mockedHandleClickingOnMeasurementButton}
                 result={120}
             />,
         )
@@ -20,20 +22,22 @@ describe('MeasurementResult', () => {
         })
     })
 
-    test('display ? when the result value is null', async () => {
-        const { getByText } = reduxedRender(
+    test('display button "Mesurer" when the result value is null and call the handleClickingOnMeasurementButton function when clicking on it', async () => {
+        const { getByRole } = reduxedRender(
             <MeasurementResult
                 handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
+                handleClickingOnMeasurementButton={mockedHandleClickingOnMeasurementButton}
                 result={null}
             />,
         )
-        expect(getByText('?')).toBeInTheDocument()
+        expect(getByRole('button', { name: 'Mesurer' })).toBeInTheDocument()
     })
 
     test('show a loading progress circle when isLoading is true', async () => {
         const { getByRole } = reduxedRender(
             <MeasurementResult
                 handleClickingOnMeasurementResult={mockedHandleClickingOnMeasurementResult}
+                handleClickingOnMeasurementButton={mockedHandleClickingOnMeasurementButton}
                 result={null}
                 isLoading
             />,

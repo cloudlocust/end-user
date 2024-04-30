@@ -13,6 +13,7 @@ import {
     RadioGroupOnChangeHandler,
     SelectOnChangeHandler,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/ConfigurationStep/ConfigurationStep.d'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * ConfigurationStep component.
@@ -60,7 +61,7 @@ export const ConfigurationStep = ({
      * Click handler for the button Suivant.
      */
     const handleBtnClick = () => {
-        stepSetter(2)
+        stepSetter(measurementStepsEnum.STARTUP_STEP)
     }
 
     const monEquipementStr = 'Mon équipement'
@@ -139,6 +140,7 @@ export const ConfigurationStep = ({
                     </TypographyFormatMessage>
                     <CustomRadioGroup
                         elements={measurementModesOptions || defaultMicrowaveMeasurementModesOptions}
+                        value={selectedMeasurementMode}
                         onValueChange={handleRadioGroupChange}
                         boxClassName="w-full flex justify-between gap-10"
                     />
@@ -157,7 +159,7 @@ export const ConfigurationStep = ({
             <div className="flex justify-center">
                 <Button
                     variant="contained"
-                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                     onClick={handleBtnClick}
                     disabled={!selectedMicrowave || !selectedMeasurementMode}
                 >

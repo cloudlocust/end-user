@@ -11,6 +11,7 @@ const MUI_TEXTFIELD = 'MuiOutlinedInput-input'
 describe('Test FacturationForm', () => {
     test('component shows correctly', async () => {
         const { getByText, container } = reduxedRender(<FacturationForm {...mockFacturationFormProps} />)
+        expect(getByText("Récapitulatif de l'offre")).toBeInTheDocument()
         expect(getByText('Mode de facturation')).toBeInTheDocument()
         expect(
             getByText(
