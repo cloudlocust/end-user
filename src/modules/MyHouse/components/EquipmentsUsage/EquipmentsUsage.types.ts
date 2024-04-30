@@ -1,5 +1,4 @@
-import { IEquipmentMeter, postEquipmentInputType } from "src/modules/MyHouse/components/Installation/InstallationType"
-
+import { IEquipmentMeter, postEquipmentInputType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
 /**
  * Interface for EquipmentDetails Form Submit.
@@ -26,17 +25,21 @@ export type EquipmentsUsageFormSubmitType =
 /**
  * Equipments Usage form props.
  */
-export type EquipmentsUsageFormProps = {
+export type EquipmentsUsageFormProps =
     /**
-     * Housing equipments details array.
+     *
      */
-    housingEquipmentsDetails: IEquipmentMeter[]
-    /**
-     * Add housing equipment callback.
-     */
-    addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
-    /**
-     * Title of the equipment.
-     */
-    title: string
-}
+    {
+        /**
+         * Housing equipments details array.
+         */
+        housingEquipmentsDetails: IEquipmentMeter[]
+        /**
+         * Add housing equipment callback.
+         */
+        addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
+        /**
+         * Title of the equipment.
+         */
+        title: string
+    }
