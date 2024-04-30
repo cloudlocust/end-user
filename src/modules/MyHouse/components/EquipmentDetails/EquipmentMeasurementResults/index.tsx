@@ -12,6 +12,7 @@ import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
 import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/MeasurementResult'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * EquipmentMeasurementResults compoonent.
@@ -44,11 +45,22 @@ export const EquipmentMeasurementResults = ({
     } = useModal()
     const [measurementMode, setMeasurementMode] = useState('')
     const [measurementResult, setMeasurementResult] = useState<number | null>(null)
+    const [stepToStartFrom, setStepToStartFrom] = useState<number | undefined>()
 
     const handleClickingOnMeasurementResult = useCallback(
         (measurementMode: string, result: number | null) => {
             setMeasurementMode(measurementMode)
             setMeasurementResult(result)
+            setStepToStartFrom(measurementStepsEnum.RESULT_STEP)
+            onOpenMeasurementModal()
+        },
+        [onOpenMeasurementModal],
+    )
+
+    const handleClickingOnMeasurementButton = useCallback(
+        (measurementMode: string) => {
+            setMeasurementMode(measurementMode)
+            setStepToStartFrom(measurementStepsEnum.CONFIGURATION_STEP)
             onOpenMeasurementModal()
         },
         [onOpenMeasurementModal],
@@ -63,7 +75,7 @@ export const EquipmentMeasurementResults = ({
 
     return measurementModes && measurementModes.length > 0 ? (
         <>
-            <Typography variant="h5" className="text-18 sm:text-20 mb-20">
+            <Typography variant="h5" className="text-18 sm:text-20 mb-20 sm:my-20">
                 {formatMessage({
                     id: 'Résultats des mesures',
                     defaultMessage: 'Résultats des mesures',
@@ -105,6 +117,9 @@ export const EquipmentMeasurementResults = ({
                                                     measurementResults[measurementMode] || null,
                                                 )
                                             }}
+                                            handleClickingOnMeasurementButton={() => {
+                                                handleClickingOnMeasurementButton(measurementMode)
+                                            }}
                                             result={measurementResults[measurementMode] || null}
                                             isLoading={isLoadingMeasurements}
                                             isMobileView={MAX_WIDTH_600}
@@ -117,7 +132,7 @@ export const EquipmentMeasurementResults = ({
                 </Table>
             </TableContainer>
 
-            {equipmentsNumber && (
+            {equipmentsNumber && stepToStartFrom && (
                 <MicrowaveMeasurement
                     housingEquipmentId={housingEquipmentId!}
                     equipmentsNumber={equipmentsNumber!}
@@ -128,7 +143,7 @@ export const EquipmentMeasurementResults = ({
                     defaultMeasurementMode={measurementMode}
                     defaultMeasurementResult={measurementResult}
                     updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
-                    showingOldResult
+                    stepToStartFrom={stepToStartFrom}
                 />
             )}
         </>

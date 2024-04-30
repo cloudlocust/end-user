@@ -7,7 +7,7 @@ import { useIntl } from 'src/common/react-platform-translation'
  * The URL for the solar installation recommendation.
  */
 export const URL_SOLAR_INSTALLATION_RECOMMENDATION = 'https://e0vzc8h9q32.typeform.com/to/pNFEjfzU'
-
+// todo: try to use the common style between the buttons.
 const StyledButton = styled(Button)(() => ({
     borderRadius: 8,
     backgroundColor: '#F9E1E1',

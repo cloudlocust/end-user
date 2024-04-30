@@ -1,5 +1,5 @@
 /**
- * Equipment Name type.
+ * The value of the equipments.
  */
 export type equipmentNameType =
     | 'heater'
@@ -32,6 +32,11 @@ export type equipmentNameType =
     | 'air_conditioner'
     | 'dry_towel'
     | 'water_heater'
+
+/**
+ * Housing Installation Equipments type.
+ */
+export type housingInstallationEquipmentsType = 'heater' | 'hotplate' | 'sanitary' | 'solarpanel'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentAllowedTypeT =

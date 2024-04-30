@@ -1,4 +1,5 @@
 import React from 'react'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 /**
  * Props of the CustomOrderedListItem component.
@@ -21,5 +22,5 @@ export interface InfosPageProps {
     /**
      * The setter linked to the state responsible for storing the current step.
      */
-    stepSetter: Dispatch<SetStateAction<number>>
+    stepSetter: Dispatch<SetStateAction<measurementStepsEnum>>
 }
