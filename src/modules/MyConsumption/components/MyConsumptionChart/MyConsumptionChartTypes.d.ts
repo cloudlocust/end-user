@@ -113,10 +113,6 @@ export interface ConsumptionChartContainerProps {
      */
     enedisSgeConsent?: IEnedisSgeConsent
     /**
-     * Boolean indicating if solar production consent is off.
-     */
-    isSolarProductionConsentOff: boolean
-    /**
      * Boolean indicating whether the idle chart is shown or not.
      */
     isIdleShown: boolean
