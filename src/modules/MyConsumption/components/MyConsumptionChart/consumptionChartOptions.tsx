@@ -76,7 +76,7 @@ export const getEchartsConsumptionChartOptions = (
         ...getDefaultOptionsEchartsConsumptionChart(
             theme,
             isMobile,
-            values,
+            filteredValues,
             period,
             selectedLabelPeriodIndex,
             xAxisTimestamps,
