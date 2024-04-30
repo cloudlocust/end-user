@@ -31,22 +31,27 @@ import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 
 //eslint-disable-next-line
-export const datePrelevementOptions: { value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
-    value: index + 1,
-    label: `${index + 1} du mois`,
-}))
+export const datePrelevementOptions: { id: number; value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
+        id: index + 1,
+        value: index + 1,
+        label: `${index + 1} du mois`,
+    }),
+)
 
 //eslint-disable-next-line
-export const civilityOptions: { value: string, label: string}[] = [
+export const civilityOptions: { id: number, value: string, label: string}[] = [
     {
+        id: 1,
         value: 'MR',
         label: 'MR',
     },
     {
+        id: 2,
         value: 'Mme',
         label: 'Mme',
     },
     {
+        id: 3,
         value: 'Mlle',
         label: 'Mlle',
     },
@@ -253,7 +258,7 @@ export const FacturationForm = ({
                             <div className="w-120">
                                 <Select name="jourPrelevement" label="">
                                     {datePrelevementOptions.map((option) => (
-                                        <MenuItem value={option.value}>
+                                        <MenuItem key={option.id} value={option.value}>
                                             {formatMessage({
                                                 id: option.label,
                                                 defaultMessage: option.label,
@@ -342,7 +347,7 @@ export const FacturationForm = ({
                                             }}
                                         >
                                             {civilityOptions.map((option) => (
-                                                <MenuItem value={option.value}>
+                                                <MenuItem key={option.id} value={option.value}>
                                                     {formatMessage({
                                                         id: option.label,
                                                         defaultMessage: option.label,
