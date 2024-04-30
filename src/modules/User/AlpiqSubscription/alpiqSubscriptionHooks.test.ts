@@ -74,7 +74,7 @@ describe('Test useAlpiqProvider functions', () => {
                 renderedHook: { result },
             } = reduxedRenderHook(() => useAlpiqProvider())
             const resultEstimation = await result.current.getMonthlySubscriptionEstimation(3, 'BASE', 2)
-            expect(resultEstimation).toBe(33)
+            expect(resultEstimation.monthlySubscriptionEstimation).toBe(33)
         })
     })
     describe('Test Verify alpiq eligibility', () => {

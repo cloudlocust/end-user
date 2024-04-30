@@ -92,7 +92,7 @@ export const MeasurementResultStep = ({
                 {showingOldResult ? (
                     <Button
                         variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                         onClick={() => restartMeasurementFromBeginning(microwaveNumber, measurementMode)}
                     >
                         {formatMessage({
@@ -103,7 +103,7 @@ export const MeasurementResultStep = ({
                 ) : (
                     <Button
                         variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                         onClick={handleEndButtonClick}
                     >
                         {formatMessage({

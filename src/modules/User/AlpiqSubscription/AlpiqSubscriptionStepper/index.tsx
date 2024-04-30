@@ -11,8 +11,8 @@ import ContractEstimation from '../ContractEstimation'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { FacturationForm } from '../FacturationForm'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { RootState } from 'src/redux'
-import { useSelector } from 'react-redux'
+import { Dispatch, RootState } from 'src/redux'
+import { useDispatch, useSelector } from 'react-redux'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import { ButtonLoader } from 'src/common/ui-kit'
@@ -21,6 +21,9 @@ import { SectionText } from '../FacturationForm/utils'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
+import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
+import { useHistory } from 'react-router-dom'
+import LogoutIcon from '@mui/icons-material/Logout'
 
 /**
  * Steps labels.
@@ -43,6 +46,9 @@ const AlpiqSubscriptionStepper = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     const { enedisSgeConsent, getConsents, consentsLoading } = useConsents()
+    const { setDefaultHousingModel } = useHousingRedux()
+    const dispatch = useDispatch<Dispatch>()
+    const history = useHistory()
 
     useEffect(() => {
         if (initialMountConsent.current && currentHousing) {
@@ -83,10 +89,10 @@ const AlpiqSubscriptionStepper = () => {
     }
 
     const stepsContent = [
-        <PdlVerificationForm handleNext={handleNext} />,
-        <SgeConsentStep handleBack={handleBack} handleNext={handleNext} />,
-        <ContractEstimation handleNext={handleNext} />,
-        <FacturationForm handleBack={handleBack} />,
+        <PdlVerificationForm key="1" handleNext={handleNext} />,
+        <SgeConsentStep key="2" handleBack={handleBack} handleNext={handleNext} />,
+        <ContractEstimation key="3" handleNext={handleNext} enedisSgeConsent={enedisSgeConsent} />,
+        <FacturationForm key="4" handleBack={handleBack} />,
     ]
     return (
         <div className="w-full mt-40 flex flex-col justify-center items-center">
@@ -172,6 +178,21 @@ const AlpiqSubscriptionStepper = () => {
                                     </ButtonLoader>
                                     <ButtonLoader variant="text">info@bowatts.fr</ButtonLoader>
                                 </div>
+                            </div>
+                            <div className="flex flex-row items-center justify-center">
+                                <ButtonLoader
+                                    variant="text"
+                                    className="mr-0 md:mr-10"
+                                    onClick={() => {
+                                        // Reset Housing Model when logging out.
+                                        setDefaultHousingModel()
+                                        dispatch.userModel.logout()
+                                        history.replace('/login')
+                                    }}
+                                    endIcon={<LogoutIcon />}
+                                >
+                                    Déconnexion
+                                </ButtonLoader>
                             </div>
                         </CardActions>
                     </>
