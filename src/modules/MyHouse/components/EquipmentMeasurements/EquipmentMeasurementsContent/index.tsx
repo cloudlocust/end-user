@@ -6,15 +6,13 @@ import Select from '@mui/material/Select'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import {
-    EquipmentDetailsContentProps,
-    SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent/EquipmentDetailsContent'
+import { SelectChangeEvent } from '@mui/material'
 import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
+import { EquipmentMeasurementsResults } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
-import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
+import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
+import { EquipmentMeasurementsContentProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsContent/EquipmentMeasurementsContent.types'
 
 /**
  * EquipmentDetailsContent compoonent.
@@ -23,7 +21,7 @@ import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/E
  * @param root0.equipmentDetails The equipment details object.
  * @returns EquipmentDetailsContent JSX.
  */
-export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsContentProps) => {
+export const EquipmentMeasurementsContent = ({ equipmentDetails }: EquipmentMeasurementsContentProps) => {
     const { formatMessage } = useIntl()
     const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
     const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(1)
@@ -64,8 +62,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
      *
      * @param event The onChange event.
      */
-    const handleSelectEquipmentChange: SelectOnChangeHandler = (event) => {
-        setSelectedEquipmentNumber(event.target.value)
+    const handleSelectEquipmentChange = (event: SelectChangeEvent<number | null>) => {
+        setSelectedEquipmentNumber(event.target.value as number)
     }
 
     const isMeasurementButtonShown =
@@ -119,17 +117,19 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 )}
 
                 {/* Measurement result list */}
-                {equipmentDetails.number && (
-                    <EquipmentMeasurementResults
-                        measurementModes={equipmentDetails.measurementModes}
-                        housingEquipmentId={equipmentDetails.housingEquipmentId!}
-                        equipmentsNumber={equipmentDetails.number}
-                        equipmentNumber={selectedEquipmentNumber}
-                        measurementResults={measurementResults}
-                        isLoadingMeasurements={isLoadingMeasurements}
-                        updateEquipmentMeasurementResults={updateEquipmentMeasurementResults}
-                    />
-                )}
+                <div className="flex-1">
+                    {equipmentDetails.number && (
+                        <EquipmentMeasurementsResults
+                            measurementModes={equipmentDetails.measurementModes}
+                            housingEquipmentId={equipmentDetails.housingEquipmentId!}
+                            equipmentsNumber={equipmentDetails.number}
+                            equipmentNumber={selectedEquipmentNumber}
+                            measurementResults={measurementResults}
+                            isLoadingMeasurements={isLoadingMeasurements}
+                            updateEquipmentMeasurementResults={updateEquipmentMeasurementResults}
+                        />
+                    )}
+                </div>
 
                 {/* Buttons */}
                 <div className="flex justify-end mt-28">

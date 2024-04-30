@@ -31,7 +31,7 @@ import { useMicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipmen
  * @param root0.defaultMeasurementMode Default value for the measurement mode.
  * @param root0.defaultMeasurementResult Default value for the measurement result.
  * @param root0.onCloseMeasurementModal Modal closing handler.
- * @param root0.navigateToEquipmentDetailsPage Function for navigating to the equipment details page.
+ * @param root0.navigateToEquipmentMeasurementsPage Function for navigating to the equipment details page.
  * @example
  *  /// Use this MicrowaveMeasurement component with our useModal custom hook
  *
@@ -58,7 +58,7 @@ export const MicrowaveMeasurement = ({
     defaultMeasurementMode,
     defaultMeasurementResult,
     onCloseMeasurementModal,
-    navigateToEquipmentDetailsPage,
+    navigateToEquipmentMeasurementsPage,
 }: MicrowaveMeasurementProps) => {
     const [currentStep, setCurrentStep] = useState(measurementStepsEnum.INFOS_PAGE_STEP)
     const [microwaveNumber, setMicrowaveNumber] = useState(equipmentsNumber === 1 ? 1 : defaultMicrowaveNumber || 0)
@@ -187,7 +187,7 @@ export const MicrowaveMeasurement = ({
                         measurementResult={measurementResult}
                         showingOldResult={stepToStartFrom === measurementStepsEnum.RESULT_STEP}
                         closeMeasurementModal={handleCloseMeasurementModal}
-                        navigateToEquipmentDetailsPage={navigateToEquipmentDetailsPage}
+                        navigateToEquipmentMeasurementsPage={navigateToEquipmentMeasurementsPage}
                         restartMeasurementFromBeginning={handleRestartingMeasurement}
                     />
                 ) : (

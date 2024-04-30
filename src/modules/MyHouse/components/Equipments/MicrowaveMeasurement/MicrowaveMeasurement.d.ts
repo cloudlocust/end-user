@@ -45,7 +45,7 @@ export interface MicrowaveMeasurementProps {
     /**
      * Function for navigating to the equipment details page.
      */
-    navigateToEquipmentDetailsPage?: () => void
+    navigateToEquipmentMeasurementsPage?: () => void
 }
 
 /**

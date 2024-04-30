@@ -14,7 +14,7 @@ import { MeasurementComparisonHistogram } from 'src/modules/MyHouse/components/E
  * @param root0.measurementResult The resut of the measurement process.
  * @param root0.showingOldResult Boolean indicating whether we want to display an old result.
  * @param root0.closeMeasurementModal Function that closes the measurement modal and resets the states.
- * @param root0.navigateToEquipmentDetailsPage Function for navigating to the equipment details page.
+ * @param root0.navigateToEquipmentMeasurementsPage Function for navigating to the equipment details page.
  * @param root0.restartMeasurementFromBeginning The function that restart the measurement from the beginning.
  * @returns The MeasurementResultStep component.
  */
@@ -24,7 +24,7 @@ export const MeasurementResultStep = ({
     measurementResult,
     showingOldResult,
     closeMeasurementModal,
-    navigateToEquipmentDetailsPage,
+    navigateToEquipmentMeasurementsPage,
     restartMeasurementFromBeginning,
 }: MeasurementResultStepProps) => {
     const { formatMessage } = useIntl()
@@ -47,7 +47,7 @@ export const MeasurementResultStep = ({
      */
     const handleEndButtonClick = () => {
         closeMeasurementModal()
-        if (navigateToEquipmentDetailsPage) navigateToEquipmentDetailsPage()
+        if (navigateToEquipmentMeasurementsPage) navigateToEquipmentMeasurementsPage()
     }
 
     return (

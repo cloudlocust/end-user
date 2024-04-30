@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/MeasurementResult'
+import { MeasurementResult } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/MeasurementResult'
 
 const mockedHandleClickingOnMeasurementResult = jest.fn()
 const mockedHandleClickingOnMeasurementButton = jest.fn()

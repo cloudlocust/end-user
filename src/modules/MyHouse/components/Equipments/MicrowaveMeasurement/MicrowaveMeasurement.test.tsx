@@ -11,7 +11,7 @@ const HOUSING_EQUIPMENT_ID_TEST = 25
 const EQUIPMENT_NUMBER_TEST = 1
 const MEASUREMENT_MODES_TEST = ['mode A', 'mode B']
 const mockOnCloseMeasurementModal = jest.fn()
-const mockNavigateToEquipmentDetailsPage = jest.fn()
+const mockNavigateToEquipmentMeasurementsPage = jest.fn()
 const mockUpdateEquipmentMeasurementResults = jest.fn()
 
 const props: MicrowaveMeasurementProps = {
@@ -20,7 +20,7 @@ const props: MicrowaveMeasurementProps = {
     measurementModes: MEASUREMENT_MODES_TEST,
     isMeasurementModalOpen: true,
     onCloseMeasurementModal: mockOnCloseMeasurementModal,
-    navigateToEquipmentDetailsPage: mockNavigateToEquipmentDetailsPage,
+    navigateToEquipmentMeasurementsPage: mockNavigateToEquipmentMeasurementsPage,
     updateEquipmentMeasurementResults: mockUpdateEquipmentMeasurementResults,
 }
 

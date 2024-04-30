@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import { MeasurementResultProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/MeasurementResult/MeasurementResult'
+import { MeasurementResultProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/MeasurementResult/MeasurementResult'
 
 /**
  * MeasurementResult compoonent (used only in this component).
