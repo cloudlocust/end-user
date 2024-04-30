@@ -1,4 +1,4 @@
-import { useTheme, Card } from '@mui/material'
+import { useTheme, Card, Slider } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Form } from 'src/common/react-platform-components'
@@ -51,9 +51,15 @@ const ContractEstimation = ({
     const dispatch = useDispatch<Dispatch>()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const { formatMessage } = useIntl()
+    // this one is used to store the estimation from the api
     const [monthlyEstimation, setMonthlyEstimation] = useState<IApliqMonthlySubscriptionEstimationResponse | undefined>(
         undefined,
     )
+    // this one is used to calculate the estimation with the slider and render it in the UI.
+    const [calculatedMonthlyEstimation, setCalculatedMonthlyEstimation] = useState<
+        IApliqMonthlySubscriptionEstimationResponse | undefined
+    >(undefined)
+    const [sliderValue, setSliderValue] = useState<number | number[]>(0)
     const initialMountConsent = useRef(true)
 
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -138,8 +144,42 @@ const ContractEstimation = ({
 
         if (monthlyEstimationData) {
             setMonthlyEstimation(monthlyEstimationData)
+            setCalculatedMonthlyEstimation(monthlyEstimationData)
+            setSliderValue(0)
             setContractInfos(data)
         }
+    }
+
+    /**
+     * Calculate the variation of the estimation and the car based on the stored estimation got from the api.
+     *
+     * @param pourcentage Pourcentage that we want to vary.
+     * @returns New estimation.
+     */
+    const calculateEstimationAndCarVariation = (pourcentage: number | number[]) => {
+        if (!monthlyEstimation || Array.isArray(pourcentage)) return { price: undefined, kwh: undefined }
+        const priceVariation = monthlyEstimation.monthlySubscriptionEstimation * (pourcentage / 100)
+        const carVariation = monthlyEstimation.annualReferenceConsumption * (pourcentage / 100)
+
+        const newPrice = monthlyEstimation.monthlySubscriptionEstimation + priceVariation
+        const newKwh = monthlyEstimation.annualReferenceConsumption + carVariation
+        return {
+            price: Math.floor(newPrice),
+            kwh: Math.floor(newKwh),
+        }
+    }
+
+    /**
+     * On Change for slider.
+     *
+     * @param _ Event.
+     * @param value Value.
+     */
+    const handleChange = (_: Event, value: number | number[]) => {
+        setSliderValue(value)
+        const { price, kwh } = calculateEstimationAndCarVariation(value)
+        if (price && kwh)
+            setCalculatedMonthlyEstimation({ monthlySubscriptionEstimation: price, annualReferenceConsumption: kwh })
     }
 
     return (
@@ -223,7 +263,7 @@ const ContractEstimation = ({
                     }`}
                 >
                     <Card
-                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full md:w-400 h-256 lg:h-224 flex flex-col justify-center ${
+                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full md:w-400 h-320 flex flex-col justify-center ${
                             isMobile && 'mb-20'
                         }`}
                     >
@@ -246,8 +286,21 @@ const ContractEstimation = ({
                         </div>
                         <div className="flex flex-col items-center w-full">
                             <TypographyFormatMessage color={theme.palette.primary.main} textAlign="center" variant="h6">
-                                {`${monthlyEstimation?.monthlySubscriptionEstimation ?? '--'} €TTC/Mois`}
+                                {`${calculatedMonthlyEstimation?.monthlySubscriptionEstimation ?? '--'} €TTC/Mois`}
                             </TypographyFormatMessage>
+                            {calculatedMonthlyEstimation && (
+                                <div className="flex items-center w-1/2">
+                                    <Slider
+                                        value={sliderValue}
+                                        aria-labelledby="discrete-slider"
+                                        valueLabelDisplay="off"
+                                        step={1}
+                                        min={-15}
+                                        max={15}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            )}
                             <div className="flex items-center justify-center mx-10">
                                 <TypographyFormatMessage
                                     variant={isMobile ? 'body2' : 'body1'}
@@ -255,8 +308,8 @@ const ContractEstimation = ({
                                     fontWeight={300}
                                 >
                                     {`Pour une consommation estimée à ${
-                                        monthlyEstimation
-                                            ? Math.floor(monthlyEstimation?.annualReferenceConsumption)
+                                        calculatedMonthlyEstimation
+                                            ? Math.floor(calculatedMonthlyEstimation?.annualReferenceConsumption)
                                             : '--'
                                     } kWh/an`}
                                 </TypographyFormatMessage>
@@ -271,17 +324,17 @@ const ContractEstimation = ({
                     </Card>
                     <div className={`${!isMobile ? 'px-20' : 'w-full'} flex justify-end items-center`}>
                         <ButtonLoader
-                            disabled={monthlyEstimation === undefined || contractInfos === undefined}
+                            disabled={calculatedMonthlyEstimation === undefined || contractInfos === undefined}
                             color="primary"
                             endIcon={<NavigateNext />}
                             onClick={() => {
-                                if (contractInfos && monthlyEstimation) {
+                                if (contractInfos && calculatedMonthlyEstimation) {
                                     // save them for next step
                                     dispatch.housingModel.setAlpiqSubscriptionSpecs({
                                         puissanceSouscrite: contractInfos.power,
                                         optionTarifaire: contractInfos.contractType,
-                                        mensualite: monthlyEstimation.monthlySubscriptionEstimation,
-                                        car: monthlyEstimation.annualReferenceConsumption,
+                                        mensualite: calculatedMonthlyEstimation.monthlySubscriptionEstimation,
+                                        car: calculatedMonthlyEstimation.annualReferenceConsumption,
                                     })
                                     handleNext()
                                 }
