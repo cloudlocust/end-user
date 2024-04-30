@@ -1,46 +1,57 @@
 import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
-import { useTheme, RadioGroup, Radio, FormControlLabel, Card } from '@mui/material'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import {
+    useTheme,
+    RadioGroup,
+    Radio,
+    FormControlLabel,
+    Card,
+    useMediaQuery,
+    MenuItem,
+    Checkbox as CheckboxMui,
+    Button,
+} from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
-import MenuItem from '@mui/material/MenuItem'
 import { useIntl } from 'react-intl'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import { useState } from 'react'
-import { Checkbox as CheckboxMui } from '@mui/material'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import { addDays, format } from 'date-fns'
 import { ButtonLoader, TextField, Checkbox, Typography } from 'src/common/ui-kit'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
-import Button from '@mui/material/Button'
-import { AlpiqFacturationDataType } from '..'
-import { useAlpiqProvider } from '../alpiqSubscriptionHooks'
-import { SectionText, SectionTitle } from './utils'
+import { AlpiqFacturationDataType } from 'src/modules/User/AlpiqSubscription'
+import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
+import { SectionText, SectionTitle } from 'src/modules/User/AlpiqSubscription/FacturationForm/utils'
 import { useModal } from 'src/hooks/useModal'
-import { SuccessPopupModal } from './SuccessPopupModal'
+import { SuccessPopupModal } from 'src/modules/User/AlpiqSubscription/FacturationForm/SuccessPopupModal'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
 
 //eslint-disable-next-line
-export const datePrelevementOptions: { value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
-    value: index + 1,
-    label: `${index + 1} du mois`,
-}))
+export const datePrelevementOptions: { id: number; value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
+        id: index + 1,
+        value: index + 1,
+        label: `${index + 1} du mois`,
+    }),
+)
 
 //eslint-disable-next-line
-export const civilityOptions: { value: string, label: string}[] = [
+export const civilityOptions: { id: number, value: string, label: string}[] = [
     {
+        id: 1,
         value: 'MR',
         label: 'MR',
     },
     {
+        id: 2,
         value: 'Mme',
         label: 'Mme',
     },
     {
+        id: 3,
         value: 'Mlle',
         label: 'Mlle',
     },
@@ -172,19 +183,19 @@ export const FacturationForm = ({
             >
                 <div className="flex flex-col items-start justify-center w-full">
                     <div className="flex flex-col items-center justify-center w-full mb-32">
-                        <Card className="rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-1/2 md:w-400 h-256 lg:h-224 flex flex-col justify-center">
+                        <Card className="rounded-16 border border-slate-600 bg-gray-50 mx-10 md:mx-10 w-full md:w-400 h-256 lg:h-224 flex flex-col justify-center">
                             <SectionTitle title="Récapitulatif de l'offre" />
                             <div className="flex items-center justify-center mt-20">
                                 <SectionText text="Puissance souscrite :" className="text-sm" />
                                 <SectionText
-                                    className="ml-12 font-bold text-sm"
+                                    className="ml-6 md:ml-12 font-bold text-sm"
                                     text={`${alpiqSubscriptionSpecs?.puissanceSouscrite} Kva`}
                                 />
                             </div>
-                            <div className="flex items-center justify-center mt-20">
+                            <div className="flex flex-col md:flex-row items-center justify-center mt-20">
                                 <SectionText text="Option tarifaire :" className="text-sm" />
                                 <SectionText
-                                    className="ml-12 font-bold text-sm"
+                                    className="mx-auto md:ml-12 font-bold text-sm"
                                     text={
                                         alpiqSubscriptionSpecs?.optionTarifaire === 'BASE'
                                             ? 'Base'
@@ -195,7 +206,7 @@ export const FacturationForm = ({
                             <div className="flex items-center justify-center mt-20">
                                 <SectionText text="Mensualité :" className="text-sm" />
                                 <SectionText
-                                    className="ml-12 font-bold"
+                                    className="ml-6 md:ml-12 font-bold"
                                     text={`${alpiqSubscriptionSpecs?.mensualite} €`}
                                 />
                             </div>
@@ -246,8 +257,8 @@ export const FacturationForm = ({
                             <SectionText text="Je souhaite être prélevé le :" className="mr-10" />
                             <div className="w-120">
                                 <Select name="jourPrelevement" label="">
-                                    {datePrelevementOptions.map((option, _index) => (
-                                        <MenuItem key={_index} value={option.value}>
+                                    {datePrelevementOptions.map((option) => (
+                                        <MenuItem key={option.id} value={option.value}>
                                             {formatMessage({
                                                 id: option.label,
                                                 defaultMessage: option.label,
@@ -322,21 +333,21 @@ export const FacturationForm = ({
                         </div>
                         {isCotitulaire && (
                             <div className="flex flex-col items-start justify-center w-full mb-32">
-                                <div className="mt-12 w-full flex flex-col lg:flex-row items-center justify-around">
+                                <div className="mt-12 w-full flex flex-col items-center justify-around">
                                     <div className="flex items-center justify-center mb-20">
                                         <Select
                                             name="civilityCotitulaire"
                                             label="Civilité du cotitulaire"
                                             style={{
-                                                width: '279px',
+                                                width: isMobile ? '248.5px' : '288px',
                                             }}
                                             validateFunctions={[requiredBuilder()]}
                                             formControlProps={{
                                                 margin: 'normal',
                                             }}
                                         >
-                                            {civilityOptions.map((option, _index) => (
-                                                <MenuItem key={_index} value={option.value}>
+                                            {civilityOptions.map((option) => (
+                                                <MenuItem key={option.id} value={option.value}>
                                                     {formatMessage({
                                                         id: option.label,
                                                         defaultMessage: option.label,

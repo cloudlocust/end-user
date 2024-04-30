@@ -30,6 +30,8 @@ describe('Test ContractEstimation', () => {
         expect(getByText('Mensualité calculée à partir de vos consommations passées.')).toBeInTheDocument()
         expect(getByText('Type de contrat')).toBeInTheDocument()
         expect(getByText('Puissance')).toBeInTheDocument()
+        expect(getByText('Pour une consommation estimée à -- kWh/an')).toBeInTheDocument()
+        expect(getByText('-- €TTC/Mois')).toBeInTheDocument()
     })
     test('Required filleds', async () => {
         const { getByText, getAllByText } = reduxedRender(<ContractEstimation {...contractEstimationProps} />)
