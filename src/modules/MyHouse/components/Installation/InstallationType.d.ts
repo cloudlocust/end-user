@@ -79,6 +79,14 @@ export type equipmentMeterType = {
      * Equipment label.
      */
     equipmentLabel?: string
+    /**
+     * Frequency of usage per week.
+     */
+    frequencyOfUsagePerWeek?: number | null
+    /**
+     * Average usage per minute.
+     */
+    averageUsagePerMinute?: number | null
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc

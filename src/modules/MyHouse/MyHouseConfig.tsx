@@ -11,7 +11,8 @@ import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
 import EquipmentMeasurements from 'src/modules/MyHouse/components/EquipmentMeasurements'
-import EquipmentDetails from 'src/modules/MyHouse/components/EquipmentDetails'
+import EquipmentsDetails from 'src/modules/MyHouse/components/EquipmentsDetails'
+import EquipmentsUsage from 'src/modules/MyHouse/components/EquipmentsUsage'
 
 /**
  * Url for myHouse.
@@ -29,6 +30,12 @@ export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
  * Url for equipment details.
  */
 export const URL_HOUSING_EQUIPMENT_DETAILS = `${URL_HOUSING_EQUIPMENTS}/:housingEquipmentId/details/:equipmentId`
+
+/**
+ * Url for equipment usage.
+ */
+export const URL_HOUSING_EQUIPMENT_USAGE = `${URL_HOUSING_EQUIPMENTS}/:housingEquipmentId/usage/:equipmentId`
+
 /**
  * Url for equipment measurements.
  */
@@ -262,7 +269,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_EQUIPMENT_DETAILS,
-        component: EquipmentDetails,
+        component: EquipmentsDetails,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
@@ -337,6 +344,34 @@ export const MyHouseConfig = [
                         disabled: arePlugsUsedBasedOnProductionStatus(
                             store.getState().housingModel.currentHousingScopes,
                         ),
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<MyHouseProps>,
+    {
+        path: URL_HOUSING_EQUIPMENT_USAGE,
+        component: EquipmentsUsage,
+        auth: { authType: authTypes.loginRequired },
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'Logement',
+                        label: 'Logement',
+                        labelAbbreviation: 'Logement',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
+                            </SvgIcon>
+                        ),
+                        url: URL_HOUSING_EQUIPMENT_USAGE,
                     },
                 },
             },

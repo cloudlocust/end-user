@@ -87,6 +87,8 @@ export const EquipmentCard = ({
         equipment.number && equipment.number > 0 && equipment.name === 'microwave',
     )
 
+    const equipementId = equipment.equipmentId
+
     return (
         <>
             <Card className="rounded-16 border border-slate-600 w-full" data-testid="equipment-item">
@@ -157,7 +159,6 @@ export const EquipmentCard = ({
                                     className="mr-6 cursor-pointer"
                                     onClick={() => {
                                         if (currentHousing?.id) {
-                                            const equipementId = equipment.id
                                             history.push(
                                                 `${URL_MY_HOUSE}/${currentHousing.id}/equipments/${equipment.housingEquipmentId}/details/${equipementId}`,
                                             )
@@ -167,34 +168,67 @@ export const EquipmentCard = ({
                             </div>
                         </div>
 
-                        {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
-                        {isMicrowaveMeasurementButtonShown ? (
-                            <Tooltip
-                                disableHoverListener={isEquipmentMeasurementFeatureState}
-                                title={<TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>}
-                                placement="top"
-                                arrow
+                        <div className="flex items-center gap-10">
+                            <Button
+                                sx={{
+                                    width: '115px',
+                                    paddingY: '3px',
+                                    paddingX: '6px',
+                                    bgcolor: theme.palette.common.white,
+                                    color: theme.palette.primary.main,
+                                    border: `1px solid ${theme.palette.primary.main}`,
+                                    '&:hover': {
+                                        bgcolor: theme.palette.primary.main,
+                                        color: theme.palette.common.white,
+                                    },
+                                }}
+                                variant="contained"
+                                onClick={() => {
+                                    if (currentHousing?.id) {
+                                        history.push(
+                                            `${URL_MY_HOUSE}/${currentHousing.id}/equipments/${equipment.housingEquipmentId}/usage/${equipementId}`,
+                                            {
+                                                equipment: {
+                                                    title: title || equipment.name,
+                                                },
+                                            },
+                                        )
+                                    }
+                                }}
                             >
-                                <div className="flex justify-end gap-7 flex-wrap-reverse">
-                                    <Button
-                                        sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
-                                        variant="contained"
-                                        onClick={navigateToEquipmentMeasurementsPage}
-                                        disabled={!isEquipmentMeasurementFeatureState}
-                                    >
-                                        Mes mesures
-                                    </Button>
-                                    <Button
-                                        sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
-                                        variant="contained"
-                                        onClick={onOpenMeasurementModal}
-                                        disabled={!isEquipmentMeasurementFeatureState}
-                                    >
-                                        Mesurer
-                                    </Button>
-                                </div>
-                            </Tooltip>
-                        ) : null}
+                                Mon usage
+                            </Button>
+                            {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
+                            {isMicrowaveMeasurementButtonShown ? (
+                                <Tooltip
+                                    disableHoverListener={isEquipmentMeasurementFeatureState}
+                                    title={
+                                        <TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>
+                                    }
+                                    placement="top"
+                                    arrow
+                                >
+                                    <div className="flex justify-end gap-7 flex-wrap-reverse">
+                                        <Button
+                                            sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
+                                            variant="contained"
+                                            onClick={navigateToEquipmentMeasurementsPage}
+                                            disabled={!isEquipmentMeasurementFeatureState}
+                                        >
+                                            Mes mesures
+                                        </Button>
+                                        <Button
+                                            sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
+                                            variant="contained"
+                                            onClick={onOpenMeasurementModal}
+                                            disabled={!isEquipmentMeasurementFeatureState}
+                                        >
+                                            Mesurer
+                                        </Button>
+                                    </div>
+                                </Tooltip>
+                            ) : null}
+                        </div>
                     </div>
                 </CardContent>
             </Card>

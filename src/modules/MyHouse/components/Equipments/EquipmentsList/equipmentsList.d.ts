@@ -42,6 +42,8 @@ export type HousingEquipmentType =
         equipmentLabel?: string | null
         // eslint-disable-next-line jsdoc/require-jsdoc
         equipmentTitle?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentId?: number
     }
 
 /**

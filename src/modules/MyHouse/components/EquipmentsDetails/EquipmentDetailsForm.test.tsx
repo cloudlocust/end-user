@@ -2,7 +2,7 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import EquipmentDetailsForm from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsForm'
+import EquipmentDetailsForm from 'src/modules/MyHouse/components/EquipmentsDetails/EquipmentsDetailsForm'
 
 let housingEquipmentDetailsData = applyCamelCase([
     {

@@ -6,14 +6,14 @@ import Container from '@mui/material/Container'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import isNull from 'lodash/isNull'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
-import EquipmentDetailsForm from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsForm'
+import EquipmentDetailsForm from 'src/modules/MyHouse/components/EquipmentsDetails/EquipmentsDetailsForm'
 
 /**
  * Equipment details.
  *
  * @returns Equipment details component.
  */
-export default function EquipmentDetails() {
+export default function EquipmentsDetails() {
     const currentHousing = useCurrentHousing()
     const {
         addHousingEquipment,

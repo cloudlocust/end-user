@@ -1,6 +1,6 @@
 import { useForm, Controller, FormProvider } from 'react-hook-form'
 import Select from '@mui/material/Select'
-import MenuIten from '@mui/material/MenuItem'
+import MenuItem from '@mui/material/MenuItem'
 import { useEffect, useMemo, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
@@ -10,7 +10,7 @@ import { setYear } from 'date-fns'
 import {
     EquipmentDetailsFormProps,
     EquipmentDetailsFormSubmitType,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetails.types'
+} from 'src/modules/MyHouse/components/EquipmentsDetails/EquipmentsDetails.types'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { useHistory } from 'react-router-dom'
 import dayjs from 'dayjs'
@@ -22,7 +22,7 @@ import dayjs from 'dayjs'
  * @param props.housingEquipmentsDetails Housing equipments details array.
  * @returns Equipment details form.
  */
-export default function EquipmentDetailsForm(props: EquipmentDetailsFormProps) {
+export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) {
     const history = useHistory()
     const { housingEquipmentsDetails, addHousingEquipment } = props
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -90,9 +90,9 @@ export default function EquipmentDetailsForm(props: EquipmentDetailsFormProps) {
                     </IconButton>
                     <Select className="w-full" {...register('id')} value={selectedEquipmentId}>
                         {housingEquipmentsDetails?.map((equipment) => (
-                            <MenuIten key={equipment.id} value={equipment.id}>
+                            <MenuItem key={equipment.id} value={equipment.id}>
                                 {equipment.equipmentLabel || `Equipement ${equipment.equipmentNumber}`}
-                            </MenuIten>
+                            </MenuItem>
                         ))}
                     </Select>
                 </div>
