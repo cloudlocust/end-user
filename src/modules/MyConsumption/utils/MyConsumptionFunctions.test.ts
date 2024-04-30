@@ -17,6 +17,9 @@ import {
     filterMetricsData,
     nullifyTodayIdleConsumptionValue,
     getRangeFromDate,
+    filterEuroTargetsMetricsDataOfYearlyPeriod,
+    filterConsumptionTargetsMetricsDataOfYearlyPeriod,
+    filterMetricsDataOfYearlyPeriod,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -1201,6 +1204,219 @@ describe('filterMetricsData tests', () => {
             )
 
             expect(fileteredData).toStrictEqual(expectedResult)
+        })
+    })
+
+    test('should return all euro metrics data in yearly period', () => {
+        const targets = [
+            metricTargetsEnum.eurosConsumption,
+            metricTargetsEnum.subscriptionPrices,
+            metricTargetsEnum.baseEuroConsumption,
+            metricTargetsEnum.euroPeakHourConsumption,
+            metricTargetsEnum.euroOffPeakConsumption,
+            metricTargetsEnum.pMax,
+            metricTargetsEnum.internalTemperature,
+            metricTargetsEnum.externalTemperature,
+        ]
+        const data: IMetric[] = targets.map((target) => ({
+            target,
+            datapoints: [[99, 99]],
+        }))
+
+        const result = filterMetricsData(data, PeriodEnum.YEARLY, SwitchConsumptionButtonTypeEnum.Consumption)
+        expect(result).toHaveLength(8)
+        expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
+        expect(result[1].target).toBe(metricTargetsEnum.euroPeakHourConsumption)
+        expect(result[2].target).toBe(metricTargetsEnum.euroOffPeakConsumption)
+        expect(result[3].target).toBe(metricTargetsEnum.subscriptionPrices)
+        expect(result[4].target).toBe(metricTargetsEnum.eurosConsumption)
+        expect(result[5].target).toBe(metricTargetsEnum.pMax)
+        expect(result[6].target).toBe(metricTargetsEnum.internalTemperature)
+        expect(result[7].target).toBe(metricTargetsEnum.externalTemperature)
+    })
+
+    test('should return all consumption metrics data in yearly period', () => {
+        const targets = [
+            metricTargetsEnum.consumption,
+            metricTargetsEnum.baseConsumption,
+            metricTargetsEnum.peakHourConsumption,
+            metricTargetsEnum.offPeakHourConsumption,
+            metricTargetsEnum.peakHourBlueTempoConsumption,
+            metricTargetsEnum.offPeakHourBlueTempoConsumption,
+            metricTargetsEnum.peakHourRedTempoConsumption,
+            metricTargetsEnum.offPeakHourRedTempoConsumption,
+            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+            metricTargetsEnum.pMax,
+            metricTargetsEnum.internalTemperature,
+            metricTargetsEnum.externalTemperature,
+        ]
+        const data: IMetric[] = targets.map((target) => ({
+            target,
+            datapoints: [[99, 99]],
+        }))
+
+        const result = filterMetricsData(data, PeriodEnum.YEARLY, SwitchConsumptionButtonTypeEnum.Consumption)
+        expect(result).toHaveLength(11)
+        result.forEach((item, index) => {
+            expect(item.target).toBe(targets[index + 1])
+        })
+    })
+
+    describe('filterEuroTargetsMetricsDataOfYearlyPeriod test', () => {
+        test('should return all euro metrics data', () => {
+            const targets = [
+                metricTargetsEnum.eurosConsumption,
+                metricTargetsEnum.subscriptionPrices,
+                metricTargetsEnum.baseEuroConsumption,
+                metricTargetsEnum.euroPeakHourConsumption,
+                metricTargetsEnum.euroOffPeakConsumption,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[99, 99]],
+            }))
+
+            const result = filterEuroTargetsMetricsDataOfYearlyPeriod(data)
+
+            expect(result).toHaveLength(5)
+            expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
+            expect(result[1].target).toBe(metricTargetsEnum.euroPeakHourConsumption)
+            expect(result[2].target).toBe(metricTargetsEnum.euroOffPeakConsumption)
+            expect(result[3].target).toBe(metricTargetsEnum.subscriptionPrices)
+            expect(result[4].target).toBe(metricTargetsEnum.eurosConsumption)
+        })
+        test('should return only_euro_consumption & subscriptionPrices if the data metrics are empty', () => {
+            const targets = [
+                metricTargetsEnum.eurosConsumption,
+                metricTargetsEnum.subscriptionPrices,
+                metricTargetsEnum.baseEuroConsumption,
+                metricTargetsEnum.euroPeakHourConsumption,
+                metricTargetsEnum.euroOffPeakConsumption,
+            ]
+
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [
+                    [
+                        [metricTargetsEnum.eurosConsumption, metricTargetsEnum.subscriptionPrices].includes(target)
+                            ? 99
+                            : (null as unknown as number),
+                        99,
+                    ],
+                ],
+            }))
+
+            const result = filterEuroTargetsMetricsDataOfYearlyPeriod(data)
+
+            expect(result).toHaveLength(2)
+            expect(result[0].target).toBe(metricTargetsEnum.onlyEuroConsumption)
+            expect(result[1].target).toBe(metricTargetsEnum.subscriptionPrices)
+        })
+    })
+
+    describe('filterConsumptionTargetsMetricsDataOfYearlyPeriod test', () => {
+        test('should return all euro metrics data', () => {
+            const targets = [
+                metricTargetsEnum.consumption,
+                metricTargetsEnum.baseConsumption,
+                metricTargetsEnum.peakHourConsumption,
+                metricTargetsEnum.offPeakHourConsumption,
+                metricTargetsEnum.peakHourBlueTempoConsumption,
+                metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                metricTargetsEnum.peakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[99, 99]],
+            }))
+
+            const result = filterConsumptionTargetsMetricsDataOfYearlyPeriod(data)
+
+            expect(result).toHaveLength(8)
+
+            result.forEach((item, index) => {
+                expect(item.target).toBe(targets[index + 1])
+            })
+        })
+        test('should return only_consumption if the data metrics are empty', () => {
+            const targets = [
+                metricTargetsEnum.consumption,
+                metricTargetsEnum.baseConsumption,
+                metricTargetsEnum.peakHourConsumption,
+                metricTargetsEnum.offPeakHourConsumption,
+                metricTargetsEnum.peakHourBlueTempoConsumption,
+                metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                metricTargetsEnum.peakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[target === metricTargetsEnum.consumption ? 99 : (null as unknown as number), 99]],
+            }))
+
+            const result = filterConsumptionTargetsMetricsDataOfYearlyPeriod(data)
+
+            expect(result).toHaveLength(1)
+            expect(result[0].target).toBe(metricTargetsEnum.onlyConsumption)
+        })
+    })
+
+    describe('filterMetricsDataOfYearlyPeriod test', () => {
+        test('should return all euro metrics data & temperatureOrPmaxMetricsData', () => {
+            const targets = [
+                metricTargetsEnum.eurosConsumption,
+                metricTargetsEnum.subscriptionPrices,
+                metricTargetsEnum.baseEuroConsumption,
+                metricTargetsEnum.euroPeakHourConsumption,
+                metricTargetsEnum.euroOffPeakConsumption,
+                metricTargetsEnum.pMax,
+                metricTargetsEnum.internalTemperature,
+                metricTargetsEnum.externalTemperature,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[99, 99]],
+            }))
+
+            const result = filterMetricsDataOfYearlyPeriod(data)
+
+            expect(result).toHaveLength(8)
+            expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
+            expect(result[5].target).toBe(metricTargetsEnum.pMax)
+            expect(result[6].target).toBe(metricTargetsEnum.internalTemperature)
+            expect(result[7].target).toBe(metricTargetsEnum.externalTemperature)
+        })
+
+        test('should return all consumption metrics data & temperatureOrPmaxMetricsData', () => {
+            const targets = [
+                metricTargetsEnum.consumption,
+                metricTargetsEnum.baseConsumption,
+                metricTargetsEnum.peakHourConsumption,
+                metricTargetsEnum.offPeakHourConsumption,
+                metricTargetsEnum.peakHourBlueTempoConsumption,
+                metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                metricTargetsEnum.peakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+                metricTargetsEnum.pMax,
+                metricTargetsEnum.internalTemperature,
+                metricTargetsEnum.externalTemperature,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[99, 99]],
+            }))
+
+            const result = filterMetricsDataOfYearlyPeriod(data)
+
+            expect(result).toHaveLength(11)
+            expect(result[0].target).toBe(metricTargetsEnum.baseConsumption)
+            expect(result[8].target).toBe(metricTargetsEnum.pMax)
+            expect(result[9].target).toBe(metricTargetsEnum.internalTemperature)
+            expect(result[10].target).toBe(metricTargetsEnum.externalTemperature)
         })
     })
 })

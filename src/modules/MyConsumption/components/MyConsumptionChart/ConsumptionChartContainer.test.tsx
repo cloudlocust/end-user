@@ -339,6 +339,13 @@ describe('MyConsumptionContainer test', () => {
         echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
         mockEnedisConsent = mockEnedisSgeConsentConnected
         mockData = TEST_SUCCESS_YEAR_METRICS([metricTargetsEnum.consumption, metricTargetsEnum.autoconsumption])
+        // change the data points for we can test all data exist.
+        mockData = mockData.map((metric) => {
+            return {
+                target: metric.target,
+                datapoints: metric.datapoints.map((datapoint) => [20, datapoint[1]]),
+            }
+        })
         const { queryByText } = reduxedRender(
             <Router>
                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
