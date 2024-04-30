@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { screen, fireEvent, waitFor } from '@testing-library/react'
-import { MeterConnection } from 'src/modules/Onboarding/steps/MeterConnection'
-import { MeterConnectionProps } from 'src/modules/Onboarding/steps/MeterConnection/MeterConnection.types'
+import { MeterConnectionStep } from 'src/modules/Onboarding/steps/MeterConnectionStep'
+import { MeterConnectionStepProps } from 'src/modules/Onboarding/steps/MeterConnectionStep/MeterConnectionStep.types'
 import { IEnedisSgeConsent, enedisSgeConsentStatus } from 'src/modules/Consents/Consents.d'
 import { METER_GUID_REGEX_TEXT } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import { IMeter } from 'src/modules/Meters/Meters'
@@ -67,7 +67,7 @@ jest.mock('src/modules/Consents/consentsHook', () => ({
     }),
 }))
 
-const mockMeterConnectionProps: MeterConnectionProps = {
+const mockMeterConnectionProps: MeterConnectionStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
     enedisSgeConsent: mockEnedisSgeConsent,
@@ -77,7 +77,7 @@ const mockMeterConnectionProps: MeterConnectionProps = {
 
 describe('MeterConnection', () => {
     test('should render', () => {
-        const { getByRole, getByText } = reduxedRender(<MeterConnection {...mockMeterConnectionProps} />)
+        const { getByRole, getByText } = reduxedRender(<MeterConnectionStep {...mockMeterConnectionProps} />)
         expect(getByText('2/4: La vie antérieure...')).toBeInTheDocument()
         expect(
             getByText('Pour lier votre logement à l’application, saisissez ici votre N° de PDL :'),
@@ -102,7 +102,7 @@ describe('MeterConnection', () => {
     describe('form validation', () => {
         test('should call empty', async () => {
             mockMeterConnectionProps.meter.guid = ''
-            const { container, getByText } = reduxedRender(<MeterConnection {...mockMeterConnectionProps} />)
+            const { container, getByText } = reduxedRender(<MeterConnectionStep {...mockMeterConnectionProps} />)
             userEvent.type(container.querySelector(guidMeterInputQuerySelector)!, '')
 
             userEvent.click(getByText(NEXT_BUTTON_TEXT))
@@ -111,7 +111,7 @@ describe('MeterConnection', () => {
             })
         })
         test('Invalid meter guid', async () => {
-            const { container, getByText } = reduxedRender(<MeterConnection {...mockMeterConnectionProps} />)
+            const { container, getByText } = reduxedRender(<MeterConnectionStep {...mockMeterConnectionProps} />)
             // Initially meter is field and nrlink_empty
             userEvent.type(container.querySelector(guidMeterInputQuerySelector)!, '123456')
             expect(container.querySelector(guidMeterInputQuerySelector)).toHaveValue('123456')
@@ -131,7 +131,7 @@ describe('MeterConnection', () => {
             mockCreateEnedisSgeConsent.mockImplementation((_id, callback) => {
                 callback()
             })
-            const { container } = reduxedRender(<MeterConnection {...mockMeterConnectionProps} />)
+            const { container } = reduxedRender(<MeterConnectionStep {...mockMeterConnectionProps} />)
             userEvent.type(container.querySelector(guidMeterInputQuerySelector)!, '12345678912345')
             fireEvent.click(container.querySelector('#enedisSgeConsentStatus')!)
 
@@ -157,7 +157,7 @@ describe('MeterConnection', () => {
                 callback()
             })
             const { container } = reduxedRender(
-                <MeterConnection {...mockMeterConnectionProps} meter={null as unknown as IMeter} />,
+                <MeterConnectionStep {...mockMeterConnectionProps} meter={null as unknown as IMeter} />,
             )
             userEvent.type(container.querySelector(guidMeterInputQuerySelector)!, '12345678912345')
             fireEvent.click(container.querySelector('#enedisSgeConsentStatus')!)

@@ -4,7 +4,7 @@ import { RootState } from 'src/redux'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Step } from 'src/modules/Onboarding/components/Step'
 import { WelcomeIcon } from 'src/modules/Onboarding/components/WelcomeIcon'
-import { IntroductionProps } from 'src/modules/Onboarding/steps/Introduction/Introduction.types'
+import { IntroductionStepProps } from 'src/modules/Onboarding/steps/IntroductionStep/IntroductionStep.types'
 /**
  * Introduction step used to greeting the user.
  *
@@ -12,7 +12,7 @@ import { IntroductionProps } from 'src/modules/Onboarding/steps/Introduction/Int
  * @param root0.onNext Next step callback.
  * @returns JSX.Element.
  */
-export const Introduction = ({ onNext }: IntroductionProps) => {
+export const IntroductionStep = ({ onNext }: IntroductionStepProps) => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { formatMessage } = useIntl()
 

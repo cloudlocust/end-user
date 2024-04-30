@@ -1,41 +1,38 @@
-import { useState } from 'react'
 import { Typography, Button } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Step } from 'src/modules/Onboarding/components/Step'
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
-import { SolarProductionConnectionProps } from 'src/modules/Onboarding/steps/SolarProductionConnection/SolarProductionConnection.types'
+import { SolarProductionConnectionStepProps } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep/SolarProductionConnectionStep.types'
+import { useModal } from 'src/hooks/useModal'
 
 const primaryLightColor = 'primary.light'
 
 /**
- * SolarProductionConnection step to link the solar panels installation using shelly plugs & enphase.
+ * SolarProductionConnectionStep step to link the solar panels installation using shelly plugs & enphase.
  *
  * @param root0 Props.
  * @param root0.onNext Callback on next step.
  * @param root0.housingId Housing id.
  * @returns JSX Element.
  */
-export const SolarProductionConnection = ({ onNext, housingId }: SolarProductionConnectionProps) => {
+export const SolarProductionConnectionStep = ({ onNext, housingId }: SolarProductionConnectionStepProps) => {
     const { enphaseLink, getEnphaseLink, isEnphaseConsentLoading } = useConsents()
-    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
-    const [openConnectedPlugProductionConsentPopup, setOpenConnectedPlugProductionConsentPopup] = useState(false)
+
+    const {
+        isOpen: isOpeningEnphaseConsentPopup,
+        openModal: openEnphaseConsentPopup,
+        closeModal: closeEnphaseConsentPopup,
+    } = useModal()
+
+    const {
+        isOpen: isOpeningConnectedPlugProductionConsentPopup,
+        openModal: openConnectedPlugProductionConsentPopup,
+        closeModal: closeConnectedPlugProductionConsentPopup,
+    } = useModal()
+
     const { formatMessage } = useIntl()
-
-    /**
-     * Function that handle closing of enphase popup.
-     */
-    const handleOnCloseEnphasePopup = () => {
-        setOpenEnphaseConsentPopup(false)
-    }
-
-    /**
-     * Function that handle closing of connected plugs popup.
-     */
-    const handleCloseConnectedPlugConsentPopup = () => {
-        setOpenConnectedPlugProductionConsentPopup(false)
-    }
 
     return (
         <Step
@@ -63,7 +60,7 @@ export const SolarProductionConnection = ({ onNext, housingId }: SolarProduction
                         disableRipple={true}
                         onClick={() => {
                             getEnphaseLink(housingId)
-                            setOpenEnphaseConsentPopup(true)
+                            openEnphaseConsentPopup()
                         }}
                     >
                         {formatMessage({
@@ -80,9 +77,7 @@ export const SolarProductionConnection = ({ onNext, housingId }: SolarProduction
                         }}
                         disableElevation={true}
                         disableRipple={true}
-                        onClick={() => {
-                            setOpenConnectedPlugProductionConsentPopup(true)
-                        }}
+                        onClick={openConnectedPlugProductionConsentPopup}
                     >
                         {formatMessage({
                             id: 'Lier mon installation avec Shelly',
@@ -111,11 +106,11 @@ export const SolarProductionConnection = ({ onNext, housingId }: SolarProduction
                     >
                         {formatMessage({ id: 'Suivant', defaultMessage: 'Suivant' })}
                     </Button>
-                    {openEnphaseConsentPopup && (
-                        <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />
+                    {isOpeningEnphaseConsentPopup && (
+                        <EnphaseConsentPopup onClose={closeEnphaseConsentPopup} url={enphaseLink} />
                     )}
-                    {openConnectedPlugProductionConsentPopup && (
-                        <ConnectedPlugProductionConsentPopup onClose={handleCloseConnectedPlugConsentPopup} />
+                    {isOpeningConnectedPlugProductionConsentPopup && (
+                        <ConnectedPlugProductionConsentPopup onClose={closeConnectedPlugProductionConsentPopup} />
                     )}
                 </>
             }

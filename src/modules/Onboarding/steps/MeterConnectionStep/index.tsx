@@ -1,5 +1,4 @@
 import { Typography } from '@mui/material'
-import { useSnackbar } from 'notistack'
 import { useIntl } from 'src/common/react-platform-translation'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { Form, regex, requiredBuilder, accept } from 'src/common/react-platform-components'
@@ -11,15 +10,15 @@ import { METER_GUID_REGEX_TEXT, meteGuidNumberRegex } from 'src/modules/MyHouse/
 import { useConsents } from 'src/modules/Consents/consentsHook'
 import { MeterVerificationEnum } from 'src/modules/Consents/Consents.d'
 import {
-    MeterConnectionProps,
+    MeterConnectionStepProps,
     MeterFormSubmitParams,
-} from 'src/modules/Onboarding/steps/MeterConnection/MeterConnection.types'
+} from 'src/modules/Onboarding/steps/MeterConnectionStep/MeterConnectionStep.types'
 import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
-import { EnedisDistributorClientDialog } from 'src/modules/Onboarding/steps/MeterConnection/components/EnedisDistributorClientDialog'
+import { EnedisDistributorClientDialog } from 'src/modules/Onboarding/steps/MeterConnectionStep/components/EnedisDistributorClientDialog'
 import { useState } from 'react'
 
 /**
- * MeterConnection component use it to set meter guid & accept the enedis consent.
+ * MeterConnectionStep component use it to set meter guid & accept the enedis consent.
  *
  * @param root0 Props.
  * @param root0.onNext Callback on next step.
@@ -27,20 +26,19 @@ import { useState } from 'react'
  * @param root0.housingId Housing id.
  * @param root0.enedisSgeConsent Enedis Sge Consent.
  * @param root0.loadHousingsAndScopes Load housings and scopes.
- * @returns MeterConnection component.
+ * @returns MeterConnectionStep component.
  */
-export const MeterConnection = ({
+export const MeterConnectionStep = ({
     onNext,
     meter: currentMeter,
     housingId,
     enedisSgeConsent,
     loadHousingsAndScopes,
-}: MeterConnectionProps) => {
+}: MeterConnectionStepProps) => {
     const { formatMessage } = useIntl()
     const { addMeter, editMeter, loadingInProgress: loadingMeterInProgress } = useMeterForHousing()
     const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, verifyMeter, isMeterVerifyLoading } = useConsents()
     const [meterVerificationStatus, setMeterVerificationStatus] = useState<MeterVerificationEnum | null>(null)
-    const { enqueueSnackbar } = useSnackbar()
 
     /**
      * Make Enedis Sge Consent.
@@ -48,9 +46,7 @@ export const MeterConnection = ({
     const makeEnedisSgeConsent = async () => {
         verifyMeter(housingId, (meterStatus) => {
             if (meterStatus === MeterVerificationEnum.VERIFIED) {
-                createEnedisSgeConsent(housingId, () => {
-                    onNext()
-                })
+                createEnedisSgeConsent(housingId, onNext)
             } else {
                 setMeterVerificationStatus(MeterVerificationEnum.NOT_VERIFIED)
             }
@@ -79,13 +75,7 @@ export const MeterConnection = ({
             }
             // Catch error so that don't crash the application when response error.
         } catch (error) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: "Une erreur est survenue lors de l'ajout de votre compteur. Veuillez réessayer.",
-                    defaultMessage: "Une erreur est survenue lors de l'ajout de votre compteur. Veuillez réessayer.",
-                }),
-                { autoHideDuration: 10000, variant: 'error' },
-            )
+            // the error message is already handled.
         }
     }
     /**
@@ -137,7 +127,7 @@ export const MeterConnection = ({
                         name="guid"
                         placeholder="Example: 19437481274634"
                         inputProps={{ maxLength: 14, style: { height: 15, width: '100%' } }}
-                        className="mt-10"
+                        className="mt-10 md:pl-64 md:mr-64"
                         aria-describedby="pdl-number-text-helper"
                         validateFunctions={[requiredBuilder(), regex(meteGuidNumberRegex, METER_GUID_REGEX_TEXT)]}
                         label=""

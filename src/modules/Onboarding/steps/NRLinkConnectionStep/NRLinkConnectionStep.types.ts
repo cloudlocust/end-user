@@ -2,7 +2,7 @@
  * NRLinkConnection Step Props.
  *
  */
-export type NRLinkConnectionProps =
+export type NRLinkConnectionStepProps =
     /**
      * NRLinkConnection Props.
      */

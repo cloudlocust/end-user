@@ -4,7 +4,7 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_SUCCESS_USER } from 'src/mocks/handlers/user'
 import { DEFAULT_LOCALE } from 'src/configs'
 import { IUser } from 'src/modules/User'
-import { Introduction } from 'src/modules/Onboarding/steps/Introduction'
+import { IntroductionStep } from 'src/modules/Onboarding/steps/IntroductionStep'
 
 /**
  * Mock user model state.
@@ -35,16 +35,16 @@ function MockedLottie() {
 // Mock Lottie.
 jest.mock('react-lottie', () => MockedLottie)
 
-describe('Introduction test', () => {
+describe('IntroductionStep test', () => {
     test('renders welcome message with user first name', () => {
-        const { getByText } = reduxedRender(<Introduction onNext={() => {}} />, {
+        const { getByText } = reduxedRender(<IntroductionStep onNext={() => {}} />, {
             initialState: mockReduxState,
         })
         expect(getByText(`Bienvenue ${TEST_SUCCESS_USER.first_name}`)).toBeInTheDocument()
     })
 
     test('renders introductory text', () => {
-        const { getByText } = reduxedRender(<Introduction onNext={() => {}} />, {
+        const { getByText } = reduxedRender(<IntroductionStep onNext={() => {}} />, {
             initialState: mockReduxState,
         })
         expect(getByText('Nous sommes ravis de vous compter parmi les utitisateurs du nrLINK!')).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe('Introduction test', () => {
 
     test('calls onNext when "Je me lance!" button is clicked', () => {
         const onNext = jest.fn()
-        const { getByText } = reduxedRender(<Introduction onNext={onNext} />, {
+        const { getByText } = reduxedRender(<IntroductionStep onNext={onNext} />, {
             initialState: mockReduxState,
         })
         fireEvent.click(getByText('Je me lance!'))

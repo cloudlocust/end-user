@@ -1,9 +1,9 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { NrLinkInstallationInstructions } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructions'
+import { NrLinkInstallationInstructionsStep } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep'
 
 describe('NrLinkInstallationInstructions test', () => {
     test('renders component correctly', () => {
-        const { getByText } = reduxedRender(<NrLinkInstallationInstructions onNext={jest.fn()} />)
+        const { getByText } = reduxedRender(<NrLinkInstallationInstructionsStep onNext={jest.fn()} />)
 
         // Assert that the title is rendered correctly
         expect(getByText('1/4: Le commencement...')).toBeInTheDocument()
@@ -19,7 +19,7 @@ describe('NrLinkInstallationInstructions test', () => {
 
     test('calls onNext when button is clicked', () => {
         const onNextMock = jest.fn()
-        const { getByText } = reduxedRender(<NrLinkInstallationInstructions onNext={onNextMock} />)
+        const { getByText } = reduxedRender(<NrLinkInstallationInstructionsStep onNext={onNextMock} />)
 
         // Simulate a click on the button
         getByText("C'est fait !").click()

@@ -2,19 +2,19 @@ import { Typography, Button } from '@mui/material'
 import { motion } from 'framer-motion'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Step } from 'src/modules/Onboarding/components/Step'
-import { NrLinkInstallationInstructionsProps } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructions/NrLinkInstallationInstructions.types'
+import { NrLinkInstallationInstructionsStepProps } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep/NrLinkInstallationInstructionsStep.types'
 import meterNrlinkInstallation from 'src/assets/images/content/onboarding/meterNrlinkInstallation.png'
 
 const primaryMainColor = 'primary.main'
 
 /**
- * NrLinkInstallationInstructions step used to help users to setup their nrlink device on the meter.
+ * NrLinkInstallationInstructionsStep step used to help users to setup their nrlink device on the meter.
  *
  * @param root0 Props.
  * @param root0.onNext Callback on next step.
  * @returns JSX Element.
  */
-export const NrLinkInstallationInstructions = ({ onNext }: NrLinkInstallationInstructionsProps) => {
+export const NrLinkInstallationInstructionsStep = ({ onNext }: NrLinkInstallationInstructionsStepProps) => {
     const { formatMessage } = useIntl()
 
     return (

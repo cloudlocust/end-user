@@ -1,7 +1,7 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { screen, fireEvent } from '@testing-library/react'
-import { EnedisDistributorClientDialog } from 'src/modules/Onboarding/steps/MeterConnection/components/EnedisDistributorClientDialog'
-import { EnedisDistributorClientDialogProps } from 'src/modules/Onboarding/steps/MeterConnection/components/EnedisDistributorClientDialog/EnedisDistributorClientDialog.types'
+import { EnedisDistributorClientDialog } from 'src/modules/Onboarding/steps/MeterConnectionStep/components/EnedisDistributorClientDialog'
+import { EnedisDistributorClientDialogProps } from 'src/modules/Onboarding/steps/MeterConnectionStep/components/EnedisDistributorClientDialog/EnedisDistributorClientDialog.types'
 
 const mockOnConfirmationOfUsageOfEnedisDistributor = jest.fn()
 const mockOnCancel = jest.fn()

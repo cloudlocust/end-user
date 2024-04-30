@@ -1,10 +1,10 @@
 /**
- * SolarProductionConnection Step Props.
+ * Contract Step Props.
  *
  */
-export type SolarProductionConnectionProps =
+export type ContractStepProps =
     /**
-     * SolarProductionConnection Props.
+     * Contract Props.
      */
     {
         /**

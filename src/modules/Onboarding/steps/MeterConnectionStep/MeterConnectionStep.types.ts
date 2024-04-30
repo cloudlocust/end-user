@@ -5,7 +5,7 @@ import { IEnedisSgeConsent } from 'src/modules/Consents/Consents.d'
  * MeterConnection Step Props.
  *
  */
-export type MeterConnectionProps =
+export type MeterConnectionStepProps =
     /**
      * MeterConnection Props.
      */

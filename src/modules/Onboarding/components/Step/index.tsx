@@ -11,9 +11,6 @@ import { StepProps } from 'src/modules/Onboarding/components/Step/Step.types'
 export const Step = ({ content, title }: StepProps) => {
     return (
         <motion.div
-            // layout
-            // initial={{ opacity: 0, scale: 0.2 }}
-            // animate={{ opacity: 1, scale: 1 }}
             initial={{ x: 'calc(50%)', opacity: 0.2 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.2 }}

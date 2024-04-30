@@ -2,7 +2,7 @@
  * Introduction Step Props.
  *
  */
-export type IntroductionProps =
+export type IntroductionStepProps =
     /**
      * Introduction Props.
      */

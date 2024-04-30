@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, Button, Typography } from '@mui/material'
 import { useIntl } from 'src/common/react-platform-translation'
-import { EnedisDistributorClientDialogProps } from 'src/modules/Onboarding/steps/MeterConnection/components/EnedisDistributorClientDialog/EnedisDistributorClientDialog.types'
+import { EnedisDistributorClientDialogProps } from 'src/modules/Onboarding/steps/MeterConnectionStep/components/EnedisDistributorClientDialog/EnedisDistributorClientDialog.types'
 
 /**
  * Component used to check if the user is client of enedis or not.

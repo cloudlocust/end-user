@@ -6,7 +6,7 @@ import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import { addContractDataType } from 'src/modules/Contracts/contractsTypes'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { useState } from 'react'
-import { ContractProps } from 'src/modules/Onboarding/steps/Contract/Contract.types'
+import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/ContractStep.types'
 
 /**
  * Contract step in nrLink connection.
@@ -16,7 +16,7 @@ import { ContractProps } from 'src/modules/Onboarding/steps/Contract/Contract.ty
  * @param root0.housingId Housing id.
  * @returns JSX Element.
  */
-export const Contract = ({ onNext, housingId }: ContractProps) => {
+export const ContractStep = ({ onNext, housingId }: ContractStepProps) => {
     const { loadingInProgress: isContractsLoading, addElement: addContract } = useContractList(housingId!)
     const [isContractAdding, setIsContractAdding] = useState(false)
     const { formatMessage } = useIntl()
@@ -32,8 +32,10 @@ export const Contract = ({ onNext, housingId }: ContractProps) => {
             await addContract(data)
             onNext()
             // Catching the error to avoir application crash and stops working.
-        } catch (error) {}
-        setIsContractAdding(false)
+        } catch (error) {
+        } finally {
+            setIsContractAdding(false)
+        }
     }
 
     return (

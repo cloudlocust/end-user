@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { Introduction } from 'src/modules/Onboarding/steps/Introduction'
-import { NrLinkInstallationInstructions } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructions'
-import { MeterConnection } from 'src/modules/Onboarding/steps/MeterConnection'
-import { NRLinkConnection } from 'src/modules/Onboarding/steps/NRLinkConnection'
-import { Contract } from 'src/modules/Onboarding/steps/Contract'
-import { SolarProductionConnection } from 'src/modules/Onboarding/steps/SolarProductionConnection'
+import { IntroductionStep } from 'src/modules/Onboarding/steps/IntroductionStep'
+import { NrLinkInstallationInstructionsStep } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep'
+import { MeterConnectionStep } from 'src/modules/Onboarding/steps/MeterConnectionStep'
+import { NRLinkConnectionStep } from 'src/modules/Onboarding/steps/NRLinkConnectionStep'
+import { ContractStep } from 'src/modules/Onboarding/steps/ContractStep'
+import { SolarProductionConnectionStep } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep'
 import { useLocation, useHistory } from 'react-router-dom'
 import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
 import { useConsents } from 'src/modules/Consents/consentsHook'
@@ -85,18 +85,17 @@ export const Onboarding = () => {
      */
     const renderStep = () => {
         const introductionStep = (
-            <Introduction onNext={() => handleNext(STEPS_NAMES.NRLINK_INSTALLATION_INSTRUCTIONS)} />
+            <IntroductionStep onNext={() => handleNext(STEPS_NAMES.NRLINK_INSTALLATION_INSTRUCTIONS)} />
         )
 
-        // eslint-disable-next-line sonarjs/no-all-duplicated-branches, sonarjs/no-small-switch
         switch (step) {
             case STEPS_NAMES.INTRODUCTION:
                 return introductionStep
             case STEPS_NAMES.NRLINK_INSTALLATION_INSTRUCTIONS:
-                return <NrLinkInstallationInstructions onNext={() => handleNext(STEPS_NAMES.METER_CONNECTION)} />
+                return <NrLinkInstallationInstructionsStep onNext={() => handleNext(STEPS_NAMES.METER_CONNECTION)} />
             case STEPS_NAMES.METER_CONNECTION:
                 return (
-                    <MeterConnection
+                    <MeterConnectionStep
                         onNext={() => handleNext(STEPS_NAMES.NRLINK_CONNECTION)}
                         meter={currentHousing?.meter!}
                         housingId={currentHousing?.id!}
@@ -106,14 +105,14 @@ export const Onboarding = () => {
                 )
             case STEPS_NAMES.NRLINK_CONNECTION:
                 return (
-                    <NRLinkConnection
+                    <NRLinkConnectionStep
                         onNext={() => handleNext(STEPS_NAMES.CONTRACT)}
                         housingId={currentHousing?.id! as number}
                     />
                 )
             case STEPS_NAMES.CONTRACT:
                 return (
-                    <Contract
+                    <ContractStep
                         onNext={() =>
                             isProductionActiveAndHousingHasAccess(currentHousingScopes)
                                 ? handleNext(STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION)
@@ -124,7 +123,10 @@ export const Onboarding = () => {
                 )
             case STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION:
                 return (
-                    <SolarProductionConnection onNext={() => redirectToDashboard()} housingId={currentHousing?.id!} />
+                    <SolarProductionConnectionStep
+                        onNext={() => redirectToDashboard()}
+                        housingId={currentHousing?.id!}
+                    />
                 )
             default:
                 return introductionStep

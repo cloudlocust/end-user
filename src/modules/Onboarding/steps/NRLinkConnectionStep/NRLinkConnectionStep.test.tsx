@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { NRLinkConnection } from 'src/modules/Onboarding/steps/NRLinkConnection'
-import { NRLinkConnectionProps } from 'src/modules/Onboarding/steps/NRLinkConnection/NRLinkConnection.types'
+import { NRLinkConnectionStep } from 'src/modules/Onboarding/steps/NRLinkConnectionStep'
+import { NRLinkConnectionStepProps } from 'src/modules/Onboarding/steps/NRLinkConnectionStep/NRLinkConnectionStep.types'
 import userEvent from '@testing-library/user-event'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
@@ -70,14 +70,14 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 /**
  * Mocking props of NRLinkConnection.
  */
-const mockNRLinkConnectionProps: NRLinkConnectionProps = {
+const mockNRLinkConnectionProps: NRLinkConnectionStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
 }
 
 describe('Test NRLinkConnection', () => {
     test('should render the component', () => {
-        const { getByRole, getAllByRole } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+        const { getByRole, getAllByRole } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
         expect(getByRole('form')).toBeTruthy()
         expect(getByRole('textbox')).toBeTruthy()
         expect(getAllByRole('button')).toHaveLength(1)
@@ -86,12 +86,12 @@ describe('Test NRLinkConnection', () => {
 
     describe('form validation', () => {
         test('when no meter, defaultValues are empty', () => {
-            const { container } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
             // Initially meter is field and nrlink_empty
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
         })
         test('all fields must be required', async () => {
-            const { container, getByText } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('')
             userEvent.click(getByText(NEXT_BUTTON_TEXT))
 
@@ -101,7 +101,7 @@ describe('Test NRLinkConnection', () => {
         })
 
         test('Invalid nrlink guid', async () => {
-            const { container, getByText } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
             // Initially meter is field and nrlink_empty
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, '12A')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('12A')
@@ -115,7 +115,7 @@ describe('Test NRLinkConnection', () => {
 
     describe('Submit form', () => {
         test('when submitForm and nrLINK no data received error, snackbar error should be shown', async () => {
-            const { container, getByText } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'a1aaaa')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('a1aaaa')
 
@@ -132,7 +132,7 @@ describe('Test NRLinkConnection', () => {
             )
         }, 20000)
         test('when submitForm and nrLINK already connected error, snackbar error should be shown', async () => {
-            const { container, getByText } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'b2bbbb')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('b2bbbb')
 
@@ -149,7 +149,7 @@ describe('Test NRLinkConnection', () => {
             )
         }, 20000)
         test('when submitForm and nrLINK generic error, snackbar error should be shown', async () => {
-            const { container, getByText } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, 'c3cccc')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('c3cccc')
 
@@ -169,7 +169,7 @@ describe('Test NRLinkConnection', () => {
             // mock post & axios Methods
             axios.post = mockAxiosPost
             axios.patch = mockAxiosPatch
-            const { container, getByText } = reduxedRender(<NRLinkConnection {...mockNRLinkConnectionProps} />)
+            const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
 
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, '123456')
             expect(container.querySelector(guidNrlinkInputQuerySelector)).toHaveValue('123456')

@@ -1,8 +1,8 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import userEvent from '@testing-library/user-event'
 import { screen, fireEvent, waitFor } from '@testing-library/react'
-import { SolarProductionConnection } from 'src/modules/Onboarding/steps/SolarProductionConnection'
-import { SolarProductionConnectionProps } from 'src/modules/Onboarding/steps/SolarProductionConnection/SolarProductionConnection.types'
+import { SolarProductionConnectionStep } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep'
+import { SolarProductionConnectionStepProps } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep/SolarProductionConnectionStep.types'
 
 const NEXT_BUTTON_TEXT = 'Suivant'
 const ENPHASE_INSTALLATION_BUTTON_TEXT = 'Lier mon installation avec Enphase'
@@ -94,7 +94,7 @@ jest.mock(
 )
 
 const mockHandleNext = jest.fn()
-const solarProductionConnectionProps: SolarProductionConnectionProps = {
+const solarProductionConnectionProps: SolarProductionConnectionStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
 }
@@ -102,7 +102,7 @@ const solarProductionConnectionProps: SolarProductionConnectionProps = {
 describe('SolarProductionConnection', () => {
     test('should render SolarProductionConnection component', () => {
         const { getByText, getByRole } = reduxedRender(
-            <SolarProductionConnection {...solarProductionConnectionProps} />,
+            <SolarProductionConnectionStep {...solarProductionConnectionProps} />,
         )
 
         // Assert that the component renders correctly
@@ -120,7 +120,7 @@ describe('SolarProductionConnection', () => {
     })
 
     test('should call onNext when Suivant button is clicked', () => {
-        reduxedRender(<SolarProductionConnection {...solarProductionConnectionProps} />)
+        reduxedRender(<SolarProductionConnectionStep {...solarProductionConnectionProps} />)
         fireEvent.click(screen.getByText(NEXT_BUTTON_TEXT))
         expect(mockHandleNext).toHaveBeenCalled()
     })
@@ -128,7 +128,7 @@ describe('SolarProductionConnection', () => {
     test('When getting consent from enphases, getEnphaseLink should be called & enphasePopup should open and close with handleEnphaseClose', async () => {
         const { getByText, getByRole } = reduxedRender(
             <>
-                <SolarProductionConnection {...solarProductionConnectionProps} />
+                <SolarProductionConnectionStep {...solarProductionConnectionProps} />
             </>,
         )
         const button = getByRole('button', { name: ENPHASE_INSTALLATION_BUTTON_TEXT })
@@ -149,7 +149,7 @@ describe('SolarProductionConnection', () => {
     test('When requesting consent from connectedPlugs, connectedPlug popup should open and close when handleConnectedPlugClose', async () => {
         const { getByText, getByRole } = reduxedRender(
             <>
-                <SolarProductionConnection {...solarProductionConnectionProps} />
+                <SolarProductionConnectionStep {...solarProductionConnectionProps} />
             </>,
         )
 

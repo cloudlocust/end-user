@@ -12,22 +12,22 @@ import { API_RESOURCES_URL } from 'src/configs'
 import { LoadingNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
 import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import {
-    NRLinkConnectionProps,
+    NRLinkConnectionStepProps,
     NRLinkFormSubmitParams,
-} from 'src/modules/Onboarding/steps/NRLinkConnection/NRLinkConnection.types'
+} from 'src/modules/Onboarding/steps/NRLinkConnectionStep/NRLinkConnectionStep.types'
 import nlinkGuid from 'src/assets/images/content/onboarding/nlinkGuid.png'
 
 const GUID_FIXED_PART = '0CA2F40000'
 
 /**
- * NRLinkConnection step used to set the nrlink guid.
+ * NRLinkConnectionStep step used to set the nrlink guid.
  *
  * @param root0 Props.
  * @param root0.housingId Housing id.
  * @param root0.onNext Callback on next step.
  * @returns JSX Element.
  */
-export const NRLinkConnection = ({ housingId, onNext }: NRLinkConnectionProps) => {
+export const NRLinkConnectionStep = ({ housingId, onNext }: NRLinkConnectionStepProps) => {
     const [isNrLinkAuthorizeInProgress, setIsNrLinkAuthorizeInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()

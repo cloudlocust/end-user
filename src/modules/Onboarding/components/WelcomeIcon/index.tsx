@@ -24,10 +24,20 @@ export const WelcomeIcon = ({ width, style, options = defaultOptions }: WelcomeI
     const [animationData, setAnimationData] = useState(null)
 
     useEffect(() => {
-        fetch('./assets/images/content/onboarding/lottieWelcomeIcon.json')
-            .then((response) => response.json())
-            .then((data) => setAnimationData(data))
+        fetchAnimationData()
     }, [])
+
+    /**
+     * Fetches the animation data for the Lottie component.
+     */
+    const fetchAnimationData = async () => {
+        try {
+            const response = await fetch('./assets/images/content/onboarding/lottieWelcomeIcon.json')
+            setAnimationData(await response.json())
+        } catch (error) {
+            // if the animation data cannot be fetched, we do nothing
+        }
+    }
     options.animationData = animationData
     return <Lottie options={options} width={width} style={style} />
 }

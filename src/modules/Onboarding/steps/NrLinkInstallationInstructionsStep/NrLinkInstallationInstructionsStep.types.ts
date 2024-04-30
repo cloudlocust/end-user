@@ -2,7 +2,7 @@
  * NrLinkInstallationInstructions Step Props.
  *
  */
-export type NrLinkInstallationInstructionsProps =
+export type NrLinkInstallationInstructionsStepProps =
     /**
      * NrLinkInstallationInstructions Props.
      */

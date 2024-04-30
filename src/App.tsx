@@ -89,7 +89,7 @@ const Routes = () => {
     const { getConsents, nrlinkConsent } = useConsents()
     const isInitialMount = useRef(true)
     const history = useHistory()
-    // Ref used to check if we already passed by onboarding page of avoid infinite cycle of redirection.
+    // Ref used to check if we already passed by onboarding page to avoid infinite cycle of redirection.
     const isPassedThroughOnboarding = useRef(false)
 
     // TODO - DELETE IT !

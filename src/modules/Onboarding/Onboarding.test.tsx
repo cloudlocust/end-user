@@ -57,66 +57,68 @@ type StepProps =
     }
 
 // Mocking the EnphaseConsentPopup to test the onClose and openEnphaseConsent.
-jest.mock('src/modules/Onboarding/steps/Introduction', () => ({
+jest.mock('src/modules/Onboarding/steps/IntroductionStep', () => ({
     /**
      * Mock Introduction step.
      *
      * @param props Introduction props.
      * @returns Introduction step.
      */
-    Introduction: (props: StepProps) => <StepComponent testId="introduction" {...props} />,
+    IntroductionStep: (props: StepProps) => <StepComponent testId="introduction" {...props} />,
 }))
 
-jest.mock('src/modules/Onboarding/steps/NrLinkInstallationInstructions', () => ({
+jest.mock('src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep', () => ({
     /**
      * Mock NrLinkInstallationInstructions step.
      *
      * @param props NrLinkInstallationInstructions props.
      * @returns NrLinkInstallationInstructions step.
      */
-    NrLinkInstallationInstructions: (props: StepProps) => (
+    NrLinkInstallationInstructionsStep: (props: StepProps) => (
         <StepComponent testId="nrLink-installation-instructions" {...props} />
     ),
 }))
 
-jest.mock('src/modules/Onboarding/steps/MeterConnection', () => ({
+jest.mock('src/modules/Onboarding/steps/MeterConnectionStep', () => ({
     /**
      * Mock MeterConnection step.
      *
      * @param props MeterConnection props.
      * @returns MeterConnection step.
      */
-    MeterConnection: (props: StepProps) => <StepComponent testId="meter-connection" {...props} />,
+    MeterConnectionStep: (props: StepProps) => <StepComponent testId="meter-connection" {...props} />,
 }))
 
-jest.mock('src/modules/Onboarding/steps/NRLinkConnection', () => ({
+jest.mock('src/modules/Onboarding/steps/NRLinkConnectionStep', () => ({
     /**
      * Mock NRLinkConnection step.
      *
      * @param props NRLinkConnection props.
      * @returns NRLinkConnection step.
      */
-    NRLinkConnection: (props: StepProps) => <StepComponent testId="nrLink-connection" {...props} />,
+    NRLinkConnectionStep: (props: StepProps) => <StepComponent testId="nrLink-connection" {...props} />,
 }))
 
-jest.mock('src/modules/Onboarding/steps/Contract', () => ({
+jest.mock('src/modules/Onboarding/steps/ContractStep', () => ({
     /**
      * Mock Contract step.
      *
      * @param props Contract props.
      * @returns Contract step.
      */
-    Contract: (props: StepProps) => <StepComponent testId="contract" {...props} />,
+    ContractStep: (props: StepProps) => <StepComponent testId="contract" {...props} />,
 }))
 
-jest.mock('src/modules/Onboarding/steps/SolarProductionConnection', () => ({
+jest.mock('src/modules/Onboarding/steps/SolarProductionConnectionStep', () => ({
     /**
      * Mock SolarProductionConnection step.
      *
      * @param props SolarProductionConnection props.
      * @returns SolarProductionConnection step.
      */
-    SolarProductionConnection: (props: StepProps) => <StepComponent testId="solar-production-connection" {...props} />,
+    SolarProductionConnectionStep: (props: StepProps) => (
+        <StepComponent testId="solar-production-connection" {...props} />
+    ),
 }))
 
 let mockIsNrLinkPopupShowing = true

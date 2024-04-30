@@ -1,8 +1,8 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { screen, fireEvent, waitFor } from '@testing-library/react'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { Contract } from 'src/modules/Onboarding/steps/Contract'
-import { ContractProps } from 'src/modules/Onboarding/steps/Contract/Contract.types'
+import { ContractStep } from 'src/modules/Onboarding/steps/ContractStep'
+import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/ContractStep.types'
 import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
 import { TEST_OFFERS } from 'src/mocks/handlers/commercialOffer'
 import { TEST_PROVIDERS } from 'src/mocks/handlers/commercialOffer'
@@ -64,7 +64,7 @@ jest.mock('src/modules/Contracts/components/ContractForm', () => (props: Contrac
     )
 })
 
-const mockContractProps: ContractProps = {
+const mockContractProps: ContractStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
 }
@@ -73,7 +73,7 @@ describe('Contract', () => {
     test('should render the component', () => {
         const { getByText, getByRole } = reduxedRender(
             <Router>
-                <Contract {...mockContractProps} />
+                <ContractStep {...mockContractProps} />
             </Router>,
         )
         expect(getByText('4/4: L’électricité... c’est de l’argent !')).toBeInTheDocument()
@@ -91,7 +91,7 @@ describe('Contract', () => {
     test('When we click on "Suivant", addContract and loadContract hook functions should be called, and onNext should be called', async () => {
         const { getByRole, container } = reduxedRender(
             <Router>
-                <Contract {...mockContractProps} />
+                <ContractStep {...mockContractProps} />
             </Router>,
         )
 

@@ -214,7 +214,6 @@ export const Checkbox: FC<CheckboxProps> = function (props): JSX.Element {
         setValue,
         watch,
     } = useFormContext()
-    const value = watch(name)
     /**
      * Handle changes in the field.
      *
@@ -253,7 +252,7 @@ export const Checkbox: FC<CheckboxProps> = function (props): JSX.Element {
                         sx={{ pointerEvents: 'auto' }}
                         checkedIcon={checkedIcon}
                         icon={icon}
-                        checked={value}
+                        checked={watch(name)}
                     />
                 }
                 sx={{ marginLeft: '0px', pointerEvents: 'none', marginTop: '10px' }}
