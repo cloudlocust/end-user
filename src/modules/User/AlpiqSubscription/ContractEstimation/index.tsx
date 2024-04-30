@@ -59,6 +59,7 @@ const ContractEstimation = ({
     const [calculatedMonthlyEstimation, setCalculatedMonthlyEstimation] = useState<
         IApliqMonthlySubscriptionEstimationResponse | undefined
     >(undefined)
+    const [sliderValue, setSliderValue] = useState<number | number[]>(0)
     const initialMountConsent = useRef(true)
 
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
@@ -144,6 +145,7 @@ const ContractEstimation = ({
         if (monthlyEstimationData) {
             setMonthlyEstimation(monthlyEstimationData)
             setCalculatedMonthlyEstimation(monthlyEstimationData)
+            setSliderValue(0)
             setContractInfos(data)
         }
     }
@@ -162,8 +164,8 @@ const ContractEstimation = ({
         const newPrice = monthlyEstimation.monthlySubscriptionEstimation + priceVariation
         const newKwh = monthlyEstimation.annualReferenceConsumption + carVariation
         return {
-            price: Number(newPrice.toFixed(2)),
-            kwh: Number(newKwh.toFixed(2)),
+            price: Math.floor(newPrice),
+            kwh: Math.floor(newKwh),
         }
     }
 
@@ -174,6 +176,7 @@ const ContractEstimation = ({
      * @param value Value.
      */
     const handleChange = (_: Event, value: number | number[]) => {
+        setSliderValue(value)
         const { price, kwh } = calculateEstimationAndCarVariation(value)
         if (price && kwh)
             setCalculatedMonthlyEstimation({ monthlySubscriptionEstimation: price, annualReferenceConsumption: kwh })
@@ -260,7 +263,7 @@ const ContractEstimation = ({
                     }`}
                 >
                     <Card
-                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full md:w-400 h-256 flex flex-col justify-center ${
+                        className={`rounded-16 border border-slate-600 bg-gray-50 mx-0 md:mx-10 w-full md:w-400 h-320 flex flex-col justify-center ${
                             isMobile && 'mb-20'
                         }`}
                     >
@@ -288,7 +291,7 @@ const ContractEstimation = ({
                             {calculatedMonthlyEstimation && (
                                 <div className="flex items-center w-1/2">
                                     <Slider
-                                        defaultValue={0}
+                                        value={sliderValue}
                                         aria-labelledby="discrete-slider"
                                         valueLabelDisplay="off"
                                         step={1}
