@@ -195,7 +195,7 @@ export const FacturationForm = ({
                             <div className="flex flex-col md:flex-row items-center justify-center mt-20">
                                 <SectionText text="Option tarifaire :" className="text-sm" />
                                 <SectionText
-                                    className="mx-auto md:ml-12 font-bold text-sm"
+                                    className="ml-6 md:ml-12 font-bold text-sm"
                                     text={
                                         alpiqSubscriptionSpecs?.optionTarifaire === 'BASE'
                                             ? 'Base'
