@@ -1,58 +1,122 @@
-import { useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
+import { useState } from 'react'
+import { useIntl } from 'react-intl'
 import { useHistory, useLocation } from 'react-router-dom'
-import { styled } from '@mui/material'
+import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
+import { useCurrentHousing } from 'src/hooks/CurrentHousing'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { EquipmentDetailsPageLocationState } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetails'
-import { EquipmentDetailsHeader } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsHeader'
-import { EquipmentDetailsContent } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent'
-
-const Root = styled(FusePageCarded)(() => ({
-    '& .FusePageCarded-header': {
-        minHeight: 90,
-        height: 'fit-content',
-        alignItems: 'center',
-        margin: '24px 0',
-    },
-    '& .FusePageCarded-content': {
-        overflowX: 'hidden',
-        overflowY: 'auto',
-        margin: 10,
-    },
-    '& .FusePageCarded-contentCard': {
-        overflow: 'hidden',
-    },
-}))
+import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import { Form } from 'src/common/react-platform-components'
+import { ButtonLoader, TextField } from 'src/common/ui-kit'
+import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
+import dayjs from 'dayjs'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import IconButton from '@mui/material/IconButton'
 
 /**
  * Equipment details.
  *
  * @returns Equipment details component.
  */
-export const EquipmentDetails = () => {
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const location = useLocation<EquipmentDetailsPageLocationState>()
-    const { equipment } = location.state
+export default function EquipmentDetails() {
+    const { formatMessage } = useIntl()
     const history = useHistory()
-    const isInitialRender = useRef(true)
+    const currentHousing = useCurrentHousing()
+    const location = useLocation</**
+     *
+     */
+    {
+        /**
+         * The equipment details object.
+         */
+        equipment: HousingEquipmentType
+    }>()
+
+    let equipment: HousingEquipmentType | null = null
+
+    // Redirect to the equipment list if the equipment is not passed in the location state.
+    if (!location.state) {
+        history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments`)
+    } else {
+        const { equipment: locationEquipment } = location.state
+        equipment = locationEquipment
+    }
+
+    const { addHousingEquipment } = useEquipmentList(currentHousing?.id)
+    // State for form submitting loading, give it a meaningful name.
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const defaultEquipmentDetails = {
+        equipmentBrand: equipment?.equipmentBrand || null,
+        equipmentModel: equipment?.equipmentModel || null,
+        yearOfPurchase: equipment?.yearOfPurchase || null,
+    }
 
     /**
-     * Return to the equipment list page when the currentHousing is changed.
+     * Function to handle form submit.
+     *
+     * @param formData Form data.
      */
-    useEffect(() => {
-        if (isInitialRender.current) {
-            isInitialRender.current = false
-        } else if (history.location.pathname.endsWith('/equipments/details') && currentHousing?.id) {
-            history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments`)
-        }
-    }, [currentHousing?.id, history])
+    async function handleOnSubmit(formData: typeof defaultEquipmentDetails) {
+        setIsSubmitting(true)
+        const { yearOfPurchase, ...restOfFormData } = formData
+
+        // Parse year of purchase to integer.
+        const parsedYearOfPurchase = yearOfPurchase ? parseInt(dayjs(yearOfPurchase).format('YYYY'), 10) : null
+
+        await addHousingEquipment([
+            {
+                equipmentId: equipment!.housingEquipmentId!,
+                equipmentType: equipment!.allowedType[0],
+                equipmentNumber: equipment!.number,
+                yearOfPurchase: parsedYearOfPurchase,
+                ...restOfFormData,
+            },
+        ])
+        setIsSubmitting(false)
+    }
 
     return (
-        <Root
-            header={<EquipmentDetailsHeader equipmentName={equipment.name} />}
-            content={<EquipmentDetailsContent equipmentDetails={equipment} />}
+        <PageSimple
+            content={
+                <Container>
+                    <div className="flex flex-col py-10">
+                        <div className="flex items-center mb-24">
+                            <IconButton className="shadow-lg mr-10" onClick={() => history.goBack()}>
+                                <ArrowBackIosNewIcon />
+                            </IconButton>
+                            <Typography variant="h6" className="text-16 lg:text-xl" fontWeight="bold">
+                                {formatMessage({
+                                    id: 'Informations relatives à mon équipement',
+                                    defaultMessage: 'Informations relatives à mon équipement',
+                                })}
+                            </Typography>
+                        </div>
+                        <Form defaultValues={defaultEquipmentDetails} onSubmit={handleOnSubmit}>
+                            <TextField name="equipmentBrand" label="Marque" />
+                            <TextField name="equipmentModel" label="Modèle" />
+                            <DatePicker
+                                name="yearOfPurchase"
+                                label="Année d'achat"
+                                views={['year']}
+                                textFieldProps={{
+                                    className: 'mt-0',
+                                }}
+                            />
+                            <div className="w-full mt-10">
+                                <ButtonLoader type="submit" fullWidth inProgress={isSubmitting}>
+                                    {formatMessage({
+                                        id: 'Enregistrer',
+                                        defaultMessage: 'Enregistrer',
+                                    })}
+                                </ButtonLoader>
+                            </div>
+                        </Form>
+                    </div>
+                </Container>
+            }
         />
     )
 }

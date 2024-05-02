@@ -1,5 +1,5 @@
 /**
- * Equipment Name type.
+ * The value of the equipments.
  */
 export type equipmentNameType =
     | 'heater'
@@ -33,6 +33,11 @@ export type equipmentNameType =
     | 'dry_towel'
     | 'water_heater'
 
+/**
+ * Housing Installation Equipments type.
+ */
+export type housingInstallationEquipmentsType = 'heater' | 'hotplate' | 'sanitary' | 'solarpanel'
+
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type equipmentAllowedTypeT =
     | 'induction'
@@ -63,6 +68,18 @@ export type equipmentMeterType = {
      * Type value of the Equipment.
      */
     equipmentType?: equipmentAllowedTypeT
+    /**
+     * Brand of the Equipment.
+     */
+    equipmentBrand?: string | null
+    /**
+     * Model of the Equipment.
+     */
+    equipmentModel?: string | null
+    /**
+     * Year of purchase of the Equipment.
+     */
+    yearOfPurchase?: number | null
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc

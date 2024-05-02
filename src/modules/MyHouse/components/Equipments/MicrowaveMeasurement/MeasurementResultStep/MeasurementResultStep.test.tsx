@@ -8,7 +8,7 @@ const MICROWAVE_NUMBER_TEST = 1
 const MEASUREMENT_MODE_TEST = 'Measurement Mode'
 const MEASUREMENT_RESULT_TEST = 120
 const mockCloseMeasurementModal = jest.fn()
-const mockNavigateToEquipmentDetailsPage = jest.fn()
+const mockNavigateToEquipmentMeasurementsPagee = jest.fn()
 const mockRestartMeasurementFromBeginning = jest.fn()
 
 const props: MeasurementResultStepProps = {
@@ -16,7 +16,7 @@ const props: MeasurementResultStepProps = {
     measurementMode: MEASUREMENT_MODE_TEST,
     measurementResult: MEASUREMENT_RESULT_TEST,
     closeMeasurementModal: mockCloseMeasurementModal,
-    navigateToEquipmentDetailsPage: mockNavigateToEquipmentDetailsPage,
+    navigateToEquipmentMeasurementsPage: mockNavigateToEquipmentMeasurementsPagee,
     restartMeasurementFromBeginning: mockRestartMeasurementFromBeginning,
 }
 
@@ -52,7 +52,7 @@ describe('MeasurementResultStep Component', () => {
             userEvent.click(nextButton)
             await waitFor(() => {
                 expect(mockCloseMeasurementModal).toHaveBeenCalled()
-                expect(mockNavigateToEquipmentDetailsPage).toHaveBeenCalled()
+                expect(mockNavigateToEquipmentMeasurementsPagee).toHaveBeenCalled()
             })
         })
     })

@@ -133,7 +133,7 @@ describe('EquipmentCard tests', () => {
         userEvent.click(screen.getByText(MES_MESURES_TEXT))
 
         await waitFor(() => {
-            expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/equipments/details`)
+            expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/equipments/measurements`)
         })
     })
 
