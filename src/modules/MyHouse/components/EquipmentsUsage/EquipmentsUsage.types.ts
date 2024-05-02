@@ -15,11 +15,15 @@ export type EquipmentsUsageFormSubmitType =
         /**
          * Equipment model.
          */
-        frequencyOfUsagePerWeek?: number | null
+        frequencyOfUsagePerWeek?: string | number | null
         /**
          * Year of purchase.
          */
-        averageUsagePerMinute?: number | null
+        averageUsagePerMinute?: string | number | null
+        /**
+         * Usage of the equipnent.
+         */
+        usage?: string[] | null
     }
 
 /**
@@ -43,3 +47,8 @@ export type EquipmentsUsageFormProps =
          */
         title: string
     }
+
+/**
+ * Usage options.
+ */
+export type usageOptions = 'specific' | 'all_year'

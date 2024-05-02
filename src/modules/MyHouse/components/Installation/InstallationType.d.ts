@@ -87,11 +87,15 @@ export type equipmentMeterType = {
     /**
      * Frequency of usage per week.
      */
-    frequencyOfUsagePerWeek?: number | null
+    frequencyOfUsagePerWeek?: string | number | null
     /**
      * Average usage per minute.
      */
-    averageUsagePerMinute?: number | null
+    averageUsagePerMinute?: string | number | null
+    /**
+     * Usage.
+     */
+    usage?: string[] | null
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
