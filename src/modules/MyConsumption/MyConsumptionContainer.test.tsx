@@ -124,6 +124,8 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess(),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    arePlugsUsedBasedOnProductionStatus: () => true,
 }))
 
 describe('MyConsumptionContainer test', () => {
@@ -316,8 +318,10 @@ describe('MyConsumptionContainer test', () => {
             expect(queryByTestId('faq')).not.toBeInTheDocument()
             expect(queryByText(ECOWATT_TITLE)).not.toBeInTheDocument()
 
-            // TODO: this will be updated in the next PR.
-            expect(getByText('Add links here to add production -in the next PR-')).toBeInTheDocument()
+            expect(getByText("Actuellement aucune production solaire n'est liée à l'application")).toBeInTheDocument()
+            expect(getByText('Lier ma production solaire:')).toBeInTheDocument()
+            expect(getByText('Installation avec un onduleur Enphase:')).toBeInTheDocument()
+            expect(getByText('Installation "plug & play"')).toBeInTheDocument()
         })
     })
 })
