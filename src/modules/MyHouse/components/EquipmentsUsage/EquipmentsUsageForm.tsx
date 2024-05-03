@@ -158,9 +158,18 @@ export default function EquipmentsUsageForm(props: EquipmentsUsageFormProps) {
                                 <DefaultEquipmentIcon fontSize="large" color="primary" />
                             )}
                         </div>
-                        <Select className="w-full" {...register('id')} value={selectedEquipmentId}>
+                        <Select
+                            className="w-full"
+                            {...register('id')}
+                            value={selectedEquipmentId}
+                            data-testid="housing-equipments-select"
+                        >
                             {housingEquipmentsDetails?.map((equipment) => (
-                                <MenuItem key={equipment.id} value={equipment.id}>
+                                <MenuItem
+                                    key={equipment.id}
+                                    value={equipment.id}
+                                    data-testid="housing-equipment-option"
+                                >
                                     {equipment.equipmentLabel ?? `Equipement ${equipment.equipmentNumber}`}
                                 </MenuItem>
                             ))}
