@@ -85,13 +85,11 @@ const Container = styled('div')(({ theme }) => ({
  * Component for idle consumption switch button.
  *
  * @param props N/A.
- * @param props.onSwitchConsumptionButton Function handling switch of ConsumptionButton.
  * @param props.isIdleShown Boolean indicate if the veille element is shown.
  * @param props.isAutoConsumptionProductionShown Boolean indicate if the autoconsumption-prod element is shown.
  * @returns Switch Consumption button.
  */
 export const SwitchConsumptionButton = ({
-    onSwitchConsumptionButton,
     isIdleShown,
     isAutoConsumptionProductionShown,
 }: SwitchConsumptionButtonProps): JSX.Element => {
@@ -106,7 +104,6 @@ export const SwitchConsumptionButton = ({
     const onChange = (value: SwitchConsumptionButtonTypeEnum) => {
         if (consumptionToggleButton !== value) {
             setConsumptionToggleButton(value)
-            onSwitchConsumptionButton(value)
         }
     }
 

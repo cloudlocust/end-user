@@ -131,8 +131,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         <>
             <div style={{ background: theme.palette.common.white }} className="pb-8 w-full flex justify-center">
                 <SwitchConsumptionButton
-                    // TODO: this will be deleted in next PR
-                    onSwitchConsumptionButton={() => {}}
                     isIdleShown={isSolarProductionConsentOff}
                     isAutoConsumptionProductionShown={isProductionActiveAndHousingHasAccess(currentHousingScopes)}
                 />
