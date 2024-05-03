@@ -81,7 +81,7 @@ describe('EquipmentsUsageForm tests', () => {
         expect(getByText(TITLE)).toBeInTheDocument()
 
         expect(getByText("J'utilise cet équipement environ :")).toBeInTheDocument()
-        expect(getByText('Fois par semaine')).toBeInTheDocument()
+        expect(getByText('fois par semaine')).toBeInTheDocument()
         expect(getByText('Combien de temps dure chaque utilisation en moyenne :')).toBeInTheDocument()
         expect(getByText("Toute l'année")).toBeInTheDocument()
         expect(getByText('Seulement :')).toBeInTheDocument()
