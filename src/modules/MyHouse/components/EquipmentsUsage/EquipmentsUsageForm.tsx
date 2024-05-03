@@ -170,7 +170,7 @@ export default function EquipmentsUsageForm(props: EquipmentsUsageFormProps) {
                                     value={equipment.id}
                                     data-testid="housing-equipment-option"
                                 >
-                                    {equipment.equipmentLabel ?? `Equipement ${equipment.equipmentNumber}`}
+                                    {equipment.equipmentLabel ?? `${title} ${equipment.equipmentNumber}`}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -189,24 +189,24 @@ export default function EquipmentsUsageForm(props: EquipmentsUsageFormProps) {
                             J'utilise cet équipement environ :
                         </Typography>
                         <TextField
-                            className="mr-5 flex-grow"
+                            className="mr-5 w-full md:w-136"
                             {...register('frequencyOfUsagePerWeek')}
                             type="number"
                             InputProps={{ inputProps: { min: 0, pattern: '[0-9]*' } }}
                         />
-                        <Typography className="text-13 md:text-16 mr-5">Fois par semaine</Typography>
+                        <Typography className="text-13 md:text-16 mr-5">fois par semaine</Typography>
                     </div>
                     <div className="flex mb-20 w-full items-center">
                         <Typography className="text-13 md:text-16 mr-5">
                             Combien de temps dure chaque utilisation en moyenne :
                         </Typography>
                         <TextField
-                            className="mr-5 flex-grow"
+                            className="mr-5 w-full md:w-136"
                             {...register('averageUsagePerMinute')}
                             type="number"
                             InputProps={{ inputProps: { min: 0, pattern: '[0-9]*' } }}
                         />
-                        <Typography className="text-13 md:text-16 md:mr-10">sur 24h</Typography>
+                        <Typography className="text-13 md:text-16 md:mr-10">minutes</Typography>
                     </div>
                     <div className="flex mb-20 w-full items-center">
                         <FormControl component="fieldset">
