@@ -8,5 +8,6 @@
         "revealWithFocus": "none",
         "clearOnRun": "none"
     },
-    "jest.runMode": "on-demand"
+    "jest.runMode": "on-demand",
+    "typescript.tsserver.maxTsServerMemory": 1024
 }

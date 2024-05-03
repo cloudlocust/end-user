@@ -12,7 +12,6 @@ import {
     CircularProgress,
 } from '@mui/material'
 import { EquipmentCardProps } from 'src/modules/MyHouse/components/Equipments/EquipmentCard/equipmentsCard'
-import { useIntl } from 'src/common/react-platform-translation'
 import { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { RootState } from 'src/redux'
@@ -30,7 +29,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
  * @description Equipment Card component that displays individual card for each type of equipment.
  * @param root0 N/A.
  * @param root0.equipment The equipment details object.
- * @param root0.label Equipment label.
+ * @param root0.title Equipment title represent the label the user give to its equipment.
  * @param root0.onEquipmentChange Function that handle the equipment number.
  * @param root0.addingEquipmentInProgress Boolean indicating if adding equipment is in progress.
  * @param root0.iconComponent Icon component.
@@ -38,13 +37,12 @@ import SettingsIcon from '@mui/icons-material/Settings'
  */
 export const EquipmentCard = ({
     equipment,
-    label,
+    title,
     onEquipmentChange,
     addingEquipmentInProgress,
     iconComponent,
 }: EquipmentCardProps) => {
     const theme = useTheme()
-    const { formatMessage } = useIntl()
     const {
         isOpen: isMeasurementModalOpen,
         openModal: onOpenMeasurementModal,
@@ -89,6 +87,8 @@ export const EquipmentCard = ({
         equipment.number && equipment.number > 0 && equipment.name === 'microwave',
     )
 
+    const equipementId = equipment.equipmentId
+
     return (
         <>
             <Card className="rounded-16 border border-slate-600 w-full" data-testid="equipment-item">
@@ -110,10 +110,7 @@ export const EquipmentCard = ({
                     <div className="flex w-full flex-col justify-between items-end gap-10">
                         <div className="flex w-full justify-between">
                             <Typography className="text-16 md:text-17 font-medium">
-                                {formatMessage({
-                                    id: label,
-                                    defaultMessage: label,
-                                })}
+                                {title || equipment.name}
                             </Typography>
                             <div className="flex flex-row items-center gap-4">
                                 <IconButton
@@ -146,7 +143,10 @@ export const EquipmentCard = ({
                                     onClick={() => {
                                         if (equipment.number) {
                                             onEquipmentChange([
-                                                { equipmentId: equipment.id, equipmentNumber: equipment.number + 1 },
+                                                {
+                                                    equipmentId: equipment.id,
+                                                    equipmentNumber: equipment.number + 1,
+                                                },
                                             ])
                                         }
                                     }}
@@ -159,45 +159,76 @@ export const EquipmentCard = ({
                                     className="mr-6 cursor-pointer"
                                     onClick={() => {
                                         if (currentHousing?.id) {
-                                            // equipment has to be serilized otherwise it throw an error
-                                            const serializedEquipment = JSON.stringify(equipment)
-                                            history.push(`${URL_MY_HOUSE}/${currentHousing.id}/equipments/details`, {
-                                                equipment: JSON.parse(serializedEquipment),
-                                            })
+                                            history.push(
+                                                `${URL_MY_HOUSE}/${currentHousing.id}/equipments/${equipment.housingEquipmentId}/details/${equipementId}`,
+                                            )
                                         }
                                     }}
                                 />
                             </div>
                         </div>
 
-                        {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
-                        {isMicrowaveMeasurementButtonShown ? (
-                            <Tooltip
-                                disableHoverListener={isEquipmentMeasurementFeatureState}
-                                title={<TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>}
-                                placement="top"
-                                arrow
+                        <div className="flex items-center gap-10">
+                            <Button
+                                sx={{
+                                    width: '115px',
+                                    paddingY: '3px',
+                                    paddingX: '6px',
+                                    bgcolor: theme.palette.common.white,
+                                    color: theme.palette.primary.main,
+                                    border: `1px solid ${theme.palette.primary.main}`,
+                                    '&:hover': {
+                                        bgcolor: theme.palette.primary.main,
+                                        color: theme.palette.common.white,
+                                    },
+                                }}
+                                variant="contained"
+                                onClick={() => {
+                                    if (currentHousing?.id) {
+                                        history.push(
+                                            `${URL_MY_HOUSE}/${currentHousing.id}/equipments/${equipment.housingEquipmentId}/usage/${equipementId}`,
+                                            {
+                                                equipment: {
+                                                    title: title || equipment.name,
+                                                },
+                                            },
+                                        )
+                                    }
+                                }}
                             >
-                                <div className="flex justify-end gap-7 flex-wrap-reverse">
-                                    <Button
-                                        sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
-                                        variant="contained"
-                                        onClick={navigateToEquipmentMeasurementsPage}
-                                        disabled={!isEquipmentMeasurementFeatureState}
-                                    >
-                                        Mes mesures
-                                    </Button>
-                                    <Button
-                                        sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
-                                        variant="contained"
-                                        onClick={onOpenMeasurementModal}
-                                        disabled={!isEquipmentMeasurementFeatureState}
-                                    >
-                                        Mesurer
-                                    </Button>
-                                </div>
-                            </Tooltip>
-                        ) : null}
+                                Mon usage
+                            </Button>
+                            {/* In order to get the tooltip to show you need to wrap the disabled Button in a inline-block div */}
+                            {isMicrowaveMeasurementButtonShown ? (
+                                <Tooltip
+                                    disableHoverListener={isEquipmentMeasurementFeatureState}
+                                    title={
+                                        <TypographyFormatMessage>{FEATURE_COMMING_SOON_TEXT}</TypographyFormatMessage>
+                                    }
+                                    placement="top"
+                                    arrow
+                                >
+                                    <div className="flex justify-end gap-7 flex-wrap-reverse">
+                                        <Button
+                                            sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
+                                            variant="contained"
+                                            onClick={navigateToEquipmentMeasurementsPage}
+                                            disabled={!isEquipmentMeasurementFeatureState}
+                                        >
+                                            Mes mesures
+                                        </Button>
+                                        <Button
+                                            sx={{ width: '115px', paddingY: '3px', paddingX: '6px' }}
+                                            variant="contained"
+                                            onClick={onOpenMeasurementModal}
+                                            disabled={!isEquipmentMeasurementFeatureState}
+                                        >
+                                            Mesurer
+                                        </Button>
+                                    </div>
+                                </Tooltip>
+                            ) : null}
+                        </div>
                     </div>
                 </CardContent>
             </Card>
