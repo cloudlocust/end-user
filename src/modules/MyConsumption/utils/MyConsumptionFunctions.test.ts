@@ -17,9 +17,9 @@ import {
     filterMetricsData,
     nullifyTodayIdleConsumptionValue,
     getRangeFromDate,
-    filterEuroTargetsMetricsDataOfYearlyPeriod,
-    filterConsumptionTargetsMetricsDataOfYearlyPeriod,
-    filterMetricsDataOfYearlyPeriod,
+    filterEuroTargetsMetricsDataOfNonDailyPeriods,
+    filterConsumptionTargetsMetricsDataOfNonDailyPeriods,
+    filterMetricsDataOfNonDailyPeriods,
 } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import { IMetric, metricIntervalType, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { FAKE_WEEK_DATA, FAKE_DAY_DATA, FAKE_MONTH_DATA, FAKE_YEAR_DATA } from 'src/mocks/handlers/metrics'
@@ -1016,116 +1016,16 @@ describe('filterMetricsData tests', () => {
             },
         ]
         caseList.forEach(({ data, expectedResult }) => {
-            const fileteredData = filterMetricsData(data, 'weekly', SwitchConsumptionButtonTypeEnum.Consumption)
-
-            expect(fileteredData).toStrictEqual(expectedResult)
-        })
-    })
-
-    test('when chart is euro, and there is tempo data', () => {
-        const consumptionData = [
-            {
-                target: metricTargetsEnum.eurosConsumption,
-                datapoints: [[99, 99]],
-            },
-            {
-                target: metricTargetsEnum.baseEuroConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.euroPeakHourConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.euroOffPeakConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.subscriptionPrices,
-                datapoints: [[99, 99]],
-            },
-            {
-                target: metricTargetsEnum.euroPeakHourBlueTempoConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.euroOffPeakHourBlueTempoConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.euroPeakHourRedTempoConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.euroOffPeakHourRedTempoConsumption,
-                datapoints: [[0, 0]],
-            },
-            {
-                target: metricTargetsEnum.euroPeakHourWhiteTempoConsumption,
-                datapoints: [[99, 99]],
-            },
-            {
-                target: metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption,
-                datapoints: [[99, 99]],
-            },
-        ]
-
-        const expectedConsumptionData = [
-            {
-                datapoints: [[99, 99]],
-                target: metricTargetsEnum.eurosConsumption,
-            },
-            {
-                datapoints: [[99, 99]],
-                target: metricTargetsEnum.subscriptionPrices,
-            },
-            {
-                datapoints: [[0, 0]],
-                target: metricTargetsEnum.euroPeakHourBlueTempoConsumption,
-            },
-            {
-                datapoints: [[0, 0]],
-                target: metricTargetsEnum.euroOffPeakHourBlueTempoConsumption,
-            },
-            {
-                datapoints: [[0, 0]],
-                target: metricTargetsEnum.euroPeakHourRedTempoConsumption,
-            },
-            {
-                datapoints: [[0, 0]],
-                target: metricTargetsEnum.euroOffPeakHourRedTempoConsumption,
-            },
-            {
-                datapoints: [[99, 99]],
-                target: metricTargetsEnum.euroPeakHourWhiteTempoConsumption,
-            },
-            {
-                datapoints: [[99, 99]],
-                target: metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption,
-            },
-        ]
-
-        const caseList = [
-            {
-                data: consumptionData,
-                expectedResult: expectedConsumptionData,
-            },
-            {
-                data: consumptionData,
-                expectedResult: expectedConsumptionData,
-            },
-        ]
-        // eslint-disable-next-line sonarjs/no-identical-functions
-        caseList.forEach(({ data, expectedResult }) => {
             const fileteredData = filterMetricsData(
                 data,
-                'weekly',
+                'monthly',
                 SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
             )
 
             expect(fileteredData).toStrictEqual(expectedResult)
         })
     })
+
     test('when there is two different tempo data in daily period', async () => {
         const consumptionData = [
             {
@@ -1207,62 +1107,68 @@ describe('filterMetricsData tests', () => {
         })
     })
 
-    test('should return all euro metrics data in yearly period', () => {
-        const targets = [
-            metricTargetsEnum.eurosConsumption,
-            metricTargetsEnum.subscriptionPrices,
-            metricTargetsEnum.baseEuroConsumption,
-            metricTargetsEnum.euroPeakHourConsumption,
-            metricTargetsEnum.euroOffPeakConsumption,
-            metricTargetsEnum.pMax,
-            metricTargetsEnum.internalTemperature,
-            metricTargetsEnum.externalTemperature,
-        ]
-        const data: IMetric[] = targets.map((target) => ({
-            target,
-            datapoints: [[99, 99]],
-        }))
+    test.each([PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY])(
+        'should return all euro metrics data in %s period',
+        (period) => {
+            const targets = [
+                metricTargetsEnum.eurosConsumption,
+                metricTargetsEnum.subscriptionPrices,
+                metricTargetsEnum.baseEuroConsumption,
+                metricTargetsEnum.euroPeakHourConsumption,
+                metricTargetsEnum.euroOffPeakConsumption,
+                metricTargetsEnum.pMax,
+                metricTargetsEnum.internalTemperature,
+                metricTargetsEnum.externalTemperature,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[99, 99]],
+            }))
 
-        const result = filterMetricsData(data, PeriodEnum.YEARLY, SwitchConsumptionButtonTypeEnum.Consumption)
-        expect(result).toHaveLength(8)
-        expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
-        expect(result[1].target).toBe(metricTargetsEnum.euroPeakHourConsumption)
-        expect(result[2].target).toBe(metricTargetsEnum.euroOffPeakConsumption)
-        expect(result[3].target).toBe(metricTargetsEnum.subscriptionPrices)
-        expect(result[4].target).toBe(metricTargetsEnum.eurosConsumption)
-        expect(result[5].target).toBe(metricTargetsEnum.pMax)
-        expect(result[6].target).toBe(metricTargetsEnum.internalTemperature)
-        expect(result[7].target).toBe(metricTargetsEnum.externalTemperature)
-    })
+            const result = filterMetricsData(data, period as PeriodEnum, SwitchConsumptionButtonTypeEnum.Consumption)
+            expect(result).toHaveLength(8)
+            expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
+            expect(result[1].target).toBe(metricTargetsEnum.euroPeakHourConsumption)
+            expect(result[2].target).toBe(metricTargetsEnum.euroOffPeakConsumption)
+            expect(result[3].target).toBe(metricTargetsEnum.subscriptionPrices)
+            expect(result[4].target).toBe(metricTargetsEnum.eurosConsumption)
+            expect(result[5].target).toBe(metricTargetsEnum.pMax)
+            expect(result[6].target).toBe(metricTargetsEnum.internalTemperature)
+            expect(result[7].target).toBe(metricTargetsEnum.externalTemperature)
+        },
+    )
 
-    test('should return all consumption metrics data in yearly period', () => {
-        const targets = [
-            metricTargetsEnum.consumption,
-            metricTargetsEnum.baseConsumption,
-            metricTargetsEnum.peakHourConsumption,
-            metricTargetsEnum.offPeakHourConsumption,
-            metricTargetsEnum.peakHourBlueTempoConsumption,
-            metricTargetsEnum.offPeakHourBlueTempoConsumption,
-            metricTargetsEnum.peakHourRedTempoConsumption,
-            metricTargetsEnum.offPeakHourRedTempoConsumption,
-            metricTargetsEnum.offPeakHourWhiteTempoConsumption,
-            metricTargetsEnum.pMax,
-            metricTargetsEnum.internalTemperature,
-            metricTargetsEnum.externalTemperature,
-        ]
-        const data: IMetric[] = targets.map((target) => ({
-            target,
-            datapoints: [[99, 99]],
-        }))
+    test.each([PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY])(
+        'should return all consumption metrics data in %s period',
+        (period) => {
+            const targets = [
+                metricTargetsEnum.consumption,
+                metricTargetsEnum.baseConsumption,
+                metricTargetsEnum.peakHourConsumption,
+                metricTargetsEnum.offPeakHourConsumption,
+                metricTargetsEnum.peakHourBlueTempoConsumption,
+                metricTargetsEnum.offPeakHourBlueTempoConsumption,
+                metricTargetsEnum.peakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourRedTempoConsumption,
+                metricTargetsEnum.offPeakHourWhiteTempoConsumption,
+                metricTargetsEnum.pMax,
+                metricTargetsEnum.internalTemperature,
+                metricTargetsEnum.externalTemperature,
+            ]
+            const data: IMetric[] = targets.map((target) => ({
+                target,
+                datapoints: [[99, 99]],
+            }))
 
-        const result = filterMetricsData(data, PeriodEnum.YEARLY, SwitchConsumptionButtonTypeEnum.Consumption)
-        expect(result).toHaveLength(11)
-        result.forEach((item, index) => {
-            expect(item.target).toBe(targets[index + 1])
-        })
-    })
+            const result = filterMetricsData(data, period, SwitchConsumptionButtonTypeEnum.Consumption)
+            expect(result).toHaveLength(11)
+            result.forEach((item, index) => {
+                expect(item.target).toBe(targets[index + 1])
+            })
+        },
+    )
 
-    describe('filterEuroTargetsMetricsDataOfYearlyPeriod test', () => {
+    describe('filterEuroTargetsMetricsDataOfNonDailyPeriods test', () => {
         test('should return all euro metrics data', () => {
             const targets = [
                 metricTargetsEnum.eurosConsumption,
@@ -1276,7 +1182,7 @@ describe('filterMetricsData tests', () => {
                 datapoints: [[99, 99]],
             }))
 
-            const result = filterEuroTargetsMetricsDataOfYearlyPeriod(data)
+            const result = filterEuroTargetsMetricsDataOfNonDailyPeriods(data)
 
             expect(result).toHaveLength(5)
             expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
@@ -1306,7 +1212,7 @@ describe('filterMetricsData tests', () => {
                 ],
             }))
 
-            const result = filterEuroTargetsMetricsDataOfYearlyPeriod(data)
+            const result = filterEuroTargetsMetricsDataOfNonDailyPeriods(data)
 
             expect(result).toHaveLength(2)
             expect(result[0].target).toBe(metricTargetsEnum.onlyEuroConsumption)
@@ -1314,7 +1220,7 @@ describe('filterMetricsData tests', () => {
         })
     })
 
-    describe('filterConsumptionTargetsMetricsDataOfYearlyPeriod test', () => {
+    describe('filterConsumptionTargetsMetricsDataOfNonDailyPeriods test', () => {
         test('should return all euro metrics data', () => {
             const targets = [
                 metricTargetsEnum.consumption,
@@ -1332,7 +1238,7 @@ describe('filterMetricsData tests', () => {
                 datapoints: [[99, 99]],
             }))
 
-            const result = filterConsumptionTargetsMetricsDataOfYearlyPeriod(data)
+            const result = filterConsumptionTargetsMetricsDataOfNonDailyPeriods(data)
 
             expect(result).toHaveLength(8)
 
@@ -1357,14 +1263,14 @@ describe('filterMetricsData tests', () => {
                 datapoints: [[target === metricTargetsEnum.consumption ? 99 : (null as unknown as number), 99]],
             }))
 
-            const result = filterConsumptionTargetsMetricsDataOfYearlyPeriod(data)
+            const result = filterConsumptionTargetsMetricsDataOfNonDailyPeriods(data)
 
             expect(result).toHaveLength(1)
             expect(result[0].target).toBe(metricTargetsEnum.onlyConsumption)
         })
     })
 
-    describe('filterMetricsDataOfYearlyPeriod test', () => {
+    describe('filterMetricsDataOfNonDailyPeriods test', () => {
         test('should return all euro metrics data & temperatureOrPmaxMetricsData', () => {
             const targets = [
                 metricTargetsEnum.eurosConsumption,
@@ -1381,7 +1287,7 @@ describe('filterMetricsData tests', () => {
                 datapoints: [[99, 99]],
             }))
 
-            const result = filterMetricsDataOfYearlyPeriod(data)
+            const result = filterMetricsDataOfNonDailyPeriods(data)
 
             expect(result).toHaveLength(8)
             expect(result[0].target).toBe(metricTargetsEnum.baseEuroConsumption)
@@ -1410,7 +1316,7 @@ describe('filterMetricsData tests', () => {
                 datapoints: [[99, 99]],
             }))
 
-            const result = filterMetricsDataOfYearlyPeriod(data)
+            const result = filterMetricsDataOfNonDailyPeriods(data)
 
             expect(result).toHaveLength(11)
             expect(result[0].target).toBe(metricTargetsEnum.baseConsumption)
