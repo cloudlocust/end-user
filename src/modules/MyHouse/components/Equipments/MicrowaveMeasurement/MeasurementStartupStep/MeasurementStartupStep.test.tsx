@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { MeasurementStartupStep } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementStartupStep'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 const mockStepSetter = jest.fn()
 const MEASUREMENT_MODE_TEST = 'Measurement Mode'
@@ -34,7 +35,7 @@ describe('MeasurementStartupStep Component', () => {
         userEvent.click(startButton)
 
         await waitFor(() => {
-            expect(mockStepSetter).toHaveBeenCalledWith(3)
+            expect(mockStepSetter).toHaveBeenCalledWith(measurementStepsEnum.PROCESS_STEP)
         })
     })
 })
