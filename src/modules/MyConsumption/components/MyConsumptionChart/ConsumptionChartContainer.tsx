@@ -69,10 +69,6 @@ export const URL_SOLAR_INSTALLATION_RECOMMENDATION = 'https://e0vzc8h9q32.typefo
  */
 export const URL_HOUSING_INFORMATION = (housingId: number) => `/my-houses/${housingId}/information`
 
-const NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT = 'Identifier un pic de conso'
-const NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT = 'Mon installation solaire'
-const RECOMMEND_INSTALLER_BUTTON_TEXT = 'Recommander mon installateur'
-
 /**
  * MyConsumptionChartContainer Component.
  *
@@ -542,6 +538,21 @@ ConsumptionChartContainerProps) => {
         window.open(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank', 'noopener noreferrer')
     }
 
+    const NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT = formatMessage({
+        id: 'Identifier un pic de conso',
+        defaultMessage: 'Identifier un pic de conso',
+    })
+
+    const NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT = formatMessage({
+        id: 'Mon installation solaire',
+        defaultMessage: 'Mon installation solaire',
+    })
+
+    const RECOMMEND_INSTALLER_BUTTON_TEXT = formatMessage({
+        id: 'Recommander mon installateur',
+        defaultMessage: 'Recommander mon installateur',
+    })
+
     return (
         <div className="mb-12">
             {(isIdleShown || isAutoConsumptionProductionShown) && (
@@ -557,32 +568,25 @@ ConsumptionChartContainerProps) => {
             <div className="flex flex-col items-start gap-8 my-8">
                 {period === 'daily' && (
                     <ConsumptionChartHeaderButton
-                        text={formatMessage({
-                            id: NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT,
-                            defaultMessage: NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT,
-                        })}
+                        text={NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT}
                         hasBorder
                         clickHandler={navigateToConsumptionLabelizationPage}
+                        data-testid="linkToLabelizationPage"
                     />
                 )}
 
                 {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
                     <>
                         <ConsumptionChartHeaderButton
-                            text={formatMessage({
-                                id: NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT,
-                                defaultMessage: NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT,
-                            })}
+                            text={NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT}
                             icon="⚙️"
                             buttonColor="#EDECEC"
                             textColor="#818A91"
                             clickHandler={navigateToSolarInstallationForm}
+                            data-testid="linkToSolarInstallationForm"
                         />
                         <ConsumptionChartHeaderButton
-                            text={formatMessage({
-                                id: RECOMMEND_INSTALLER_BUTTON_TEXT,
-                                defaultMessage: RECOMMEND_INSTALLER_BUTTON_TEXT,
-                            })}
+                            text={RECOMMEND_INSTALLER_BUTTON_TEXT}
                             icon="💖"
                             buttonColor="#F9E1E1"
                             textColor="#818A91"
