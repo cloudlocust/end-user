@@ -80,6 +80,22 @@ export type equipmentMeterType = {
      * Year of purchase of the Equipment.
      */
     yearOfPurchase?: number | null
+    /**
+     * Equipment label.
+     */
+    equipmentLabel?: string
+    /**
+     * Frequency of usage per week.
+     */
+    frequencyOfUsagePerWeek?: string | number | null
+    /**
+     * Average usage per minute.
+     */
+    averageUsagePerMinute?: string | number | null
+    /**
+     * Usage.
+     */
+    usage?: string[] | null
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
