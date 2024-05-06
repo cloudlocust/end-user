@@ -866,12 +866,12 @@ export const getOnlyEuroConsumptionMetrics = (data: IMetric[]) => {
 }
 
 /**
- * Function that filters yearly data of euro targets.
+ * Function that filters data of euro targets.
  *
  * @param data Metrics data.
  * @returns  Euro metrics array data.
  */
-export const filterEuroTargetsMetricsDataOfYearlyPeriod = (data: IMetric[]): IMetric[] => {
+export const filterEuroTargetsMetricsDataOfNonDailyPeriods = (data: IMetric[]): IMetric[] => {
     // euro consumption metric case.
     const euroConsumptionMetric = data.find((metric) => metric.target === metricTargetsEnum.eurosConsumption)
     const subscriptionPricesTarget = data.find((metric) => metric.target === metricTargetsEnum.subscriptionPrices)
@@ -901,12 +901,12 @@ export const filterEuroTargetsMetricsDataOfYearlyPeriod = (data: IMetric[]): IMe
 }
 
 /**
- * Function that filters yearly data of consumption metrics.
+ * Function that filters data of consumption metrics.
  *
  * @param data Metrics data.
  * @returns Consumption metrics array data.
  */
-export const filterConsumptionTargetsMetricsDataOfYearlyPeriod = (data: IMetric[]): IMetric[] => {
+export const filterConsumptionTargetsMetricsDataOfNonDailyPeriods = (data: IMetric[]): IMetric[] => {
     // consumption metric case.
     // Get non empty metrics data to display all contracts types (tempo, hp hc, base)
     const nonEmptyMetricsData = data.filter(
@@ -931,12 +931,12 @@ export const filterConsumptionTargetsMetricsDataOfYearlyPeriod = (data: IMetric[
 }
 
 /**
- * Function that filters yearly data coming from backend in order to handle the visible targets for the user.
+ * Function that filters data coming from backend in order to handle the visible targets for the user.
  *
  * @param data Metrics data.
  * @returns New filtered metrics array data.
  */
-export const filterMetricsDataOfYearlyPeriod = (data: IMetric[]): IMetric[] => {
+export const filterMetricsDataOfNonDailyPeriods = (data: IMetric[]): IMetric[] => {
     const isEuroTarget = data.some((metric) =>
         [metricTargetsEnum.eurosConsumption].includes(metric.target as metricTargetsEnum),
     )
@@ -946,7 +946,9 @@ export const filterMetricsDataOfYearlyPeriod = (data: IMetric[]): IMetric[] => {
     )
 
     const filteredMetricsData = (
-        isEuroTarget ? filterEuroTargetsMetricsDataOfYearlyPeriod : filterConsumptionTargetsMetricsDataOfYearlyPeriod
+        isEuroTarget
+            ? filterEuroTargetsMetricsDataOfNonDailyPeriods
+            : filterConsumptionTargetsMetricsDataOfNonDailyPeriods
     )(data)
     if (filteredMetricsData.length) {
         filteredMetricsData.push(...temperatureOrPmaxMetricsData)
@@ -971,9 +973,12 @@ export const filterMetricsData = (
     // TODO: Refactor this function, it's too long.
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): IMetric[] => {
-    // handle yearly period
-    if (period === PeriodEnum.YEARLY) {
-        return filterMetricsDataOfYearlyPeriod(data)
+    // handle weekly, monthly, yearly periods in non autoconsumption mode. must return all data.
+    if (
+        period !== PeriodEnum.DAILY &&
+        consumptionToggleButton !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+    ) {
+        return filterMetricsDataOfNonDailyPeriods(data)
     }
 
     const temperatureOrPmaxMetricsData = data.filter((metric) =>
