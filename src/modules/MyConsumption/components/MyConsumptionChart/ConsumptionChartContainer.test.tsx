@@ -65,6 +65,7 @@ const enphaseConsent: IEnphaseConsent = {
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
 let mockEnedisConsent: IEnedisSgeConsent | undefined = mockEnedisSgeConsentConnected
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent as IEnphaseConsent
+let mockProductionChartErrorState = false
 
 let mockIsMetricsLoading = false
 const mockSetFilters = jest.fn()
@@ -74,6 +75,8 @@ const HAS_MISSING_CONTRACTS_WARNING_REDIRECT_LINK_TEXT = "Renseigner votre contr
 const CONSUMPTION_ENEDIS_SGE_WARNING_TEXT = 'Accéder à votre historique de consommation'
 const MESSING_DATA_WARNING_TEXT =
     'Il se peut que vos données soient incomplètes si vous tentez d’afficher une période sans contrat déclaré ou sans Linky ou encore si la période est antérieure à 3 ans.'
+const PRODUCTION_CONSENT_OFF_MESSAGE =
+    'Pour voir vos données de production veuillez connecter votre onduleur Ou Reliez la prise Shelly de vos panneaux plug&play'
 const EUROS_CONSUMPTION_ICON_TEST_ID = 'euros-consumption-button'
 const menuButtonLabelText = 'target-menu'
 const menuItemRole = 'menuitem'
@@ -108,6 +111,7 @@ let echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     period: mockPeriod,
     range: mockRange,
     isIdleShown: false,
+    isProductionChartShown: false,
     setMetricsInterval: jest.fn(),
     onPeriodChange: jest.fn(),
     onRangeChange: jest.fn(),
@@ -186,6 +190,27 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     get manualContractFillingIsEnabled() {
         return mockManualContractFillingIsEnabled
+    },
+
+    /**
+     * Function to check if plugs are used based on production status.
+     *
+     * @returns True if plugs are used based on production status.
+     */
+    arePlugsUsedBasedOnProductionStatus: () => {
+        return process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+    },
+}))
+
+jest.mock('src/modules/MyConsumption/MyConsumptionConfig', () => ({
+    ...jest.requireActual('src/modules/MyConsumption/MyConsumptionConfig'),
+    /**
+     * Mock the productionChartErrorState const.
+     *
+     * @returns Mocked productionChartErrorState.
+     */
+    get productionChartErrorState() {
+        return mockProductionChartErrorState
     },
 }))
 
@@ -619,5 +644,19 @@ describe('MyConsumptionContainer test', () => {
             )
             expect(getByTestId('solarInstallationRecommendationButton')).toBeInTheDocument()
         })
+    })
+
+    test('should show info message of production When enphaseConsent is OFF.', async () => {
+        mockIsMetricsLoading = false
+        mockProductionChartErrorState = true
+        echartsConsumptionChartContainerProps.isSolarProductionConsentOff = true
+        echartsConsumptionChartContainerProps.isProductionChartShown = true
+
+        const { getByText } = reduxedRender(
+            <Router>
+                <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+            </Router>,
+        )
+        expect(getByText(PRODUCTION_CONSENT_OFF_MESSAGE)).toBeInTheDocument()
     })
 })

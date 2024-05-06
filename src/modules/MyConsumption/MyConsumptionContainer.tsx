@@ -12,7 +12,6 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
-import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
@@ -106,7 +105,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     )
     const isIdleShown = isSolarProductionConsentOff
 
-    if (consentsLoading)
+    if (consentsLoading || isConnectedPlugListLoadingInProgress)
         return (
             <Box
                 sx={{ height: { xs: '424px', md: '584px' } }}
@@ -151,18 +150,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                         setMetricsInterval={setMetricsInterval}
                         onPeriodChange={setPeriod}
                         onRangeChange={setRange}
-                    />
-                )}
-
-                {/* Production Chart */}
-                {isProductionChartShown && (
-                    <ProductionChartContainer
-                        period={period}
-                        range={range}
-                        filters={filters}
-                        isProductionConsentOff={isSolarProductionConsentOff}
-                        isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                        metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
+                        isProductionChartShown={isProductionChartShown}
                     />
                 )}
             </div>

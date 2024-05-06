@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 import dayjs from 'dayjs'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { useTheme, Typography } from '@mui/material'
@@ -47,6 +49,13 @@ import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/My
 import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { SolarInstallationRecommendationButton } from 'src/modules/MyConsumption/components/SolarInstallationRecommendationButton'
+import {
+    ChartErrorMessage,
+    ProductionChartErrorMessageContainer,
+} from 'src/modules/MyConsumption/components/ChartErrorMessage'
+import { productionChartErrorState } from 'src/modules/MyConsumption/MyConsumptionConfig'
+import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
+import { ENPHASE_OFF_MESSAGE, PRODUCTION_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -68,6 +77,7 @@ export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
  * @param props.setMetricsInterval Set metrics interval.
  * @param props.onPeriodChange Callback function for period change.
  * @param props.onRangeChange Callback function for range change.
+ * @param props.isProductionChartShown Boolean indicating whether the production chart is shown or not.
  * @returns ConsumptionChartContainer Component.
  */
 export const ConsumptionChartContainer = ({
@@ -82,11 +92,13 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
     onPeriodChange,
     onRangeChange,
+    isProductionChartShown,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -247,7 +259,12 @@ ConsumptionChartContainerProps) => {
         }
         return isEurosButtonToggled
             ? eurosConsumptionTargets
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+            : [
+                  metricTargetsEnum.autoconsumption,
+                  metricTargetsEnum.consumption,
+                  metricTargetsEnum.injectedProduction,
+                  metricTargetsEnum.totalProduction,
+              ]
     }, [isEurosButtonToggled, period, setMetricsInterval])
 
     /**
@@ -574,26 +591,42 @@ ConsumptionChartContainerProps) => {
                             </Typography>
                         </div>
                     )}
-                    <MyConsumptionChart
-                        data={consumptionChartData}
-                        period={period}
-                        axisColor={theme.palette.common.black}
-                        tooltipFormatter={(
-                            params: EChartTooltipFormatterParams,
-                            valueFormatter?: TooltipValueFormatter,
-                        ) =>
-                            renderToStaticMarkup(
-                                <ConsumptionChartTooltip
-                                    params={params}
-                                    valueFormatter={valueFormatter}
-                                    getTotalConsumption={getTotalConsumption}
-                                    getTotalEuroCost={getTotalEuroCost}
-                                    onDisplayTooltipLabel={onDisplayTooltipLabel}
-                                    renderComponentOnMissingLabels={renderComponentOnMissingLabels}
-                                />,
-                            )
-                        }
-                    />
+                    <div className="relative">
+                        <MyConsumptionChart
+                            data={consumptionChartData}
+                            period={period}
+                            axisColor={theme.palette.common.black}
+                            tooltipFormatter={(
+                                params: EChartTooltipFormatterParams,
+                                valueFormatter?: TooltipValueFormatter,
+                            ) =>
+                                renderToStaticMarkup(
+                                    <ConsumptionChartTooltip
+                                        params={params}
+                                        valueFormatter={valueFormatter}
+                                        getTotalConsumption={getTotalConsumption}
+                                        getTotalEuroCost={getTotalEuroCost}
+                                        onDisplayTooltipLabel={onDisplayTooltipLabel}
+                                        renderComponentOnMissingLabels={renderComponentOnMissingLabels}
+                                    />,
+                                )
+                            }
+                        />
+                        {isProductionChartShown && productionChartErrorState && isSolarProductionConsentOff && (
+                            <ProductionChartErrorMessageContainer>
+                                <ChartErrorMessage
+                                    productionConsentOff={true}
+                                    productionConsentOffMessage={
+                                        arePlugsUsedBasedOnProductionStatus(currentHousingScopes)
+                                            ? PRODUCTION_OFF_MESSAGE
+                                            : ENPHASE_OFF_MESSAGE
+                                    }
+                                    linkTo={`/my-houses/${currentHousing?.id}`}
+                                    style={{ background: 'transparent' }}
+                                />
+                            </ProductionChartErrorMessageContainer>
+                        )}
+                    </div>
                 </>
             )}
             {period === PeriodEnum.YEARLY && !isMetricsLoading && !checkIfAllYearlyDataExist() && (

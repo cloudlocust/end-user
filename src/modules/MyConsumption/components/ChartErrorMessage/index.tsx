@@ -1,4 +1,5 @@
 import { useTheme, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
 import { ChartErrorMessageProps } from 'src/modules/MyConsumption/components/ChartErrorMessage/ChartErrorMessage'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
@@ -13,6 +14,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
  * @param root0.linkTo Redirect link.
  * @param root0.nrlinkEnedisOffMessage Message for nrlinkEnedisOff error.
  * @param root0.productionConsentOffMessage Message for productionConsentOff error.
+ * @param root0.style Custom style.
  * @returns ConsumptionErrorMessage component.
  */
 export const ChartErrorMessage = ({
@@ -21,11 +23,12 @@ export const ChartErrorMessage = ({
     productionConsentOff,
     productionConsentOffMessage,
     linkTo,
+    style,
 }: ChartErrorMessageProps) => {
     const theme = useTheme()
 
     return (
-        <div style={{ background: theme.palette.primary.dark }}>
+        <div style={{ background: theme.palette.primary.dark, ...style }}>
             <div className="container relative p-16 sm:p-24 text-center flex items-start justify-center gap-8">
                 <ErrorOutlineIcon
                     sx={{
@@ -70,3 +73,29 @@ export const ChartErrorMessage = ({
         </div>
     )
 }
+
+/**
+ * Container for the error message.
+ */
+export const ProductionChartErrorMessageContainer = styled('div')(({ theme }) => ({
+    background: 'rgb(249 249 249 / 90%)',
+    position: 'absolute',
+    top: 295,
+    width: '80%',
+    height: '145px',
+    margin: '0 auto',
+    transform: 'translateX(14%)',
+    borderRadius: 15,
+    padding: 10,
+    '& p': {
+        textAlign: 'start',
+    },
+    [theme.breakpoints.up('sm')]: {
+        width: '65%',
+        transform: 'translateX(28%)',
+    },
+    [theme.breakpoints.up('lg')]: {
+        width: '55%',
+        transform: 'translateX(45%)',
+    },
+}))

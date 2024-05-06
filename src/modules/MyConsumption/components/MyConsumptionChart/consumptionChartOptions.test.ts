@@ -1,5 +1,6 @@
 import {
     getColorTargetSeriesEchartsConsumptionChart,
+    getColorTargetSeriesEchartsProductionChart,
     getNameTargetSeriesEchartsConsumptionChart,
     getStackTargetSeriesEchartsConsumptionChart,
     getTypeTargetSeriesEchartsConsumptionChart,
@@ -17,6 +18,12 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { targetYAxisIndexEnum } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { EChartsOption } from 'echarts-for-react'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+
+const productionDataMetrics = {
+    [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+    [metricTargetsEnum.totalProduction]: [100, 200, 300],
+    [metricTargetsEnum.injectedProduction]: [100, 200, 300],
+}
 
 describe('Test echartsConsumptionOptions', () => {
     const theme = createTheme({
@@ -65,7 +72,7 @@ describe('Test echartsConsumptionOptions', () => {
 
                 color: theme.palette.primary.light,
             },
-            { target: metricTargetsEnum.autoconsumption, color: '#039DE0' },
+            { target: metricTargetsEnum.autoconsumption, color: '#FFC200' },
             { target: metricTargetsEnum.idleConsumption, color: '#8191B2' },
             { target: metricTargetsEnum.eurosIdleConsumption, color: '#8191B2' },
             { target: metricTargetsEnum.subscriptionPrices, color: '#CCDCDD' },
@@ -76,7 +83,7 @@ describe('Test echartsConsumptionOptions', () => {
 
                 color: theme.palette.secondary.main,
             },
-            { target: metricTargetsEnum.consumption, color: '#FFC201' },
+            { target: metricTargetsEnum.consumption, color: '#19A5AF' },
             { target: metricTargetsEnum.euroPeakHourConsumption, color: '#6BCBFF' },
             { target: metricTargetsEnum.euroOffPeakConsumption, color: '#BEE8FF' },
             {
@@ -97,6 +104,38 @@ describe('Test echartsConsumptionOptions', () => {
         })
     })
 
+    test('getColorTargetSeriesEchartsConsumptionChart, production has color', () => {
+        const caseList = [
+            { target: metricTargetsEnum.autoconsumption, color: '#FFC200' },
+            { target: metricTargetsEnum.totalProduction, color: '#C8D210' },
+            { target: metricTargetsEnum.injectedProduction, color: '#4DD9E4' },
+        ]
+        caseList.forEach(({ color, target }) => {
+            // Result
+            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme, {
+                [metricTargetsEnum.totalProduction]: [100, 200, 300],
+            })
+
+            expect(resultColor).toStrictEqual(color)
+        })
+    })
+
+    test('getColorTargetSeriesEchartsConsumptionChart, production transparent', () => {
+        const caseList = [
+            { target: metricTargetsEnum.autoconsumption, color: '#FFC200' },
+            { target: metricTargetsEnum.totalProduction, color: TRANSPARENT_COLOR },
+            { target: metricTargetsEnum.injectedProduction, color: '#4DD9E4' },
+        ]
+        caseList.forEach(({ color, target }) => {
+            // Result
+            const resultColor = getColorTargetSeriesEchartsProductionChart(target, theme, {
+                [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+            })
+
+            expect(resultColor).toStrictEqual(color)
+        })
+    })
+
     describe('getTargetsYAxisValueFormatters', () => {
         describe('Consumption Value Formatter', () => {
             test('Tootlip floating values', async () => {
@@ -105,6 +144,7 @@ describe('Test echartsConsumptionOptions', () => {
                     {
                         [metricTargetsEnum.consumption]: [100, 200, 300],
                     },
+                    {},
                     PeriodEnum.DAILY,
                     false,
                 )['0']
@@ -114,6 +154,7 @@ describe('Test echartsConsumptionOptions', () => {
                     {
                         [metricTargetsEnum.consumption]: [1_000, 2_000, 500, 3_000],
                     },
+                    {},
                     PeriodEnum.WEEKLY,
                     false,
                 )['0']
@@ -126,6 +167,7 @@ describe('Test echartsConsumptionOptions', () => {
                     {
                         [metricTargetsEnum.consumption]: [100, 200, 300],
                     },
+                    {},
                     PeriodEnum.DAILY,
                     true,
                 )['0']
@@ -138,11 +180,92 @@ describe('Test echartsConsumptionOptions', () => {
                         [metricTargetsEnum.consumption]: [100_000, 600_000, 50_000, 300_000],
                         [metricTargetsEnum.baseConsumption]: [500_000, 2_000_000, 550_000, 400_000],
                     },
+                    {},
                     PeriodEnum.YEARLY,
                     true,
                 )['0']
                 expect(consumptionYAxisWeeklyValueFormatter(10_000)).toBe('0 MWh')
             })
+
+            test('Tootlip floating values of production', async () => {
+                // Tooltip value formatter
+                const totalProductionTooltipDailyValueFormatter = getTargetsYAxisValueFormatters(
+                    {
+                        [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+                    },
+                    {
+                        [metricTargetsEnum.totalProduction]: [100, 200, 300],
+                    },
+                    PeriodEnum.DAILY,
+                    false,
+                )[targetYAxisIndexEnum.PRODUCTION]
+                // When tooltip value is 150 Wh, on Period daily the metrics interval is '30m', then we expect the result to be '300.00 W'
+                expect(totalProductionTooltipDailyValueFormatter(150)).toBe('300.00 W')
+                const totalProductionTooltipWeeklyValueFormatter = getTargetsYAxisValueFormatters(
+                    {
+                        [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+                    },
+                    {
+                        [metricTargetsEnum.totalProduction]: [1_000, 2_000, 500, 3_000],
+                    },
+                    PeriodEnum.WEEKLY,
+                    false,
+                )[targetYAxisIndexEnum.PRODUCTION]
+                // When tooltip value is 800 Wh, on Period weekly with the unit of max is KWh the result to be '.80 kWh'
+                expect(totalProductionTooltipWeeklyValueFormatter(800)).toBe('0.80 kWh')
+            })
+            test('YAxis Rounded values of production', async () => {
+                // YAxis value formatter, value is rounded and removes duplicates.
+                const totalProductionYAxisDailyValueFormatter = getTargetsYAxisValueFormatters(
+                    {
+                        [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+                    },
+                    {
+                        [metricTargetsEnum.totalProduction]: [100, 200, 300],
+                    },
+                    PeriodEnum.DAILY,
+                    true,
+                )[targetYAxisIndexEnum.PRODUCTION]
+                // When yAxis value is 400 Wh, on Period daily the metrics interval is '30m', then we expect the result to be '800 W'
+                expect(totalProductionYAxisDailyValueFormatter(400)).toBe('800 W')
+
+                // When YAxis value is 10 000 Wh, on Period yearly with the unit of max is MWh the result to be '0 MWh' because rounded.
+                const productionYAxisWeeklyValueFormatter = getTargetsYAxisValueFormatters(
+                    {
+                        [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+                    },
+                    {
+                        [metricTargetsEnum.injectedProduction]: [100_000, 600_000, 50_000, 300_000],
+                        [metricTargetsEnum.totalProduction]: [500_000, 2_000_000, 550_000, 400_000],
+                    },
+                    PeriodEnum.YEARLY,
+                    true,
+                )[targetYAxisIndexEnum.PRODUCTION]
+                expect(productionYAxisWeeklyValueFormatter(10_000)).toBe('0 MWh')
+            })
+            test('YAxis duplicates values', async () => {
+                // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
+                // Echarts handles data two times and the second time the duplicates processing happens
+                // REFRENCE: SEE ConsumptionValueFormatter in echartsConsumptionChartOptions function for more documentation.
+                const totalProductionYAxisDuplicatesValueFormatter = getTargetsYAxisValueFormatters(
+                    {
+                        [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+                    },
+                    {
+                        [metricTargetsEnum.totalProduction]: [100, 200, 300],
+                    },
+                    PeriodEnum.WEEKLY,
+                    true,
+                )[targetYAxisIndexEnum.PRODUCTION]
+                // Triggering the echarts first process.
+                expect(totalProductionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
+                // Triggering the duplication handling.
+                expect(totalProductionYAxisDuplicatesValueFormatter(0)).toBe('0 Wh')
+                expect(totalProductionYAxisDuplicatesValueFormatter(0)).toBe(null)
+                expect(totalProductionYAxisDuplicatesValueFormatter(1)).toBe('1 Wh')
+                expect(totalProductionYAxisDuplicatesValueFormatter(1)).toBe(null)
+            })
+
             // This test is related to the commented code in the component.
             // test('YAxis duplicates values', async () => {
             //     // Removing duplicates from yAxisLine because when rounding values it creates duplicates.
@@ -165,18 +288,18 @@ describe('Test echartsConsumptionOptions', () => {
             // })
         })
         test('Temperature value formatter', async () => {
-            const temperatureValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['1']
+            const temperatureValueFormatter = getTargetsYAxisValueFormatters({}, {}, PeriodEnum.DAILY, false)['1']
             expect(temperatureValueFormatter(12)).toBe(`${12} °C`)
             expect(temperatureValueFormatter(undefined)).toBe(`- °C`)
         })
         test('PMax value formatter', async () => {
-            const pMaxValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['2']
+            const pMaxValueFormatter = getTargetsYAxisValueFormatters({}, {}, PeriodEnum.DAILY, false)['2']
             expect(pMaxValueFormatter(1_200)).toBe(`1.20 kVA`)
             expect(pMaxValueFormatter(undefined)).toBe(`- kVA`)
         })
         test('Euros value formatter', async () => {
             // Tooltip value formatter
-            const eurosValueFormatter = getTargetsYAxisValueFormatters({}, PeriodEnum.DAILY, false)['3']
+            const eurosValueFormatter = getTargetsYAxisValueFormatters({}, {}, PeriodEnum.DAILY, false)['3']
             /**
              * PMAX TEST.
              */
@@ -315,6 +438,14 @@ describe('Test echartsConsumptionOptions', () => {
                 switchButtonType: SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
                 name: 'Electricité achetée sur le réseau',
             },
+            {
+                target: metricTargetsEnum.totalProduction,
+                name: 'Production totale',
+            },
+            {
+                target: metricTargetsEnum.injectedProduction,
+                name: 'Electricité redistribuée sur le réseau',
+            },
         ]
         caseList.forEach(({ name, switchButtonType, target }) => {
             // Result
@@ -376,6 +507,17 @@ describe('Test echartsConsumptionOptions', () => {
                 type: areaType,
             },
             {
+                target: metricTargetsEnum.totalProduction,
+                period: PeriodEnum.DAILY,
+                type: areaType,
+            },
+
+            {
+                target: metricTargetsEnum.injectedProduction,
+                period: PeriodEnum.DAILY,
+                type: areaType,
+            },
+            {
                 target: metricTargetsEnum.peakHourConsumption,
                 period: PeriodEnum.DAILY,
                 type: areaType,
@@ -405,6 +547,17 @@ describe('Test echartsConsumptionOptions', () => {
             {
                 target: metricTargetsEnum.autoconsumption,
                 period: PeriodEnum.YEARLY,
+                type: barType,
+            },
+            {
+                target: metricTargetsEnum.totalProduction,
+                period: PeriodEnum.WEEKLY,
+                type: barType,
+            },
+
+            {
+                target: metricTargetsEnum.injectedProduction,
+                period: PeriodEnum.WEEKLY,
                 type: barType,
             },
             {
@@ -488,6 +641,15 @@ describe('Test echartsConsumptionOptions', () => {
                 target: metricTargetsEnum.onlyConsumption,
                 YAxisIndex: targetYAxisIndexEnum.CONSUMPTION,
             },
+            // PRODUCTION
+            {
+                target: metricTargetsEnum.totalProduction,
+                YAxisIndex: targetYAxisIndexEnum.PRODUCTION,
+            },
+            {
+                target: metricTargetsEnum.injectedProduction,
+                YAxisIndex: targetYAxisIndexEnum.PRODUCTION,
+            },
         ]
         caseList.forEach(({ YAxisIndex, target }) => {
             // Result
@@ -526,25 +688,31 @@ describe('Test echartsConsumptionOptions', () => {
     describe('getXAxisOptionEchartsConsumptionChart different Periods', () => {
         // GMT: Sunday, 1 January 2023 01:00:00
         const FirstJanTimetamp = 1672534800000
-
-        test('Default options', () => {
-            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
+        const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
+        let isProductionView = false
+        test('should return options consumption curve if the production metrics data does not exist', () => {
             const result = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.DAILY,
                 theme.palette.primary.contrastText,
+                isProductionView,
+                theme,
             )
             expect(result).toEqual({
                 xAxis: [
                     {
                         type: 'category',
                         data: ['01:00'],
+                        gridIndex: 0,
+                        position: 'bottom',
+                        show: true,
                         axisLabel: {
                             hideOverlap: true,
                             formatter: expect.anything(),
                             interval: 59,
                             rotate: 30,
+                            show: true,
                         },
                         axisLine: {
                             show: true,
@@ -558,6 +726,7 @@ describe('Test echartsConsumptionOptions', () => {
                         },
                         axisTick: {
                             alignWithLabel: true,
+                            show: true,
                         },
                         // SplitLine represents each vertical line in the grid that show an xAxisLabel value.
                         // show set to true makes visible the vertical grid lines.
@@ -573,168 +742,373 @@ describe('Test echartsConsumptionOptions', () => {
                 ],
             } as EChartsOption)
         })
-        test('Formatter DAILY', async () => {
-            // XAXIS Formatter when Daily
-            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.DAILY)
-            const xAxisDailyOption = getXAxisOptionEchartsConsumptionChart(
+        test('should return options for two curve (consumption and production) if the production metrics data exist', () => {
+            isProductionView = true
+            const result = getXAxisOptionEchartsConsumptionChart(
                 FirstJanData,
                 SwitchConsumptionButtonTypeEnum.Consumption,
                 PeriodEnum.DAILY,
                 theme.palette.primary.contrastText,
+                isProductionView,
+                theme,
             )
-            const xAxisDaily = (xAxisDailyOption.xAxis as Array<any>)![0]
-            const xAxisDailyLabel = xAxisDaily.axisLabel
-            expect(xAxisDailyLabel.formatter('01:00')).toBe('01:00')
-            expect(xAxisDaily.data).toEqual(['01:00'])
-        })
-        test('Formatter WEEKLY', async () => {
-            // XAXIS Formatter when Weekly
-            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.WEEKLY)
-            const xAxisWeeklyOption = getXAxisOptionEchartsConsumptionChart(
-                FirstJanData,
-                SwitchConsumptionButtonTypeEnum.Consumption,
-                PeriodEnum.WEEKLY,
-                theme.palette.primary.contrastText,
-            )
-            const xAxisWeekly = (xAxisWeeklyOption.xAxis as Array<any>)![0]
-            const xAxisWeeklyLabel = xAxisWeekly.axisLabel
-            expect(xAxisWeeklyLabel.formatter('Mercredi 01 Janv.')).toBe('01 janv.')
-            expect(xAxisWeekly.data).toEqual(['Dim. 1 janv.'])
-        })
-        test('Formatter MONTHLY', async () => {
-            // XAXIS Formatter when Monthly
-            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.MONTHLY)
-            const xAxisMonthlyOption = getXAxisOptionEchartsConsumptionChart(
-                FirstJanData,
-                SwitchConsumptionButtonTypeEnum.Consumption,
-                PeriodEnum.MONTHLY,
-                theme.palette.primary.contrastText,
-            )
-            const xAxisMonthly = (xAxisMonthlyOption.xAxis as Array<any>)![0]
-            const xAxisMonthlyLabel = xAxisMonthly.axisLabel
-            expect(xAxisMonthlyLabel.formatter('Samedi 03 nove.')).toBe('03 nove.')
-            expect(xAxisMonthly.data).toEqual(['Dim. 1 janv.'])
-        })
-        test('Formatter YEARLY', async () => {
-            // XAXIS Formatter when Yearly
-            const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], PeriodEnum.YEARLY)
-            const xAxisYearlyOption = getXAxisOptionEchartsConsumptionChart(
-                FirstJanData,
-                SwitchConsumptionButtonTypeEnum.Consumption,
-                PeriodEnum.YEARLY,
-                theme.palette.primary.contrastText,
-            )
-            const xAxisYearly = (xAxisYearlyOption.xAxis as Array<any>)![0]
-            const xAxisYearlyLabel = xAxisYearly.axisLabel
-            expect(xAxisYearlyLabel.formatter('Mars.')).toBe('Mars.')
-            expect(xAxisYearly.data).toEqual(['Janv.'])
-        })
-    })
-
-    test('getYAxisOptionEchartsConsumptionChart', () => {
-        const commonLineStyle = {
-            color: theme.palette.primary.contrastText,
-            type: 'dashed',
-        }
-        const commonOptions = {
-            type: 'value',
-            axisLine: {
+            const commonXAxisOptions = {
+                type: 'category',
+                data: ['01:00'],
                 axisLabel: {
+                    hideOverlap: true,
+                    rotate: 30,
+                    formatter: expect.anything(),
+                },
+                axisLine: {
+                    show: true,
+                    onZero: true,
+                    lineStyle: {
+                        type: 'solid',
+                        opacity: 1,
+                    },
+                },
+                axisTick: {
+                    alignWithLabel: true,
                     show: true,
                 },
-                onZero: true,
-                show: true,
-                lineStyle: {
-                    color: theme.palette.primary.contrastText,
-                    type: 'solid',
-                    opacity: 1,
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        type: 'dashed',
+                        opacity: 0.4,
+                    },
                 },
+            }
+            expect(result).toEqual({
+                xAxis: [
+                    {
+                        ...commonXAxisOptions,
+                        axisLabel: {
+                            ...commonXAxisOptions.axisLabel,
+                            interval: 59,
+                            show: false,
+                        },
+                        axisLine: {
+                            ...commonXAxisOptions.axisLine,
+                            lineStyle: {
+                                ...commonXAxisOptions.axisLine.lineStyle,
+                                color: theme.palette.primary.contrastText,
+                            },
+                        },
+                        splitLine: {
+                            ...commonXAxisOptions.splitLine,
+                            lineStyle: {
+                                ...commonXAxisOptions.splitLine.lineStyle,
+                                color: theme.palette.primary.contrastText,
+                            },
+                        },
+                        show: true,
+                        gridIndex: 0,
+                        position: 'top',
+                    },
+                    {
+                        ...commonXAxisOptions,
+                        axisLabel: {
+                            ...commonXAxisOptions.axisLabel,
+                            interval: 1,
+                        },
+                        axisLine: {
+                            ...commonXAxisOptions.axisLine,
+                            lineStyle: {
+                                ...commonXAxisOptions.axisLine.lineStyle,
+                                color: theme.palette.common.black,
+                            },
+                        },
+                        splitLine: {
+                            ...commonXAxisOptions.splitLine,
+                            lineStyle: {
+                                ...commonXAxisOptions.splitLine.lineStyle,
+                                color: theme.palette.common.black,
+                            },
+                        },
+                        gridIndex: 1,
+                        position: 'bottom',
+                    },
+                ],
+            } as EChartsOption)
+        })
+
+        test.each`
+            period       | data                | labelValue             | formattedLabel
+            ${'daily'}   | ${['01:00']}        | ${'01:00'}             | ${'01:00'}
+            ${'weekly'}  | ${['Dim. 1 janv.']} | ${'Mercredi 01 Janv.'} | ${'01 janv.'}
+            ${'monthly'} | ${['Dim. 1 janv.']} | ${'Samedi 03 nove.'}   | ${'03 nove.'}
+            ${'yearly'}  | ${['Janv.']}        | ${'Mars.'}             | ${'Mars.'}
+        `(
+            'should return the correct $period formatter for consumption and production curves',
+            async ({ period, data, labelValue, formattedLabel }) => {
+                const FirstJanData = getXAxisCategoriesData([FirstJanTimetamp], period)
+                const xAxisOptions = getXAxisOptionEchartsConsumptionChart(
+                    FirstJanData,
+                    SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+                    period,
+                    theme.palette.primary.contrastText,
+                    isProductionView,
+                    theme,
+                )
+                // 0 is the consumption xAxis and 1 is the production xAxis
+                ;[0, 1].forEach((xAxisIndex) => {
+                    const xAxis = (xAxisOptions.xAxis as Array<any>)![xAxisIndex]
+                    const xAxisYearlyLabel = xAxis.axisLabel
+                    expect(xAxisYearlyLabel.formatter(labelValue)).toBe(formattedLabel)
+                    expect(xAxis.data).toEqual(data)
+                })
             },
-        }
-        const result = getYAxisOptionEchartsConsumptionChart(
-            { [metricTargetsEnum.consumption]: [100, 200, 300] },
-            PeriodEnum.DAILY,
-            theme.palette.primary.contrastText, // axis Color
         )
-        expect(result).toEqual({
-            yAxis: [
-                // CONSUMPTION YAXIS
-                {
-                    ...commonOptions,
+    })
+    describe('getYAxisOptionEchartsConsumptionChart different Periods', () => {
+        let isProductionView = false
+        test('should return options consumption curve if the production metrics data does not exist', () => {
+            const commonLineStyle = {
+                color: theme.palette.primary.contrastText,
+                type: 'dashed',
+            }
+            const commonOptions = {
+                type: 'value',
+                axisLine: {
+                    axisLabel: {
+                        show: true,
+                    },
+                    onZero: true,
                     show: true,
-                    onZero: true,
-                    scale: true,
-                    position: 'left',
-                    axisLabel: {
-                        formatter: expect.anything(),
+                    lineStyle: {
+                        color: theme.palette.primary.contrastText,
+                        type: 'solid',
+                        opacity: 1,
                     },
-                    splitLine: {
+                },
+            }
+            const result = getYAxisOptionEchartsConsumptionChart(
+                { [metricTargetsEnum.consumption]: [100, 200, 300] },
+                {},
+                PeriodEnum.DAILY,
+                theme.palette.primary.contrastText, // axis Color
+                isProductionView,
+                theme,
+            )
+            expect(result).toEqual({
+                yAxis: [
+                    // CONSUMPTION YAXIS
+                    {
+                        ...commonOptions,
                         show: true,
-                        lineStyle: {
-                            ...commonLineStyle,
-                            opacity: 0.4,
+                        onZero: true,
+                        scale: true,
+                        position: 'left',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                ...commonLineStyle,
+                                opacity: 0.4,
+                            },
+                        },
+                        min: 0,
+                    },
+                    // TEMPERATURE YAXIS
+                    {
+                        ...commonOptions,
+                        show: false,
+                        scale: true,
+                        onZero: true,
+                        position: 'right',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                ...commonLineStyle,
+                                opacity: 0,
+                            },
+                        },
+                        min: 0,
+                    },
+                    // PMAX YAXIS
+                    {
+                        ...commonOptions,
+                        show: false,
+                        scale: true,
+                        onZero: true,
+                        position: 'right',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                ...commonLineStyle,
+                                opacity: 0,
+                            },
+                        },
+                        min: 0,
+                    },
+                    // EUROS YAXIS
+                    {
+                        ...commonOptions,
+                        show: false,
+                        scale: true,
+                        onZero: true,
+                        position: 'left',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                ...commonLineStyle,
+                                opacity: 0.4,
+                            },
+                        },
+                        min: 0,
+                    },
+                ],
+            } as EChartsOption)
+        })
+        test('should return options for two curve (consumption and production) if the production metrics data exist', () => {
+            isProductionView = true
+            const result = getYAxisOptionEchartsConsumptionChart(
+                { [metricTargetsEnum.consumption]: [100, 200, 300] },
+                productionDataMetrics,
+                PeriodEnum.DAILY,
+                theme.palette.primary.contrastText, // axis Color
+                isProductionView,
+                theme,
+            )
+
+            const commonYAxisOptions = {
+                type: 'value',
+                onZero: true,
+                min: 0,
+                max: 900,
+                scale: true,
+                axisLabel: {
+                    formatter: expect.anything(),
+                },
+                axisLine: {
+                    onZero: true,
+                    show: true,
+                    axisLabel: {
+                        show: true,
+                    },
+                    lineStyle: {
+                        color: theme.palette.primary.contrastText,
+                        type: 'solid',
+                        opacity: 1,
+                    },
+                },
+                show: true,
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: theme.palette.common.black,
+                        type: 'dashed',
+                    },
+                },
+            }
+
+            expect(result).toEqual({
+                yAxis: [
+                    // CONSUMPTION YAXIS
+                    {
+                        ...commonYAxisOptions,
+                        position: 'left',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: theme.palette.primary.contrastText,
+                                type: 'dashed',
+                                opacity: 0.4,
+                            },
                         },
                     },
-                    min: 0,
-                },
-                // TEMPERATURE YAXIS
-                {
-                    ...commonOptions,
-                    show: false,
-                    scale: true,
-                    onZero: true,
-                    position: 'right',
-                    axisLabel: {
-                        formatter: expect.anything(),
-                    },
-                    splitLine: {
-                        show: true,
-                        lineStyle: {
-                            ...commonLineStyle,
-                            opacity: 0,
+                    // TEMPERATURE YAXIS
+                    {
+                        ...commonYAxisOptions,
+                        show: false,
+                        position: 'right',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: theme.palette.primary.contrastText,
+                                type: 'dashed',
+                                opacity: 0,
+                            },
                         },
                     },
-                    min: 0,
-                },
-                // PMAX YAXIS
-                {
-                    ...commonOptions,
-                    show: false,
-                    scale: true,
-                    onZero: true,
-                    position: 'right',
-                    axisLabel: {
-                        formatter: expect.anything(),
-                    },
-                    splitLine: {
-                        show: true,
-                        lineStyle: {
-                            ...commonLineStyle,
-                            opacity: 0,
+                    // PMAX YAXIS
+                    {
+                        ...commonYAxisOptions,
+                        show: false,
+                        position: 'right',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: theme.palette.primary.contrastText,
+                                type: 'dashed',
+                                opacity: 0,
+                            },
                         },
                     },
-                    min: 0,
-                },
-                // EUROS YAXIS
-                {
-                    ...commonOptions,
-                    show: false,
-                    scale: true,
-                    onZero: true,
-                    position: 'left',
-                    axisLabel: {
-                        formatter: expect.anything(),
-                    },
-                    splitLine: {
-                        show: true,
-                        lineStyle: {
-                            ...commonLineStyle,
-                            opacity: 0.4,
+                    // EUROS YAXIS
+                    {
+                        ...commonYAxisOptions,
+                        show: false,
+                        position: 'left',
+                        axisLabel: {
+                            formatter: expect.anything(),
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: theme.palette.primary.contrastText,
+                                type: 'dashed',
+                                opacity: 0.4,
+                            },
                         },
                     },
-                    min: 0,
-                },
-            ],
-        } as EChartsOption)
+                    // PRODUCTION YAXIS
+                    {
+                        ...commonYAxisOptions,
+                        axisLine: {
+                            ...commonYAxisOptions.axisLine,
+                            lineStyle: {
+                                ...commonYAxisOptions.axisLine.lineStyle,
+                                color: theme.palette.common.black,
+                            },
+                        },
+                        // label position
+                        position: 'left',
+                        splitLine: {
+                            ...commonYAxisOptions.splitLine,
+                            lineStyle: {
+                                ...commonYAxisOptions.splitLine.lineStyle,
+                                color: theme.palette.common.black,
+                                opacity: 0.4,
+                            },
+                        },
+                        gridIndex: 1,
+                        inverse: true,
+                    },
+                ],
+            } as EChartsOption)
+        })
     })
 })
