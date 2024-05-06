@@ -53,7 +53,7 @@ export default function EquipmentsUsageForm({
     housingEquipmentsDetails,
     addHousingEquipment,
     title,
-}: EquipmentsUsageFormProps) {
+}: Readonly<EquipmentsUsageFormProps>) {
     const history = useHistory()
     const theme = useTheme()
     const [isSubmitting, setIsSubmitting] = useState(false)
