@@ -132,7 +132,7 @@ export const EquipmentMeasurementsResults = ({
                 </Table>
             </TableContainer>
 
-            {equipmentsNumber && stepToStartFrom && (
+            {equipmentsNumber > 0 && stepToStartFrom && (
                 <MicrowaveMeasurement
                     housingEquipmentId={housingEquipmentId!}
                     equipmentsNumber={equipmentsNumber!}

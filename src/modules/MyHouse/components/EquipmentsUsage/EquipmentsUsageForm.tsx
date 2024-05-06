@@ -43,11 +43,17 @@ const months = {
 /**
  * Equipment usage component.
  *
- * @param props Equipment usage props.
+ * @param root0 N/A.
+ * @param root0.housingEquipmentsDetails Housing equipments details array.
+ * @param root0.addHousingEquipment Add housing equipment callback.
+ * @param root0.title Title of the equipment.
  * @returns Equipment usage JSX.
  */
-export default function EquipmentsUsageForm(props: EquipmentsUsageFormProps) {
-    const { housingEquipmentsDetails, addHousingEquipment, title } = props
+export default function EquipmentsUsageForm({
+    housingEquipmentsDetails,
+    addHousingEquipment,
+    title,
+}: Readonly<EquipmentsUsageFormProps>) {
     const history = useHistory()
     const theme = useTheme()
     const [isSubmitting, setIsSubmitting] = useState(false)
