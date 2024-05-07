@@ -566,16 +566,7 @@ ConsumptionChartContainerProps) => {
             )}
 
             <div className="flex flex-col items-start gap-8 my-8">
-                {period === 'daily' && (
-                    <ConsumptionChartHeaderButton
-                        text={NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT}
-                        hasBorder
-                        clickHandler={navigateToConsumptionLabelizationPage}
-                        data-testid="linkToLabelizationPage"
-                    />
-                )}
-
-                {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
+                {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ? (
                     <>
                         <ConsumptionChartHeaderButton
                             text={NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT}
@@ -594,6 +585,15 @@ ConsumptionChartContainerProps) => {
                             data-testid="solarInstallationRecommendationButton"
                         />
                     </>
+                ) : (
+                    period === 'daily' && (
+                        <ConsumptionChartHeaderButton
+                            text={NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT}
+                            hasBorder
+                            clickHandler={navigateToConsumptionLabelizationPage}
+                            data-testid="linkToLabelizationPage"
+                        />
+                    )
                 )}
             </div>
 
