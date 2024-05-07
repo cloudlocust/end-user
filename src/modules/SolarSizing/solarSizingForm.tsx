@@ -18,6 +18,7 @@ import convert from 'convert-units'
 import type { AxiosResponse } from 'axios'
 import floor from 'lodash/floor'
 import clsx from 'clsx'
+import isNumber from 'lodash/isNumber'
 
 const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
 
@@ -131,13 +132,13 @@ export default function SolarSizingForm() {
 
     const isDataReadyToBeShown = useMemo(() => {
         return (
-            !isNull(solarSizingData) &&
-            Number(annualProduction) &&
-            Number(autoConsumptionPercentage) &&
-            Number(averageConsumptionFromAnualProduction) &&
-            Number(autoProductionPercentage) &&
-            Number(averageProducationFromAnualProduction) &&
-            Number(nominalPower)
+            solarSizingData &&
+            isNumber(annualProduction) &&
+            isNumber(autoConsumptionPercentage) &&
+            isNumber(averageConsumptionFromAnualProduction) &&
+            isNumber(autoProductionPercentage) &&
+            isNumber(averageProducationFromAnualProduction) &&
+            isNumber(nominalPower)
         )
     }, [
         annualProduction,
@@ -150,7 +151,7 @@ export default function SolarSizingForm() {
     ])
 
     useEffect(() => {
-        if (!isNull(reduxSolarSizingDetails)) {
+        if (reduxSolarSizingDetails) {
             setOrientationValue(reduxSolarSizingDetails.orientation)
             setInclinationValue(reduxSolarSizingDetails.inclination)
         }
@@ -160,11 +161,12 @@ export default function SolarSizingForm() {
         <>
             <div
                 className={clsx(
-                    'w-full grid grid-rows-1 md:grid-cols-8 gap-10',
+                    'w-full grid grid-rows-1 gap-10',
+                    Boolean(isDataReadyToBeShown) ? 'md:grid-cols-8' : 'md:grid-cols-6',
                     Boolean(isDataReadyToBeShown) && 'grid-rows-2',
                 )}
             >
-                <div className={clsx(Boolean(isDataReadyToBeShown) ? 'col-span-6' : 'col-span-8')}>
+                <div className={clsx(Boolean(isDataReadyToBeShown) ? 'col-span-5' : 'col-span-6')}>
                     <Form onSubmit={handleFormSubmit} defaultValues={formDefaultValues}>
                         <TextField
                             className="mb-10"
@@ -223,7 +225,7 @@ export default function SolarSizingForm() {
                     </Form>
                 </div>
                 {Boolean(isDataReadyToBeShown) && (
-                    <div className="col-span-4">
+                    <div className="col-span-3">
                         <Typography paragraph className="mb-10 text-14">
                             {`Votre maison peut être équipée de `}
                             <strong>{potentialSolarPanelPerSurface}</strong>
