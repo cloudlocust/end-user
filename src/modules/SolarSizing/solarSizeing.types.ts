@@ -5,7 +5,7 @@ export interface ISolarSizing {
     /**
      * Solar sizing id.
      */
-    id: number
+    id?: number
     /**
      * Surface measured in m2.
      */
@@ -21,29 +21,29 @@ export interface ISolarSizing {
     /**
      * Panel Powxer measured in Wc.
      */
-    panelPower: number
+    panelPower?: number
     /**
      * Panel Efficiency measured in %.
      */
-    panelEfficiency: number
+    panelEfficiency?: number
     /**
      * Panel Area measured in m2.
      */
-    panelArea: number
+    panelArea?: number
     /**
      * Panel Width measured in m.
      */
-    panelWdth: number
+    panelWdth?: number
     /***
      * Measured in Euro (€).
      */
-    panelPrice: number
+    panelPrice?: number
 }
 
 /**
  * Represents the solar sizing information without the panelPower, panelEfficiency, panelArea, panelWdth, and panelPrice.
  */
-export type AddSolarSizing = Exclude<
+export type AddUpdateSolarSizingType = Omit<
     ISolarSizing,
     'panelPower' | 'panelEfficiency' | 'panelArea' | 'panelWdth' | 'panelPrice'
 >
@@ -52,7 +52,7 @@ export type AddSolarSizing = Exclude<
  * Represents the housing solar sizing.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type HousingSolarSizing = {
+export type AllHousingSolarSizingType = {
     /**
      * Solar sizing ids.
      */
@@ -82,3 +82,25 @@ export type HousingSolarSizing = {
      */
     nominalPower: number
 }
+
+/**
+ * Represents the solar sizing form type.
+ */
+export type SolarSizingFormType =
+    /**
+     *
+     */
+    {
+        /**
+         * Surface measured in m2.
+         */
+        surface: string | number
+        /**
+         * Orientation measured in degrees.
+         */
+        orientation: string | number
+        /**
+         * Inclination measured in degrees.
+         */
+        inclination: string | number
+    }
