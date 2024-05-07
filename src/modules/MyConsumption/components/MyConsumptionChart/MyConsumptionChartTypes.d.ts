@@ -1,9 +1,15 @@
 import { RefObject } from 'react'
-import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import {
+    metricFiltersType,
+    metricIntervalType,
+    metricRangeType,
+    targetTimestampsValuesFormat,
+} from 'src/modules/Metrics/Metrics'
 import { Dispatch, SetStateAction } from 'react'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { PeriodEnum, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import ReactECharts from 'echarts-for-react'
 import { TooltipFormatter } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { IEnedisSgeConsent } from 'src/modules/Consents/Consents'
 
 /**
  * Period of time type, with start and end time.
