@@ -19,13 +19,16 @@ const mockUser: IUser = applyCamelCase(TEST_SUCCESS_USER)
 const userFullName = `${mockUser?.firstName} ${mockUser?.lastName}`
 
 const FAQ_MENU_ITEM_TEXT = 'FAQ'
-const PROFILE_MENU_ITEM_TEXT = 'Gestion de Profil'
+const PROFILE_MENU_ITEM_TEXT = 'Mon profil'
 const PROFILE_REDIRECT_URL = '/profile-management'
-const MENTIONS_MENU_ITEM_TEXT = 'Mentions'
+// TODO: it will activate after the implementation of the page in the next PR.
+// const MY_CONTRACT_NRLINK_MENU_ITEM_TEXT = 'Mon contract / nrLINK'
+// const MY_CONTRACT_NRLINK_REDIRECT_URL = '/nrlink-contract-management'
+const MENTIONS_MENU_ITEM_TEXT = 'Mentions légales'
 const MENTIONS_REDIRECT_URL = '/mentions'
-const ALERTS_MENU_ITEM_TEXT = 'Gestion des alertes'
+const ALERTS_MENU_ITEM_TEXT = 'Mes alertes'
 const ALERTS_REDIRECT_URL = URL_ALERTS
-const LOGOUT_MENU_ITEM_TEXT = 'Déconnexion'
+const LOGOUT_MENU_ITEM_TEXT = 'Me déconnecter'
 const LOGOUT_REDIRECT_URL = '/login'
 /**
  * Init the redux store.
@@ -169,11 +172,12 @@ describe('test UserMenu component', () => {
             expect(mockPushHistory).toHaveBeenCalledWith(PROFILE_REDIRECT_URL)
         })
 
-        // Clicking on Profile Menu ITem
-        userEvent.click(getByText(PROFILE_MENU_ITEM_TEXT))
-        await waitFor(() => {
-            expect(mockPushHistory).toHaveBeenCalledWith(PROFILE_REDIRECT_URL)
-        })
+        // Clicking on My Contract / nrLINK Menu ITem
+        // TODO: it will activate after the implementation of the page in the next PR.
+        // userEvent.click(getByText(MY_CONTRACT_NRLINK_MENU_ITEM_TEXT))
+        // await waitFor(() => {
+        //     expect(mockPushHistory).toHaveBeenCalledWith(MY_CONTRACT_NRLINK_REDIRECT_URL)
+        // })
 
         // Clicking on Mentions Menu ITem
         userEvent.click(getByText(MENTIONS_MENU_ITEM_TEXT))
