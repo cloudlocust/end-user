@@ -518,7 +518,7 @@ ConsumptionChartContainerProps) => {
                 </div>
             )}
             <div
-                className="px-16 mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
+                className="mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
             >
                 {period !== 'daily' && (
