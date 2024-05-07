@@ -14,7 +14,6 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import {
     ConsumptionChartContainer,
@@ -99,7 +98,6 @@ let mockRange = {
     to: '2022-06-04T23:59:59.999Z',
 }
 
-let mockPeriod: periodType = 'daily'
 let mockMetricsInterval: metricIntervalType = '1m'
 
 let echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
@@ -108,7 +106,7 @@ let echartsConsumptionChartContainerProps: ConsumptionChartContainerProps = {
     isSolarProductionConsentOff: false,
     hasMissingHousingContracts: false,
     metricsInterval: mockMetricsInterval,
-    period: mockPeriod,
+    period: PeriodEnum.DAILY,
     range: mockRange,
     isIdleShown: false,
     setMetricsInterval: jest.fn(),
@@ -235,7 +233,7 @@ describe('MyConsumptionContainer test', () => {
     afterEach(cleanup)
 
     test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
-        mockPeriod = 'daily'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
         echartsConsumptionChartContainerProps.metricsInterval = '1m'
 
         const { getByText } = reduxedRender(
@@ -278,7 +276,7 @@ describe('MyConsumptionContainer test', () => {
         20000,
     )
     test('When hasMissingHousingContracts and isEurosConsumption, message is shown', async () => {
-        echartsConsumptionChartContainerProps.period = 'weekly'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
         echartsConsumptionChartContainerProps.metricsInterval = '1d'
         echartsConsumptionChartContainerProps.hasMissingHousingContracts = true
         const { getByText, getByTestId, getByLabelText } = reduxedRender(
@@ -311,7 +309,7 @@ describe('MyConsumptionContainer test', () => {
     }, 20000)
 
     test('When the data metrics not exist in yearly period, a warning message is shown', async () => {
-        echartsConsumptionChartContainerProps.period = 'yearly'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.YEARLY
         echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
         echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
         mockEnedisConsent = mockEnedisSgeConsentConnected
@@ -326,7 +324,7 @@ describe('MyConsumptionContainer test', () => {
         expect(getByText(MESSING_DATA_WARNING_TEXT)).toBeInTheDocument()
     })
     test('When the data metrics is partially exist in yearly period, a warning message is shown', async () => {
-        echartsConsumptionChartContainerProps.period = 'yearly'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.YEARLY
         echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
         echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
         mockEnedisConsent = mockEnedisSgeConsentConnected
@@ -349,7 +347,7 @@ describe('MyConsumptionContainer test', () => {
     })
 
     test('When the all data metrics is exist in yearly period, a warning message must be not shown', async () => {
-        echartsConsumptionChartContainerProps.period = 'yearly'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.YEARLY
         echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
         echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
         mockEnedisConsent = mockEnedisSgeConsentConnected
@@ -372,7 +370,7 @@ describe('MyConsumptionContainer test', () => {
     })
 
     test('When period is daily, EurosConsumption and pMax buttons should not be shown', async () => {
-        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
         echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
         const { getByText, queryByTestId, getByLabelText, getAllByRole, queryByText } = reduxedRender(
             <Router>
@@ -395,7 +393,7 @@ describe('MyConsumptionContainer test', () => {
     })
 
     test('When period is not daily and enedisSgeConsent is not Connected, pMax button should not be shown, enedisSgeConsent warning is shown', async () => {
-        echartsConsumptionChartContainerProps.period = 'weekly'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
         echartsConsumptionChartContainerProps.metricsInterval = mockGetMetricsWithParamsValues.interval
         echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentOff
         mockEnedisConsent = mockEnedisSgeConsentOff
@@ -454,7 +452,7 @@ describe('MyConsumptionContainer test', () => {
     })
 
     test('When daily period, no button idle', async () => {
-        echartsConsumptionChartContainerProps.period = 'daily'
+        echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
         echartsConsumptionChartContainerProps.metricsInterval = '1m' as metricIntervalType
 
         const { queryByText } = reduxedRender(
@@ -555,7 +553,7 @@ describe('MyConsumptionContainer test', () => {
 
     describe('TemperatureOrPmax TargetMenuGroup Test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
-            echartsConsumptionChartContainerProps.period = 'weekly'
+            echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
             echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
 
             const { getByLabelText, getAllByRole } = reduxedRender(
@@ -611,7 +609,7 @@ describe('MyConsumptionContainer test', () => {
         )
 
         test('cases when SwitchConsumption button is not shown: case: Daily without Solar', async () => {
-            echartsConsumptionChartContainerProps.period = 'daily'
+            echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
             echartsConsumptionChartContainerProps.metricsInterval = '1m'
             echartsConsumptionChartContainerProps.isSolarProductionConsentOff = true
             echartsConsumptionChartContainerProps.isIdleShown = false
@@ -629,7 +627,9 @@ describe('MyConsumptionContainer test', () => {
     })
 
     describe('Navigate to labelization page button test', () => {
-        test('should show the button to navigate to the labelization page', () => {
+        test('should show the button to navigate to the labelization page on consumption view and daily period', () => {
+            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+            echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
             const { getByTestId } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
@@ -642,6 +642,8 @@ describe('MyConsumptionContainer test', () => {
         })
 
         test('should navigate to the labelization page when the button is clicked', async () => {
+            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+            echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
             const { getByTestId } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
