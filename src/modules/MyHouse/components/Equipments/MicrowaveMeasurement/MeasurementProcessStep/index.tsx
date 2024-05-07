@@ -7,6 +7,7 @@ import { measurementStatusEnum } from 'src/modules/MyHouse/components/Equipments
 import { MeasurementProcessStepProps } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/MeasurementProcessStep'
 import { MeasurementProgress } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProgress'
 import { ResponseMessage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MeasurementProcessStep/ResponseMessage'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * MeasurementProcessStep component.
@@ -45,7 +46,7 @@ export const MeasurementProcessStep = ({
      * Click handler for the button "Voir le résultat".
      */
     const handleFinishButtonClick = () => {
-        stepSetter(4)
+        stepSetter(measurementStepsEnum.RESULT_STEP)
     }
 
     useEffect(() => {
@@ -102,7 +103,7 @@ export const MeasurementProcessStep = ({
                 {measurementStatus?.status !== measurementStatusEnum.FAILED ? (
                     <Button
                         variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                         onClick={handleFinishButtonClick}
                         disabled={measurementStatus?.status !== measurementStatusEnum.SUCCESS}
                         children={formatMessage({
@@ -113,7 +114,7 @@ export const MeasurementProcessStep = ({
                 ) : (
                     <Button
                         variant="contained"
-                        sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                        sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                         onClick={() => restartMeasurementFromBeginning()}
                         children={formatMessage({
                             id: 'Recommencer la mesure',

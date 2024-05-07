@@ -16,7 +16,10 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
-import { ConsumptionChartContainer } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
+import {
+    ConsumptionChartContainer,
+    URL_SOLAR_INSTALLATION_RECOMMENDATION,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartContainer'
 import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import { setupJestCanvasMock } from 'jest-canvas-mock'
 import { SwitchConsumptionButtonLabelEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
@@ -119,6 +122,18 @@ const mockGetMetricsWithParamsValues: getMetricsWithParamsType = {
     range: mockRange,
     targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
 }
+
+// Mock useHistory hook.
+const mockPushHistory = jest.fn()
+
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useHistory: () => ({
+        push: mockPushHistory,
+    }),
+}))
+
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -613,8 +628,36 @@ describe('MyConsumptionContainer test', () => {
         })
     })
 
-    describe('SolarInstallationRecommendationButton Test', () => {
-        test('should SolarInstallationRecommendation Button must be shown on production view', async () => {
+    describe('Navigate to labelization page button test', () => {
+        test('should show the button to navigate to the labelization page', () => {
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            const button = getByTestId('linkToLabelizationPage')
+            expect(button).toBeInTheDocument()
+            expect(button).toHaveTextContent('Identifier un pic de conso')
+        })
+
+        test('should navigate to the labelization page when the button is clicked', async () => {
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            const button = getByTestId('linkToLabelizationPage')
+            userEvent.click(button)
+            await waitFor(() => {
+                expect(mockPushHistory).toHaveBeenCalledWith('/my-consumption/labelization')
+            })
+        })
+    })
+
+    describe('Navigate to solar installation form button test', () => {
+        test('should show the button to navigate to the solar installation form on production view', () => {
             echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
             mockEnedisConsent = mockEnedisSgeConsentConnected
             mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
@@ -624,7 +667,69 @@ describe('MyConsumptionContainer test', () => {
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
-            expect(getByTestId('solarInstallationRecommendationButton')).toBeInTheDocument()
+            const button = getByTestId('linkToSolarInstallationForm')
+            expect(button).toBeInTheDocument()
+            expect(button).toHaveTextContent('⚙️ Mon installation solaire')
+        })
+
+        test('should navigate to the solar installation form when the button is clicked', async () => {
+            echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+            mockEnedisConsent = mockEnedisSgeConsentConnected
+            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            const button = getByTestId('linkToSolarInstallationForm')
+            userEvent.click(button)
+            await waitFor(() => {
+                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses/1/information', {
+                    focusOnInstallationForm: true,
+                })
+            })
+        })
+    })
+
+    describe('Solar installation recommendation button test', () => {
+        test('should SolarInstallationRecommendation Button must be shown on production view', () => {
+            echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+            mockEnedisConsent = mockEnedisSgeConsentConnected
+            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            const button = getByTestId('solarInstallationRecommendationButton')
+            expect(button).toBeInTheDocument()
+            expect(button).toHaveTextContent('💖 Recommander mon installateur')
+        })
+
+        test('should open new tab when button is clicked', async () => {
+            echartsConsumptionChartContainerProps.enedisSgeConsent = mockEnedisSgeConsentConnected
+            mockEnedisConsent = mockEnedisSgeConsentConnected
+            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+            const originalOpen = window.open
+            window.open = jest.fn()
+            const { getByTestId } = reduxedRender(
+                <Router>
+                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            const button = getByTestId('solarInstallationRecommendationButton')
+            userEvent.click(button)
+            await waitFor(() => {
+                expect(window.open).toHaveBeenCalledWith(
+                    URL_SOLAR_INSTALLATION_RECOMMENDATION,
+                    '_blank',
+                    'noopener noreferrer',
+                )
+                window.open = originalOpen
+            })
         })
     })
 })

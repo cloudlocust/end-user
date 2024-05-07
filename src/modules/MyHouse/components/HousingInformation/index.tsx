@@ -1,11 +1,12 @@
 import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
 import { ThemeProvider, useTheme } from '@mui/material'
 import { Button, Icon } from '@mui/material'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { AccomodationTab } from 'src/modules/MyHouse/components/Accomodation/AccomodationTab'
 import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
+import { HousingInformationPageLocationState } from 'src/modules/MyHouse/components/HousingInformation/HousingInformation.type'
 
 /**
  * Page component for housing information.
@@ -17,6 +18,9 @@ import { InstallationTab } from 'src/modules/MyHouse/components/Installation/Ins
 export const HousingInformation = () => {
     const theme = useTheme()
     const history = useHistory()
+    const location = useLocation<HousingInformationPageLocationState>()
+    const { focusOnInstallationForm } = location.state
+
     const tabsContent = [
         {
             tabTitle: 'Ma maison',
@@ -24,7 +28,7 @@ export const HousingInformation = () => {
             tabContent: <AccomodationTab />,
         },
         {
-            tabTitle: 'Info Installation',
+            tabTitle: 'Mes énergies',
             tabSlug: 'installation',
             tabContent: <InstallationTab />,
         },
@@ -61,6 +65,7 @@ export const HousingInformation = () => {
                     minHeight: '0',
                 }}
                 isUseRouting={false}
+                initialTabSlug={focusOnInstallationForm ? 'installation' : undefined}
             />
         </ThemeProvider>
     )
