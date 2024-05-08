@@ -47,6 +47,7 @@ export default function SolarSizingForm() {
     const [inclinationValue, setInclinationValue] = useState<number | null>(null)
     const [potentialSolarPanelPerSurface, setPotentialSolarPanelPerSurface] = useState<number | null>(null)
     const [solarSizingData, setSolarSizingData] = useState<AllHousingSolarSizingType | null>(null)
+    const [isCalculating, setIsCalculating] = useState<boolean>(false)
 
     /**
      * On change handler for the Orientation value.
@@ -75,10 +76,13 @@ export default function SolarSizingForm() {
         if (response.status === 200 || response.status === 201) {
             dispatch.housingModel.setSolarSizing(response.data)
             setPotentialSolarPanelPerSurface(Math.floor(response.data.surface / oneSolarPanelSurface))
+            setIsCalculating(true)
             const allHousingSolarSizingResponse = await fetchAllHousingSolarSizing()
+
             if (allHousingSolarSizingResponse.data?.status === 200) {
                 setSolarSizingData(allHousingSolarSizingResponse.data.data)
             }
+            setIsCalculating(false)
         }
     }
 
@@ -131,14 +135,14 @@ export default function SolarSizingForm() {
     }
 
     const isDataReadyToBeShown = useMemo(() => {
-        return (
+        return Boolean(
             solarSizingData &&
-            isNumber(annualProduction) &&
-            isNumber(autoConsumptionPercentage) &&
-            isNumber(averageConsumptionFromAnualProduction) &&
-            isNumber(autoProductionPercentage) &&
-            isNumber(averageProducationFromAnualProduction) &&
-            isNumber(nominalPower)
+                isNumber(annualProduction) &&
+                isNumber(autoConsumptionPercentage) &&
+                isNumber(averageConsumptionFromAnualProduction) &&
+                isNumber(autoProductionPercentage) &&
+                isNumber(averageProducationFromAnualProduction) &&
+                isNumber(nominalPower),
         )
     }, [
         annualProduction,
@@ -158,73 +162,79 @@ export default function SolarSizingForm() {
     }, [reduxSolarSizingDetails])
 
     return (
-        <>
-            <div
-                className={clsx(
-                    'w-full grid grid-rows-1 gap-10',
-                    Boolean(isDataReadyToBeShown) ? 'md:grid-cols-8' : 'md:grid-cols-6',
-                    Boolean(isDataReadyToBeShown) && 'grid-rows-2',
-                )}
-            >
-                <div className={clsx(Boolean(isDataReadyToBeShown) ? 'col-span-5' : 'col-span-6')}>
-                    <Form onSubmit={handleFormSubmit} defaultValues={formDefaultValues}>
-                        <TextField
-                            className="mb-10"
-                            name="surface"
-                            label="Dimensions de ma toiture"
-                            placeholder="m2"
-                            fullWidth
-                            type="number"
-                            validateFunctions={[requiredBuilder()]}
-                            // No negative numbers
-                            inputProps={{ min: '0' }}
+        <div
+            className={clsx(
+                'w-full grid grid-rows-1 gap-10',
+                isDataReadyToBeShown ? 'md:grid-cols-8' : 'md:grid-cols-6',
+                isDataReadyToBeShown && 'grid-rows-2',
+            )}
+        >
+            <div className={isDataReadyToBeShown ? 'col-span-5' : 'col-span-6'}>
+                <Form onSubmit={handleFormSubmit} defaultValues={formDefaultValues}>
+                    <TextField
+                        className="mb-10"
+                        name="surface"
+                        label="Dimensions de ma toiture"
+                        placeholder="m2"
+                        fullWidth
+                        type="number"
+                        validateFunctions={[requiredBuilder()]}
+                        // No negative numbers
+                        inputProps={{ min: '0' }}
+                    />
+                    <div className="flex flex-col full-w mb-14">
+                        <Typography className="mb-3 text-14 font-medium">Orientation :</Typography>
+                        <CustomRadioGroup
+                            data-testid="orientation-radio-group"
+                            boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
+                            elements={[
+                                { value: '180', label: 'Nord' },
+                                { value: '135', label: 'Nord-Est' },
+                                { value: '90', label: 'Est' },
+                                { value: '45', label: 'Sud-Est' },
+                                { value: '0', label: 'Sud' },
+                                { value: '-45', label: 'Sud-Ouest' },
+                                { value: '-90', label: 'Ouest' },
+                                { value: '-135', label: 'Nord-Ouest' },
+                            ]}
+                            value={orientationValue?.toString()}
+                            onValueChange={onOrientationValueChange}
                         />
-                        <div className="flex flex-col full-w mb-14">
-                            <Typography className="mb-3 text-14 font-medium">Orientation :</Typography>
-                            <CustomRadioGroup
-                                data-testid="orientation-radio-group"
-                                boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
-                                elements={[
-                                    { value: '180', label: 'Nord' },
-                                    { value: '135', label: 'Nord-Est' },
-                                    { value: '90', label: 'Est' },
-                                    { value: '45', label: 'Sud-Est' },
-                                    { value: '0', label: 'Sud' },
-                                    { value: '-45', label: 'Sud-Ouest' },
-                                    { value: '-90', label: 'Ouest' },
-                                    { value: '-135', label: 'Nord-Ouest' },
-                                ]}
-                                value={orientationValue?.toString()}
-                                onValueChange={onOrientationValueChange}
-                            />
-                        </div>
-                        <div className="flex flex-col full-w mb-14">
-                            <Typography className="mb-3 text-14 font-medium">Inclinaison :</Typography>
-                            <CustomRadioGroup
-                                data-testid="inclination-radio-group"
-                                boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
-                                elements={[
-                                    { value: '0', label: '0%' },
-                                    { value: '15', label: '15%' },
-                                    { value: '30', label: '30%' },
-                                    { value: '40', label: '40%' },
-                                ]}
-                                value={inclinationValue?.toString()}
-                                onValueChange={onInclinationValueChange}
-                            />
-                        </div>
-                        <ButtonLoader
-                            className="mt-10"
-                            type="submit"
-                            fullWidth
-                            inProgress={addSolarSizing.isLoading || updateHousingSolarSizingBySolarSizingId.isLoading}
-                            disabled={isNull(orientationValue) || isNull(inclinationValue)}
-                        >
-                            <Typography>Simuler mon installation solaire</Typography>
-                        </ButtonLoader>
-                    </Form>
+                    </div>
+                    <div className="flex flex-col full-w mb-14">
+                        <Typography className="mb-3 text-14 font-medium">Inclinaison :</Typography>
+                        <CustomRadioGroup
+                            data-testid="inclination-radio-group"
+                            boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
+                            elements={[
+                                { value: '0', label: '0%' },
+                                { value: '15', label: '15%' },
+                                { value: '30', label: '30%' },
+                                { value: '40', label: '40%' },
+                            ]}
+                            value={inclinationValue?.toString()}
+                            onValueChange={onInclinationValueChange}
+                        />
+                    </div>
+                    <ButtonLoader
+                        className="mt-10"
+                        type="submit"
+                        fullWidth
+                        inProgress={addSolarSizing.isLoading || updateHousingSolarSizingBySolarSizingId.isLoading}
+                        disabled={isNull(orientationValue) || isNull(inclinationValue)}
+                    >
+                        <Typography>Simuler mon installation solaire</Typography>
+                    </ButtonLoader>
+                </Form>
+            </div>
+            {isCalculating ? (
+                <div className="col-span-3">
+                    <Typography paragraph className="mb-10 text-14">
+                        Calcul en cours...
+                    </Typography>
                 </div>
-                {Boolean(isDataReadyToBeShown) && (
+            ) : (
+                isDataReadyToBeShown && (
                     <div className="col-span-3">
                         <Typography paragraph className="mb-10 text-14">
                             {`Votre maison peut être équipée de `}
@@ -242,8 +252,8 @@ export default function SolarSizingForm() {
                             {` MWh`}
                         </Typography>
                     </div>
-                )}
-            </div>
-        </>
+                )
+            )}
+        </div>
     )
 }
