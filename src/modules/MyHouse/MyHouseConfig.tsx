@@ -63,7 +63,7 @@ export const deleteAddFeatureState = window._env_.REACT_APP_ADD_DELETE_HOUSING_F
 /**
  * Env Variable to know if the equipments and accomodation feature is enabled.
  */
-export const equipmentsAccomodationFeatureState =
+export const isEquipmentsAccomodationFeatureDisabled =
     window._env_.REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE === 'disabled'
 
 /**
@@ -221,7 +221,7 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_INFORMATION,
-                        disabled: equipmentsAccomodationFeatureState,
+                        disabled: isEquipmentsAccomodationFeatureDisabled,
                     },
                 },
             },
