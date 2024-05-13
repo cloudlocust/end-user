@@ -452,7 +452,12 @@ describe('getDefaultConsumptionTargets tests', () => {
         switchButtonType = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
         const result = getDefaultConsumptionTargets(switchButtonType)
 
-        expect(result).toStrictEqual([metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption])
+        expect(result).toStrictEqual([
+            metricTargetsEnum.autoconsumption,
+            metricTargetsEnum.consumption,
+            metricTargetsEnum.injectedProduction,
+            metricTargetsEnum.totalProduction,
+        ])
     })
 })
 

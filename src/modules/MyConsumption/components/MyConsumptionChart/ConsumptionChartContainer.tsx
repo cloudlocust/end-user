@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 import dayjs from 'dayjs'
 import { useHistory } from 'react-router-dom'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
@@ -47,8 +49,6 @@ import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyCo
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -257,7 +257,12 @@ ConsumptionChartContainerProps) => {
         }
         return isEurosButtonToggled
             ? eurosConsumptionTargets
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+            : [
+                  metricTargetsEnum.autoconsumption,
+                  metricTargetsEnum.consumption,
+                  metricTargetsEnum.injectedProduction,
+                  metricTargetsEnum.totalProduction,
+              ]
     }, [isEurosButtonToggled, period, setMetricsInterval])
 
     useEffect(() => {
@@ -612,26 +617,28 @@ ConsumptionChartContainerProps) => {
                             </Typography>
                         </div>
                     )}
-                    <MyConsumptionChart
-                        data={consumptionChartData}
-                        period={period}
-                        axisColor={theme.palette.common.black}
-                        tooltipFormatter={(
-                            params: EChartTooltipFormatterParams,
-                            valueFormatter?: TooltipValueFormatter,
-                        ) =>
-                            renderToStaticMarkup(
-                                <ConsumptionChartTooltip
-                                    params={params}
-                                    valueFormatter={valueFormatter}
-                                    getTotalConsumption={getTotalConsumption}
-                                    getTotalEuroCost={getTotalEuroCost}
-                                    onDisplayTooltipLabel={onDisplayTooltipLabel}
-                                    renderComponentOnMissingLabels={renderComponentOnMissingLabels}
-                                />,
-                            )
-                        }
-                    />
+                    <div className="relative">
+                        <MyConsumptionChart
+                            data={consumptionChartData}
+                            period={period}
+                            axisColor={theme.palette.common.black}
+                            tooltipFormatter={(
+                                params: EChartTooltipFormatterParams,
+                                valueFormatter?: TooltipValueFormatter,
+                            ) =>
+                                renderToStaticMarkup(
+                                    <ConsumptionChartTooltip
+                                        params={params}
+                                        valueFormatter={valueFormatter}
+                                        getTotalConsumption={getTotalConsumption}
+                                        getTotalEuroCost={getTotalEuroCost}
+                                        onDisplayTooltipLabel={onDisplayTooltipLabel}
+                                        renderComponentOnMissingLabels={renderComponentOnMissingLabels}
+                                    />,
+                                )
+                            }
+                        />
+                    </div>
                 </>
             )}
             {period === PeriodEnum.YEARLY && !isMetricsLoading && !checkIfAllYearlyDataExist() && (
