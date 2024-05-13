@@ -230,7 +230,7 @@ describe('MyConsumptionContainer test', () => {
     // Unmounts React trees after each test.
     afterEach(cleanup)
 
-    test('onLoad, getMetrics is called two times, one with default targets of autoconsumption and then all targets.', async () => {
+    test('onLoad getMetrics with isSolarProductionConsentOff false is called two times, one with default targets of autoconsumption and then all targets.', async () => {
         echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
         echartsConsumptionChartContainerProps.metricsInterval = '1m'
 

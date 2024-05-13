@@ -7,7 +7,7 @@ module.exports = {
             jsx: true, // Allows for the parsing of JSX
         },
     },
-    plugins: ['css-modules', 'sonarjs'],
+    plugins: ['css-modules', 'sonarjs', 'import'],
     extends: [
         'react-app',
         'react-app/jest',
@@ -65,6 +65,7 @@ module.exports = {
                 ],
             },
         ],
+        'import/no-cycle': ['error', { maxDepth: '∞', ignoreExternal: true }],
     },
     // overrides: [
     //     {

@@ -38,6 +38,12 @@ export type HousingEquipmentType =
         equipmentModel?: string | null
         // eslint-disable-next-line jsdoc/require-jsdoc
         yearOfPurchase?: number | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentLabel?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentTitle?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentId?: number
     }
 
 /**
