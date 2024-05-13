@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices'
 import { HousingDetailsCard } from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
 import {
     HouseDetailsElementType,
@@ -15,7 +14,7 @@ import { ReactComponent as VitroceramicIcon } from 'src/assets/images/content/ho
 import { ReactComponent as InductionIcon } from 'src/assets/images/content/housing/Induction.svg'
 import { ReactComponent as OtherIcon } from 'src/assets/images/content/housing/Other.svg'
 import SvgIcon from '@mui/material/SvgIcon'
-import { useTheme, ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import { useAccomodation } from 'src/modules/MyHouse/components/Accomodation/AccomodationHooks'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType.d'
@@ -23,10 +22,10 @@ import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
 import { ReactComponent as ElectricityIcon } from 'src/assets/images/content/housing/Electricity.svg'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { cloneDeep, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
+import { useConnectedPlugInfo } from 'src/hooks/useConnectedPlugInfo'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -52,13 +51,9 @@ const Root = styled(FusePageCarded)(() => ({
  */
 export const HousingDetails = () => {
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
-    const theme = useTheme()
-
-    const {
-        connectedPlugList,
-        loadingInProgress: isConnectedPlugListLoading,
-        loadConnectedPlugList,
-    } = useConnectedPlugList(currentHousing?.id)
+    const { theme, connectedPlugsElements, isConnectedPlugListLoading, connectedPlugList } = useConnectedPlugInfo(
+        currentHousing?.id,
+    )
 
     const {
         accomodation,
@@ -96,22 +91,6 @@ export const HousingDetails = () => {
         {
             icon: <MoreHorizIcon color="primary" fontSize="large" />,
             label: 'Plaques',
-        },
-    ])
-
-    // By default having default connected plug elements when loading.
-    const [connectedPlugsElements, setConnectedPlugsElements] = useState<HouseDetailsElementType[]>([
-        {
-            icon: <MoreHorizIcon color="primary" fontSize="large" />,
-            label: 'Prise 1',
-        },
-        {
-            icon: <MoreHorizIcon color="primary" fontSize="large" />,
-            label: 'Prise 2',
-        },
-        {
-            icon: <MoreHorizIcon color="primary" fontSize="large" />,
-            label: 'Prise 3',
         },
     ])
 
@@ -196,30 +175,6 @@ export const HousingDetails = () => {
             label: accomodation?.houseArea ? `${accomodation?.houseArea} m²` : 'Superficie',
         },
     ]
-
-    // Once connectedPlugList are loaded handle the top three label and icon.
-    useEffect(() => {
-        // PreviousConnectedPlugsElements will always have three elements.
-        // We update the previous connected plugs elements by the latest fetched connectedPlugList top three if exist.
-        setConnectedPlugsElements((prevConnectedPlugsElements) => {
-            const copyPrevConnectedPlugsElements = cloneDeep(prevConnectedPlugsElements)
-            // Reset Icons & labels.
-            copyPrevConnectedPlugsElements.forEach((connectedPlugElement, index) => {
-                connectedPlugElement.label = `Prise ${index + 1}`
-                connectedPlugElement.icon = <MoreHorizIcon color="primary" fontSize="large" />
-            })
-
-            connectedPlugList.slice(0, 3).forEach((connectedPlug, index) => {
-                copyPrevConnectedPlugsElements[index].label = connectedPlug.deviceName
-                copyPrevConnectedPlugsElements[index].icon = <ElectricalServicesIcon color="primary" fontSize="large" />
-            })
-            return copyPrevConnectedPlugsElements
-        })
-    }, [connectedPlugList])
-
-    useEffect(() => {
-        loadConnectedPlugList()
-    }, [loadConnectedPlugList])
 
     return (
         <Root
