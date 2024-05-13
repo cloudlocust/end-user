@@ -72,7 +72,7 @@ export const Equipments = () => {
                         id: housingEquipment.equipmentId,
                         housingEquipmentId: housingEquipment.id,
                         name: housingEquipment.equipment.name,
-                        equipmentLabel: equipmentOption?.labelTitle || housingEquipment.equipment.name,
+                        equipmentTitle: equipmentOption?.labelTitle,
                         iconComponent: equipmentOption?.iconComponent,
                         allowedType: housingEquipment.equipment.allowedType,
                         number: housingEquipment.equipmentNumber,
