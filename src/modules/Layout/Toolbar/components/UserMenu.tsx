@@ -104,7 +104,7 @@ function UserMenu() {
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
-                            // TODO: Redirect to the MyContractNrlink page (when it will be available in next the pr).
+                            history.push('/nrlink-contract-management')
                         }}
                         iconLabel="assignment"
                         idLabel="Mon contract / nrLINK"
