@@ -13,6 +13,8 @@ import { ConsumptionChartContainerProps } from 'src/modules/MyConsumption/compon
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import { TEST_CONNECTED_PLUGS } from 'src/mocks/handlers/connectedPlugs'
 import { IConnectedPlug } from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugs.d'
+import { SwitchConsumptionButtonLabelEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { ECOWATT_TITLE } from 'src/modules/Ecowatt/EcowattWidget'
 
 // List of houses to add to the redux state
 const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTED_PLUGS)
@@ -114,7 +116,47 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     }),
 }))
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+let mockIsProductionActiveAndHousingHasAccess = () => true
+
+// Mock useInstallationRequestsList hook
+jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
+    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess(),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    arePlugsUsedBasedOnProductionStatus: () => true,
+}))
+
 describe('MyConsumptionContainer test', () => {
+    afterEach(() => {
+        // reset all the mock variables into their initial state
+        mockNrlinkConsent = { ...nrLinkConsent }
+        mockEnedisConsent = { ...enedisSGeConsent }
+        mockEnphaseConsent = { ...enphaseConsent }
+        mockConsentsLoading = false
+        mockConnectedPlugLoadingInProgress = false
+        mockConnectedPlugsList = [...MOCK_TEST_CONNECTED_PLUGS]
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        mockGetProductionConnectedPlug = () => undefined
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        mockIsProductionActiveAndHousingHasAccess = () => true
+        mockSetFilters.mockClear()
+        mockSetRange.mockClear()
+        mockSetPeriod.mockClear()
+        mockGetConsents.mockClear()
+    })
+    test('when there is a meter, the consumption chart is shown', async () => {
+        const { getByText } = reduxedRender(
+            <Router>
+                <MyConsumptionContainer />
+            </Router>,
+            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+        )
+        expect(getByText(FILTERS_TEXT)).toBeTruthy()
+        expect(getByText(RANGE_TEXT)).toBeTruthy()
+        expect(getByText(PERIOD_TEXT)).toBeTruthy()
+    })
     test('when there is no meter, a message is shown', async () => {
         const { getByText } = reduxedRender(
             <Router>
@@ -163,7 +205,6 @@ describe('MyConsumptionContainer test', () => {
     test('When connected plug production, metricsIterval is related to it', async () => {
         // eslint-disable-next-line jsdoc/require-jsdoc
         mockGetProductionConnectedPlug = () => MOCK_TEST_CONNECTED_PLUGS[0]
-        mockEnphaseConsent!.enphaseConsentState = 'ACTIVE'
         const { getByText } = reduxedRender(
             <Router>
                 <MyConsumptionContainer />
@@ -218,28 +259,69 @@ describe('MyConsumptionContainer test', () => {
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
 
-    test('when there nrlink is EXISTENT or endisSge is connected, the parts of widgets is shown', async () => {
-        mockNrlinkConsent = { ...nrLinkConsent, nrlinkConsentState: 'CONNECTED' }
-        mockEnedisConsent = { ...enedisSGeConsent, enedisSgeConsentState: 'CONNECTED' }
-        mockConsentsLoading = false
-        const { getByText } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-        await waitFor(() => {
-            expect(getByText(LIST_WIDGETS_TEXT)).toBeTruthy()
+    describe('when there nrlink is EXISTENT or endisSge is connected', () => {
+        test('normal case, switch consumption button and the parts of (Widgets & ChartFAQ & Ecowatt) are shown', async () => {
+            const { getByText, getByTestId, queryByText } = reduxedRender(
+                <Router>
+                    <MyConsumptionContainer />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
+            expect(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toBeInTheDocument()
+            expect(queryByText(SwitchConsumptionButtonLabelEnum.Idle)).not.toBeInTheDocument()
+            expect(getByText(LIST_WIDGETS_TEXT)).toBeInTheDocument()
+            expect(getByTestId('faq')).toBeInTheDocument()
+            expect(getByText(ECOWATT_TITLE)).toBeInTheDocument()
         })
-    })
+        test('when enphase is off, idle button should also be shown', async () => {
+            // we mock enphase consent to be off, to show the idle button also.
+            mockEnphaseConsent!.enphaseConsentState = 'EXPIRED'
+            const { getByText } = reduxedRender(
+                <Router>
+                    <MyConsumptionContainer />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
+            expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
+            expect(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).toBeInTheDocument()
+        })
+        test('production is not active, "Autoconso & Production" button should not be shown', async () => {
+            // we mock enphase consent to be off, to show the idle button also.
+            mockEnphaseConsent!.enphaseConsentState = 'EXPIRED'
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            mockIsProductionActiveAndHousingHasAccess = () => false
+            const { getByText, queryByText } = reduxedRender(
+                <Router>
+                    <MyConsumptionContainer />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
 
-    test('should ChartFAQ appear', async () => {
-        const { getByTestId } = reduxedRender(
-            <Router>
-                <MyConsumptionContainer />
-            </Router>,
-            { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-        )
-        expect(getByTestId('faq')).toBeInTheDocument()
+            expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
+            expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
+            expect(queryByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).not.toBeInTheDocument()
+        })
+        test('when enphase is off, and "Autoconso & Production" has is toggled, links part to add prod consent should be shown', async () => {
+            // we mock enphase consent to be off, to show the idle button also.
+            mockEnphaseConsent!.enphaseConsentState = 'EXPIRED'
+            const { getByText, queryByText, queryByTestId } = reduxedRender(
+                <Router>
+                    <MyConsumptionContainer />
+                </Router>,
+                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+            )
+            userEvent.click(getByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction))
+
+            expect(queryByText(LIST_WIDGETS_TEXT)).not.toBeInTheDocument()
+            expect(queryByTestId('faq')).not.toBeInTheDocument()
+            expect(queryByText(ECOWATT_TITLE)).not.toBeInTheDocument()
+
+            expect(getByText("Actuellement aucune production solaire n'est liée à l'application")).toBeInTheDocument()
+            expect(getByText('Lier ma production solaire:')).toBeInTheDocument()
+            expect(getByText('Installation avec un onduleur Enphase:')).toBeInTheDocument()
+            expect(getByText('Installation "plug & play"')).toBeInTheDocument()
+        })
     })
 })

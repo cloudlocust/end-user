@@ -23,7 +23,6 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
-import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import {
     eurosConsumptionTargets,
     eurosIdleConsumptionTargets,
@@ -79,7 +78,6 @@ export const URL_HOUSING_INFORMATION = (housingId: number) => `/my-houses/${hous
  * @param props.filters Consumption or production chart type.
  * @param props.hasMissingHousingContracts Boolean indicating if there are missing housing contracts.
  * @param props.enedisSgeConsent Enedis SGE consent.
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.isIdleShown Boolean indicating whether the idle chart is shown or not.
  * @param props.setMetricsInterval Set metrics interval.
  * @param props.onPeriodChange Callback function for period change.
@@ -93,7 +91,6 @@ export const ConsumptionChartContainer = ({
     filters,
     hasMissingHousingContracts,
     enedisSgeConsent,
-    isSolarProductionConsentOff,
     isIdleShown,
     setMetricsInterval,
     onPeriodChange,
@@ -110,18 +107,13 @@ ConsumptionChartContainerProps) => {
     const [targets, setTargets] = useState<metricTargetType[]>(
         getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
     )
-    const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
 
     // Switch consumption button should be reset to consumption when the other two are not shown.
     useEffect(() => {
-        if (
-            (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) ||
-            (!isAutoConsumptionProductionShown &&
-                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
-        ) {
+        if (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
             setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
         }
-    }, [consumptionToggleButton, isAutoConsumptionProductionShown, isIdleShown, setConsumptionToggleButton])
+    }, [consumptionToggleButton, isIdleShown, setConsumptionToggleButton])
 
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -268,46 +260,36 @@ ConsumptionChartContainerProps) => {
             : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
     }, [isEurosButtonToggled, period, setMetricsInterval])
 
-    /**
-     * Handler when clicking on switch consumption button.
-     *
-     * @param buttonType Switch consumption button type.
-     */
-    const onSwitchConsumptionButton = useCallback(
-        (buttonType: SwitchConsumptionButtonTypeEnum) => {
-            // If the user is on daily view and clicks on the idle button, we should switch to weekly view.
-            if (buttonType === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
-                const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find(
-                    (item) => item.period === PeriodEnum.WEEKLY,
-                )!
-                onPeriodChange(dataConsumptionWeeklyPeriod.period)
-                onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
-                setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+    useEffect(() => {
+        if (consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
+            const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find((item) => item.period === PeriodEnum.WEEKLY)!
+            onPeriodChange(dataConsumptionWeeklyPeriod.period)
+            onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
+            setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+        }
+        setTargets((prev) => {
+            switch (consumptionToggleButton) {
+                case SwitchConsumptionButtonTypeEnum.Idle:
+                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
+                case SwitchConsumptionButtonTypeEnum.Consumption:
+                    return getConsumptionTargets()
+                case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
+                    return getAutoconsumptionProductionTargets()
+                default:
+                    // Reset to prev when user click on the same button.
+                    return prev
             }
-            setTargets((prev) => {
-                switch (buttonType) {
-                    case SwitchConsumptionButtonTypeEnum.Idle:
-                        return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
-                    case SwitchConsumptionButtonTypeEnum.Consumption:
-                        return getConsumptionTargets()
-                    case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
-                        return getAutoconsumptionProductionTargets()
-                    default:
-                        // Reset to prev when user click on the same button.
-                        return prev
-                }
-            })
-        },
-        [
-            getAutoconsumptionProductionTargets,
-            getConsumptionTargets,
-            isEurosButtonToggled,
-            onPeriodChange,
-            onRangeChange,
-            period,
-            setMetricsInterval,
-        ],
-    )
+        })
+    }, [
+        consumptionToggleButton,
+        getAutoconsumptionProductionTargets,
+        getConsumptionTargets,
+        isEurosButtonToggled,
+        onPeriodChange,
+        onRangeChange,
+        period,
+        setMetricsInterval,
+    ])
 
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
     useEffect(() => {
@@ -500,20 +482,6 @@ ConsumptionChartContainerProps) => {
     )
 
     /**
-     * Handles the change of period.
-     *
-     * @param {PeriodEnum} value - The new period value.
-     */
-    const handlePeriodChange = (value: PeriodEnum) => {
-        // if the user on the idle view and click on the daily button, we should switch to the consumption view.
-        if (value === PeriodEnum.DAILY && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
-            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
-            onSwitchConsumptionButton(SwitchConsumptionButtonTypeEnum.Consumption)
-        }
-        onPeriodChange(value)
-    }
-
-    /**
      * Function to navigate to the consumption labeliation page.
      */
     const navigateToConsumptionLabelizationPage = () => {
@@ -555,16 +523,6 @@ ConsumptionChartContainerProps) => {
 
     return (
         <div className="mb-12">
-            {(isIdleShown || isAutoConsumptionProductionShown) && (
-                <div className="pb-8 w-full flex justify-center">
-                    <SwitchConsumptionButton
-                        onSwitchConsumptionButton={onSwitchConsumptionButton}
-                        isIdleShown={isIdleShown}
-                        isAutoConsumptionProductionShown={isAutoConsumptionProductionShown}
-                    />
-                </div>
-            )}
-
             <div className="flex flex-col items-start gap-8 my-8">
                 {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ? (
                     <>
@@ -610,7 +568,7 @@ ConsumptionChartContainerProps) => {
                 )}
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={handlePeriodChange}
+                        setPeriod={onPeriodChange}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
