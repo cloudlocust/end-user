@@ -30,17 +30,19 @@ const Container = styled('div')(({ theme }) => ({
     width: '100%',
     whiteSpace: 'nowrap',
     scrollbarWidth: 'none',
-    paddingLeft: 16,
-    paddingRight: 16,
+    padding: '24px 16px 4px 16px',
     alignItems: 'flex-start',
     gap: 8,
     display: 'inline-flex',
     alignSelf: 'stretch',
-    paddingTop: 24,
-    paddingBottom: 4,
     justifyContent: 'center',
     [theme.breakpoints.down('md')]: {
-        paddingTop: 4,
+        paddingTop: '4px',
+    },
+    [theme.breakpoints.down('sm')]: {
+        justifyContent: 'flex-start',
+        paddingLeft: 0,
+        paddingRight: 0,
     },
     '& .MuiButton-root': {
         [theme.breakpoints.down('md')]: {
@@ -52,10 +54,6 @@ const Container = styled('div')(({ theme }) => ({
         minWidth: 200,
         display: 'flex',
         padding: '8px 16px',
-        paddingLeft: 16,
-        paddingRight: 16,
-        paddingTop: 8,
-        paddingBottom: 8,
         borderRadius: 90,
         border: '1px solid',
         borderColor: theme.palette.primary.main,
@@ -85,13 +83,11 @@ const Container = styled('div')(({ theme }) => ({
  * Component for idle consumption switch button.
  *
  * @param props N/A.
- * @param props.onSwitchConsumptionButton Function handling switch of ConsumptionButton.
  * @param props.isIdleShown Boolean indicate if the veille element is shown.
  * @param props.isAutoConsumptionProductionShown Boolean indicate if the autoconsumption-prod element is shown.
  * @returns Switch Consumption button.
  */
 export const SwitchConsumptionButton = ({
-    onSwitchConsumptionButton,
     isIdleShown,
     isAutoConsumptionProductionShown,
 }: SwitchConsumptionButtonProps): JSX.Element => {
@@ -106,7 +102,6 @@ export const SwitchConsumptionButton = ({
     const onChange = (value: SwitchConsumptionButtonTypeEnum) => {
         if (consumptionToggleButton !== value) {
             setConsumptionToggleButton(value)
-            onSwitchConsumptionButton(value)
         }
     }
 
