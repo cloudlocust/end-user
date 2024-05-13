@@ -120,7 +120,7 @@ describe('Testing useRegister hooks', () => {
             ])
         })
         expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-            "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
+            'Votre commune de résidence n’est pas éligible à l’offre Bôwatts',
             {
                 variant: 'error',
             },

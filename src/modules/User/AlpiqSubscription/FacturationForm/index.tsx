@@ -1,14 +1,14 @@
-import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
+import { Form, regex, requiredBuilder, accept } from 'src/common/react-platform-components'
 import {
     useTheme,
     RadioGroup,
     Radio,
     FormControlLabel,
     Card,
-    useMediaQuery,
     MenuItem,
     Checkbox as CheckboxMui,
     Button,
+    Grid,
 } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
@@ -19,7 +19,7 @@ import { Dispatch, RootState } from 'src/redux'
 import { useState } from 'react'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import { addDays, format } from 'date-fns'
-import { ButtonLoader, TextField, Checkbox, Typography } from 'src/common/ui-kit'
+import { ButtonLoader, TextField, Checkbox } from 'src/common/ui-kit'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
 import { AlpiqFacturationDataType } from 'src/modules/User/AlpiqSubscription'
 import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
@@ -29,7 +29,7 @@ import { SuccessPopupModal } from 'src/modules/User/AlpiqSubscription/Facturatio
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
-
+import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
 //eslint-disable-next-line
 export const datePrelevementOptions: { id: number; value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
         id: index + 1,
@@ -57,6 +57,12 @@ export const civilityOptions: { id: number, value: string, label: string}[] = [
     },
 ]
 
+// doing it static because it's only a feature for bowatt
+const CGV_DOCUMENT_URL = 'https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf'
+
+// doing it static because it's only a feature for bowatt
+const GRILLE_TARIFF_DOCUMENT_URL = 'https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf'
+
 /**
  * Facturation Form.
  *
@@ -74,7 +80,6 @@ export const FacturationForm = ({
     handleBack: () => void
 }) => {
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
     const { formatMessage } = useIntl()
     const history = useHistory()
     const dispatch = useDispatch<Dispatch>()
@@ -105,26 +110,6 @@ export const FacturationForm = ({
         fourteenDaysFromToday.setDate(today.getDate() + 14)
 
         return date < fourteenDaysFromToday
-    }
-
-    /**
-     * Handle Open CGV.
-     */
-    const handleOpenCGV = () => {
-        // doing it static because it's only a feature for bowatt
-        window.open(
-            'https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf',
-            '_blank',
-            'noopener noreferrer',
-        )
-    }
-
-    /**
-     * Handle Open Grille Tariff.
-     */
-    const handleOpenGrilleTariff = () => {
-        // doing it static because it's only a feature for bowatt
-        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf', '_blank', 'noopener noreferrer')
     }
 
     /**
@@ -166,6 +151,7 @@ export const FacturationForm = ({
         history.replace(`/nrlink-connection-steps/${currentHousing?.id}`)
     }
 
+    const requiredFieldErrorMessage = formatMessage({ id: 'Champ obligatoire', defaultMessage: 'Champ obligatoire' })
     return (
         <div className="flex w-full flex-col justify-center">
             <Form
@@ -288,6 +274,14 @@ export const FacturationForm = ({
                                 />
                             </div>
                         </div>
+                        <div className="w-full flex items-center justify-start">
+                            <CheckboxMui
+                                checked={isCotitulaire}
+                                color="primary"
+                                onClick={() => setIsCotitulaire(!isCotitulaire)}
+                            />
+                            <SectionText text="J'ai un cotitulaire." />
+                        </div>
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Date de début de fourniture" />
@@ -306,45 +300,37 @@ export const FacturationForm = ({
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Coordonnées bancaires" />
-                        <div className="mt-12 w-full flex flex-col lg:flex-row items-center justify-around">
-                            <TextField
-                                name="iban"
-                                label="IBAN"
-                                validateFunctions={[requiredBuilder(), regex(ibanRegex, IBAN_REGEX_TEXT)]}
-                            />
-                            <TextField
-                                name="nomAssocieIban"
-                                label="Nom du titulaire"
-                                validateFunctions={[requiredBuilder()]}
-                            />
-                            <TextField
-                                name="prenomAssocieIban"
-                                label="Prenom du titulaire"
-                                validateFunctions={[requiredBuilder()]}
-                            />
-                        </div>
-                        <div className="w-full flex items-center justify-start">
-                            <CheckboxMui
-                                checked={isCotitulaire}
-                                color="primary"
-                                onClick={() => setIsCotitulaire(!isCotitulaire)}
-                            />
-                            <SectionText text="J'ai un cotitulaire." />
-                        </div>
-                        {isCotitulaire && (
-                            <div className="flex flex-col items-start justify-center w-full mb-32">
-                                <div className="mt-12 w-full flex flex-col items-center justify-around">
-                                    <div className="flex items-center justify-center mb-20">
+                        <Grid container spacing={1} className="mt-12">
+                            <Grid item md={4} xs={12}>
+                                <TextField
+                                    name="iban"
+                                    label="IBAN"
+                                    validateFunctions={[requiredBuilder(), regex(ibanRegex, IBAN_REGEX_TEXT)]}
+                                />
+                            </Grid>
+                            <Grid item md={4} xs={12}>
+                                <TextField
+                                    name="nomAssocieIban"
+                                    label="Nom du titulaire"
+                                    validateFunctions={[requiredBuilder()]}
+                                />
+                            </Grid>
+                            <Grid item md={4} xs={12}>
+                                <TextField
+                                    name="prenomAssocieIban"
+                                    label="Prenom du titulaire"
+                                    validateFunctions={[requiredBuilder()]}
+                                />
+                            </Grid>
+
+                            {isCotitulaire && (
+                                <>
+                                    <Grid item md={4} xs={12}>
                                         <Select
                                             name="civilityCotitulaire"
                                             label="Civilité du cotitulaire"
-                                            style={{
-                                                width: isMobile ? '248.5px' : '288px',
-                                            }}
                                             validateFunctions={[requiredBuilder()]}
-                                            formControlProps={{
-                                                margin: 'normal',
-                                            }}
+                                            className="mb-12"
                                         >
                                             {civilityOptions.map((option) => (
                                                 <MenuItem key={option.id} value={option.value}>
@@ -355,52 +341,63 @@ export const FacturationForm = ({
                                                 </MenuItem>
                                             ))}
                                         </Select>
-                                    </div>
-                                    <TextField
-                                        name="nomCotitulaire"
-                                        label="Nom du cotitulaire"
-                                        validateFunctions={[requiredBuilder()]}
-                                    />
-                                    <TextField
-                                        name="prenomCotitilaure"
-                                        label="Prenom du cotitulaire"
-                                        validateFunctions={[requiredBuilder()]}
-                                    />
-                                </div>
-                            </div>
-                        )}
+                                    </Grid>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            name="nomCotitulaire"
+                                            label="Nom du cotitulaire"
+                                            validateFunctions={[requiredBuilder()]}
+                                        />
+                                    </Grid>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            name="prenomCotitilaure"
+                                            label="Prenom du cotitulaire"
+                                            validateFunctions={[requiredBuilder()]}
+                                        />
+                                    </Grid>
+                                </>
+                            )}
+                        </Grid>
                     </div>
                     <div className="w-full flex flex-col">
                         <Checkbox
                             color="primary"
                             name="isAlpiqPrelevementAccepted"
                             label="J'autorise Alpiq à prélever sur le compte bancaire désigné ci-dessus les sommes dues au titre de mon contrat. J'autorise ma banque à accepter les prélèvement automatiques d'Alpiq"
-                            validate={[requiredBuilder()]}
+                            validate={[accept(requiredFieldErrorMessage), requiredBuilder(requiredFieldErrorMessage)]}
                         />
                         <div className="w-full flex-col items-center justify-start mt-10">
                             <div className="w-full flex flex-row items-center justify-start">
                                 <Checkbox
                                     name="isContractConditionsAccepted"
-                                    label=""
+                                    label={
+                                        formatMessage(
+                                            {
+                                                id: "J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
+                                                defaultMessage:
+                                                    "J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
+                                            },
+                                            {
+                                                cgv: <LinkRedirection label="CGV" url={CGV_DOCUMENT_URL} />,
+                                                tarif: (
+                                                    <LinkRedirection
+                                                        label={formatMessage({
+                                                            id: 'la grille tarifaire',
+                                                            defaultMessage: 'la grille tarifaire',
+                                                        })}
+                                                        url={GRILLE_TARIFF_DOCUMENT_URL}
+                                                    />
+                                                ),
+                                            },
+                                        ) as string
+                                    }
                                     color="primary"
-                                    validate={[requiredBuilder()]}
+                                    validate={[
+                                        accept(requiredFieldErrorMessage),
+                                        requiredBuilder(requiredFieldErrorMessage),
+                                    ]}
                                 />
-                                <Typography className={isMobile ? 'ml-7' : ''}>
-                                    J'ai pris connaissance et j'accepte les&nbsp;
-                                    <span
-                                        onClick={handleOpenCGV}
-                                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                                    >
-                                        CGV
-                                    </span>
-                                    ,&nbsp;
-                                    <span
-                                        onClick={handleOpenGrilleTariff}
-                                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                                    >
-                                        la grille tarifaire
-                                    </span>
-                                </Typography>
                             </div>
                             <TypographyFormatMessage color={textNrlinkColor} variant="caption" className="mt-5">
                                 Pas de frais de dossier et aucune démarche administrative. Contrat sans engagement de
