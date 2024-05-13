@@ -25,7 +25,6 @@ describe('SwitchConsumptionButton', () => {
 
     beforeEach(() => {
         switchConsumptionButtonProps = {
-            onSwitchConsumptionButton: jest.fn(),
             isIdleShown: true,
             isAutoConsumptionProductionShown: true,
         }
@@ -84,49 +83,6 @@ describe('SwitchConsumptionButton', () => {
             expect(generalButtonElement).toHaveStyle({
                 backgroundColor: alpha(theme.palette.primary.main, 0.75),
             })
-        })
-    })
-
-    test('when any of the button is selected, it should call onSwitchConsumptionButton function', async () => {
-        const { getByText } = reduxedRender(
-            <ThemeProvider theme={theme}>
-                <SwitchConsumptionButton {...switchConsumptionButtonProps} />
-            </ThemeProvider>,
-        )
-
-        const generalButtonElement = getByText(SwitchConsumptionButtonLabelEnum.General)
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
-
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalled()
-        })
-
-        userEvent.click(generalButtonElement)
-        await waitFor(() => {
-            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalled()
-        })
-    })
-
-    test('when click on selected button, it should not call onSwitchConsumptionButton function', async () => {
-        const { getByText } = reduxedRender(
-            <ThemeProvider theme={theme}>
-                <SwitchConsumptionButton {...switchConsumptionButtonProps} />
-            </ThemeProvider>,
-        )
-
-        const idleButtonElement = getByText(SwitchConsumptionButtonLabelEnum.Idle)
-
-        // Initial click
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalledTimes(1)
-        })
-
-        // Second click
-        userEvent.click(idleButtonElement)
-        await waitFor(() => {
-            expect(switchConsumptionButtonProps.onSwitchConsumptionButton).toHaveBeenCalledTimes(1)
         })
     })
 })

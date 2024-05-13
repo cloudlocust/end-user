@@ -1,6 +1,6 @@
 import { CircularProgress, Icon, useTheme, Box } from '@mui/material'
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enphaseConsentStatus } from 'src/modules/Consents/Consents'
@@ -11,6 +11,7 @@ import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPl
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
+import { useSolarProductionLinking } from 'src/hooks/SolarProductionLinking'
 
 /**
  * Solar Production Consent Status Component, that shows and isolates the solar production consent of MeterStatus.
@@ -18,24 +19,27 @@ import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouse
  * @param props N/A.
  * @param props.solarProductionConsentLoadingInProgress Indicates whether or not the solar production consent is loading.
  * @param props.solarProductionConsent Solar Production Consent to be shown.
- * @param props.enphaseLink Enphase window link.
- * @param props.getEnphaseLink Handler to call to get enphaseLink.
  * @param props.onRevokeEnphaseConsent Handler function to revoke Enphase Consent.
  * @returns Solar Production Consent Status component.
  */
 export const SolarProductionConsentStatus = ({
     solarProductionConsentLoadingInProgress,
     solarProductionConsent,
-    enphaseLink,
-    getEnphaseLink,
     onRevokeEnphaseConsent,
 }: ISolarProductionConsentStatusProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
 
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
-    const [openEnphaseConsentPopup, setOpenEnphaseConsentPopup] = useState(false)
-    const [openConnectedPlugProductionConsentPopup, setOpenConnectedPlugProductionConsentPopup] = useState(false)
+    const {
+        enphaseLink,
+        isEnphaseConsentPopupOpen,
+        isConnectedPlugProductionConsentPopupOpen,
+        handleOnOpenEnphaseConsentPopup,
+        handleOnOpenConnectedPlugConsentPopup,
+        handleOnCloseEnphaseConsentPopup,
+        handleOnCloseConnectedPlugConsentPopup,
+    } = useSolarProductionLinking()
 
     // Load connected plug only when housing is defined
     const {
@@ -47,20 +51,6 @@ export const SolarProductionConsentStatus = ({
 
     /* Enphase created at date formatted */
     const solarProductionConsentCreatedAt = dayjs(solarProductionConsent?.createdAt).format('DD/MM/YYYY')
-
-    /**
-     * Function that handle closing of enphase popup.
-     */
-    const handleOnCloseEnphasePopup = () => {
-        setOpenEnphaseConsentPopup(false)
-    }
-
-    /**
-     * Function that handle closing of connected plugs popup.
-     */
-    const handleCloseConnectedPlugConsentPopup = () => {
-        setOpenConnectedPlugProductionConsentPopup(false)
-    }
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -165,10 +155,7 @@ export const SolarProductionConsentStatus = ({
                                     color={theme.palette.error.main}
                                     className="underline cursor-pointer"
                                     fontWeight={600}
-                                    onClick={() => {
-                                        currentHousing && getEnphaseLink(currentHousing.id)
-                                        setOpenEnphaseConsentPopup(true)
-                                    }}
+                                    onClick={handleOnOpenEnphaseConsentPopup}
                                 >
                                     Connectez votre onduleur Enphase
                                 </TypographyFormatMessage>
@@ -193,9 +180,7 @@ export const SolarProductionConsentStatus = ({
                                                 color={theme.palette.error.main}
                                                 className="underline cursor-pointer"
                                                 fontWeight={600}
-                                                onClick={() => {
-                                                    setOpenConnectedPlugProductionConsentPopup(true)
-                                                }}
+                                                onClick={handleOnOpenConnectedPlugConsentPopup}
                                             >
                                                 Reliez la prise Shelly de vos panneaux plug&play
                                             </TypographyFormatMessage>
@@ -228,9 +213,11 @@ export const SolarProductionConsentStatus = ({
                 </>
             )}
 
-            {openEnphaseConsentPopup && <EnphaseConsentPopup onClose={handleOnCloseEnphasePopup} url={enphaseLink} />}
-            {openConnectedPlugProductionConsentPopup && (
-                <ConnectedPlugProductionConsentPopup onClose={handleCloseConnectedPlugConsentPopup} />
+            {isEnphaseConsentPopupOpen && (
+                <EnphaseConsentPopup onClose={handleOnCloseEnphaseConsentPopup} url={enphaseLink} />
+            )}
+            {isConnectedPlugProductionConsentPopupOpen && (
+                <ConnectedPlugProductionConsentPopup onClose={handleOnCloseConnectedPlugConsentPopup} />
             )}
         </>
     )

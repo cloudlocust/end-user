@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import dayjs from 'dayjs'
+import { useHistory } from 'react-router-dom'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
 import { useTheme, Typography } from '@mui/material'
 import { IMetric, metricTargetsEnum, metricTargetType, metricIntervalType } from 'src/modules/Metrics/Metrics.d'
@@ -22,7 +23,6 @@ import {
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
-import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import {
     eurosConsumptionTargets,
     eurosIdleConsumptionTargets,
@@ -38,7 +38,6 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getMessageOfSuccessiveMissingDataOfCurrentDay } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
-import { ConsumptionIdentifierButton } from 'src/modules/MyConsumption/components/ConsumptionIdentifierButton'
 import {
     EChartTooltipFormatterParams,
     TooltipValueFormatter,
@@ -46,12 +45,28 @@ import {
 import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip'
 import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
-import { SolarInstallationRecommendationButton } from 'src/modules/MyConsumption/components/SolarInstallationRecommendationButton'
+import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
+import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
  */
 export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
+
+/**
+ * The URL for the solar installation recommendation.
+ */
+export const URL_SOLAR_INSTALLATION_RECOMMENDATION = 'https://e0vzc8h9q32.typeform.com/to/pNFEjfzU'
+
+/**
+ * Function to get the url for the housing information page.
+ *
+ * @param housingId The housing id.
+ * @returns The url for the housing information page.
+ */
+export const URL_HOUSING_INFORMATION = (housingId: number) => `/my-houses/${housingId}/information`
 
 /**
  * MyConsumptionChartContainer Component.
@@ -63,7 +78,6 @@ export const NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW = 3
  * @param props.filters Consumption or production chart type.
  * @param props.hasMissingHousingContracts Boolean indicating if there are missing housing contracts.
  * @param props.enedisSgeConsent Enedis SGE consent.
- * @param props.isSolarProductionConsentOff Boolean indicating if solar production consent is off.
  * @param props.isIdleShown Boolean indicating whether the idle chart is shown or not.
  * @param props.setMetricsInterval Set metrics interval.
  * @param props.onPeriodChange Callback function for period change.
@@ -77,7 +91,6 @@ export const ConsumptionChartContainer = ({
     filters,
     hasMissingHousingContracts,
     enedisSgeConsent,
-    isSolarProductionConsentOff,
     isIdleShown,
     setMetricsInterval,
     onPeriodChange,
@@ -86,24 +99,21 @@ export const ConsumptionChartContainer = ({
 ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
+    const history = useHistory()
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
         getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
     )
-    const isAutoConsumptionProductionShown = !isSolarProductionConsentOff
 
     // Switch consumption button should be reset to consumption when the other two are not shown.
     useEffect(() => {
-        if (
-            (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) ||
-            (!isAutoConsumptionProductionShown &&
-                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
-        ) {
+        if (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
             setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
         }
-    }, [consumptionToggleButton, isAutoConsumptionProductionShown, isIdleShown, setConsumptionToggleButton])
+    }, [consumptionToggleButton, isIdleShown, setConsumptionToggleButton])
 
     // Indicates if enedisSgeConsent is not Connected
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
@@ -250,46 +260,36 @@ ConsumptionChartContainerProps) => {
             : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
     }, [isEurosButtonToggled, period, setMetricsInterval])
 
-    /**
-     * Handler when clicking on switch consumption button.
-     *
-     * @param buttonType Switch consumption button type.
-     */
-    const onSwitchConsumptionButton = useCallback(
-        (buttonType: SwitchConsumptionButtonTypeEnum) => {
-            // If the user is on daily view and clicks on the idle button, we should switch to weekly view.
-            if (buttonType === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
-                const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find(
-                    (item) => item.period === PeriodEnum.WEEKLY,
-                )!
-                onPeriodChange(dataConsumptionWeeklyPeriod.period)
-                onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
-                setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+    useEffect(() => {
+        if (consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
+            const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find((item) => item.period === PeriodEnum.WEEKLY)!
+            onPeriodChange(dataConsumptionWeeklyPeriod.period)
+            onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
+            setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+        }
+        setTargets((prev) => {
+            switch (consumptionToggleButton) {
+                case SwitchConsumptionButtonTypeEnum.Idle:
+                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
+                case SwitchConsumptionButtonTypeEnum.Consumption:
+                    return getConsumptionTargets()
+                case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
+                    return getAutoconsumptionProductionTargets()
+                default:
+                    // Reset to prev when user click on the same button.
+                    return prev
             }
-            setTargets((prev) => {
-                switch (buttonType) {
-                    case SwitchConsumptionButtonTypeEnum.Idle:
-                        return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
-                    case SwitchConsumptionButtonTypeEnum.Consumption:
-                        return getConsumptionTargets()
-                    case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
-                        return getAutoconsumptionProductionTargets()
-                    default:
-                        // Reset to prev when user click on the same button.
-                        return prev
-                }
-            })
-        },
-        [
-            getAutoconsumptionProductionTargets,
-            getConsumptionTargets,
-            isEurosButtonToggled,
-            onPeriodChange,
-            onRangeChange,
-            period,
-            setMetricsInterval,
-        ],
-    )
+        })
+    }, [
+        consumptionToggleButton,
+        getAutoconsumptionProductionTargets,
+        getConsumptionTargets,
+        isEurosButtonToggled,
+        onPeriodChange,
+        onRangeChange,
+        period,
+        setMetricsInterval,
+    ])
 
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
     useEffect(() => {
@@ -482,43 +482,81 @@ ConsumptionChartContainerProps) => {
     )
 
     /**
-     * Handles the change of period.
-     *
-     * @param {PeriodEnum} value - The new period value.
+     * Function to navigate to the consumption labeliation page.
      */
-    const handlePeriodChange = (value: PeriodEnum) => {
-        // if the user on the idle view and click on the daily button, we should switch to the consumption view.
-        if (value === PeriodEnum.DAILY && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
-            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
-            onSwitchConsumptionButton(SwitchConsumptionButtonTypeEnum.Consumption)
-        }
-        onPeriodChange(value)
+    const navigateToConsumptionLabelizationPage = () => {
+        history.push(URL_CONSUMPTION_LABELIZATION)
     }
+
+    /**
+     * Function to navigate to the solar installation form.
+     */
+    const navigateToSolarInstallationForm = () => {
+        if (currentHousing?.id) {
+            history.push(URL_HOUSING_INFORMATION(currentHousing.id), {
+                focusOnInstallationForm: true,
+            })
+        }
+    }
+
+    /**
+     * Function that open the solar installation recommendation page on a new tab.
+     */
+    const openSolarInstallationRecommendationPage = () => {
+        window.open(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank', 'noopener noreferrer')
+    }
+
+    const NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT = formatMessage({
+        id: 'Identifier un pic de conso',
+        defaultMessage: 'Identifier un pic de conso',
+    })
+
+    const NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT = formatMessage({
+        id: 'Mon installation solaire',
+        defaultMessage: 'Mon installation solaire',
+    })
+
+    const RECOMMEND_INSTALLER_BUTTON_TEXT = formatMessage({
+        id: 'Recommander mon installateur',
+        defaultMessage: 'Recommander mon installateur',
+    })
 
     return (
         <div className="mb-12">
-            {(isIdleShown || isAutoConsumptionProductionShown) && (
-                <div className="pb-8 w-full flex justify-center">
-                    <SwitchConsumptionButton
-                        onSwitchConsumptionButton={onSwitchConsumptionButton}
-                        isIdleShown={isIdleShown}
-                        isAutoConsumptionProductionShown={isAutoConsumptionProductionShown}
-                    />
-                </div>
-            )}
+            <div className="flex flex-col items-start gap-8 my-8">
+                {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ? (
+                    <>
+                        <ConsumptionChartHeaderButton
+                            text={NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT}
+                            icon="⚙️"
+                            buttonColor="#EDECEC"
+                            textColor="#818A91"
+                            clickHandler={navigateToSolarInstallationForm}
+                            data-testid="linkToSolarInstallationForm"
+                        />
+                        <ConsumptionChartHeaderButton
+                            text={RECOMMEND_INSTALLER_BUTTON_TEXT}
+                            icon="💖"
+                            buttonColor="#F9E1E1"
+                            textColor="#818A91"
+                            clickHandler={openSolarInstallationRecommendationPage}
+                            data-testid="solarInstallationRecommendationButton"
+                        />
+                    </>
+                ) : (
+                    period === 'daily' && (
+                        <ConsumptionChartHeaderButton
+                            text={NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT}
+                            hasBorder
+                            clickHandler={navigateToConsumptionLabelizationPage}
+                            data-testid="linkToLabelizationPage"
+                        />
+                    )
+                )}
+            </div>
 
-            {period === 'daily' && (
-                <div className="pt-2 w-full flex">
-                    <ConsumptionIdentifierButton size="small" className="px-16" />
-                </div>
-            )}
-            {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
-                <div className="pb-8 pt-8 w-full flex">
-                    <SolarInstallationRecommendationButton />
-                </div>
-            )}
             <div
-                className="px-16 mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
+                className="mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
             >
                 {period !== 'daily' && (
@@ -530,7 +568,7 @@ ConsumptionChartContainerProps) => {
                 )}
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={handlePeriodChange}
+                        setPeriod={onPeriodChange}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
