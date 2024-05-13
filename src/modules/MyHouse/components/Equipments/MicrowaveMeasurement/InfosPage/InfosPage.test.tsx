@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { InfosPage } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 // Mock the function passed as a prop
 const mockStepSetter = jest.fn()
@@ -41,7 +42,7 @@ describe('InfosPage Component', () => {
         const button = screen.getByText('Commencer')
         userEvent.click(button)
         await waitFor(() => {
-            expect(mockStepSetter).toHaveBeenCalledWith(1)
+            expect(mockStepSetter).toHaveBeenCalledWith(measurementStepsEnum.CONFIGURATION_STEP)
         })
     })
 })
