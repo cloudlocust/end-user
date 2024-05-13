@@ -62,8 +62,6 @@ export const MeterStatus = () => {
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
         enphaseConsent,
-        enphaseLink,
-        getEnphaseLink,
         isEnphaseConsentLoading,
         revokeEnphaseConsent,
         revokeNrlinkConsent,
@@ -415,8 +413,6 @@ export const MeterStatus = () => {
                             <SolarProductionConsentStatus
                                 solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
                                 solarProductionConsent={enphaseConsent}
-                                enphaseLink={enphaseLink}
-                                getEnphaseLink={getEnphaseLink}
                                 onRevokeEnphaseConsent={async () => {
                                     // When revoking enphase Consent means there is currentHousing!.meter.guid
                                     await revokeEnphaseConsent(currentHousing!.id)
