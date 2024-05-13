@@ -80,8 +80,8 @@ export const BuilderUseRegister = ({
             if (data.address?.zipCode && allowedZipCodes && !allowedZipCodes?.includes(data.address.zipCode)) {
                 enqueueSnackbar(
                     formatMessage({
-                        id: "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
-                        defaultMessage: "Votre commune de résidence n'est pas éligible à l'offre BôWatts",
+                        id: 'Votre commune de résidence n’est pas éligible à l’offre Bôwatts',
+                        defaultMessage: 'Votre commune de résidence n’est pas éligible à l’offre Bôwatts',
                     }),
                     { variant: 'error' },
                 )
