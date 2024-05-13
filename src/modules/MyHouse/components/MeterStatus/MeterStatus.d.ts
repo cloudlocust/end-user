@@ -64,14 +64,6 @@ export interface ISolarProductionConsentStatusProps {
      */
     solarProductionConsent?: IEnphaseConsent
     /**
-     * Enphase Link.
-     */
-    enphaseLink: string
-    /**
-     * Handler function Get Enphase Link.
-     */
-    getEnphaseLink: (housingId: number) => Promise<void>
-    /**
      * Boolean indicating the progress state when loading solar production consent (whether from enphase or connected plug).
      */
     solarProductionConsentLoadingInProgress: boolean

@@ -35,7 +35,11 @@ import { subtract, sum } from 'lodash'
 import { isNil } from 'lodash'
 import fr from 'date-fns/locale/fr'
 import { getDataFromYAxis } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { allTempoMetrics, temperatureOrPmaxTargets } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
+import {
+    allTempoMetrics,
+    allEuroTempoMetrics,
+    temperatureOrPmaxTargets,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
@@ -867,6 +871,97 @@ export const getOnlyEuroConsumptionMetrics = (data: IMetric[]) => {
 }
 
 /**
+ * Function that filters data of euro targets.
+ *
+ * @param data Metrics data.
+ * @returns  Euro metrics array data.
+ */
+export const filterEuroTargetsMetricsDataOfNonDailyPeriods = (data: IMetric[]): IMetric[] => {
+    // euro consumption metric case.
+    const euroConsumptionMetric = data.find((metric) => metric.target === metricTargetsEnum.eurosConsumption)
+    const subscriptionPricesTarget = data.find((metric) => metric.target === metricTargetsEnum.subscriptionPrices)
+    // Get non empty metrics data to display all contracts types (tempo, hp hc, base)
+    const nonEmptyMetricsData = data.filter(
+        (metric) =>
+            [
+                metricTargetsEnum.baseEuroConsumption,
+                metricTargetsEnum.euroPeakHourConsumption,
+                metricTargetsEnum.euroOffPeakConsumption,
+                ...allEuroTempoMetrics,
+            ].includes(metric.target as metricTargetsEnum) && !isEmptyMetricsData([metric]),
+    )
+
+    if (nonEmptyMetricsData.length) {
+        return [
+            ...nonEmptyMetricsData,
+            ...(subscriptionPricesTarget ? [subscriptionPricesTarget] : []),
+            ...(euroConsumptionMetric ? [euroConsumptionMetric] : []),
+        ]
+    } else {
+        // If all data are empty we display only euro consumption metric instead.
+        const onlyEuroConsimption = getOnlyEuroConsumptionMetrics(data)
+        if (onlyEuroConsimption && subscriptionPricesTarget) return [onlyEuroConsimption, subscriptionPricesTarget]
+    }
+    return []
+}
+
+/**
+ * Function that filters data of consumption metrics.
+ *
+ * @param data Metrics data.
+ * @returns Consumption metrics array data.
+ */
+export const filterConsumptionTargetsMetricsDataOfNonDailyPeriods = (data: IMetric[]): IMetric[] => {
+    // consumption metric case.
+    // Get non empty metrics data to display all contracts types (tempo, hp hc, base)
+    const nonEmptyMetricsData = data.filter(
+        (metric) =>
+            [
+                metricTargetsEnum.baseConsumption,
+                metricTargetsEnum.peakHourConsumption,
+                metricTargetsEnum.offPeakHourConsumption,
+                ...allTempoMetrics,
+            ].includes(metric.target as metricTargetsEnum) && !isEmptyMetricsData([metric]),
+    )
+    if (nonEmptyMetricsData.length) {
+        return [...nonEmptyMetricsData]
+    } else {
+        // If all data are empty we display consumption metric instead.
+        const onlyConsumption = getOnlyConsumptionMetrics(data)
+        if (onlyConsumption) {
+            return [onlyConsumption]
+        }
+    }
+    return []
+}
+
+/**
+ * Function that filters data coming from backend in order to handle the visible targets for the user.
+ *
+ * @param data Metrics data.
+ * @returns New filtered metrics array data.
+ */
+export const filterMetricsDataOfNonDailyPeriods = (data: IMetric[]): IMetric[] => {
+    const isEuroTarget = data.some((metric) =>
+        [metricTargetsEnum.eurosConsumption].includes(metric.target as metricTargetsEnum),
+    )
+
+    const temperatureOrPmaxMetricsData = data.filter((metric) =>
+        temperatureOrPmaxTargets.includes(metric.target as metricTargetsEnum),
+    )
+
+    const filteredMetricsData = (
+        isEuroTarget
+            ? filterEuroTargetsMetricsDataOfNonDailyPeriods
+            : filterConsumptionTargetsMetricsDataOfNonDailyPeriods
+    )(data)
+    if (filteredMetricsData.length) {
+        filteredMetricsData.push(...temperatureOrPmaxMetricsData)
+    }
+    return filteredMetricsData
+}
+
+/**
  * Function that filters data coming from backend in order to handle the visible targets for the user.
  *
  * Not all targets that are requested are visible to the user.
@@ -883,6 +978,14 @@ export const filterMetricsData = (
     // TODO: Refactor this function, it's too long.
     // eslint-disable-next-line sonarjs/cognitive-complexity
 ): IMetric[] => {
+    // handle weekly, monthly, yearly periods in non autoconsumption mode. must return all data.
+    if (
+        period !== PeriodEnum.DAILY &&
+        consumptionToggleButton !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+    ) {
+        return filterMetricsDataOfNonDailyPeriods(data)
+    }
+
     const temperatureOrPmaxMetricsData = data.filter((metric) =>
         temperatureOrPmaxTargets.includes(metric.target as metricTargetsEnum),
     )

@@ -1,5 +1,4 @@
 import { useTheme, Typography } from '@mui/material'
-import { styled } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
 import { ChartErrorMessageProps } from 'src/modules/MyConsumption/components/ChartErrorMessage/ChartErrorMessage'
 import { linksColor, warningMainHashColor } from 'src/modules/utils/muiThemeVariables'
@@ -73,29 +72,3 @@ export const ChartErrorMessage = ({
         </div>
     )
 }
-
-/**
- * Container for the error message.
- */
-export const ProductionChartErrorMessageContainer = styled('div')(({ theme }) => ({
-    background: 'rgb(249 249 249 / 90%)',
-    position: 'absolute',
-    top: 295,
-    width: '80%',
-    height: '145px',
-    margin: '0 auto',
-    transform: 'translateX(14%)',
-    borderRadius: 15,
-    padding: 10,
-    '& p': {
-        textAlign: 'start',
-    },
-    [theme.breakpoints.up('sm')]: {
-        width: '65%',
-        transform: 'translateX(28%)',
-    },
-    [theme.breakpoints.up('lg')]: {
-        width: '55%',
-        transform: 'translateX(45%)',
-    },
-}))
