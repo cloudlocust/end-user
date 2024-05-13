@@ -27,6 +27,7 @@ import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
+import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
 
 /**
  * MyConsumptionContainer.
@@ -137,7 +138,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
             </div>
             {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
             isSolarProductionConsentOff ? (
-                <div>Add links here to add production -in the next PR-</div>
+                <SolarProductionLinkingPrompt />
             ) : (
                 <>
                     <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
