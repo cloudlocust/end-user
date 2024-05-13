@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { CurrentDayConsumptionType, CurrentDayEuroConsumptionType } from 'src/modules/Metrics/Metrics'
 import { axios } from 'src/common/react-platform-components'
-import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { API_RESOURCES_URL } from 'src/configs'
 
 /**
  * Function to get the current day consumption API.
@@ -9,7 +9,8 @@ import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/Housings
  * @param housingId The housing id.
  * @returns The current day consumption API.
  */
-export const CURRENT_DAY_CONSUMPTION_API = (housingId: number) => `${HOUSING_API}/${housingId}/current-day-consumption`
+export const CURRENT_DAY_CONSUMPTION_API = (housingId: number) =>
+    `${API_RESOURCES_URL}/current-day-consumption/${housingId}`
 
 /**
  * Function to get the current day euro consumption API.
@@ -18,7 +19,7 @@ export const CURRENT_DAY_CONSUMPTION_API = (housingId: number) => `${HOUSING_API
  * @returns The current day euro consumption API.
  */
 export const CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
-    `${HOUSING_API}/${housingId}/current-day-euro-consumption`
+    `${API_RESOURCES_URL}/current-day-euro-consumption/${housingId}`
 
 /**
  * Hook used to get the current day consumption.

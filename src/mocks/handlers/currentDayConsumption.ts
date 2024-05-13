@@ -1,5 +1,5 @@
 import { rest } from 'msw'
-import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
+import { API_RESOURCES_URL } from 'src/configs'
 
 /**
  * Current day consumption test value.
@@ -21,7 +21,7 @@ export const CURRENT_DAY_EURO_CONSUMPTION_TEST_VALUE = 150
  */
 export const currentDayConsumptionEndpoints = [
     // Get the current day consumption and auto consumption.
-    rest.get(`${HOUSING_API}/:id/current-day-consumption`, (_, res, ctx) => {
+    rest.get(`${API_RESOURCES_URL}/current-day-consumption/:id`, (_, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.delay(1000),
@@ -33,7 +33,7 @@ export const currentDayConsumptionEndpoints = [
     }),
 
     // Get the current day euro consumption.
-    rest.get(`${HOUSING_API}/:id/current-day-euro-consumption`, (_, res, ctx) => {
+    rest.get(`${API_RESOURCES_URL}/current-day-euro-consumption/:id`, (_, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.delay(1000),
