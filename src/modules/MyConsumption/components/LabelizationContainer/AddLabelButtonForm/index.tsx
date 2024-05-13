@@ -100,7 +100,8 @@ const AddLabelButtonForm = ({
         [housingEquipmentsList],
     )
 
-    const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList, equipmentsList)
+    // TODO: fix type for mappedHousingEquipmentsList
+    const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList as any, equipmentsList)
 
     /**
      * Reset the form fields.
