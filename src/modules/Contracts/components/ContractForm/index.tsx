@@ -219,7 +219,7 @@ export const ContractFormFields = ({ isContractsLoading, isUsingRemoteSubmit = f
                 loadOptions={loadContractTypes}
                 optionList={contractTypeList}
                 name="contractTypeId"
-                label="Type"
+                label="Contrat pro ou particulier"
                 validateFunctions={[requiredBuilder()]}
                 onChange={(e) => onSelectChange(e, [])}
             />

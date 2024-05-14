@@ -125,7 +125,7 @@ export const MeterConnectionStep = ({
                     </Typography>
                     <TextField
                         name="guid"
-                        placeholder="Example: 19437481274634"
+                        placeholder="Exemple: 19437481274634"
                         inputProps={{ maxLength: 14, style: { height: 15, width: '100%' } }}
                         className="mt-10 md:pl-64 md:mr-64"
                         aria-describedby="pdl-number-text-helper"
@@ -147,9 +147,9 @@ export const MeterConnectionStep = ({
                         label={
                             <Typography variant="body1" className="mt-6" sx={{ color: 'primary.main' }}>
                                 {formatMessage({
-                                    id: 'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique.',
+                                    id: 'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique de consommation.',
                                     defaultMessage:
-                                        'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique.',
+                                        'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique de consommation.',
                                 })}
                             </Typography>
                         }

@@ -14,7 +14,7 @@ const guidNrlinkInputQuerySelector = 'input[name="guidVariantPart"]'
 
 const ERRROR_NRLINK_NO_DATA_MESSAGE = "Votre nrLINK ne reçoit pas de données vérifier qu'il est connecté au Wifi"
 const INVALID_NRLINK_GUID_FIELD_ERROR =
-    'Veuillez entrer un N° GUID valide (16 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)'
+    'Veuillez entrer un N° GUID valide (6 caractères, chiffre de 0 à 9, lettre de A à F, pas d’espace ni de tiret)'
 const ERRROR_NRLINK_ALREADY_CONNECTED_MESSAGE =
     'Votre nrLINK est déjà connecté à un autre compteur, veuillez réessayer ou contacter votre Boucle Locale'
 const GENERIC_ERRROR_NRLINK_AUTHORIZE_MESSAGE = 'Erreur lors de la connection de votre compteur'

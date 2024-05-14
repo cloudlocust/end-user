@@ -89,7 +89,7 @@ describe('MeterConnection', () => {
         ).toBeInTheDocument()
         expect(
             getByText(
-                'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique.',
+                'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique de consommation.',
             ),
         ).toBeInTheDocument()
         expect(

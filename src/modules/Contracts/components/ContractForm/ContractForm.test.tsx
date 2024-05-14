@@ -20,7 +20,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 const TEST_HOUSES: IHousing[] = applyCamelCase(MOCK_HOUSES)
 
 const SUBMIT_BUTTON_TEXT = 'Enregistrer'
-const TYPE_LABEL_TEXT = 'Type *'
+const TYPE_LABEL_TEXT = 'Contrat pro ou particulier *'
 const PROVIDER_LABEL_TEXT = 'Fournisseur *'
 const OFFER_LABEL_TEXT = 'Offre *'
 const TARRIF_TYPE_LABEL_TEXT = 'Type de contrat *'

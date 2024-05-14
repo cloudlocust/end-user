@@ -36,9 +36,9 @@ const LoadingNrLinkConnectionSteps = () => {
                     </div>
                     <Typography variant="body1" className="w-full text-center text-14">
                         {formatMessage({
-                            id: 'Merci de patienter quelques instants afin que l’appairage de votre appareil termine de se synchroniser. Ceci ne devrait pas dépasser 1 minute.',
+                            id: 'Plus que quelques secondes de patience, nous connectons votre nrLINK à votre espace personnel.',
                             defaultMessage:
-                                'Merci de patienter quelques instants afin que l’appairage de votre appareil termine de se synchroniser. Ceci ne devrait pas dépasser 1 minute.',
+                                'Plus que quelques secondes de patience, nous connectons votre nrLINK à votre espace personnel.',
                         })}
                     </Typography>
                 </div>
