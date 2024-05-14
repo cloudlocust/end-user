@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: 'Wh' as totalConsumptionUnits }
 
@@ -40,7 +41,7 @@ const WidgetConsumption = (props: IWidgetProps) => {
 
     const isCurrentDayRange = useMemo(
         () =>
-            props.period === 'daily' &&
+            props.period === PeriodEnum.DAILY &&
             utcToZonedTime(new Date(props.range.from), 'Europe/Paris').getDate() ===
                 utcToZonedTime(new Date(), 'Europe/Paris').getDate(),
         [props.period, props.range.from],

@@ -121,13 +121,16 @@ export const Widget = memo(
                     getCurrentDayEuroConsumption()
                 }
             }
-        }, [getCurrentDayConsumption, getCurrentDayEuroConsumption, isCurrentDayRange, targets])
+            // ! Don't remove the eslint-disable. These dependencies must not contain the targets prop.
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [getCurrentDayConsumption, getCurrentDayEuroConsumption, isCurrentDayRange])
 
         const targetsInfos = useMemo(() => {
             const targetsInfos: targetsInfosType = {}
             targets.forEach((target) => {
                 let unit: string | null = null
                 let value: number | null = null
+                // TODO: Perform this treatment in a separate function
                 if (
                     [
                         metricTargetsEnum.consumption,

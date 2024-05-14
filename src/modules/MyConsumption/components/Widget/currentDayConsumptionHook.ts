@@ -9,7 +9,7 @@ import { API_RESOURCES_URL } from 'src/configs'
  * @param housingId The housing id.
  * @returns The current day consumption API.
  */
-export const CURRENT_DAY_CONSUMPTION_API = (housingId: number) =>
+export const GET_CURRENT_DAY_CONSUMPTION_API = (housingId: number) =>
     `${API_RESOURCES_URL}/current-day-consumption/${housingId}`
 
 /**
@@ -18,7 +18,7 @@ export const CURRENT_DAY_CONSUMPTION_API = (housingId: number) =>
  * @param housingId The housing id.
  * @returns The current day euro consumption API.
  */
-export const CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
+export const GET_CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
     `${API_RESOURCES_URL}/current-day-euro-consumption/${housingId}`
 
 /**
@@ -39,14 +39,16 @@ export const useCurrentDayConsumption = (housingId?: number) => {
         setIsGetCurrentDayConsumptionLoading(true)
         try {
             const { data: consumption, status } = await axios.get<CurrentDayConsumptionType>(
-                CURRENT_DAY_CONSUMPTION_API(housingId),
+                GET_CURRENT_DAY_CONSUMPTION_API(housingId),
             )
             if (status === 200) {
                 setCurrentDayConsumption(consumption.consumption)
                 setCurrentDayAutoConsumption(consumption.autoConsumption)
             }
-        } catch (error) {}
-        setIsGetCurrentDayConsumptionLoading(false)
+        } catch (error) {
+        } finally {
+            setIsGetCurrentDayConsumptionLoading(false)
+        }
     }, [housingId])
 
     const getCurrentDayEuroConsumption = useCallback(async () => {
@@ -54,13 +56,15 @@ export const useCurrentDayConsumption = (housingId?: number) => {
         setIsGetCurrentDayEuroConsumptionLoading(true)
         try {
             const { data: euroConsumption, status } = await axios.get<CurrentDayEuroConsumptionType>(
-                CURRENT_DAY_EURO_CONSUMPTION_API(housingId),
+                GET_CURRENT_DAY_EURO_CONSUMPTION_API(housingId),
             )
             if (status === 200) {
                 setCurrentDayEuroConsumption(euroConsumption.euroConsumption)
             }
-        } catch (error) {}
-        setIsGetCurrentDayEuroConsumptionLoading(false)
+        } catch (error) {
+        } finally {
+            setIsGetCurrentDayEuroConsumptionLoading(false)
+        }
     }, [housingId])
 
     return {

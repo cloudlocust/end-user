@@ -92,7 +92,7 @@ export const WidgetCost = (props: IWidgetProps) => {
     }, [getCurrentDayEuroConsumption, isCurrentDayRange])
 
     const { unit, value: totalEurosWithSubscription } = useMemo(
-        // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
+        // we should wait for all metrics needed to be loaded, in this case, 2 (euroconsumption and subscriptionPrices)
         () => {
             if (!euroConsumptionData.length || !data.length) {
                 return emptyValueUnit
