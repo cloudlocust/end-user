@@ -156,7 +156,12 @@ export const RegisterForm = ({
                     label="Nom présent sur votre facture d'électricité"
                     validateFunctions={[requiredBuilder()]}
                 />
-                <TextField name="email" label="Email" validateFunctions={[requiredBuilder(), email()]} />
+                <TextField
+                    inputProps={{ style: { textTransform: 'lowercase' } }}
+                    name="email"
+                    label="Email"
+                    validateFunctions={[requiredBuilder(), email()]}
+                />
                 <PhoneNumber
                     name="phone"
                     label="Numéro de téléphone"

@@ -40,7 +40,7 @@ describe('EquipmentsList tests', () => {
         const { getByText } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
 
         mockHousingEquipmentsList.forEach((housingEquipment) => {
-            expect(getByText(housingEquipment.equipmentLabel!)).toBeInTheDocument()
+            expect(getByText(housingEquipment.name!)).toBeInTheDocument()
         })
     })
 

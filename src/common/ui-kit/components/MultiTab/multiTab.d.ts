@@ -56,4 +56,8 @@ export interface MultiTabProps {
      * Indicates whether to use routing for tab selection.
      */
     isUseRouting?: boolean
+    /**
+     * Initial slug value of the selected tab.
+     */
+    initialTabSlug?: string
 }
