@@ -22,6 +22,7 @@ import { AlertsConfig } from 'src/modules/Alerts/AlertsConfig'
 import { DashboardConfig, URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import { SolarSizingConfig } from 'src/modules/SolarSizing/SolarSizingConfig'
 import { AlpiqSubscriptionConfig } from './modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
+import { MyContractNrLinkInfoConfig } from 'src/modules/MyContractNrLinkInfo/MyContractNrLinkInfoConfig'
 
 /**
  *
@@ -48,6 +49,7 @@ export const routes = [
     ...AlertsConfig,
     ...AlpiqSubscriptionConfig,
     ...SolarSizingConfig,
+    ...MyContractNrLinkInfoConfig,
     {
         /**
          * TODO Document.
