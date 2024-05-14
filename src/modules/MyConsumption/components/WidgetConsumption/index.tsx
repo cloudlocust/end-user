@@ -48,11 +48,7 @@ const WidgetConsumption = (props: IWidgetProps) => {
     )
 
     const percentageChange = useMemo(
-        () =>
-            computePercentageChange(
-                convert(oldValue).from(oldUnit).to('Wh') as number,
-                convert(value).from(unit).to('Wh') as number,
-            ),
+        () => computePercentageChange(convert(oldValue).from(oldUnit).to('Wh'), convert(value).from(unit).to('Wh')),
         [oldUnit, oldValue, unit, value],
     )
 
