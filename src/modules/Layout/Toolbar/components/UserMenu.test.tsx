@@ -21,9 +21,8 @@ const userFullName = `${mockUser?.firstName} ${mockUser?.lastName}`
 const FAQ_MENU_ITEM_TEXT = 'FAQ'
 const PROFILE_MENU_ITEM_TEXT = 'Mon profil'
 const PROFILE_REDIRECT_URL = '/profile-management'
-// TODO: it will activate after the implementation of the page in the next PR.
-// const MY_CONTRACT_NRLINK_MENU_ITEM_TEXT = 'Mon contract / nrLINK'
-// const MY_CONTRACT_NRLINK_REDIRECT_URL = '/nrlink-contract-management'
+const MY_CONTRACT_NRLINK_MENU_ITEM_TEXT = 'Mon contract / nrLINK'
+const MY_CONTRACT_NRLINK_REDIRECT_URL = '/nrlink-contract-management'
 const MENTIONS_MENU_ITEM_TEXT = 'Mentions légales'
 const MENTIONS_REDIRECT_URL = '/mentions'
 const ALERTS_MENU_ITEM_TEXT = 'Mes alertes'
@@ -173,11 +172,10 @@ describe('test UserMenu component', () => {
         })
 
         // Clicking on My Contract / nrLINK Menu ITem
-        // TODO: it will activate after the implementation of the page in the next PR.
-        // userEvent.click(getByText(MY_CONTRACT_NRLINK_MENU_ITEM_TEXT))
-        // await waitFor(() => {
-        //     expect(mockPushHistory).toHaveBeenCalledWith(MY_CONTRACT_NRLINK_REDIRECT_URL)
-        // })
+        userEvent.click(getByText(MY_CONTRACT_NRLINK_MENU_ITEM_TEXT))
+        await waitFor(() => {
+            expect(mockPushHistory).toHaveBeenCalledWith(MY_CONTRACT_NRLINK_REDIRECT_URL)
+        })
 
         // Clicking on Mentions Menu ITem
         userEvent.click(getByText(MENTIONS_MENU_ITEM_TEXT))
