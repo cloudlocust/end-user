@@ -130,7 +130,6 @@ export const Widget = memo(
             targets.forEach((target) => {
                 let unit: string | null = null
                 let value: number | null = null
-                // TODO: Perform this treatment in a separate function
                 if (
                     [
                         metricTargetsEnum.consumption,
