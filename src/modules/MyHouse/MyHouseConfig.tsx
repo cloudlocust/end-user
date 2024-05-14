@@ -7,10 +7,12 @@ import { ReactComponent as HousingSelectedIcon } from 'src/assets/images/navbarI
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 import { Equipments } from 'src/modules/MyHouse/components/Equipments'
-import { EquipmentDetails } from 'src/modules/MyHouse/components/EquipmentDetails'
 import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
+import EquipmentMeasurements from 'src/modules/MyHouse/components/EquipmentMeasurements'
+import EquipmentsDetails from 'src/modules/MyHouse/components/EquipmentsDetails'
+import EquipmentsUsage from 'src/modules/MyHouse/components/EquipmentsUsage'
 
 /**
  * Url for myHouse.
@@ -27,7 +29,17 @@ export const URL_HOUSING_EQUIPMENTS = `${URL_MY_HOUSE_DETAILS}/equipments`
 /**
  * Url for equipment details.
  */
-export const URL_HOUSING_EQUIPMENT_DETAILS = `${URL_HOUSING_EQUIPMENTS}/details`
+export const URL_HOUSING_EQUIPMENT_DETAILS = `${URL_HOUSING_EQUIPMENTS}/:housingEquipmentId/details/:equipmentId`
+
+/**
+ * Url for equipment usage.
+ */
+export const URL_HOUSING_EQUIPMENT_USAGE = `${URL_HOUSING_EQUIPMENTS}/:housingEquipmentId/usage/:equipmentId`
+
+/**
+ * Url for equipment measurements.
+ */
+export const URL_HOUSING_EQUIPMENT_MEASUREMENTS = `${URL_HOUSING_EQUIPMENTS}/measurements`
 /**
  * Url for housing connected plugs.
  */
@@ -63,7 +75,7 @@ export const deleteAddFeatureState = window._env_.REACT_APP_ADD_DELETE_HOUSING_F
 /**
  * Env Variable to know if the equipments and accomodation feature is enabled.
  */
-export const equipmentsAccomodationFeatureState =
+export const isEquipmentsAccomodationFeatureDisabled =
     window._env_.REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE === 'disabled'
 
 /**
@@ -221,7 +233,7 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_INFORMATION,
-                        disabled: equipmentsAccomodationFeatureState,
+                        disabled: isEquipmentsAccomodationFeatureDisabled,
                     },
                 },
             },
@@ -257,7 +269,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_EQUIPMENT_DETAILS,
-        component: EquipmentDetails,
+        component: EquipmentsDetails,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {
@@ -272,7 +284,35 @@ export const MyHouseConfig = [
                                 <HousingIcon />
                             </SvgIcon>
                         ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
+                            </SvgIcon>
+                        ),
                         url: URL_HOUSING_EQUIPMENT_DETAILS,
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<MyHouseProps>,
+    {
+        path: URL_HOUSING_EQUIPMENT_MEASUREMENTS,
+        component: EquipmentMeasurements,
+        auth: { authType: authTypes.loginRequired },
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'myHouses',
+                        label: 'Equipements',
+                        labelAbbreviation: 'Equipements',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        url: URL_HOUSING_EQUIPMENT_MEASUREMENTS,
                     },
                 },
             },
@@ -304,6 +344,34 @@ export const MyHouseConfig = [
                         disabled: arePlugsUsedBasedOnProductionStatus(
                             store.getState().housingModel.currentHousingScopes,
                         ),
+                    },
+                },
+            },
+        },
+    } as IRouteNavigationConfig<MyHouseProps>,
+    {
+        path: URL_HOUSING_EQUIPMENT_USAGE,
+        component: EquipmentsUsage,
+        auth: { authType: authTypes.loginRequired },
+        settings: {
+            layout: {
+                navbar: {
+                    UINavbarItem: {
+                        id: 'Logement',
+                        label: 'Logement',
+                        labelAbbreviation: 'Logement',
+                        type: 'item',
+                        icon: (
+                            <SvgIcon>
+                                <HousingIcon />
+                            </SvgIcon>
+                        ),
+                        selectedIcon: (
+                            <SvgIcon>
+                                <HousingSelectedIcon />
+                            </SvgIcon>
+                        ),
+                        url: URL_HOUSING_EQUIPMENT_USAGE,
                     },
                 },
             },

@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-import { HousingSolarSizing, ISolarSizing } from 'src/modules/SolarSizing/solarSizeing.types'
+import { AllHousingSolarSizingType, ISolarSizing } from 'src/modules/SolarSizing/solarSizeing.types'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export let TEST_SOLAR_SIZING: ISolarSizing[] = [
+export var TEST_SOLAR_SIZING: ISolarSizing[] = [
     {
         id: 1,
         surface: 100,
@@ -51,7 +51,7 @@ export let TEST_SOLAR_SIZING: ISolarSizing[] = [
 ]
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export let TEST_HOUSING_SOLAR_SIZING: HousingSolarSizing = {
+export let TEST_HOUSING_SOLAR_SIZING: AllHousingSolarSizingType = {
     solarSizing: TEST_SOLAR_SIZING,
     annualProduction: 1000,
     autoConsumptionPercentage: 50,
@@ -73,7 +73,7 @@ export const solarSizingEndpoints = [
             return res(ctx.status(201), ctx.delay(1000), ctx.json(TEST_SOLAR_SIZING))
         }
     }),
-    rest.get<HousingSolarSizing>(`${HOUSING_API}/:housingId/solar-sizing`, (req, res, ctx) => {
+    rest.get<AllHousingSolarSizingType>(`${HOUSING_API}/:housingId/solar-sizing`, (req, res, ctx) => {
         // const authorization = req.headers.get('authorization')
         const { housingId } = req.params
         if (parseInt(housingId) === -1) {
@@ -81,5 +81,26 @@ export const solarSizingEndpoints = [
         }
 
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_HOUSING_SOLAR_SIZING))
+    }),
+
+    rest.patch<ISolarSizing>(`${HOUSING_API}/:housingId/solar-sizing/:solarSizingId`, (req, res, ctx) => {
+        const { solarSizingId } = req.params
+        const solarSizing = TEST_SOLAR_SIZING.find((s) => s.id === parseInt(solarSizingId))
+        if (solarSizing) {
+            TEST_SOLAR_SIZING = TEST_SOLAR_SIZING.map((s) => (s.id === parseInt(solarSizingId) ? req.body : s))
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_SOLAR_SIZING))
+        } else {
+            return res(ctx.status(404))
+        }
+    }),
+
+    rest.get<ISolarSizing>(`${HOUSING_API}/:housingId/solar-sizing/:solarSizingId`, (req, res, ctx) => {
+        const { solarSizingId } = req.params
+        const solarSizing = TEST_SOLAR_SIZING.find((s) => s.id === parseInt(solarSizingId))
+        if (solarSizing) {
+            return res(ctx.status(200), ctx.delay(1000), ctx.json(solarSizing))
+        } else {
+            return res(ctx.status(404))
+        }
     }),
 ]

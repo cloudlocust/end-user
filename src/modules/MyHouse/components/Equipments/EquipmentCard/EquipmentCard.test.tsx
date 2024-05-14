@@ -35,7 +35,7 @@ describe('EquipmentCard tests', () => {
             measurementModes: undefined,
             customerId: undefined,
         },
-        label: 'Label',
+        title: 'title',
         onEquipmentChange: jest.fn(),
     }
 
@@ -57,7 +57,7 @@ describe('EquipmentCard tests', () => {
                 <EquipmentCard {...mockEquipmentCardProps} />
             </Router>,
         )
-        expect(getByText(mockEquipmentCardProps.label!)).toBeInTheDocument()
+        expect(getByText(mockEquipmentCardProps.title!)).toBeInTheDocument()
     })
 
     test('display the correct number', async () => {
@@ -133,7 +133,7 @@ describe('EquipmentCard tests', () => {
         userEvent.click(screen.getByText(MES_MESURES_TEXT))
 
         await waitFor(() => {
-            expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/equipments/details`)
+            expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}/equipments/measurements`)
         })
     })
 
