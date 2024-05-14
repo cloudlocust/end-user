@@ -1,4 +1,4 @@
-import { useTheme, Card, Slider } from '@mui/material'
+import { useTheme, Card, Slider, Typography } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Form } from 'src/common/react-platform-components'
@@ -302,17 +302,31 @@ const ContractEstimation = ({
                                 </div>
                             )}
                             <div className="flex items-center justify-center mx-10">
-                                <TypographyFormatMessage
+                                <Typography
                                     variant={isMobile ? 'body2' : 'body1'}
                                     color={theme.palette.common.black}
                                     fontWeight={300}
+                                    data-testid="estimation-result"
                                 >
-                                    {`Pour une consommation estimée à ${
-                                        calculatedMonthlyEstimation
-                                            ? Math.floor(calculatedMonthlyEstimation?.annualReferenceConsumption)
-                                            : '--'
-                                    } kWh/an`}
-                                </TypographyFormatMessage>
+                                    {formatMessage(
+                                        {
+                                            id: 'Pour une consommation estimée à {value}',
+                                            defaultMessage: 'Pour une consommation estimée à {value}',
+                                        },
+                                        {
+                                            value: (
+                                                <b style={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
+                                                    {calculatedMonthlyEstimation
+                                                        ? Math.floor(
+                                                              calculatedMonthlyEstimation?.annualReferenceConsumption,
+                                                          )
+                                                        : '--'}{' '}
+                                                    kWh/an
+                                                </b>
+                                            ),
+                                        },
+                                    )}
+                                </Typography>
                             </div>
                         </div>
                         <div className="w-11/12 ml-10 mt-12">
