@@ -1,19 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import { Container, Button, Icon } from '@mui/material'
-import { Form, requiredBuilder } from 'src/common/react-platform-components'
-import { ButtonLoader, MuiTextField as TextField, Typography } from 'src/common/ui-kit'
+import { Typography } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
-import { useCurrentHousing } from 'src/hooks/CurrentHousing'
-import { ISolarSizing } from 'src/modules/SolarSizing/solarSizeing.types'
-import { useSolarSizing } from 'src/modules/SolarSizing/solarSizingHook'
-import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
-import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import floor from 'lodash/floor'
-import isNull from 'lodash/isNull'
-import convert from 'convert-units'
+import SolarSizingForm from 'src/modules/SolarSizing/solarSizingForm'
 
 /**
  * Solar sizing page.
@@ -21,93 +12,7 @@ import convert from 'convert-units'
  * @returns Solar sizing page.
  */
 export default function SolarSizing() {
-    const currentHousing = useCurrentHousing()
-    const [orientationValue, setOrientationValue] = useState<number | null>(null)
-    const [inclinationValue, setInclinationValue] = useState<number | null>(null)
-    const { addSolarSizing, refetch, solarSizingData } = useSolarSizing(currentHousing?.id)
     const history = useHistory()
-    const [latestSurface, setLatestSurface] = useState<number>(0)
-    const [potentialSolarPanelPerSurface, setPotentialSolarPanelPerSurface] = useState<number>(0)
-
-    const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
-
-    const solarSizingDefaultValues = {}
-
-    /**
-     * On change handler for the Orientation value.
-     *
-     * @param value Orientation value.
-     */
-    const onOrientationValueChange: (value: string) => void = (value) => {
-        setOrientationValue(parseInt(value))
-    }
-
-    /**
-     * On change handler for the Inclination value.
-     *
-     * @param value Inclination value.
-     */
-    const onInclinationValueChange: (value: string) => void = (value) => {
-        setInclinationValue(parseInt(value))
-    }
-
-    /**
-     * Handle the form submission.
-     *
-     * @param data Form data.
-     */
-    const onSubmit = async (data: ISolarSizing) => {
-        const dataToSubmit = {
-            ...data,
-            orientation: orientationValue as number,
-            inclination: inclinationValue as number,
-        }
-        const { surface } = data
-        setLatestSurface(surface)
-        await addSolarSizing.mutateAsync({ ...dataToSubmit, surface: parseInt(surface as unknown as string) })
-        await refetch()
-    }
-
-    useEffect(() => {
-        if (latestSurface) {
-            setPotentialSolarPanelPerSurface(floor(latestSurface / oneSolarPanelSurface))
-        }
-    }, [latestSurface])
-
-    const annualProduction = floor(convert(solarSizingData?.data['annualProduction']).from('kWh').to('MWh'), 1)
-    const autoConsumptionPercentage = floor(solarSizingData?.data.autoConsumptionPercentage!, 1)
-    const autoProductionPercentage = floor(solarSizingData?.data.autoProductionPercentage!, 1)
-    const nominalPower = floor(solarSizingData?.data.nominalPower!, 1)
-
-    const averageConsumptionFromAnualProduction = useMemo(
-        () => floor((annualProduction * autoConsumptionPercentage) / 100, 1),
-        [annualProduction, autoConsumptionPercentage],
-    )
-
-    const averageProducationFromAnualProduction = useMemo(
-        () => floor((annualProduction * autoProductionPercentage) / 100, 1),
-        [annualProduction, autoProductionPercentage],
-    )
-
-    const isDataReadyToBeShown = useMemo(() => {
-        return (
-            addSolarSizing.isSuccess &&
-            Number(annualProduction) &&
-            Number(autoConsumptionPercentage) &&
-            Number(averageConsumptionFromAnualProduction) &&
-            Number(autoProductionPercentage) &&
-            Number(averageProducationFromAnualProduction) &&
-            Number(nominalPower)
-        )
-    }, [
-        addSolarSizing.isSuccess,
-        annualProduction,
-        autoConsumptionPercentage,
-        autoProductionPercentage,
-        averageConsumptionFromAnualProduction,
-        averageProducationFromAnualProduction,
-        nominalPower,
-    ])
 
     return (
         <PageSimple
@@ -141,89 +46,7 @@ export default function SolarSizing() {
                                 maison et du taux d'ensoleillement de votre ville.
                             </Typography>
                         </div>
-                        <div
-                            className={clsx(
-                                'w-full grid grid-rows-1 md:grid-cols-8 gap-10',
-                                Boolean(isDataReadyToBeShown) && 'grid-rows-2',
-                            )}
-                        >
-                            <div className={clsx(Boolean(isDataReadyToBeShown) ? 'col-span-6' : 'col-span-8')}>
-                                <Form onSubmit={onSubmit} defaultValues={solarSizingDefaultValues}>
-                                    {/* Surface */}
-                                    <TextField
-                                        className="mb-10"
-                                        name="surface"
-                                        label="Dimensions de ma toiture"
-                                        placeholder="m2"
-                                        fullWidth
-                                        type="number"
-                                        validateFunctions={[requiredBuilder()]}
-                                    />
-                                    {/* Orientation */}
-                                    <div className="flex flex-col full-w mb-14">
-                                        <Typography className="mb-3 text-14 font-medium">Orientation :</Typography>
-                                        <CustomRadioGroup
-                                            data-testid="orientation-radio-group"
-                                            boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
-                                            elements={[
-                                                { value: '180', label: 'Nord' },
-                                                { value: '135', label: 'Nord-Est' },
-                                                { value: '90', label: 'Est' },
-                                                { value: '45', label: 'Sud-Est' },
-                                                { value: '0', label: 'Sud' },
-                                                { value: '-45', label: 'Sud-Ouest' },
-                                                { value: '-90', label: 'Ouest' },
-                                                { value: '-135', label: 'Nord-Ouest' },
-                                            ]}
-                                            onValueChange={onOrientationValueChange}
-                                        />
-                                    </div>
-                                    {/* Inclination */}
-                                    <div className="flex flex-col full-w mb-14">
-                                        <Typography className="mb-3 text-14 font-medium">Inclinaison :</Typography>
-                                        <CustomRadioGroup
-                                            data-testid="inclination-radio-group"
-                                            boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
-                                            elements={[
-                                                { value: '0', label: '0%' },
-                                                { value: '15', label: '15%' },
-                                                { value: '30', label: '30%' },
-                                                { value: '40', label: '40%' },
-                                            ]}
-                                            onValueChange={onInclinationValueChange}
-                                        />
-                                    </div>
-                                    <ButtonLoader
-                                        className="mt-10"
-                                        type="submit"
-                                        fullWidth
-                                        inProgress={addSolarSizing.isLoading}
-                                        disabled={isNull(orientationValue) || isNull(inclinationValue)}
-                                    >
-                                        <Typography>Simuler mon installation solaire</Typography>
-                                    </ButtonLoader>
-                                </Form>
-                            </div>
-                            {Boolean(isDataReadyToBeShown) && (
-                                <div className="col-span-2">
-                                    <Typography paragraph className="mb-10 text-14">
-                                        {`Votre maison peut être équipée de `}
-                                        <strong>{potentialSolarPanelPerSurface}</strong>
-                                        {` panneaux solaires, cela représente un potentiel `}
-                                        <strong>{nominalPower}</strong>
-                                        {` kWc / an avec l'ensoleillement de l'année passée dans votre ville. En fonction de la répartition de votre consommation dans la journée, vous pourriez alors autoconsommer `}
-                                        <strong>{averageConsumptionFromAnualProduction}</strong>
-                                        {` MWh soit `}
-                                        <strong>{autoConsumptionPercentage}</strong>
-                                        {` % de votre consommation totale.`}
-                                        <strong>{autoProductionPercentage}</strong>
-                                        {` % de votre production soit `}
-                                        <strong>{averageProducationFromAnualProduction}</strong>
-                                        {` MWh`}
-                                    </Typography>
-                                </div>
-                            )}
-                        </div>
+                        <SolarSizingForm />
                     </div>
                 </Container>
             }

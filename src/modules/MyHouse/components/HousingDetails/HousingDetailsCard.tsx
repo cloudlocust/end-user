@@ -5,7 +5,7 @@ import { NavLink, useParams } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { ButtonLoader } from 'src/common/ui-kit'
-import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { isEquipmentsAccomodationFeatureDisabled } from 'src/modules/MyHouse/MyHouseConfig'
 
 /**
  * This is a component to display different elements of equipements/home-configuration in a card.
@@ -65,25 +65,25 @@ export const HousingDetailsCard = ({
                 <Tooltip
                     arrow
                     placement="top"
-                    disableHoverListener={!equipmentsAccomodationFeatureState}
+                    disableHoverListener={!isEquipmentsAccomodationFeatureDisabled}
                     title={
-                        !equipmentsAccomodationFeatureState && (
+                        !isEquipmentsAccomodationFeatureDisabled && (
                             <TypographyFormatMessage>
                                 Cette fonctionnalité n'est pas disponible sur cette version
                             </TypographyFormatMessage>
                         )
                     }
                 >
-                    <div className={`${equipmentsAccomodationFeatureState && 'cursor-not-allowed'}`}>
+                    <div className={`${isEquipmentsAccomodationFeatureDisabled && 'cursor-not-allowed'}`}>
                         <NavLink
-                            className={`${equipmentsAccomodationFeatureState && 'pointer-events-none'}`}
+                            className={`${isEquipmentsAccomodationFeatureDisabled && 'pointer-events-none'}`}
                             to={`${URL_MY_HOUSE}/${houseId}/${typeOfDetails}`}
                         >
                             <ButtonLoader
                                 variant="contained"
                                 color="primary"
                                 className="text-white"
-                                disabled={equipmentsAccomodationFeatureState}
+                                disabled={isEquipmentsAccomodationFeatureDisabled}
                                 endIcon={isConfigured && <SettingsOutlinedIcon />}
                                 inProgress={loadingInProgress}
                             >

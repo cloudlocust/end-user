@@ -8,6 +8,7 @@ import {
     InfosPageProps,
 } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/InfosPage/InfosPage.d'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
+import { measurementStepsEnum } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement.d'
 
 /**
  * ListItemCircle component.
@@ -65,7 +66,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
      * Click handler for the button Commencer.
      */
     const handleBtnClick = () => {
-        stepSetter(1)
+        stepSetter(measurementStepsEnum.CONFIGURATION_STEP)
     }
 
     return (
@@ -131,7 +132,7 @@ export const InfosPage = ({ stepSetter }: InfosPageProps) => {
             <div className="flex justify-center">
                 <Button
                     variant="contained"
-                    sx={{ padding: '10px auto', textAlign: 'center', width: '60%', minWidth: '160px' }}
+                    sx={{ padding: '10px auto', textAlign: 'center', minWidth: '210px' }}
                     onClick={handleBtnClick}
                 >
                     {formatMessage({

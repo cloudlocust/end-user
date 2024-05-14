@@ -1,34 +1,67 @@
-import { Form, regex, requiredBuilder } from 'src/common/react-platform-components'
-import { useTheme, RadioGroup, Radio, FormControlLabel } from '@mui/material'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { Form, regex, requiredBuilder, accept } from 'src/common/react-platform-components'
+import {
+    useTheme,
+    RadioGroup,
+    Radio,
+    FormControlLabel,
+    Card,
+    MenuItem,
+    Checkbox as CheckboxMui,
+    Button,
+    Grid,
+} from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
-import MenuItem from '@mui/material/MenuItem'
 import { useIntl } from 'react-intl'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { useSelector } from 'react-redux'
 import { Dispatch, RootState } from 'src/redux'
 import { useState } from 'react'
-import { Checkbox as CheckboxMui } from '@mui/material'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import { addDays, format } from 'date-fns'
-import { ButtonLoader, TextField, Checkbox, Typography } from 'src/common/ui-kit'
+import { ButtonLoader, TextField, Checkbox } from 'src/common/ui-kit'
 import { textNrlinkColor } from 'src/modules/nrLinkConnection/components/LastStepNrLinkConnection/LastStepNrLinkConnection'
-import Button from '@mui/material/Button'
-import { AlpiqFacturationDataType } from '..'
-import { useAlpiqProvider } from '../alpiqSubscriptionHooks'
-import { SectionText, SectionTitle } from './utils'
+import { AlpiqFacturationDataType } from 'src/modules/User/AlpiqSubscription'
+import { useAlpiqProvider } from 'src/modules/User/AlpiqSubscription/alpiqSubscriptionHooks'
+import { SectionText, SectionTitle } from 'src/modules/User/AlpiqSubscription/FacturationForm/utils'
 import { useModal } from 'src/hooks/useModal'
-import { SuccessPopupModal } from './SuccessPopupModal'
+import { SuccessPopupModal } from 'src/modules/User/AlpiqSubscription/FacturationForm/SuccessPopupModal'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSnackbar } from 'notistack'
+import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
+//eslint-disable-next-line
+export const datePrelevementOptions: { id: number; value: number; label: string }[] = Array.from({ length: 28 }, (_, index) => ({
+        id: index + 1,
+        value: index + 1,
+        label: `${index + 1} du mois`,
+    }),
+)
 
 //eslint-disable-next-line
-export const datePrelevementOptions: { value: number, label: string}[] = Array.from({length: 28}, (_, index) => ({
-    value: index + 1,
-    label: `${index + 1} du mois`,
-}))
+export const civilityOptions: { id: number, value: string, label: string}[] = [
+    {
+        id: 1,
+        value: 'MR',
+        label: 'MR',
+    },
+    {
+        id: 2,
+        value: 'Mme',
+        label: 'Mme',
+    },
+    {
+        id: 3,
+        value: 'Mlle',
+        label: 'Mlle',
+    },
+]
+
+// doing it static because it's only a feature for bowatt
+const CGV_DOCUMENT_URL = 'https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf'
+
+// doing it static because it's only a feature for bowatt
+const GRILLE_TARIFF_DOCUMENT_URL = 'https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf'
 
 /**
  * Facturation Form.
@@ -47,13 +80,13 @@ export const FacturationForm = ({
     handleBack: () => void
 }) => {
     const theme = useTheme()
-    const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
     const { formatMessage } = useIntl()
     const history = useHistory()
     const dispatch = useDispatch<Dispatch>()
     const { currentHousing, alpiqSubscriptionSpecs } = useSelector(({ housingModel }: RootState) => housingModel)
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const [isNewFacturationAddress, setIsNewFacturationAddress] = useState(false)
+    const [isCotitulaire, setIsCotitulaire] = useState(false)
     const { createAlpiqSubscription, loadingInProgress } = useAlpiqProvider()
     const afterTomorrow = addDays(new Date(), 2) // Get the day after tomorrow
     const formattedAfterTomorrow = format(afterTomorrow, 'yyyy-MM-dd')
@@ -80,22 +113,6 @@ export const FacturationForm = ({
     }
 
     /**
-     * Handle Open CGV.
-     */
-    const handleOpenCGV = () => {
-        // doing it static because it's only a feature for bowatt
-        window.open('https://particuliers.alpiq.fr/CGV-PDF/particuliers/cgv_elec_part.pdf', '_blank')
-    }
-
-    /**
-     * Handle Open Grille Tariff.
-     */
-    const handleOpenGrilleTariff = () => {
-        // doing it static because it's only a feature for bowatt
-        window.open('https://www.bowatts-beaujolais.fr/pdf/grille-tarifaire.pdf', '_blank')
-    }
-
-    /**
      * On submit button.
      *
      * @param data Data.
@@ -103,8 +120,9 @@ export const FacturationForm = ({
     const onSubmit = (data: AlpiqFacturationDataType) => {
         // technicly can't have this case if he did the steps right and the stepper does his job on load
         if (!alpiqSubscriptionSpecs || !user) return
+        const { car, ...contractSubscriptionInfos } = alpiqSubscriptionSpecs
         createAlpiqSubscription(
-            { ...data, ...alpiqSubscriptionSpecs },
+            { ...data, ...contractSubscriptionInfos },
             currentHousing?.id,
             onOpenFinishFacturationPopup,
         )
@@ -133,6 +151,7 @@ export const FacturationForm = ({
         history.replace(`/nrlink-connection-steps/${currentHousing?.id}`)
     }
 
+    const requiredFieldErrorMessage = formatMessage({ id: 'Champ obligatoire', defaultMessage: 'Champ obligatoire' })
     return (
         <div className="flex w-full flex-col justify-center">
             <Form
@@ -149,6 +168,36 @@ export const FacturationForm = ({
                 }}
             >
                 <div className="flex flex-col items-start justify-center w-full">
+                    <div className="flex flex-col items-center justify-center w-full mb-32">
+                        <Card className="rounded-16 border border-slate-600 bg-gray-50 mx-10 md:mx-10 w-full md:w-400 h-256 lg:h-224 flex flex-col justify-center">
+                            <SectionTitle title="Récapitulatif de l'offre" />
+                            <div className="flex items-center justify-center mt-20">
+                                <SectionText text="Puissance souscrite :" className="text-sm" />
+                                <SectionText
+                                    className="ml-6 md:ml-12 font-bold text-sm"
+                                    text={`${alpiqSubscriptionSpecs?.puissanceSouscrite} Kva`}
+                                />
+                            </div>
+                            <div className="flex flex-col md:flex-row items-center justify-center mt-20">
+                                <SectionText text="Option tarifaire :" className="text-sm" />
+                                <SectionText
+                                    className="ml-6 md:ml-12 font-bold text-sm"
+                                    text={
+                                        alpiqSubscriptionSpecs?.optionTarifaire === 'BASE'
+                                            ? 'Base'
+                                            : 'Heures pleines / Heures creuses'
+                                    }
+                                />
+                            </div>
+                            <div className="flex items-center justify-center mt-20">
+                                <SectionText text="Mensualité :" className="text-sm" />
+                                <SectionText
+                                    className="ml-6 md:ml-12 font-bold"
+                                    text={`${alpiqSubscriptionSpecs?.mensualite} €`}
+                                />
+                            </div>
+                        </Card>
+                    </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Mode de facturation" />
                         <RadioGroup name="modeFacturation" defaultValue="MENS" className="w-full flex flex-col">
@@ -194,8 +243,8 @@ export const FacturationForm = ({
                             <SectionText text="Je souhaite être prélevé le :" className="mr-10" />
                             <div className="w-120">
                                 <Select name="jourPrelevement" label="">
-                                    {datePrelevementOptions.map((option, _index) => (
-                                        <MenuItem key={_index} value={option.value}>
+                                    {datePrelevementOptions.map((option) => (
+                                        <MenuItem key={option.id} value={option.value}>
                                             {formatMessage({
                                                 id: option.label,
                                                 defaultMessage: option.label,
@@ -225,6 +274,14 @@ export const FacturationForm = ({
                                 />
                             </div>
                         </div>
+                        <div className="w-full flex items-center justify-start">
+                            <CheckboxMui
+                                checked={isCotitulaire}
+                                color="primary"
+                                onClick={() => setIsCotitulaire(!isCotitulaire)}
+                            />
+                            <SectionText text="J'ai un cotitulaire." />
+                        </div>
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Date de début de fourniture" />
@@ -243,56 +300,104 @@ export const FacturationForm = ({
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Coordonnées bancaires" />
-                        <div className="mt-12 w-full flex flex-col lg:flex-row items-center justify-around">
-                            <TextField
-                                name="iban"
-                                label="IBAN"
-                                validateFunctions={[requiredBuilder(), regex(ibanRegex, IBAN_REGEX_TEXT)]}
-                            />
-                            <TextField
-                                name="nomAssocieIban"
-                                label="Nom du titulaire"
-                                validateFunctions={[requiredBuilder()]}
-                            />
-                            <TextField
-                                name="prenomAssocieIban"
-                                label="Prenom du titulaire"
-                                validateFunctions={[requiredBuilder()]}
-                            />
-                        </div>
+                        <Grid container spacing={1} className="mt-12">
+                            <Grid item md={4} xs={12}>
+                                <TextField
+                                    name="iban"
+                                    label="IBAN"
+                                    validateFunctions={[requiredBuilder(), regex(ibanRegex, IBAN_REGEX_TEXT)]}
+                                />
+                            </Grid>
+                            <Grid item md={4} xs={12}>
+                                <TextField
+                                    name="nomAssocieIban"
+                                    label="Nom du titulaire"
+                                    validateFunctions={[requiredBuilder()]}
+                                />
+                            </Grid>
+                            <Grid item md={4} xs={12}>
+                                <TextField
+                                    name="prenomAssocieIban"
+                                    label="Prenom du titulaire"
+                                    validateFunctions={[requiredBuilder()]}
+                                />
+                            </Grid>
+
+                            {isCotitulaire && (
+                                <>
+                                    <Grid item md={4} xs={12}>
+                                        <Select
+                                            name="civilityCotitulaire"
+                                            label="Civilité du cotitulaire"
+                                            validateFunctions={[requiredBuilder()]}
+                                            className="mb-12"
+                                        >
+                                            {civilityOptions.map((option) => (
+                                                <MenuItem key={option.id} value={option.value}>
+                                                    {formatMessage({
+                                                        id: option.label,
+                                                        defaultMessage: option.label,
+                                                    })}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </Grid>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            name="nomCotitulaire"
+                                            label="Nom du cotitulaire"
+                                            validateFunctions={[requiredBuilder()]}
+                                        />
+                                    </Grid>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            name="prenomCotitilaure"
+                                            label="Prenom du cotitulaire"
+                                            validateFunctions={[requiredBuilder()]}
+                                        />
+                                    </Grid>
+                                </>
+                            )}
+                        </Grid>
                     </div>
                     <div className="w-full flex flex-col">
                         <Checkbox
                             color="primary"
                             name="isAlpiqPrelevementAccepted"
                             label="J'autorise Alpiq à prélever sur le compte bancaire désigné ci-dessus les sommes dues au titre de mon contrat. J'autorise ma banque à accepter les prélèvement automatiques d'Alpiq"
-                            validate={[requiredBuilder()]}
+                            validate={[accept(requiredFieldErrorMessage), requiredBuilder(requiredFieldErrorMessage)]}
                         />
                         <div className="w-full flex-col items-center justify-start mt-10">
                             <div className="w-full flex flex-row items-center justify-start">
                                 <Checkbox
                                     name="isContractConditionsAccepted"
-                                    label=""
+                                    label={
+                                        formatMessage(
+                                            {
+                                                id: "J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
+                                                defaultMessage:
+                                                    "J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
+                                            },
+                                            {
+                                                cgv: <LinkRedirection label="CGV" url={CGV_DOCUMENT_URL} />,
+                                                tarif: (
+                                                    <LinkRedirection
+                                                        label={formatMessage({
+                                                            id: 'la grille tarifaire',
+                                                            defaultMessage: 'la grille tarifaire',
+                                                        })}
+                                                        url={GRILLE_TARIFF_DOCUMENT_URL}
+                                                    />
+                                                ),
+                                            },
+                                        ) as string
+                                    }
                                     color="primary"
-                                    validate={[requiredBuilder()]}
+                                    validate={[
+                                        accept(requiredFieldErrorMessage),
+                                        requiredBuilder(requiredFieldErrorMessage),
+                                    ]}
                                 />
-                                <Typography className={isMobile ? 'ml-7' : ''}>
-                                    J'ai pris connaissance et j'accepte les&nbsp;
-                                    <span
-                                        onClick={handleOpenCGV}
-                                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                                    >
-                                        CGV
-                                    </span>
-                                    ,&nbsp;
-                                    <span
-                                        onClick={handleOpenGrilleTariff}
-                                        style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                                    >
-                                        la grille tarifaire
-                                    </span>
-                                    , et mon contrat.
-                                </Typography>
                             </div>
                             <TypographyFormatMessage color={textNrlinkColor} variant="caption" className="mt-5">
                                 Pas de frais de dossier et aucune démarche administrative. Contrat sans engagement de

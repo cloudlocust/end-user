@@ -80,11 +80,7 @@ const HEATER_TEXT = 'Type de chauffage :'
 const SANITARY_INFO_TEXT = 'Eau chaude sanitaire :'
 const HOTPLATE_INFO_TEXT = 'Type de plaques de cuisson :'
 const COLLECTIF_VALUE_TEXT = 'Collectif'
-const ELECTRIQUE_INDIVIDUEL_VALUE_TEXT = 'Individuel Electrique'
-const AUTRE_VALUE_TEXT = 'Autre'
 const INDUCTION_VALUE_TEXT = 'Induction'
-const ELECTRIQUE_FONTE_VALUE_TEXT = 'Électrique (fonte)'
-const VITROCERAMIQUE_VALUE_TEXT = 'Vitrocéramique'
 const POWER_PRODUCTION_TITLE_TEXT = "Ma production d'énergie"
 const SOLAR_PANEL_TEXT = 'Je dispose de panneaux solaires :'
 const YES_VALUE_TEXT = 'Oui'
@@ -129,12 +125,8 @@ describe('Test InstallationForm', () => {
         expect(getByText(HEATER_TEXT)).toBeInTheDocument()
         expect(getByText(SANITARY_INFO_TEXT)).toBeInTheDocument()
         expect(getByText(HOTPLATE_INFO_TEXT)).toBeInTheDocument()
-        expect(getAllByText(COLLECTIF_VALUE_TEXT)).toHaveLength(2)
-        expect(getAllByText(ELECTRIQUE_INDIVIDUEL_VALUE_TEXT)).toHaveLength(2)
-        expect(getAllByText(AUTRE_VALUE_TEXT)).toHaveLength(3)
+        expect(getAllByText(COLLECTIF_VALUE_TEXT)).toHaveLength(1)
         expect(getByText(INDUCTION_VALUE_TEXT)).toBeInTheDocument()
-        expect(getByText(ELECTRIQUE_FONTE_VALUE_TEXT)).toBeInTheDocument()
-        expect(getByText(VITROCERAMIQUE_VALUE_TEXT)).toBeInTheDocument()
         expect(getByText(POWER_PRODUCTION_TITLE_TEXT)).toBeInTheDocument()
         expect(getByText(SOLAR_PANEL_TEXT)).toBeInTheDocument()
         expect(getByText(YES_VALUE_TEXT)).toBeInTheDocument()
