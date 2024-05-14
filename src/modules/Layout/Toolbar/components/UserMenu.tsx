@@ -99,24 +99,32 @@ function UserMenu() {
                             history.push('/profile-management')
                         }}
                         iconLabel="account_box"
-                        idLabel="Gestion de Profil"
-                        defaultMessageLabel="Gestion de Profil"
+                        idLabel="Mon profil"
+                        defaultMessageLabel="Mon profil"
+                    />
+                    <ToolbarMenuItem
+                        onMenuItemClick={() => {
+                            history.push('/nrlink-contract-management')
+                        }}
+                        iconLabel="assignment"
+                        idLabel="Mon contract / nrLINK"
+                        defaultMessageLabel="Mon contract / nrLINK"
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             history.push(URL_ALERTS)
                         }}
                         iconLabel="edit_notifications"
-                        idLabel="Gestion des alertes"
-                        defaultMessageLabel="Gestion des alertes"
+                        idLabel="Mes alertes"
+                        defaultMessageLabel="Mes alertes"
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
                             history.push('/mentions')
                         }}
                         iconLabel="assignment"
-                        idLabel="Mentions"
-                        defaultMessageLabel="Mentions"
+                        idLabel="Mentions légales"
+                        defaultMessageLabel="Mentions légales"
                     />
                     {!installationRequestsFeatureState && (
                         <ToolbarMenuItem
@@ -156,8 +164,8 @@ function UserMenu() {
                             history.replace('/login')
                         }}
                         iconLabel="exit_to_app"
-                        idLabel="Déconnexion"
-                        defaultMessageLabel="Déconnexion"
+                        idLabel="Me déconnecter"
+                        defaultMessageLabel="Me déconnecter"
                     />
                 </>
             </Popover>

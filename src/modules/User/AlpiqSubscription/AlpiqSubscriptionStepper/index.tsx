@@ -191,7 +191,7 @@ const AlpiqSubscriptionStepper = () => {
                                     }}
                                     endIcon={<LogoutIcon />}
                                 >
-                                    Déconnexion
+                                    Me déconnecter
                                 </ButtonLoader>
                             </div>
                         </CardActions>
