@@ -129,7 +129,7 @@ export const AddEquipmentPopup = ({
                                         },
                                     ])
                                 }
-                                if (equipment && equipment.length > 0 && onAddingEquipmentSuccess) {
+                                if (Array.isArray(equipment) && equipment.length > 0 && onAddingEquipmentSuccess) {
                                     onAddingEquipmentSuccess(equipment[0].equipmentId)
                                 }
                             } finally {

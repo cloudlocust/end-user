@@ -18,15 +18,16 @@ export const EquipmentsList = ({
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {housingEquipmentsList &&
-                housingEquipmentsList.map((equipment) => {
+                housingEquipmentsList.map((housingEq) => {
                     return (
                         <EquipmentCard
-                            key={equipment.id}
-                            equipment={equipment}
-                            label={equipment.equipmentLabel || equipment.name}
+                            key={housingEq.id}
+                            equipment={housingEq}
+                            title={housingEq.equipmentTitle}
+                            label={housingEq.equipmentLabel}
                             onEquipmentChange={addHousingEquipment}
-                            addingEquipmentInProgress={addingInProgressEquipmentsIds.includes(equipment.id)}
-                            iconComponent={equipment.iconComponent}
+                            addingEquipmentInProgress={addingInProgressEquipmentsIds.includes(housingEq.id)}
+                            iconComponent={housingEq.iconComponent}
                         />
                     )
                 })}

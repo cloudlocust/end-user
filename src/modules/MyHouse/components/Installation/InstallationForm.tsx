@@ -1,6 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CircularProgress, Radio, RadioGroup, FormControlLabel, useTheme, Container, Typography } from '@mui/material'
-import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
+import {
+    CircularProgress,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    useTheme,
+    Container,
+    Typography,
+    Grid,
+} from '@mui/material'
+// import { SelectButtons } from 'src/common/ui-kit/form-fields/SelectButtons/SelectButtons'
 import { Select } from 'src/common/ui-kit/form-fields/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { heaterEquipment, sanitaryEquipment, hotPlateEquipment } from 'src/modules/MyHouse/utils/MyHouseVariables'
@@ -15,10 +24,13 @@ import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import { ReactComponent as MeterErrorIcon } from 'src/assets/images/content/housing/meter-error.svg'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
 import {
+    equipmentAllowedTypeT,
     equipmentMeterType,
+    housingInstallationEquipmentsType,
     installationFormFieldsType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import isEqual from 'lodash/isEqual'
+import { renderOptions } from 'src/modules/utils/select'
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const SOLAR_PANEL_TYPES = {
@@ -182,7 +194,7 @@ export const InstallationTab = () => {
      * @param data Form data.
      * @returns N/A.
      */
-    const handleFormSubmit = async (data: any) => {
+    const handleFormSubmit = async (data: installationFormFieldsType) => {
         /**
          * Generate the housingEquipments object to pass with the body of the request
          * to add or update the installation infos.
@@ -196,11 +208,17 @@ export const InstallationTab = () => {
                          * Check if the value of the equipment is different from the default value,
                          * if yes, add it to the array of data to send to the backend.
                          */
-                        data[curr.name] !==
-                        formFieldsValuesAccordingToCurrentInstallation[
-                            curr.name as 'heater' | 'hotplate' | 'sanitary' | 'solarpanel'
-                        ]
-                            ? [...prev, { equipmentId: curr.id, equipmentType: data[curr.name] }]
+                        data[curr.name as housingInstallationEquipmentsType] !==
+                        formFieldsValuesAccordingToCurrentInstallation[curr.name as housingInstallationEquipmentsType]
+                            ? [
+                                  ...prev,
+                                  {
+                                      equipmentId: curr.id,
+                                      equipmentType: data[
+                                          curr.name as housingInstallationEquipmentsType
+                                      ] as equipmentAllowedTypeT,
+                                  },
+                              ]
                             : [...prev],
                     [] as equipmentMeterType[],
                 ) ?? []
@@ -269,19 +287,76 @@ export const InstallationTab = () => {
                         </TypographyFormatMessage>
 
                         {/***** The heater state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...heaterEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Type de chauffage :',
+                                        defaultMessage: 'Type de chauffage :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid md={6} xs={12}>
+                                <Select
+                                    name={heaterEquipment.name}
+                                    label={heaterEquipment.titleLabel}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(heaterEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
 
                         {/***** The sanitary state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...sanitaryEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Eau chaude sanitaire :',
+                                        defaultMessage: 'Eau chaude sanitaire :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid md={6} xs={12}>
+                                <Select
+                                    name={sanitaryEquipment.name}
+                                    label={sanitaryEquipment.titleLabel}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(sanitaryEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
 
                         {/***** The hot plate state *****/}
-                        <div className="text-13 mt-32">
-                            <SelectButtons {...hotPlateEquipment} />
-                        </div>
+                        <Grid item={true} container={true} className="text-13 mt-32 flex items-center">
+                            <Grid md={6} xs={12}>
+                                <Typography>
+                                    {formatMessage({
+                                        id: 'Type de plaques de cuisson :',
+                                        defaultMessage: 'Type de plaques de cuisson :',
+                                    })}
+                                </Typography>
+                            </Grid>
+                            <Grid className="flex-1">
+                                <Select
+                                    name={hotPlateEquipment.name}
+                                    label={hotPlateEquipment.titleLabel!}
+                                    defaultValue=""
+                                    formControlProps={{
+                                        margin: 'normal',
+                                    }}
+                                >
+                                    {renderOptions(hotPlateEquipment.formOptions)}
+                                </Select>
+                            </Grid>
+                        </Grid>
                     </div>
                     <div className="mb-40">
                         <TypographyFormatMessage className="text-15 font-600">
