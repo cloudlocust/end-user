@@ -1,6 +1,5 @@
 import { isEmpty } from 'lodash'
 import { motion } from 'framer-motion'
-import Button from '@mui/material/Button'
 
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
@@ -21,44 +20,29 @@ export const MyContractNrLinkInfo = () => {
     const currentHousingScopes = useCurrentHousingScopes()
     const currentHousing = useCurrentHousing()
 
-    const { history, theme, connectedPlugsElements, isConnectedPlugListLoading, connectedPlugList } =
-        useConnectedPlugInfo(currentHousing?.id)
+    const { theme, connectedPlugsElements, isConnectedPlugListLoading, connectedPlugList } = useConnectedPlugInfo(
+        currentHousing?.id,
+    )
 
     return (
         <PageSimple
             header={
-                <div className="w-full h-full px-10" style={{ backgroundColor: theme.palette.primary.dark }}>
-                    <Button
-                        sx={{ color: 'primary.contrastText' }}
-                        onClick={history.goBack}
-                        className="text-12 md:text-16 mt-10"
-                        color="inherit"
-                    >
+                <div
+                    className="w-full h-full flex items-center px-16"
+                    style={{ backgroundColor: theme.palette.primary.dark }}
+                >
+                    <div className="flex">
                         <Icon
                             component={motion.span}
                             initial={{ scale: 0 }}
                             animate={{ scale: 1, transition: { delay: 0.2 } }}
-                            className="text-16 md:text-24 mr-2"
+                            className="text-24 md:text-32"
                         >
-                            arrow_back
+                            assignment
                         </Icon>
-
-                        <TypographyFormatMessage className="text-12 md:text-16">retour</TypographyFormatMessage>
-                    </Button>
-                    <div className="flex pl-16 mt-6 md:mt-0 justify-between w-full">
-                        <div className="flex">
-                            <Icon
-                                component={motion.span}
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1, transition: { delay: 0.2 } }}
-                                className="text-24 md:text-32"
-                            >
-                                assignment
-                            </Icon>
-                            <TypographyFormatMessage className="sm:flex text-18 sm:text-20 md:text-24 mx-12 font-semibold">
-                                Mes paramètres (Contrat, nrLINK, PDL)
-                            </TypographyFormatMessage>
-                        </div>
+                        <TypographyFormatMessage className="sm:flex text-18 sm:text-20 md:text-24 mx-12 font-semibold">
+                            Mes paramètres (Contrat, nrLINK, PDL)
+                        </TypographyFormatMessage>
                     </div>
                 </div>
             }
