@@ -1,13 +1,14 @@
 import { useContext, useMemo } from 'react'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
-import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
+import { IWidgetProps, totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { computeTotalOfAllConsumptions } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import convert from 'convert-units'
 
-const emptyValueUnit = { value: 0, unit: '' }
+const emptyValueUnit = { value: 0, unit: 'Wh' as totalConsumptionUnits }
 
 /**
  * WidgetConsumption Component.
@@ -37,7 +38,7 @@ const WidgetConsumption = (props: IWidgetProps) => {
         [currentRangeConsumptionData],
     )
 
-    const { value: oldValue } = useMemo(
+    const { unit: oldUnit, value: oldValue } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
         () =>
             oldRangeConsumptionData.length < 2
@@ -47,8 +48,8 @@ const WidgetConsumption = (props: IWidgetProps) => {
     )
 
     const percentageChange = useMemo(
-        () => computePercentageChange(oldValue as number, value as number),
-        [value, oldValue],
+        () => computePercentageChange(convert(oldValue).from(oldUnit).to('Wh'), convert(value).from(unit).to('Wh')),
+        [oldUnit, oldValue, unit, value],
     )
 
     return (

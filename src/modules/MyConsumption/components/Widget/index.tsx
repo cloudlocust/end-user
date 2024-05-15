@@ -6,7 +6,9 @@ import {
     computeWidgetAssets,
     getWidgetPreviousRange,
     getWidgetRange,
+    checkIfDataForConsumptionRelatedTargetWithNullValue,
     renderWidgetTitle,
+    checkIfItIsCurrentDayRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
@@ -48,8 +50,19 @@ export const Widget = memo(
     }: // eslint-disable-next-line sonarjs/cognitive-complexity
     IWidgetProps) => {
         const { consumptionToggleButton } = useMyConsumptionStore()
-        const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
-            interval: metricsInterval,
+
+        const isConsumptionTarget = useMemo(
+            () =>
+                targets.includes(metricTargetsEnum.consumption) ||
+                targets.includes(metricTargetsEnum.autoconsumption) ||
+                targets.includes(metricTargetsEnum.eurosConsumption),
+            [targets],
+        )
+
+        const isCurrentDayRange = useMemo(() => checkIfItIsCurrentDayRange(period, range.from), [period, range.from])
+
+        const { data, setMetricsInterval, getMetricsWithParams, setRange, isMetricsLoading } = useMetrics({
+            interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
             range: getWidgetRange(range, period),
             targets: targets.map((target) => ({
                 target: target,
@@ -60,9 +73,10 @@ export const Widget = memo(
         const {
             data: oldData,
             setMetricsInterval: setMetricsIntervalPrevious,
+            getMetricsWithParams: getMetricsWithParamsPrevious,
             setRange: setRangePrevious,
         } = useMetrics({
-            interval: metricsInterval,
+            interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
             range: getWidgetPreviousRange(getWidgetRange(range, period), period),
             targets: targets.map((target) => ({
                 target: target,
@@ -117,9 +131,47 @@ export const Widget = memo(
 
         // get metrics when metricsInterval change.
         useEffect(() => {
-            setMetricsInterval(metricsInterval)
-            setMetricsIntervalPrevious(metricsInterval)
-        }, [metricsInterval, setMetricsInterval, setMetricsIntervalPrevious])
+            setMetricsInterval(isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval)
+            setMetricsIntervalPrevious(isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval)
+        }, [
+            isConsumptionTarget,
+            isCurrentDayRange,
+            metricsInterval,
+            period,
+            range,
+            setMetricsInterval,
+            setMetricsIntervalPrevious,
+        ])
+
+        // get metrics when consumptionToggleButton change.
+        useEffect(() => {
+            getMetricsWithParams({
+                interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
+                range: getWidgetRange(range, period),
+                targets: targets,
+                filters,
+            })
+            getMetricsWithParamsPrevious({
+                interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
+                range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+                targets: targets,
+                filters,
+            })
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [consumptionToggleButton])
+
+        // Reset the metrics interval to his origin when the data value in null with the interval 1d for the consumption or the cost.
+        useEffect(() => {
+            if (checkIfDataForConsumptionRelatedTargetWithNullValue(data)) {
+                setMetricsInterval(metricsInterval)
+            }
+        }, [data, metricsInterval, setMetricsInterval])
+
+        useEffect(() => {
+            if (checkIfDataForConsumptionRelatedTargetWithNullValue(oldData)) {
+                setMetricsIntervalPrevious(metricsInterval)
+            }
+        }, [metricsInterval, oldData, setMetricsIntervalPrevious])
 
         // When period or range changes
         useEffect(() => {

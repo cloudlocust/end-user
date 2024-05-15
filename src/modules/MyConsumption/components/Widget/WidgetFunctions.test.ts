@@ -20,10 +20,13 @@ import {
     computeAverageIdleConsumption,
     isWidgetMonthlyMetrics,
     computeTotalEurosWithSubscriptionPrice,
+    checkIfDataForConsumptionRelatedTargetWithNullValue,
+    checkIfItIsCurrentDayRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
+import { utcToZonedTime } from 'date-fns-tz'
 
 let mockGlobalProductionFeatureState = true
 let mockIsProductionActiveAndHousingHasAccess = true
@@ -803,6 +806,52 @@ describe('Test widget functions', () => {
             }
             const result = computeAverageIdleConsumption(data)
             expect(result).toStrictEqual(expectedResult)
+        })
+    })
+
+    describe('checkIfDataForConsumptionRelatedTargetWithNullValue', () => {
+        test('should return false for empty data array', () => {
+            expect(checkIfDataForConsumptionRelatedTargetWithNullValue([])).toBe(false)
+        })
+
+        test('should return false if data array has consumption-related target but no null values', () => {
+            const data: IMetric[] = [{ target: metricTargetsEnum.consumption, datapoints: [[10, 100000]] } as IMetric]
+            expect(checkIfDataForConsumptionRelatedTargetWithNullValue(data)).toBe(false)
+        })
+
+        test('should return true if data array has consumption-related target and null value', () => {
+            const data = [{ target: metricTargetsEnum.consumption, datapoints: [[null, 100000]] } as IMetric]
+            expect(checkIfDataForConsumptionRelatedTargetWithNullValue(data)).toBe(true)
+        })
+
+        test('should return true if data array has mixed targets and null values', () => {
+            const data: IMetric[] = [
+                { target: metricTargetsEnum.autoconsumption, datapoints: [[20, 100000]] } as IMetric,
+                { target: metricTargetsEnum.consumption, datapoints: [[null, 100000]] } as IMetric,
+            ]
+            expect(checkIfDataForConsumptionRelatedTargetWithNullValue(data)).toBe(true)
+        })
+    })
+
+    describe('checkIfItIsCurrentDayRange', () => {
+        const today = new Date()
+        const todayDateString = today.toISOString().split('T')[0]
+
+        test('should return false if period is not daily', () => {
+            expect(checkIfItIsCurrentDayRange('weekly', '2024-04-23T00:00:00Z')).toBe(false)
+        })
+
+        test('should return false if period is daily but range start is not today', () => {
+            expect(checkIfItIsCurrentDayRange('daily', '2024-04-23T00:00:00Z')).toBe(false)
+        })
+
+        test('should return true if period is daily and range start is today', () => {
+            expect(checkIfItIsCurrentDayRange('daily', `${todayDateString}T00:00:00Z`)).toBe(true)
+        })
+
+        test('should return true if period is daily and range start is today in a different timezone', () => {
+            const rangeStartInDifferentTimezone = utcToZonedTime(today, 'Europe/Paris').toISOString() // Convert today's date to Paris timezone
+            expect(checkIfItIsCurrentDayRange('daily', rangeStartInDifferentTimezone)).toBe(true)
         })
     })
 })
