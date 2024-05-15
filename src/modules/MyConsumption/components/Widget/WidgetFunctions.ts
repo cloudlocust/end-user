@@ -21,6 +21,7 @@ import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/My
 import dayjs from 'dayjs'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { store } from 'src/redux'
+import { utcToZonedTime } from 'date-fns-tz'
 
 /**
  * Wrong target error text.
@@ -417,3 +418,31 @@ export const isRangeWithinToday = (fromRange: string, toRange: string) => {
 
     return fromRange >= dayStart && toRange <= dayEnd
 }
+
+/**
+ * Function to check if the data is consumption, autoconsumption or eurosConsumption data and has null value.
+ *
+ * @param data Data to check.
+ * @returns True if the data is consumption or cost data with null value.
+ */
+export const checkIfDataForConsumptionRelatedTargetWithNullValue = (data: [] | IMetric[]) =>
+    data.some(
+        (item) =>
+            [
+                metricTargetsEnum.consumption,
+                metricTargetsEnum.autoconsumption,
+                metricTargetsEnum.eurosConsumption,
+            ].includes(item.target as metricTargetsEnum) && item.datapoints.some((item) => item[0] === null),
+    )
+
+/**
+ * Function to check if the selected period is for the current day.
+ *
+ * @param period The selected period.
+ * @param rangeStart The start of the selected range.
+ * @returns True if the selected period is for the current day.
+ */
+export const checkIfItIsCurrentDayRange = (period: periodType, rangeStart: string) =>
+    period === 'daily' &&
+    utcToZonedTime(new Date(rangeStart), 'Europe/Paris').getDate() ===
+        utcToZonedTime(new Date(), 'Europe/Paris').getDate()

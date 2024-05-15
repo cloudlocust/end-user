@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { EquipmentDetailsHeader } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsHeader'
+import { EquipmentMeasurementsHeader } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsHeader'
 import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
 
 let mockHistoryGoBack = jest.fn()
@@ -21,7 +21,7 @@ jest.mock('react-router', () => ({
 
 describe('EquipmentDetailsHeader tests', () => {
     test('renders correctly and call history.goBack when the button Retour clicked', async () => {
-        const { getByText } = reduxedRender(<EquipmentDetailsHeader equipmentName={EQUIPMENT_NAME} />)
+        const { getByText } = reduxedRender(<EquipmentMeasurementsHeader equipmentName={EQUIPMENT_NAME} />)
 
         expect(getByText('arrow_back')).toBeInTheDocument()
         expect(getByText(EQUIPMENT_LABEL_TITLE)).toBeInTheDocument()
