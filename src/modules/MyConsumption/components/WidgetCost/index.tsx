@@ -9,8 +9,10 @@ import {
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { utcToZonedTime } from 'date-fns-tz'
 
 const emptyValueUnit = { value: 0, unit: '' }
+const parisTimeZone = 'Europe/Paris'
 
 /**
  * WidgetCost Component.
@@ -48,33 +50,42 @@ export const WidgetCost = (props: IWidgetProps) => {
         isRangeChanged.current = true
     }, [range])
 
+    const isPreviousDay = useMemo(
+        () =>
+            period === 'daily' &&
+            utcToZonedTime(new Date(range.from), parisTimeZone).getDate() <
+                utcToZonedTime(new Date(), parisTimeZone).getDate(),
+        [period, range.from],
+    )
+
     // get metrics when metricsInterval change.
     useEffect(() => {
-        if (period === 'monthly' || period === 'yearly') {
-            setMetricsInterval(metricsInterval)
+        if (isPreviousDay || period === 'monthly' || period === 'yearly') {
+            setMetricsInterval(period === 'daily' ? '1d' : metricsInterval)
         } else {
             setData([])
         }
-    }, [metricsInterval, period, setData, setMetricsInterval])
+    }, [isPreviousDay, metricsInterval, period, range.from, setData, setMetricsInterval])
 
     // When period or range changes
     useEffect(() => {
         // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
         // 1 call when range change and the other when period change, then only focus on when range changes.
-        if (isRangeChanged.current && (period === 'monthly' || period === 'yearly')) {
+        if (isRangeChanged.current && (isPreviousDay || period === 'monthly' || period === 'yearly')) {
             const widgetRange = getWidgetRange(range, period)
             setRange(widgetRange)
             // reset isRangeChanged
             isRangeChanged.current = false
         }
-    }, [period, range, setRange])
+    }, [isPreviousDay, period, range, setRange])
 
     const { unit, value: totalEurosWithSubscription } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (euroconsumption and subscriptionPrices)
-        () =>
-            !euroConsumptionData.length || !data.length
+        () => {
+            return !euroConsumptionData.length || !data.length
                 ? emptyValueUnit
-                : computeTotalEurosWithSubscriptionPrice([...euroConsumptionData, ...data]),
+                : computeTotalEurosWithSubscriptionPrice([...euroConsumptionData, ...data])
+        },
         [data, euroConsumptionData],
     )
 
