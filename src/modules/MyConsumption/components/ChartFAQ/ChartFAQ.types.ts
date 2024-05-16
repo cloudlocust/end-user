@@ -14,7 +14,7 @@ export type FAQProps =
         period: PeriodEnum
 
         /**
-         * Used to check if the user has tempo contract.
+         * House id used to get it contracts.
          */
-        hasTempoContract: boolean
+        housingId: number
     }
