@@ -11,14 +11,52 @@ import {
     // faqTitleForPeriodicIntervals,
     // faqTitleForPeriodicIntervalsTempo,
 } from 'src/modules/MyConsumption/components/ChartFAQ/ChartFAQVariables'
+import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
+import { TEST_OFFERS } from 'src/mocks/handlers/commercialOffer'
+import { TEST_PROVIDERS } from 'src/mocks/handlers/commercialOffer'
+import { TEST_CONTRACT_TYPES } from 'src/mocks/handlers/commercialOffer'
+
+let mockContracts = [
+    {
+        id: 1,
+        commercialOffer: { ...TEST_OFFERS[0], provider: TEST_PROVIDERS[0] },
+        tariffType: { name: 'Base', id: 1 },
+        contractType: TEST_CONTRACT_TYPES[0],
+        power: 6,
+        startSubscription: TEST_DATETIME,
+    },
+]
+
+/**
+ * Mocking the useContractList.
+ */
+jest.mock('src/modules/Contracts/contractsHook', () => ({
+    ...jest.requireActual('src/modules/Contracts/contractsHook'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useContractList: () => ({
+        elementList: mockContracts,
+    }),
+}))
 
 describe('ChartFAQ', () => {
     test('renders FAQ component with correct props for daily period', () => {
-        const { getByText } = reduxedRender(<ChartFAQ period={PeriodEnum.DAILY} hasTempoContract={false} />)
+        const { getByText } = reduxedRender(<ChartFAQ period={PeriodEnum.DAILY} housingId={1} />)
         expect(getByText(faqTitleForDailyPeriod.props.id)).toBeInTheDocument()
         for (const faqItem of faqForDailyPeriod) {
             expect(getByText((faqItem.title as JSX.Element).props.id)).toBeInTheDocument()
         }
+    })
+    test.each([PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY])(
+        'should not shown on $period period.',
+        (period) => {
+            const { queryByTestId } = reduxedRender(<ChartFAQ period={period as PeriodEnum} housingId={2} />)
+            expect(queryByTestId('faq')).not.toBeInTheDocument()
+        },
+    )
+    test('should FAQ component not be not shown on tempo contract', () => {
+        mockContracts[0].tariffType.name = 'Jour Tempo'
+        const { queryByTestId } = reduxedRender(<ChartFAQ period={PeriodEnum.DAILY} housingId={2} />)
+        expect(queryByTestId('faq')).not.toBeInTheDocument()
     })
     // todo: To activate the following tests later when faq content available.
     // test('when user has tempo contract, renders the correct FAQ items for daily period', () => {
