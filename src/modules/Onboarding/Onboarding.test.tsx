@@ -180,6 +180,9 @@ describe('Onboarding test', () => {
                 <Router history={history}>
                     <Onboarding />
                 </Router>,
+                {
+                    initialState: { housingModel: { currentHousing: { id: 1 } } },
+                },
             )
             expect(getByTestId(stepSearchParam)).toBeInTheDocument()
             userEvent.click(screen.getByRole('button', { name: 'Suivant' }))
@@ -200,6 +203,9 @@ describe('Onboarding test', () => {
             <Router history={history}>
                 <Onboarding />
             </Router>,
+            {
+                initialState: { housingModel: { currentHousing: { id: 1 } } },
+            },
         )
         expect(getByTestId(STEPS_NAMES.CONTRACT)).toBeInTheDocument()
         userEvent.click(screen.getByRole('button', { name: 'Suivant' }))
@@ -216,6 +222,9 @@ describe('Onboarding test', () => {
             <Router history={history}>
                 <Onboarding />
             </Router>,
+            {
+                initialState: { housingModel: { currentHousing: { id: 1 } } },
+            },
         )
         expect(getByTestId(STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION)).toBeInTheDocument()
         userEvent.click(screen.getByRole('button', { name: 'Suivant' }))

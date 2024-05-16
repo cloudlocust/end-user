@@ -52,24 +52,18 @@ export const Onboarding = () => {
     }, [loadHousingsAndScopes])
 
     useEffect(() => {
-        if (currentHousing?.id) {
-            getConsents(currentHousing?.id)
-        }
-    }, [currentHousing?.id, getConsents])
+        getConsents(currentHousing?.id as number)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
-    const loader = <FuseLoading />
-
-    if (isGetShowNrLinkLoading) {
-        return loader
+    if (isGetShowNrLinkLoading || consentsLoading) {
+        return <FuseLoading />
     }
 
     if (isNrLinkPopupShowing === false) {
         history.push(URL_DASHBOARD)
     }
 
-    if (consentsLoading) {
-        return loader
-    }
     /**
      * Handles the next step.
      *
