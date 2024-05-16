@@ -17,10 +17,10 @@ export const ChartFAQ: FC<FAQProps> = ({ period, housingId }) => {
     const { elementList: contractList } = useContractList(housingId)
 
     // check if the user has a tempo contract
-    const doesUserHasTempoContract = useMemo(
-        () => !!(contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false),
-        [contractList],
-    )
+    const doesUserHasTempoContract = useMemo(() => {
+        if (!contractList) return false
+        return contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo')
+    }, [contractList])
 
     const [faqItems, faqTitle] = useMemo(
         () => getFAQItemsByPeriodAndContractType(period, doesUserHasTempoContract),
