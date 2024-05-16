@@ -24,7 +24,6 @@ import {
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
-import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
@@ -44,7 +43,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { elementList: contractList } = useContractList(currentHousing?.id as number)
     const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
@@ -100,12 +98,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     useEffect(() => {
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
-
-    // check if the user has a tempo contract
-    const doesUserHasTempoContract = useMemo(
-        () => !!(contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false),
-        [contractList],
-    )
 
     if (consentsLoading)
         return (
@@ -185,7 +177,11 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
                     {/* FAQ used to understand the charts  */}
                     <div className="p-12 sm:p-24">
-                        <ChartFAQ period={period} hasTempoContract={doesUserHasTempoContract} />
+                        <ChartFAQ
+                            period={period}
+                            housingId={currentHousing?.id as number}
+                            key={currentHousing?.id || 'faq'}
+                        />
                     </div>
 
                     {/* Ecowatt Widget */}
