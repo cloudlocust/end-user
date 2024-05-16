@@ -19,7 +19,7 @@ export const HousingInformation = () => {
     const theme = useTheme()
     const history = useHistory()
     const location = useLocation<HousingInformationPageLocationState>()
-    const { focusOnInstallationForm } = location.state
+    const focusOnInstallationForm: boolean = location?.state?.focusOnInstallationForm ?? false
 
     const tabsContent = [
         {
