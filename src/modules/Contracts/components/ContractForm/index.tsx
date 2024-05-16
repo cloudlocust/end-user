@@ -6,7 +6,6 @@ import {
     ContractFormFieldsProps,
     ContractFormProps,
     contractFormValuesType,
-    contractsRouteParam,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -19,7 +18,6 @@ import { ButtonLoader } from 'src/common/ui-kit'
 import { isNil, isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
 import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
-import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
 import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
@@ -46,6 +44,7 @@ const defaultContractFormValues: contractFormValuesType = {
  * @param props.defaultValues Indicate if contractForm has defaultValues and thus in edit mode.
  * @param props.isFormDescriptionsVisible Indicate if the form descriptions is visible.
  * @param props.isUsingRemoteSubmit Indicate if the form is using remote submit.
+ * @param props.houseId The house id which the contract is associated with.
  * @returns Contract Form component.
  */
 const ContractForm = ({
@@ -54,9 +53,8 @@ const ContractForm = ({
     defaultValues,
     isFormDescriptionsVisible = true,
     isUsingRemoteSubmit = false,
+    houseId,
 }: ContractFormProps) => {
-    // HouseId extracted from params of the url :houseId/contracts
-    const { houseId } = useParams<contractsRouteParam>()
     const { editMeter, loadingInProgress } = useMeterForHousing()
 
     return (
@@ -73,7 +71,7 @@ const ContractForm = ({
                 // Update meterFeatures if offPeakhours have been set.
                 if (meterFeatures && !meterFeatures.offpeak.readOnly) {
                     try {
-                        await editMeter(parseInt(houseId), { features: meterFeatures })
+                        await editMeter(houseId, { features: meterFeatures })
                     } catch (error) {
                         // Stop the execution of onSubmit when editMeter fails, and prevent the stop of the app with try/catch block.
                         return
@@ -103,6 +101,7 @@ const ContractForm = ({
                     <ContractFormFields
                         isContractsLoading={isContractsLoading || loadingInProgress}
                         isUsingRemoteSubmit={isUsingRemoteSubmit}
+                        houseId={houseId}
                     />
                 </div>
             </div>
@@ -118,9 +117,14 @@ export default ContractForm
  * @param props N/A.
  * @param props.isContractsLoading Loading state when addContract request.
  * @param props.isUsingRemoteSubmit Indicate if the form is using remote submit.
+ * @param props.houseId The house id which the contract is associated with.
  * @returns Contract Form Fields component.
  */
-export const ContractFormFields = ({ isContractsLoading, isUsingRemoteSubmit = false }: ContractFormFieldsProps) => {
+export const ContractFormFields = ({
+    isContractsLoading,
+    isUsingRemoteSubmit = false,
+    houseId,
+}: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({})
     const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
@@ -272,7 +276,9 @@ export const ContractFormFields = ({ isContractsLoading, isUsingRemoteSubmit = f
                 />
             )}
 
-            {isOffpeakHoursSelected && <OffpeakHoursField name="meterFeatures" label="Plages heures creuses :" />}
+            {isOffpeakHoursSelected && (
+                <OffpeakHoursField name="meterFeatures" label="Plages heures creuses :" houseId={houseId} />
+            )}
             {isOffpeakHoursSelected
                 ? Boolean(formData.meterFeatures) &&
                   // Before showing the power check that start and end has been filled

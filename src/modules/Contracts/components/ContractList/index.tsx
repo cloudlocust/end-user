@@ -47,6 +47,7 @@ const ContractList = () => {
                         } catch (error) {}
                     }}
                     isContractsLoading={isContractsLoading}
+                    houseId={parseInt(houseId)}
                 />
             </Dialog>
             <div className="p-24">

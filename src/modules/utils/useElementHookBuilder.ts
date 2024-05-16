@@ -451,6 +451,7 @@ export function BuilderUseElementDetails<T, U, K>({
                     { variant: 'error' },
                 )
                 setLoadingInProgress(false)
+                throw catchError(error)
             }
         }
 

@@ -61,6 +61,10 @@ export type ContractFormProps =
          * When the submit button is outside of the form.
          */
         isUsingRemoteSubmit?: boolean
+        /**
+         * The house id which the contract is associated with.
+         */
+        houseId: number
     }
 
 /**
@@ -81,6 +85,10 @@ export type ContractFormFieldsProps =
          * When the submit button is outside of the form.
          */
         isUsingRemoteSubmit?: boolean
+        /**
+         * The house id which the contract is associated with.
+         */
+        houseId: number
     }
 
 /**
@@ -319,6 +327,10 @@ export interface offpeakHoursFieldProps {
      * and we remove children from the props because.
      */
     labelProps?: TypographyProps
+    /**
+     * The house id which the contract is associated with.
+     */
+    houseId: number
 }
 
 /**

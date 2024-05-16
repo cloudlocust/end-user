@@ -1,10 +1,12 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Router } from 'react-router-dom'
-import { createMemoryHistory } from 'history'
+import { createMemoryHistory, MemoryHistory } from 'history'
+import { axios } from 'src/common/react-platform-components'
 import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import { Onboarding, STEPS_NAMES } from 'src/modules/Onboarding'
+import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 
 /**
  * StepComponent Props.
@@ -121,7 +123,10 @@ jest.mock('src/modules/Onboarding/steps/SolarProductionConnectionStep', () => ({
     ),
 }))
 
+jest.mock('axios')
+
 let mockIsNrLinkPopupShowing = true
+const mockAxiosPatch = jest.fn()
 
 jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
     ...jest.requireActual('src/modules/nrLinkConnection/NrLinkConnectionHook'),
@@ -142,6 +147,20 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccessReturnValue,
 }))
 
+/**
+ * Function to test the Hide of the onboarding and redirects to the dashboard.
+ *
+ * @param history The history object.
+ */
+const hideOnboardingAndRedirectToDashboard = async (history: MemoryHistory<unknown>) => {
+    await waitFor(() => {
+        expect(axios.patch).toHaveBeenCalledWith(SET_SHOW_NRLINK_POPUP_ENDPOINT, {
+            showNrlinkPopup: false,
+        })
+        expect(history.location.pathname).toBe(URL_DASHBOARD)
+    })
+}
+
 describe('Onboarding test', () => {
     test.each`
         testCase                            | stepSearchParam                       | nextStepSearchParam
@@ -156,6 +175,7 @@ describe('Onboarding test', () => {
         ({ stepSearchParam, nextStepSearchParam }) => {
             const history = createMemoryHistory()
             history.push(`?step=${stepSearchParam}`)
+            mockIsProductionActiveAndHousingHasAccessReturnValue = true
             const { getByTestId } = reduxedRender(
                 <Router history={history}>
                     <Onboarding />
@@ -164,8 +184,9 @@ describe('Onboarding test', () => {
             expect(getByTestId(stepSearchParam)).toBeInTheDocument()
             userEvent.click(screen.getByRole('button', { name: 'Suivant' }))
             const isDashboardPath = nextStepSearchParam === URL_DASHBOARD
-            expect(isDashboardPath ? history.location.pathname : history.location.search).toBe(
-                isDashboardPath ? nextStepSearchParam : `?step=${nextStepSearchParam}`,
+            // test the last step in separate test.
+            expect(isDashboardPath ? 'true' : history.location.search).toBe(
+                isDashboardPath ? 'true' : `?step=${nextStepSearchParam}`,
             )
         },
     )
@@ -174,6 +195,7 @@ describe('Onboarding test', () => {
         const history = createMemoryHistory()
         history.push(`?step=${STEPS_NAMES.CONTRACT}`)
         mockIsProductionActiveAndHousingHasAccessReturnValue = false
+        axios.patch = mockAxiosPatch
         const { getByTestId } = reduxedRender(
             <Router history={history}>
                 <Onboarding />
@@ -181,6 +203,22 @@ describe('Onboarding test', () => {
         )
         expect(getByTestId(STEPS_NAMES.CONTRACT)).toBeInTheDocument()
         userEvent.click(screen.getByRole('button', { name: 'Suivant' }))
-        expect(history.location.pathname).toBe(URL_DASHBOARD)
+
+        await hideOnboardingAndRedirectToDashboard(history)
+    })
+
+    test('should pass to dashboard when click next button on SolarProductionConnection step', async () => {
+        const history = createMemoryHistory()
+        history.push(`?step=${STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION}`)
+        mockIsProductionActiveAndHousingHasAccessReturnValue = true
+        axios.patch = mockAxiosPatch
+        const { getByTestId } = reduxedRender(
+            <Router history={history}>
+                <Onboarding />
+            </Router>,
+        )
+        expect(getByTestId(STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION)).toBeInTheDocument()
+        userEvent.click(screen.getByRole('button', { name: 'Suivant' }))
+        await hideOnboardingAndRedirectToDashboard(history)
     })
 })

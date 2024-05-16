@@ -1,3 +1,5 @@
+import { INrlinkConsent } from 'src/modules/Consents/Consents.d'
+
 /**
  * NRLinkConnection Step Props.
  *
@@ -15,6 +17,10 @@ export type NRLinkConnectionStepProps =
          * Housing Id.
          */
         housingId: number
+        /**
+         * NrLink Consent.
+         */
+        nrlinkConsent?: INrlinkConsent
     }
 
 /**

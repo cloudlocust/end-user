@@ -1,4 +1,5 @@
 import { Typography, Button } from '@mui/material'
+import { ButtonLoader } from 'src/common/ui-kit'
 import { useIntl } from 'src/common/react-platform-translation'
 import { Step } from 'src/modules/Onboarding/components/Step'
 import { useConsents } from 'src/modules/Consents/consentsHook'
@@ -15,9 +16,14 @@ const primaryLightColor = 'primary.light'
  * @param root0 Props.
  * @param root0.onNext Callback on next step.
  * @param root0.housingId Housing id.
+ * @param root0.isHideOnboardingInProgress Boolean indicate be true when we send request to hide the onboarding.
  * @returns JSX Element.
  */
-export const SolarProductionConnectionStep = ({ onNext, housingId }: SolarProductionConnectionStepProps) => {
+export const SolarProductionConnectionStep = ({
+    onNext,
+    housingId,
+    isHideOnboardingInProgress,
+}: SolarProductionConnectionStepProps) => {
     const { enphaseLink, getEnphaseLink, isEnphaseConsentLoading } = useConsents()
 
     const {
@@ -96,16 +102,18 @@ export const SolarProductionConnectionStep = ({ onNext, housingId }: SolarProduc
                             defaultMessage: "Mon installation solaire n'est pas compatible",
                         })}
                     </Button> */}
-                    <Button
+                    <ButtonLoader
                         onClick={onNext}
                         variant="contained"
                         className="self-end w-128 mt-72 mb-36, rounded-8"
                         disableElevation={true}
                         disableRipple={true}
-                        disabled={isEnphaseConsentLoading}
+                        inProgress={isEnphaseConsentLoading || isHideOnboardingInProgress}
+                        data-testid="next-button"
                     >
                         {formatMessage({ id: 'Suivant', defaultMessage: 'Suivant' })}
-                    </Button>
+                    </ButtonLoader>
+
                     {isOpeningEnphaseConsentPopup && (
                         <EnphaseConsentPopup onClose={closeEnphaseConsentPopup} url={enphaseLink} />
                     )}

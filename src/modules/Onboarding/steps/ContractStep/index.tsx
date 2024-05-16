@@ -7,6 +7,7 @@ import { addContractDataType } from 'src/modules/Contracts/contractsTypes'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { useState } from 'react'
 import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/ContractStep.types'
+import { useContractDetails } from 'src/modules/Contracts/contractsHook'
 
 /**
  * Contract step in nrLink connection.
@@ -14,10 +15,22 @@ import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/Con
  * @param root0 Props.
  * @param root0.onNext Callback on next step.
  * @param root0.housingId Housing id.
+ * @param root0.isHideOnboardingInProgress Boolean be true when we send request to hide the onboarding.
  * @returns JSX Element.
  */
-export const ContractStep = ({ onNext, housingId }: ContractStepProps) => {
-    const { loadingInProgress: isContractsLoading, addElement: addContract } = useContractList(housingId!)
+export const ContractStep = ({ onNext, housingId, isHideOnboardingInProgress }: ContractStepProps) => {
+    const {
+        loadingInProgress: isContractsLoading,
+        addElement: addContract,
+        elementList: contractList,
+    } = useContractList(housingId!)
+    // Get the first contract if exist.
+    const contract = contractList && contractList.length ? contractList[0] : undefined
+
+    const { loadingInProgress: isUpdatingContractInProgress, editElementDetails } = useContractDetails(
+        housingId,
+        contract?.id as number,
+    )
     const [isContractAdding, setIsContractAdding] = useState(false)
     const { formatMessage } = useIntl()
 
@@ -29,12 +42,26 @@ export const ContractStep = ({ onNext, housingId }: ContractStepProps) => {
     const handleSubmit = async (data: addContractDataType) => {
         setIsContractAdding(true)
         try {
-            await addContract(data)
+            await (contract ? editElementDetails : addContract)(data)
             onNext()
-            // Catching the error to avoir application crash and stops working.
         } catch (error) {
         } finally {
             setIsContractAdding(false)
+        }
+    }
+
+    const isFetchingContractsListInProgress = !contractList
+
+    let defaultValues = undefined
+    if (contract) {
+        defaultValues = {
+            contractTypeId: contract.contractType.id,
+            offerId: contract.offer.id,
+            power: contract.power,
+            providerId: contract.provider.id,
+            startSubscription: contract.startSubscription,
+            endSubscription: contract.endSubscription,
+            tariffTypeId: contract.tariffType.id,
         }
     }
 
@@ -64,12 +91,24 @@ export const ContractStep = ({ onNext, housingId }: ContractStepProps) => {
                     </Typography>
 
                     <Card className="w-full mt-10 bg-white rounded-8 min-h-320" elevation={0}>
-                        <ContractForm
-                            onSubmit={handleSubmit}
-                            isContractsLoading={isContractsLoading}
-                            isFormDescriptionsVisible={false}
-                            isUsingRemoteSubmit={true}
-                        />
+                        {isFetchingContractsListInProgress ? (
+                            <Typography className="text-center mt-64">
+                                {formatMessage({
+                                    id: 'Chargement en cours ...',
+                                    defaultMessage: 'Chargement en cours ...',
+                                })}
+                            </Typography>
+                        ) : (
+                            <ContractForm
+                                onSubmit={handleSubmit}
+                                isContractsLoading={isContractsLoading}
+                                isFormDescriptionsVisible={false}
+                                isUsingRemoteSubmit={true}
+                                houseId={housingId}
+                                // @ts-ignore
+                                defaultValues={defaultValues}
+                            />
+                        )}
                     </Card>
 
                     <div style={{ marginTop: 10, alignSelf: 'flex-end' }}>
@@ -80,7 +119,13 @@ export const ContractStep = ({ onNext, housingId }: ContractStepProps) => {
                             disableRipple={true}
                             type="submit"
                             form="contract-form"
-                            inProgress={isContractAdding || isContractsLoading}
+                            inProgress={
+                                isContractAdding ||
+                                isContractsLoading ||
+                                isUpdatingContractInProgress ||
+                                isHideOnboardingInProgress
+                            }
+                            data-testid="next-button"
                         >
                             {formatMessage({ id: 'Suivant', defaultMessage: 'Suivant' })}
                         </ButtonLoader>

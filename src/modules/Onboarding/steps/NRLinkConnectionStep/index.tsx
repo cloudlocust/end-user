@@ -10,7 +10,6 @@ import { TextField } from 'src/modules/Onboarding/components/TextField'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 import { LoadingNrLinkConnectionSteps } from 'src/modules/nrLinkConnection'
-import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 import {
     NRLinkConnectionStepProps,
     NRLinkFormSubmitParams,
@@ -20,14 +19,25 @@ import nlinkGuid from 'src/assets/images/content/onboarding/nlinkGuid.png'
 const GUID_FIXED_PART = '0CA2F40000'
 
 /**
+ * Function to return the variant part of the nrlink guid (the last 6 chars).
+ *
+ * @param nrlinkGuid The complete nrlink guid.
+ * @returns Variant part of the nrlink guid.
+ */
+const getVariantPartOfNrLinkGuid = (nrlinkGuid: string) => {
+    return nrlinkGuid.slice(-6)
+}
+
+/**
  * NRLinkConnectionStep step used to set the nrlink guid.
  *
  * @param root0 Props.
  * @param root0.housingId Housing id.
  * @param root0.onNext Callback on next step.
+ * @param root0.nrlinkConsent Nrlink consent.
  * @returns JSX Element.
  */
-export const NRLinkConnectionStep = ({ housingId, onNext }: NRLinkConnectionStepProps) => {
+export const NRLinkConnectionStep = ({ housingId, nrlinkConsent, onNext }: NRLinkConnectionStepProps) => {
     const [isNrLinkAuthorizeInProgress, setIsNrLinkAuthorizeInProgress] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
@@ -40,15 +50,17 @@ export const NRLinkConnectionStep = ({ housingId, onNext }: NRLinkConnectionStep
      * @param formData.guidVariantPart The variant part of NrLink GUID.
      */
     const onSubmit = async (formData: NRLinkFormSubmitParams) => {
+        const nrlinkGuid = `${GUID_FIXED_PART}${formData.guidVariantPart}`
+        // if the nrlink is already connected, we can skip this step
+        if (nrlinkConsent?.nrlinkGuid === nrlinkGuid && nrlinkConsent?.nrlinkConsentState === 'CONNECTED') {
+            onNext()
+            return
+        }
         try {
             setIsNrLinkAuthorizeInProgress(true)
             await axios.post(`${API_RESOURCES_URL}/nrlink/authorize`, {
-                nrlinkGuid: `${GUID_FIXED_PART}${formData.guidVariantPart}`,
+                nrlinkGuid,
                 networkIdentifier: housingId,
-            })
-            // Make the onboarding not showing again after the nrLINK is configured
-            await axios.patch(SET_SHOW_NRLINK_POPUP_ENDPOINT, {
-                showNrlinkPopup: false,
             })
             enqueueSnackbar(
                 formatMessage({
@@ -95,7 +107,11 @@ export const NRLinkConnectionStep = ({ housingId, onNext }: NRLinkConnectionStep
                 <Form
                     aria-label="NRLinkConnectionForm"
                     onSubmit={onSubmit}
-                    defaultValues={{ guidVariantPart: '' }}
+                    defaultValues={{
+                        guidVariantPart: nrlinkConsent?.nrlinkGuid
+                            ? getVariantPartOfNrLinkGuid(nrlinkConsent.nrlinkGuid)
+                            : '',
+                    }}
                     style={{ display: 'inherit', flexDirection: 'inherit', alignItems: 'inherit' }}
                 >
                     <Typography variant="subtitle1" className="mt-44" sx={{ color: 'primary.main' }}>

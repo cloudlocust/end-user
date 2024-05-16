@@ -15,4 +15,8 @@ export type SolarProductionConnectionStepProps =
          * Housing Id.
          */
         housingId: number
+        /**
+         * Boolean indicate be true when we send request to hide the onboarding.
+         */
+        isHideOnboardingInProgress: boolean
     }

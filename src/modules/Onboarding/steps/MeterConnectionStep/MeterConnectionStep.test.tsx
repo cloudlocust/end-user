@@ -136,7 +136,6 @@ describe('MeterConnection', () => {
             fireEvent.click(container.querySelector('#enedisSgeConsentStatus')!)
 
             const submitButton = screen.getByText('Suivant')
-            screen.debug(container)
             fireEvent.click(submitButton)
 
             await waitFor(async () => {
@@ -171,6 +170,17 @@ describe('MeterConnection', () => {
                 expect(mockLoadHousingsAndScopes).toHaveBeenCalled()
                 expect(mockVerifyMeter).toHaveBeenCalled()
                 expect(mockCreateEnedisSgeConsent).toHaveBeenCalled()
+                expect(mockHandleNext).toHaveBeenCalled()
+            })
+        })
+
+        test('should go to the next step if the meter guid not changed', async () => {
+            mockMeter.guid = '12345678912345'
+            mockEnedisSgeConsent.enedisSgeConsentState = 'CONNECTED'
+            reduxedRender(<MeterConnectionStep {...mockMeterConnectionProps} />)
+            const submitButton = screen.getByText('Suivant')
+            fireEvent.click(submitButton)
+            await waitFor(async () => {
                 expect(mockHandleNext).toHaveBeenCalled()
             })
         })

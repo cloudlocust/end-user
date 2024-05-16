@@ -94,9 +94,11 @@ jest.mock(
 )
 
 const mockHandleNext = jest.fn()
+const mockIsHideOnboardingInProgress = false
 const solarProductionConnectionProps: SolarProductionConnectionStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
+    isHideOnboardingInProgress: mockIsHideOnboardingInProgress,
 }
 
 describe('SolarProductionConnection', () => {
@@ -166,4 +168,12 @@ describe('SolarProductionConnection', () => {
             expect(() => getByText(CONNECTED_PLUG_PRODUCTION_CONSENT_POPUP_TEXT)).toThrow()
         })
     }, 10000)
+
+    test('should the next button be in progress when isHideOnboardingInProgress is true', () => {
+        solarProductionConnectionProps.isHideOnboardingInProgress = true
+        const { getByTestId } = reduxedRender(<SolarProductionConnectionStep {...solarProductionConnectionProps} />)
+        const nextButton = getByTestId('next-button')
+        screen.debug(nextButton)
+        expect(nextButton).toHaveClass('MuiLoadingButton-loading')
+    })
 })

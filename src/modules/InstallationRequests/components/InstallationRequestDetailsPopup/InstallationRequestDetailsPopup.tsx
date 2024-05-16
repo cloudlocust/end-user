@@ -95,13 +95,15 @@ export const InstallationRequestDetailsPopup = (props: InstallationRequestDetail
                     <div className="mb-24">
                         <Form
                             onSubmit={async (data: Omit<IInstallationRequest, 'updatedAt'>) => {
-                                const { equipmentType, id, createdAt, ...restOfData } = data
-                                await editInstallationRequest({
-                                    ...restOfData,
-                                    equipmentType: activeEquipmentButton,
-                                })
-                                handleClosePopup()
-                                onAfterCreateUpdateDeleteSuccess()
+                                try {
+                                    const { equipmentType, id, createdAt, ...restOfData } = data
+                                    await editInstallationRequest({
+                                        ...restOfData,
+                                        equipmentType: activeEquipmentButton,
+                                    })
+                                    handleClosePopup()
+                                    onAfterCreateUpdateDeleteSuccess()
+                                } catch (error) {}
                             }}
                             defaultValues={defaultFormValues}
                         >

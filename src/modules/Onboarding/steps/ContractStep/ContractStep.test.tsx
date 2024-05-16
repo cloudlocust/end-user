@@ -3,25 +3,13 @@ import { screen, fireEvent, waitFor } from '@testing-library/react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { ContractStep } from 'src/modules/Onboarding/steps/ContractStep'
 import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/ContractStep.types'
-import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
-import { TEST_OFFERS } from 'src/mocks/handlers/commercialOffer'
-import { TEST_PROVIDERS } from 'src/mocks/handlers/commercialOffer'
-import { TEST_CONTRACT_TYPES } from 'src/mocks/handlers/commercialOffer'
 import { ContractFormProps } from 'src/modules/Contracts/contractsTypes'
+import { IContract } from 'src/modules/Contracts/contractsTypes'
 
 let mockReloadContractList = jest.fn()
 const mockHandleNext = jest.fn()
 let mockIsContractsLoading = false
-const mockContractsList = [
-    {
-        id: 1,
-        commercialOffer: { ...TEST_OFFERS[0], provider: TEST_PROVIDERS[0] },
-        tariffType: { name: 'Jour Tempo', id: 1 },
-        contractType: TEST_CONTRACT_TYPES[0],
-        power: 6,
-        startSubscription: TEST_DATETIME,
-    },
-]
+let mockContractsList: IContract[] = []
 
 let mockAddContract = jest.fn()
 
@@ -64,9 +52,11 @@ jest.mock('src/modules/Contracts/components/ContractForm', () => (props: Contrac
     )
 })
 
+let mockIsHideOnboardingInProgress = false
 const mockContractProps: ContractStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
+    isHideOnboardingInProgress: mockIsHideOnboardingInProgress,
 }
 
 describe('Contract', () => {
@@ -102,5 +92,17 @@ describe('Contract', () => {
             expect(mockAddContract).toHaveBeenCalled()
             expect(mockHandleNext).toHaveBeenCalled()
         })
+    })
+
+    test('should the next button be in progress when isHideOnboardingInProgress is true', () => {
+        mockContractProps.isHideOnboardingInProgress = true
+        const { getByTestId } = reduxedRender(
+            <Router>
+                <ContractStep {...mockContractProps} />
+            </Router>,
+        )
+        const nextButton = getByTestId('next-button')
+        screen.debug(nextButton)
+        expect(nextButton).toHaveClass('MuiLoadingButton-loading')
     })
 })

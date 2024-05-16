@@ -15,4 +15,8 @@ export type ContractStepProps =
          * Housing Id.
          */
         housingId: number
+        /**
+         * Boolean be true when we send request to hide the onboarding.
+         */
+        isHideOnboardingInProgress: boolean
     }

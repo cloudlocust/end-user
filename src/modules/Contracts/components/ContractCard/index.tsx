@@ -85,9 +85,11 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
             >
                 <ContractForm
                     onSubmit={async (input: addContractDataType) => {
-                        await editElementDetails(input)
-                        onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
-                        setIsContractFormOpen(false)
+                        try {
+                            await editElementDetails(input)
+                            onAfterDeleteUpdateSuccess && onAfterDeleteUpdateSuccess()
+                            setIsContractFormOpen(false)
+                        } catch (error) {}
                     }}
                     isContractsLoading={isContractsLoading}
                     defaultValues={{
@@ -99,6 +101,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
                         endSubscription: contract.endSubscription,
                         tariffTypeId: contract.tariffType.id,
                     }}
+                    houseId={parseInt(houseId)}
                 />
             </Dialog>
             <Card key={contract.id} className="p-16 overflow-hidden h-full contract-card">

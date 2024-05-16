@@ -71,6 +71,9 @@ export const MeterConnectionStep = ({
                     }
                 } else if (enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
                     await makeEnedisSgeConsent()
+                } else {
+                    // If the meter is already verified and enedis consent is already connected.
+                    onNext()
                 }
             }
             // Catch error so that don't crash the application when response error.

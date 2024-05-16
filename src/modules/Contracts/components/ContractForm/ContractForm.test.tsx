@@ -75,14 +75,6 @@ const selectOption = (getAllByRole: any, optionIndex?: number) => {
     userEvent.click(getAllByRole('option')[optionIndex || 0])
 }
 
-/**
- * Mock for ContractForm props.
- */
-const mockContractFormProps: ContractFormProps = {
-    onSubmit: jest.fn(),
-    isContractsLoading: false,
-}
-
 let mockContractTypeList = TEST_CONTRACT_TYPES
 let mockOfferList = TEST_OFFERS
 let mockProviderList = TEST_PROVIDERS
@@ -106,6 +98,15 @@ let mockIsMeterLoading = false
 let mockIsTariffsLoading = false
 const mockHouseId = TEST_HOUSE_ID
 let mockManualContractFillingIsEnabled = true
+
+/**
+ * Mock for ContractForm props.
+ */
+const mockContractFormProps: ContractFormProps = {
+    onSubmit: jest.fn(),
+    isContractsLoading: false,
+    houseId: mockHouseId,
+}
 
 /**
  * Mocking the useCommercialOffer.
@@ -149,21 +150,6 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     useMeterForHousing: () => ({
         loadingInProgress: mockIsMeterLoading,
         editMeter: mockEditMeter,
-    }),
-}))
-
-/**
- * Mocking the react-router-dom used in contractsHooks.
- */
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    /**
-     * Mock the useParams to get the houseId from url.
-     *
-     * @returns UseParams containing houseId.
-     */
-    useParams: () => ({
-        houseId: `${mockHouseId}`,
     }),
 }))
 

@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
+import { axios } from 'src/common/react-platform-components'
 import { IntroductionStep } from 'src/modules/Onboarding/steps/IntroductionStep'
 import { NrLinkInstallationInstructionsStep } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep'
 import { MeterConnectionStep } from 'src/modules/Onboarding/steps/MeterConnectionStep'
@@ -15,6 +16,7 @@ import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHou
 import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
 import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 import nrlinkLogo from 'src/assets/images/content/onboarding/nrlinkLogo.png'
+import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
 
 /**
  * Steps search paths of route.
@@ -39,8 +41,9 @@ export const Onboarding = () => {
     // this ones are for handling the housing id's and their speceif meters
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const { loadHousingsAndScopes } = useHousingRedux()
-    const { getConsents, enedisSgeConsent } = useConsents()
+    const { getConsents, enedisSgeConsent, nrlinkConsent, consentsLoading } = useConsents()
     const { isGetShowNrLinkLoading, isNrLinkPopupShowing } = useGetShowNrLinkPopupHook()
+    const [isOnboardingHidingLoading, setOnboardingHidingLoading] = useState(false)
     const query = new URLSearchParams(location.search)
     const step = query.get('step')
     useEffect(() => {
@@ -54,14 +57,19 @@ export const Onboarding = () => {
         }
     }, [currentHousing?.id, getConsents])
 
+    const loader = <FuseLoading />
+
     if (isGetShowNrLinkLoading) {
-        return <FuseLoading />
+        return loader
     }
 
     if (isNrLinkPopupShowing === false) {
         history.push(URL_DASHBOARD)
     }
 
+    if (consentsLoading) {
+        return loader
+    }
     /**
      * Handles the next step.
      *
@@ -74,8 +82,18 @@ export const Onboarding = () => {
     /**
      * Redirects to the dashboard.
      */
-    const redirectToDashboard = () => {
-        history.push(URL_DASHBOARD)
+    const changeOnboardingDisplayStatusAndRedirectToDashboard = async () => {
+        // Make the onboarding not showing again.
+        try {
+            setOnboardingHidingLoading(true)
+            await axios.patch(SET_SHOW_NRLINK_POPUP_ENDPOINT, {
+                showNrlinkPopup: false,
+            })
+            history.push(URL_DASHBOARD)
+        } catch (error) {
+        } finally {
+            setOnboardingHidingLoading(false)
+        }
     }
 
     /**
@@ -108,6 +126,7 @@ export const Onboarding = () => {
                     <NRLinkConnectionStep
                         onNext={() => handleNext(STEPS_NAMES.CONTRACT)}
                         housingId={currentHousing?.id! as number}
+                        nrlinkConsent={nrlinkConsent}
                     />
                 )
             case STEPS_NAMES.CONTRACT:
@@ -116,16 +135,18 @@ export const Onboarding = () => {
                         onNext={() =>
                             isProductionActiveAndHousingHasAccess(currentHousingScopes)
                                 ? handleNext(STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION)
-                                : redirectToDashboard()
+                                : changeOnboardingDisplayStatusAndRedirectToDashboard()
                         }
                         housingId={currentHousing?.id!}
+                        isHideOnboardingInProgress={isOnboardingHidingLoading}
                     />
                 )
             case STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION:
                 return (
                     <SolarProductionConnectionStep
-                        onNext={() => redirectToDashboard()}
+                        onNext={() => changeOnboardingDisplayStatusAndRedirectToDashboard()}
                         housingId={currentHousing?.id!}
+                        isHideOnboardingInProgress={isOnboardingHidingLoading}
                     />
                 )
             default:

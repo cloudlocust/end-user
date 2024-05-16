@@ -5,7 +5,7 @@ import { NRLinkConnectionStepProps } from 'src/modules/Onboarding/steps/NRLinkCo
 import userEvent from '@testing-library/user-event'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
+import { INrlinkConsent } from 'src/modules/Consents/Consents.d'
 
 const NEXT_BUTTON_TEXT = 'Suivant'
 const REQUIRED_ERROR_TEXT = 'Champ obligatoire non renseigné'
@@ -24,7 +24,6 @@ const mockHistoryPush = jest.fn()
 const mockEnqueueSnackbar = jest.fn()
 const mockHandleNext = jest.fn()
 const mockAxiosPost = jest.fn()
-const mockAxiosPatch = jest.fn()
 
 jest.mock('axios')
 
@@ -67,12 +66,20 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     },
 }))
 
+let mockNrlinkConsent: INrlinkConsent = {
+    nrlinkGuid: '',
+    nrlinkConsentState: 'NONEXISTENT',
+    meterGuid: '123456',
+    createdAt: '2021-10-01T00:00:00Z',
+}
+
 /**
  * Mocking props of NRLinkConnection.
  */
 const mockNRLinkConnectionProps: NRLinkConnectionStepProps = {
     housingId: 123,
     onNext: mockHandleNext,
+    nrlinkConsent: mockNrlinkConsent,
 }
 
 describe('Test NRLinkConnection', () => {
@@ -168,7 +175,6 @@ describe('Test NRLinkConnection', () => {
         test('When submit form works correctly, post nrlink and handle next are called', async () => {
             // mock post & axios Methods
             axios.post = mockAxiosPost
-            axios.patch = mockAxiosPatch
             const { container, getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
 
             userEvent.type(container.querySelector(guidNrlinkInputQuerySelector)!, '123456')
@@ -181,9 +187,17 @@ describe('Test NRLinkConnection', () => {
                     networkIdentifier: mockNRLinkConnectionProps.housingId,
                     nrlinkGuid: '0CA2F40000123456',
                 })
-                expect(axios.patch).toHaveBeenCalledWith(SET_SHOW_NRLINK_POPUP_ENDPOINT, {
-                    showNrlinkPopup: false,
-                })
+
+                expect(mockHandleNext).toHaveBeenCalled()
+            })
+        })
+
+        test('should go to the next step if the nrlink guid not changed', async () => {
+            mockNrlinkConsent.nrlinkGuid = '0CA2F40000123456'
+            mockNrlinkConsent.nrlinkConsentState = 'CONNECTED'
+            const { getByText } = reduxedRender(<NRLinkConnectionStep {...mockNRLinkConnectionProps} />)
+            userEvent.click(getByText(NEXT_BUTTON_TEXT))
+            await waitFor(() => {
                 expect(mockHandleNext).toHaveBeenCalled()
             })
         })
