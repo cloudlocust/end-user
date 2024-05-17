@@ -4,13 +4,19 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import {
+    computeTotalEuros,
     computeTotalEurosWithSubscriptionPrice,
     getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { utcToZonedTime } from 'date-fns-tz'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 
 const emptyValueUnit = { value: 0, unit: '' }
+const parisTimeZone = 'Europe/Paris'
 
 /**
  * WidgetCost Component.
@@ -20,6 +26,8 @@ const emptyValueUnit = { value: 0, unit: '' }
  */
 export const WidgetCost = (props: IWidgetProps) => {
     const { metricsInterval, range, period, filters } = props
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentDayEuroConsumption, getCurrentDayEuroConsumption } = useCurrentDayConsumption(currentHousing?.id)
 
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
     const { isPartiallyYearlyDataExist } = useMyConsumptionStore()
@@ -48,34 +56,57 @@ export const WidgetCost = (props: IWidgetProps) => {
         isRangeChanged.current = true
     }, [range])
 
+    const isCurrentDayRange = useMemo(
+        () =>
+            period === 'daily' &&
+            utcToZonedTime(new Date(range.from), parisTimeZone).getDate() ===
+                utcToZonedTime(new Date(), parisTimeZone).getDate(),
+        [period, range.from],
+    )
+
     // get metrics when metricsInterval change.
     useEffect(() => {
-        if (period === 'monthly' || period === 'yearly') {
-            setMetricsInterval(metricsInterval)
+        if (!isCurrentDayRange || period === 'monthly' || period === 'yearly') {
+            setMetricsInterval(period === 'daily' ? '1d' : metricsInterval)
         } else {
             setData([])
         }
-    }, [metricsInterval, period, setData, setMetricsInterval])
+    }, [isCurrentDayRange, metricsInterval, period, range.from, setData, setMetricsInterval])
 
     // When period or range changes
     useEffect(() => {
         // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
         // 1 call when range change and the other when period change, then only focus on when range changes.
-        if (isRangeChanged.current && (period === 'monthly' || period === 'yearly')) {
+        if (isRangeChanged.current && (!isCurrentDayRange || period === 'monthly' || period === 'yearly')) {
             const widgetRange = getWidgetRange(range, period)
             setRange(widgetRange)
             // reset isRangeChanged
             isRangeChanged.current = false
         }
-    }, [period, range, setRange])
+    }, [isCurrentDayRange, period, range, setRange])
+
+    useEffect(() => {
+        if (isCurrentDayRange) {
+            getCurrentDayEuroConsumption()
+        }
+    }, [getCurrentDayEuroConsumption, isCurrentDayRange])
 
     const { unit, value: totalEurosWithSubscription } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (euroconsumption and subscriptionPrices)
-        () =>
-            !euroConsumptionData.length || !data.length
-                ? emptyValueUnit
-                : computeTotalEurosWithSubscriptionPrice([...euroConsumptionData, ...data]),
-        [data, euroConsumptionData],
+        () => {
+            if (!euroConsumptionData.length || !data.length) {
+                return emptyValueUnit
+            }
+            if (currentDayEuroConsumption !== null) {
+                const { value: totalSubscriptionPrice } = computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
+                return {
+                    value: currentDayEuroConsumption + totalSubscriptionPrice,
+                    unit: '€',
+                }
+            }
+            return computeTotalEurosWithSubscriptionPrice([...euroConsumptionData, ...data])
+        },
+        [currentDayEuroConsumption, data, euroConsumptionData],
     )
 
     return (

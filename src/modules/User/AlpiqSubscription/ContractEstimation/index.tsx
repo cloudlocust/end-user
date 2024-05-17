@@ -412,7 +412,7 @@ const SelectAlpiqContractForm = ({
                     margin: 'normal',
                 }}
             >
-                {options.map((option, _index) => (
+                {options.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {formatMessage({
                             id: option.label,
