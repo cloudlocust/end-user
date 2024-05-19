@@ -23,8 +23,64 @@ import {
     TooltipFormatter,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
 import { metricRangeType } from 'src/modules/Metrics/Metrics'
+import {
+    eurosConsumptionTargets,
+    eurosIdleConsumptionTargets,
+} from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 dayjs.extend(utc)
 dayjs.extend(timezone)
+
+/**
+ * Check if the Euros button is toggled.
+ *
+ * @param values The target timestamps values.
+ * @returns True if the Euros button is toggled, false otherwise.
+ */
+export const isEurosButtonToggled = (values: targetTimestampsValuesFormat) => {
+    return Object.keys(values).some((target) =>
+        [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target as metricTargetType),
+    )
+}
+
+/**
+ * Process metric values used to separate the consumption values & production values.
+ *
+ * @param values The target timestamps values.
+ * @param isProductionView Boolean indicating if it's a production view.
+ * @returns Consumption values & production values.
+ */
+export const processMetricValues = (values: targetTimestampsValuesFormat, isProductionView: boolean) => {
+    const productionValues: targetTimestampsValuesFormat = {}
+
+    if (isProductionView) {
+        productionValues[metricTargetsEnum.autoconsumption] = values[metricTargetsEnum.autoconsumption] || []
+        productionValues[metricTargetsEnum.injectedProduction] = values[metricTargetsEnum.injectedProduction] || []
+        productionValues[metricTargetsEnum.totalProduction] = values[metricTargetsEnum.totalProduction] || []
+        delete values[metricTargetsEnum.injectedProduction]
+        delete values[metricTargetsEnum.totalProduction]
+
+        if (isEurosButtonToggled(values)) {
+            delete values[metricTargetsEnum.autoconsumption]
+        }
+    }
+
+    let filteredValues: targetTimestampsValuesFormat = {}
+    Object.entries(values).map(([key, arr]) => {
+        // TODO: maybe add a special implementation for production targets in consumption chart ?
+        if (key === metricTargetsEnum.autoconsumption) {
+            filteredValues[key as metricTargetType] = arr
+        }
+        if (arr.some((value) => value !== null)) {
+            filteredValues[key as metricTargetType] = arr
+        }
+        return undefined
+    })
+
+    return {
+        consumptionValues: filteredValues,
+        productionValues,
+    }
+}
 
 /**
  * Get Echarts Consumption CHart Options.
@@ -53,34 +109,15 @@ export const getEchartsConsumptionChartOptions = (
 ) => {
     const xAxisTimestamps = Object.values(timestamps).length ? Object.values(timestamps)[0] : [0]
 
-    const productionsValues: targetTimestampsValuesFormat = {}
-
-    let isProductionView = false
-    if (
-        switchButtonType === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
-        values[metricTargetsEnum.autoconsumption] &&
-        values[metricTargetsEnum.injectedProduction] &&
-        values[metricTargetsEnum.totalProduction]
-    ) {
-        productionsValues[metricTargetsEnum.autoconsumption] = values[metricTargetsEnum.autoconsumption]
-        productionsValues[metricTargetsEnum.injectedProduction] = values[metricTargetsEnum.injectedProduction]
-        productionsValues[metricTargetsEnum.totalProduction] = values[metricTargetsEnum.totalProduction]
-        delete values[metricTargetsEnum.injectedProduction]
-        delete values[metricTargetsEnum.totalProduction]
-        isProductionView = true
-    }
-
-    let filteredValues: targetTimestampsValuesFormat = {}
-    Object.entries(values).map(([key, arr]) => {
-        // TODO: maybe add a special implementation for production targets in consumption chart ?
-        if (key === metricTargetsEnum.autoconsumption) {
-            filteredValues[key as metricTargetType] = arr
-        }
-        if (arr.some((value) => value !== null)) {
-            filteredValues[key as metricTargetType] = arr
-        }
-        return undefined
-    })
+    const isProductionView =
+        switchButtonType === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ||
+        Boolean(
+            values[metricTargetsEnum.autoconsumption] &&
+                values[metricTargetsEnum.injectedProduction] &&
+                values[metricTargetsEnum.totalProduction],
+        )
+    // get the consumption and production values
+    const { consumptionValues, productionValues } = processMetricValues(values, isProductionView)
 
     const xAxisData = getXAxisCategoriesData(xAxisTimestamps, period)
     const selectedLabelPeriodIndex: IPeriodTimeIndexs = {
@@ -93,8 +130,8 @@ export const getEchartsConsumptionChartOptions = (
         ...getDefaultOptionsEchartsConsumptionChart(
             theme,
             isMobile,
-            filteredValues,
-            productionsValues,
+            consumptionValues,
+            productionValues,
             period,
             selectedLabelPeriodIndex,
             xAxisTimestamps,
@@ -111,16 +148,16 @@ export const getEchartsConsumptionChartOptions = (
             theme,
         ),
         ...getYAxisOptionEchartsConsumptionChart(
-            filteredValues,
-            productionsValues,
+            consumptionValues,
+            productionValues,
             period,
             axisColor,
             isProductionView,
             theme,
         ),
         ...getSeriesOptionEchartsConsumptionChart(
-            filteredValues,
-            productionsValues,
+            consumptionValues,
+            productionValues,
             period,
             isPeriodUsed,
             switchButtonType,
@@ -231,20 +268,27 @@ const getDefaultOptionsEchartsConsumptionChart = (
     } as EChartsOption
 
     if (isProductionView) {
+        const targetsUsedRightYAxis = [
+            metricTargetsEnum.externalTemperature,
+            metricTargetsEnum.internalTemperature,
+            metricTargetsEnum.pMax,
+        ]
+        const commonGridOptions = {
+            bottom: '3%',
+            height: '43%',
+            // Adjust the left and the right like this because we found difficult to use containLabel in two grids.
+            left: isMobile ? '18%' : '5%',
+            right: isMobile && targetsUsedRightYAxis.some((target) => target in consumptionValues) ? '17%' : '4%',
+        }
+
         defaultOptions.grid = [
             {
-                left: '5%',
-                right: '4%',
-                bottom: '3%',
+                ...commonGridOptions,
                 top: '5%',
-                height: '45%',
             },
             {
-                left: '5%',
-                right: '4%',
-                bottom: '3%',
-                top: '50%',
-                height: '45%',
+                ...commonGridOptions,
+                top: '48%',
             },
         ]
     } else {
@@ -446,6 +490,7 @@ export const getXAxisOptionEchartsConsumptionChart = (
         data: xAxisData,
         axisLabel: {
             hideOverlap: true,
+            interval: getXAxisLabelInterval(switchButtonType, period),
             rotate: 30,
             /**
              * Formatting the labels shown in xAxis, which are the already formatted categories data according to the period.
@@ -493,7 +538,6 @@ export const getXAxisOptionEchartsConsumptionChart = (
             ...commonXAxisOptions,
             axisLabel: {
                 ...commonXAxisOptions.axisLabel,
-                interval: getXAxisLabelInterval(switchButtonType, period),
                 show: !isProductionView,
             },
             show: true,
@@ -506,10 +550,6 @@ export const getXAxisOptionEchartsConsumptionChart = (
         xAxis.push({
             // Rotate to 40 so that we can show all the hours.
             ...commonXAxisOptions,
-            axisLabel: {
-                ...commonXAxisOptions.axisLabel,
-                interval: period === 'yearly' || period === 'weekly' ? 0 : 1,
-            },
             axisLine: {
                 ...commonXAxisOptions.axisLine,
                 lineStyle: {
@@ -923,6 +963,75 @@ const getMaxValueOfStackMetricsData = (metricsData: targetTimestampsValuesFormat
 }
 
 /**
+ * Rounds a number to the nearest threshold.
+ *
+ * @example
+ * roundNumber(1000) => 1000
+ * roundNumber(1234) => 1500
+ * roundNumber(1634) => 2000
+ * @param {number} value - The value to round.
+ * @returns {number} - The rounded number.
+ */
+export function roundNumber(value: number): number {
+    const stringValue = value.toString()
+    const slicedValue = Number(stringValue.slice(1))
+    const threshold = 5 * 10 ** (stringValue.slice(1).length - 1)
+    // If the sliced number is zero, the original number is already rounded
+    if (slicedValue === 0) {
+        return value
+    }
+
+    // Calculate the base for rounding
+    const base = 10 ** (stringValue.length - 1)
+
+    // Round the number based on the threshold
+    return slicedValue <= threshold ? Math.floor(value / base) * base + threshold : Math.ceil(value / base) * base
+}
+
+/**
+ * Get the maximum value of the YAxis.
+ *
+ * @param consumptionValues Consumption datapoints values to present consumption curves.
+ * @param productionValues Production datapoints values to present consumption curves.
+ * @param isProductionView Boolean indicating if the production view is used.
+ * @param theme Theme used for colors, fonts and backgrounds of xAxis.
+ * @returns The maximum value of the YAxis.
+ */
+export const getMaxYAxisValue = (
+    consumptionValues: targetTimestampsValuesFormat,
+    productionValues: targetTimestampsValuesFormat,
+    isProductionView: boolean,
+    theme: Theme,
+) => {
+    // use max value only on AutoconsmptionProduction for make the y axis symmetric
+    if (isProductionView && !isEurosButtonToggled({ ...consumptionValues, ...productionValues })) {
+        const consumptionValuesWithoutTemperatureAndPmax = { ...consumptionValues }
+        delete consumptionValuesWithoutTemperatureAndPmax[metricTargetsEnum.externalTemperature]
+        delete consumptionValuesWithoutTemperatureAndPmax[metricTargetsEnum.internalTemperature]
+        delete consumptionValuesWithoutTemperatureAndPmax[metricTargetsEnum.pMax]
+
+        const newProductionValues = { ...productionValues }
+
+        Object.keys(productionValues).forEach((target) => {
+            const colorTargetSeries = getColorTargetSeriesEchartsProductionChart(
+                target as metricTargetsEnum,
+                theme,
+                productionValues,
+            )
+            if (colorTargetSeries === TRANSPARENT_COLOR) {
+                delete newProductionValues[target as metricTargetsEnum]
+            }
+        })
+
+        const maxProductionValue = getMaxValueOfStackMetricsData(newProductionValues)
+        const maxConsumptionValue = getMaxValueOfStackMetricsData(consumptionValuesWithoutTemperatureAndPmax)
+        const maxValue = Math.max(maxConsumptionValue, maxProductionValue)
+
+        return roundNumber(maxValue)
+    }
+}
+
+/**
  * Get YAxis option of Echarts Consumption Option.
  *
  * @param consumptionValues Consumption datapoints values to present consumption curves.
@@ -961,27 +1070,33 @@ export const getYAxisOptionEchartsConsumptionChart = (
         period,
         true,
     )
-    const yAxis: unknown[] = []
 
-    // use max value only on AutoconsmptionProduction for make the y axis symmetric
-    let max: number | undefined = undefined
-    if (isProductionView) {
-        const maxProductionValue = getMaxValueOfStackMetricsData(productionValues)
-        const maxConsumptionValue = getMaxValueOfStackMetricsData(consumptionValues)
-        const maxValue = Math.max(maxConsumptionValue, maxProductionValue)
-        max =
-            Math.ceil(maxValue / Math.pow(10, String(maxValue).length - 1)) * Math.pow(10, String(maxValue).length - 1)
-    }
+    const max = getMaxYAxisValue(consumptionValues, productionValues, isProductionView, theme)
+    const yAxis: unknown[] = []
 
     Object.keys(targetsYAxisValueFormatters).forEach((targetYAxisIndex) => {
         const commonYAxisOptions = {
             type: 'value',
             onZero: true,
             min: 0,
-            max,
+            max: [targetYAxisIndexEnum.TEMPERATURE, targetYAxisIndexEnum.PMAX].includes(
+                targetYAxisIndex as targetYAxisIndexEnum,
+            )
+                ? undefined
+                : max,
             scale: true,
             axisLabel: {
-                formatter: targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum],
+                /**
+                 * Formatting the labels shown in yAxisLine.
+                 *
+                 * @param value Value of yAxisLine.
+                 * @returns Label of yAxisLine.
+                 */
+                formatter: (value: number) =>
+                    // If it's production view and the value is 0, we show 0 in the yAxisLine to avoid conflict when we display euro consumption.
+                    isProductionView && value === 0
+                        ? '0'
+                        : targetsYAxisValueFormatters[targetYAxisIndex as targetYAxisIndexEnum](value),
             },
             axisLine: {
                 onZero: true,

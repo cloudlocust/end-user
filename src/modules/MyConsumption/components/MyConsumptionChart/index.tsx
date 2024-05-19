@@ -131,7 +131,6 @@ const MyConsumptionChart = ({
                         consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
                             ? 500
                             : 360,
-                    margin: '0 auto',
                 }}
             />
         </>

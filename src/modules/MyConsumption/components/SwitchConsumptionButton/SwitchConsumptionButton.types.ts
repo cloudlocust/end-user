@@ -23,11 +23,11 @@ export enum SwitchConsumptionButtonLabelEnum {
     /**
      * Label for Consumption.
      */
-    General = 'Ma Conso',
+    General = 'Conso',
     /**
      * Label for Auto consumption & Production.
      */
-    AutoconsmptionProduction = 'Autoconso & Production',
+    AutoconsmptionProduction = 'Solaire',
     /**
      * Label for Idle.
      */

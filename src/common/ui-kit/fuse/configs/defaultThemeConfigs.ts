@@ -1,5 +1,4 @@
-import { createTheme } from '@mui/material/styles'
-import { ThemeOptions } from '@mui/material/styles'
+import { createTheme, ThemeOptions } from '@mui/material/styles'
 
 /**
  * Default Options to add when creating any theme.
