@@ -478,3 +478,29 @@ export type formattedMetricsDataToTimestampsValues =
          */
         timestamps: targetTimestampsValuesFormat
     }
+
+/**
+ * Current day consumption type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type CurrentDayConsumptionType = {
+    /**
+     * Consumption value.
+     */
+    consumption: number | null
+    /**
+     * Auto consumption value.
+     */
+    autoConsumption: number | null
+}
+
+/**
+ * Current day euro consumption type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type CurrentDayEuroConsumptionType = {
+    /**
+     * Euro consumption value.
+     */
+    euroConsumption: number | null
+}

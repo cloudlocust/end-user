@@ -1,13 +1,20 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
-import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
+import { IWidgetProps, totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
 import { computeTotalOfAllConsumptions } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import convert from 'convert-units'
+import { utcToZonedTime } from 'date-fns-tz'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
-const emptyValueUnit = { value: 0, unit: '' }
+const emptyValueUnit = { value: 0, unit: 'Wh' as totalConsumptionUnits }
 
 /**
  * WidgetConsumption Component.
@@ -17,6 +24,10 @@ const emptyValueUnit = { value: 0, unit: '' }
  */
 const WidgetConsumption = (props: IWidgetProps) => {
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
+    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { currentDayConsumption, currentDayAutoConsumption, getCurrentDayConsumption } = useCurrentDayConsumption(
+        currentHousing?.id,
+    )
 
     const currentRangeConsumptionData = useMemo(
         () => getMetricsWidgetsData([props.targets[0], metricTargetsEnum.autoconsumption]),
@@ -28,16 +39,35 @@ const WidgetConsumption = (props: IWidgetProps) => {
         [getMetricsWidgetsData, props.targets],
     )
 
-    const { unit, value } = useMemo(
-        // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
+    const isCurrentDayRange = useMemo(
         () =>
-            currentRangeConsumptionData.length < 2
-                ? emptyValueUnit
-                : computeTotalOfAllConsumptions(currentRangeConsumptionData),
-        [currentRangeConsumptionData],
+            props.period === PeriodEnum.DAILY &&
+            utcToZonedTime(new Date(props.range.from), 'Europe/Paris').getDate() ===
+                utcToZonedTime(new Date(), 'Europe/Paris').getDate(),
+        [props.period, props.range.from],
     )
 
-    const { value: oldValue } = useMemo(
+    useEffect(() => {
+        if (isCurrentDayRange) {
+            getCurrentDayConsumption()
+        }
+    }, [getCurrentDayConsumption, isCurrentDayRange])
+
+    const { unit, value } = useMemo(
+        // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
+        () => {
+            if (currentRangeConsumptionData.length < 2) {
+                return emptyValueUnit
+            }
+            if (currentDayConsumption !== null && currentDayAutoConsumption !== null) {
+                return consumptionWattUnitConversion(currentDayConsumption + currentDayAutoConsumption)
+            }
+            return computeTotalOfAllConsumptions(currentRangeConsumptionData)
+        },
+        [currentDayAutoConsumption, currentDayConsumption, currentRangeConsumptionData],
+    )
+
+    const { unit: oldUnit, value: oldValue } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)
         () =>
             oldRangeConsumptionData.length < 2
@@ -47,8 +77,8 @@ const WidgetConsumption = (props: IWidgetProps) => {
     )
 
     const percentageChange = useMemo(
-        () => computePercentageChange(oldValue as number, value as number),
-        [value, oldValue],
+        () => computePercentageChange(convert(oldValue).from(oldUnit).to('Wh'), convert(value).from(unit).to('Wh')),
+        [oldUnit, oldValue, unit, value],
     )
 
     return (

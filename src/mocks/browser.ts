@@ -30,6 +30,7 @@ import { DashboardEndpoints } from 'src/mocks/handlers/dashboard'
 import { solarSizingEndpoints } from 'src/mocks/handlers/solarSizing'
 import { AlpiqSubscriptionEndpoints } from 'src/mocks/handlers/alpiqSubscription'
 import { installationEndpoints } from 'src/mocks/handlers/installation'
+import { currentDayConsumptionEndpoints } from 'src/mocks/handlers/currentDayConsumption'
 
 /**
  * Handlers to mock urls for tests.
@@ -81,6 +82,8 @@ export const handlers = [
     ...AlpiqSubscriptionEndpoints,
     /***** Installation informations Endpoints. *****/
     ...installationEndpoints,
+    /***** Current day consumption Endpoints. *****/
+    ...currentDayConsumptionEndpoints,
 ]
 
 /**
