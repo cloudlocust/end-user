@@ -10,6 +10,10 @@ import {
     getYAxisOptionEchartsConsumptionChart,
     getXAxisCategoriesData,
     parseXAxisLabelToDate,
+    isEurosButtonToggled,
+    processMetricValues,
+    roundNumber,
+    getMaxYAxisValue,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { TRANSPARENT_COLOR } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
@@ -659,6 +663,71 @@ describe('Test echartsConsumptionOptions', () => {
         })
     })
 
+    describe('isEurosButtonToggled', () => {
+        const dataMetrics: Partial<Record<metricTargetsEnum, number[]>> = {
+            [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+            [metricTargetsEnum.totalProduction]: [100, 200, 300],
+            [metricTargetsEnum.injectedProduction]: [100, 200, 300],
+        }
+        test('returns false if Euros button is not toggled', () => {
+            expect(isEurosButtonToggled(dataMetrics)).toBe(false)
+        })
+        test('returns true if Euros button is toggled', () => {
+            dataMetrics[metricTargetsEnum.euroConsumptionByTariffComponent] = [100, 200, 300]
+            expect(isEurosButtonToggled(dataMetrics)).toBe(true)
+        })
+    })
+
+    describe('processMetricValues', () => {
+        const consumptionValues = {
+            [metricTargetsEnum.consumption]: [100, 200, 300],
+            [metricTargetsEnum.externalTemperature]: [100, 200, 300],
+            [metricTargetsEnum.internalTemperature]: [100, 200, 300],
+            [metricTargetsEnum.pMax]: [100, 200, 300],
+        }
+
+        const productionValues = {
+            [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+            [metricTargetsEnum.totalProduction]: [100, 200, 300],
+            [metricTargetsEnum.injectedProduction]: [100, 200, 300],
+        }
+        const dataMetrics: Partial<Record<metricTargetsEnum, number[]>> = {
+            ...consumptionValues,
+            ...productionValues,
+        }
+        test('should correct values when we are on production view', () => {
+            const { consumptionValues: consumptionValuesResult, productionValues: productionValuesResult } =
+                processMetricValues({ ...dataMetrics }, true)
+            expect(consumptionValuesResult).toEqual({
+                ...consumptionValues,
+                [metricTargetsEnum.autoconsumption]: [100, 200, 300],
+            })
+            expect(productionValuesResult).toEqual(productionValues)
+        })
+        test('should delete autoconsumption from consumptionValues on production view if euro toggled', () => {
+            dataMetrics[metricTargetsEnum.eurosConsumption] = [100, 200, 300]
+            const { consumptionValues: consumptionValuesResult, productionValues: productionValuesResult } =
+                processMetricValues(dataMetrics, true)
+            expect(consumptionValuesResult).toEqual({
+                ...consumptionValues,
+                [metricTargetsEnum.eurosConsumption]: [100, 200, 300],
+            })
+            expect(productionValuesResult).toEqual(productionValues)
+        })
+        test('should correct values when we are not on production view', () => {
+            const { consumptionValues: consumptionValuesResult, productionValues: productionValuesResult } =
+                processMetricValues(dataMetrics, false)
+            expect(consumptionValuesResult).toEqual(dataMetrics)
+            expect(productionValuesResult).toEqual({})
+        })
+        test('should handle empty values', () => {
+            const values = {}
+            const { consumptionValues, productionValues } = processMetricValues(values, false)
+            expect(consumptionValues).toEqual({})
+            expect(productionValues).toEqual({})
+        })
+    })
+
     describe('parseXAxisLabelToDate', () => {
         // Define constants for testing
         const mockRange = { from: '2023-01-01T00:00:00Z', to: '2024-01-01T00:00:00Z' }
@@ -682,6 +751,38 @@ describe('Test echartsConsumptionOptions', () => {
             const partialDateString = 'Mer. 15 mars'
             const result = parseXAxisLabelToDate(partialDateString, period as PeriodEnum, mockRange)
             expect(result.format(dateFormatPattern)).toBe('15-03-2023 00:00')
+        })
+    })
+
+    describe('roundNumber', () => {
+        test('should round a number to the nearest threshold', () => {
+            expect(roundNumber(1000)).toBe(1000)
+            expect(roundNumber(1234)).toBe(1500)
+            expect(roundNumber(1634)).toBe(2000)
+        })
+    })
+
+    describe('getMaxYAxisValue', () => {
+        const consumptionValues = {
+            [metricTargetsEnum.consumption]: [100, 2350, 300],
+            [metricTargetsEnum.externalTemperature]: [100, 56523, 300],
+            [metricTargetsEnum.internalTemperature]: [100, 200, 54548],
+            [metricTargetsEnum.pMax]: [154545, 200, 300],
+        }
+
+        const productionValues = {
+            [metricTargetsEnum.autoconsumption]: [100, 6851, 300],
+            [metricTargetsEnum.totalProduction]: [100, 898656, 300],
+            [metricTargetsEnum.injectedProduction]: [100, 200, 300],
+        }
+        test('should return the maximum value of the YAxis on production view', () => {
+            const result = getMaxYAxisValue(consumptionValues, productionValues, true, theme)
+            expect(result).toBe(7500)
+        })
+
+        test('should return undefined if we are not on production view', () => {
+            const result = getMaxYAxisValue(consumptionValues, productionValues, false, theme)
+            expect(result).toBe(undefined)
         })
     })
 
@@ -756,6 +857,7 @@ describe('Test echartsConsumptionOptions', () => {
                 type: 'category',
                 data: ['01:00'],
                 axisLabel: {
+                    interval: 59,
                     hideOverlap: true,
                     rotate: 30,
                     formatter: expect.anything(),
@@ -786,7 +888,6 @@ describe('Test echartsConsumptionOptions', () => {
                         ...commonXAxisOptions,
                         axisLabel: {
                             ...commonXAxisOptions.axisLabel,
-                            interval: 59,
                             show: false,
                         },
                         axisLine: {
@@ -811,7 +912,6 @@ describe('Test echartsConsumptionOptions', () => {
                         ...commonXAxisOptions,
                         axisLabel: {
                             ...commonXAxisOptions.axisLabel,
-                            interval: 1,
                         },
                         axisLine: {
                             ...commonXAxisOptions.axisLine,
@@ -988,7 +1088,7 @@ describe('Test echartsConsumptionOptions', () => {
                 type: 'value',
                 onZero: true,
                 min: 0,
-                max: 900,
+                max: 600,
                 scale: true,
                 axisLabel: {
                     formatter: expect.anything(),
@@ -1038,6 +1138,7 @@ describe('Test echartsConsumptionOptions', () => {
                         ...commonYAxisOptions,
                         show: false,
                         position: 'right',
+                        max: undefined,
                         axisLabel: {
                             formatter: expect.anything(),
                         },
@@ -1055,6 +1156,7 @@ describe('Test echartsConsumptionOptions', () => {
                         ...commonYAxisOptions,
                         show: false,
                         position: 'right',
+                        max: undefined,
                         axisLabel: {
                             formatter: expect.anything(),
                         },
