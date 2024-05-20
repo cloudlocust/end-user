@@ -12,7 +12,6 @@ import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErr
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
 import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
-import { ProductionChartContainer } from 'src/modules/MyConsumption/components/ProductionChart/ProductionChartContainer'
 import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
@@ -25,7 +24,6 @@ import {
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
-import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
@@ -48,7 +46,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { elementList: contractList } = useContractList(currentHousing?.id as number)
     const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
@@ -67,11 +64,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     const nrlinkOff = nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT'
     const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
-
-    // Productioon chart should be shown only when user click on Autoconsumption-Production switch button
-    const isProductionChartShown =
-        isProductionActiveAndHousingHasAccess(currentHousingScopes) &&
-        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
 
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(
         isSolarProductionConsentOff ? '1m' : '30m',
@@ -105,13 +97,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
-    // check if the user has a tempo contract
-    const doesUserHasTempoContract = useMemo(
-        () => !!(contractList?.some((contract) => contract.tariffType.name === 'Jour Tempo') || false),
-        [contractList],
-    )
-
-    if (consentsLoading)
+    if (consentsLoading || isConnectedPlugListLoadingInProgress)
         return (
             <Box
                 sx={{ height: { xs: '424px', md: '584px' } }}
@@ -162,18 +148,6 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                             onPeriodChange={setPeriod}
                             onRangeChange={setRange}
                         />
-
-                        {/* Production Chart */}
-                        {isProductionChartShown && (
-                            <ProductionChartContainer
-                                period={period}
-                                range={range}
-                                filters={filters}
-                                isProductionConsentOff={isSolarProductionConsentOff}
-                                isProductionConsentLoadingInProgress={isConnectedPlugListLoadingInProgress}
-                                metricsInterval={metricsIntervalWhenConsumptionButtonIsProduction}
-                            />
-                        )}
                     </div>
 
                     {/* Widget List */}
@@ -193,7 +167,11 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
                     {/* FAQ used to understand the charts  */}
                     <div className="p-12 sm:p-24">
-                        <ChartFAQ period={period} hasTempoContract={doesUserHasTempoContract} />
+                        <ChartFAQ
+                            period={period}
+                            housingId={currentHousing?.id as number}
+                            key={currentHousing?.id || 'faq'}
+                        />
                     </div>
 
                     {/* Ecowatt Widget */}
