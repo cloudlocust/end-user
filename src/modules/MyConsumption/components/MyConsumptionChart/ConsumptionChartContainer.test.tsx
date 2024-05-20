@@ -238,6 +238,18 @@ jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
     }),
 }))
 
+const euroConsumptionSwitcherAriaLabel = 'euros-consumption-switcher'
+jest.mock('src/modules/MyConsumption/components/EurosConsumptionButtonToggler', () => (props: any) => {
+    return (
+        <input
+            type="checkbox"
+            aria-label={euroConsumptionSwitcherAriaLabel}
+            checked={props.value}
+            onChange={props.onChange}
+        />
+    )
+})
+
 // Now, when you import and use echarts-for-react in your Jest tests
 // It will use the mocked EChartsReact component instead of the real one.
 // This ensures that the rendering logic of the real charts is bypassed,
@@ -265,7 +277,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -286,7 +298,7 @@ describe('MyConsumptionContainer test', () => {
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
-            const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+            const eurosConsumptionButtonToggler = getByLabelText(euroConsumptionSwitcherAriaLabel)
             expect(eurosConsumptionButtonToggler).not.toBeChecked()
             // TOGGLING TO EUROS CONSUMPTION CHART
             userEvent.click(eurosConsumptionButtonToggler)
@@ -305,7 +317,7 @@ describe('MyConsumptionContainer test', () => {
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-        const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+        const eurosConsumptionButtonToggler = getByLabelText(euroConsumptionSwitcherAriaLabel)
         expect(eurosConsumptionButtonToggler).not.toBeChecked()
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(eurosConsumptionButtonToggler)
@@ -614,7 +626,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(3)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(6)
             })
         }, 10000)
     })

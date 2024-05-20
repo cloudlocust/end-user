@@ -50,7 +50,8 @@ export const ButtonsSwitcher = ({ buttonsSwitcherParams, buttonProps, containerP
                             buttonSwitcherParam.clickHandler()
                         }
                     }}
-                    {...(buttonProps && buttonProps(buttonSwitcherParam.isSelected))}
+                    {...(buttonProps && buttonProps(buttonSwitcherParam.isSelected, buttonSwitcherParam.isDisabled))}
+                    disabled={!!buttonSwitcherParam.isDisabled}
                 >
                     {buttonSwitcherParam.buttonText}
                 </StyledButton>

@@ -296,10 +296,6 @@ ConsumptionChartContainerProps) => {
         }
     }, [isMetricRequestNotAllowed])
 
-    // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
-    useEffect(() => {
-        getMetrics()
-    }, [getMetrics])
     // Callback use to fetch the some metrics
     const getAdditionalMetrics = useCallback(async () => {
         await getAdditionalMetricsWithParams({
@@ -310,14 +306,14 @@ ConsumptionChartContainerProps) => {
         })
     }, [getAdditionalMetricsWithParams, metricsInterval, range, filters])
 
+    // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
+    useEffect(() => {
+        getMetrics()
+        getAdditionalMetrics()
+    }, [getMetrics, getAdditionalMetrics])
+
     const isTotalsOnChartTooltipDisplayed =
         consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Consumption && period !== 'daily'
-    // Effect used to get additional metrics.
-    useEffect(() => {
-        if (isTotalsOnChartTooltipDisplayed) {
-            getAdditionalMetrics()
-        }
-    }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
     /**
      * Callback to return the total consumption of hovered element based on the additional metrics data.
      * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items.
@@ -557,16 +553,14 @@ ConsumptionChartContainerProps) => {
                 className="mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
             >
-                {period !== 'daily' && (
-                    <EurosConsumptionButtonToggler
-                        onChange={() => onEurosConsumptionButtonToggle(!isEurosButtonToggled)}
-                        checked={isEurosButtonToggled}
-                        inputProps={{ 'aria-label': 'euros-consumption-switcher' }}
-                    />
-                )}
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={onPeriodChange}
+                        setPeriod={(value) => {
+                            if (value !== 'daily') {
+                                onEurosConsumptionButtonToggle(true)
+                            }
+                            onPeriodChange(value)
+                        }}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
@@ -591,6 +585,17 @@ ConsumptionChartContainerProps) => {
                     range={range}
                     handleYears={handleYearsOfDatePicker}
                     isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
+                />
+            </div>
+            <div className="mt-12    mb-16">
+                <EurosConsumptionButtonToggler
+                    onChange={() => onEurosConsumptionButtonToggle(!isEurosButtonToggled)}
+                    value={isEurosButtonToggled}
+                    period={period}
+                    range={range}
+                    metricsInterval={metricsInterval}
+                    filters={filters}
+                    dataMetrics={additionalMetricsData}
                 />
             </div>
 

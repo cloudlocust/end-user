@@ -15,6 +15,10 @@ export type ButtonSwitcherParamsType = {
      * Flag indicating whether the Button is selected.
      */
     isSelected: boolean
+    /**
+     * Flag indicating whether the Button is disabled.
+     */
+    isDisabled?: boolean
 }
 
 /**
@@ -28,7 +32,7 @@ export interface ButtonsSwitcherProps {
     /**
      * Function generating props for the Button component.
      */
-    buttonProps?: (isSelected: boolean) => ButtonProps
+    buttonProps?: (isSelected: boolean, isDisabled?: boolean) => ButtonProps
     /**
      * Props of the container.
      */
