@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
 import dayjs from 'dayjs'
 import { useHistory } from 'react-router-dom'
 import { useMetrics, useAdditionalMetrics } from 'src/modules/Metrics/metricsHook'
@@ -47,8 +49,6 @@ import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyCo
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -165,15 +165,6 @@ ConsumptionChartContainerProps) => {
         [targets],
     )
 
-    const isIdleSwitchToggled = useMemo(
-        () =>
-            targets.some((target) =>
-                (
-                    [metricTargetsEnum.idleConsumption, metricTargetsEnum.eurosIdleConsumption] as metricTargetType[]
-                ).includes(target),
-            ),
-        [targets],
-    )
     const targetMenuActiveButton = useMemo(() => {
         if (
             targets.includes(metricTargetsEnum.internalTemperature) ||
@@ -225,40 +216,67 @@ ConsumptionChartContainerProps) => {
      *
      * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
      */
-    const onEurosConsumptionButtonToggle = useCallback(
-        (isEuroToggled: boolean) => {
-            setTargets((_prevTargets) => {
-                let newVisibleTargets: metricTargetType[] = []
-                if (isEuroToggled) {
-                    newVisibleTargets = isIdleSwitchToggled ? eurosIdleConsumptionTargets : eurosConsumptionTargets
-                } else {
-                    newVisibleTargets = isIdleSwitchToggled
-                        ? idleConsumptionTargets
-                        : getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption)
-                }
-                return newVisibleTargets
-            })
-        },
-        [isIdleSwitchToggled],
-    )
+    const onEurosConsumptionButtonToggle = (isEuroToggled: boolean) => {
+        updateTargets(period, isEuroToggled)
+    }
 
-    const getConsumptionTargets = useCallback(() => {
+    /**
+     * Get the consumption targets based on the period and the Euros button toggle.
+     *
+     * @param period The period of the consumption.
+     * @param isEurosButtonToggled Indicates if the Euros button is toggled.
+     * @returns The consumption targets.
+     */
+    const getConsumptionTargets = (period: PeriodEnum, isEurosButtonToggled: boolean) => {
         if (period === 'daily') {
             setMetricsInterval('1m')
         }
         return isEurosButtonToggled
             ? eurosConsumptionTargets
             : [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
-    }, [isEurosButtonToggled, period, setMetricsInterval])
+    }
 
-    const getAutoconsumptionProductionTargets = useCallback(() => {
+    /**
+     * Get the autoconsumption and production targets based on the period and the Euros button toggle.
+     *
+     * @param period The period of the consumption.
+     * @param isEurosButtonToggled Indicates if the Euros button is toggled.
+     * @returns The autoconsumption and production targets.
+     */
+    const getAutoconsumptionProductionTargets = (period: PeriodEnum, isEurosButtonToggled: boolean) => {
         if (period === 'daily') {
             setMetricsInterval('30m')
         }
-        return isEurosButtonToggled
-            ? eurosConsumptionTargets
-            : [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
-    }, [isEurosButtonToggled, period, setMetricsInterval])
+        return [
+            metricTargetsEnum.autoconsumption,
+            ...(isEurosButtonToggled ? [] : [metricTargetsEnum.consumption]),
+            metricTargetsEnum.injectedProduction,
+            metricTargetsEnum.totalProduction,
+            ...(isEurosButtonToggled ? eurosConsumptionTargets : []),
+        ]
+    }
+
+    /**
+     * Update the consumption targets based on the period and the Euros button toggle.
+     *
+     * @param period The period of the consumption.
+     * @param isEurosButtonToggled Indicates if the Euros button is toggled.
+     */
+    const updateTargets = (period: PeriodEnum, isEurosButtonToggled: boolean) => {
+        setTargets((prev) => {
+            switch (consumptionToggleButton) {
+                case SwitchConsumptionButtonTypeEnum.Idle:
+                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
+                case SwitchConsumptionButtonTypeEnum.Consumption:
+                    return getConsumptionTargets(period, isEurosButtonToggled)
+                case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
+                    return getAutoconsumptionProductionTargets(period, isEurosButtonToggled)
+                default:
+                    // Reset to prev when user click on the same button.
+                    return prev
+            }
+        })
+    }
 
     useEffect(() => {
         if (consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
@@ -267,29 +285,9 @@ ConsumptionChartContainerProps) => {
             onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
             setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
         }
-        setTargets((prev) => {
-            switch (consumptionToggleButton) {
-                case SwitchConsumptionButtonTypeEnum.Idle:
-                    return isEurosButtonToggled ? eurosIdleConsumptionTargets : idleConsumptionTargets
-                case SwitchConsumptionButtonTypeEnum.Consumption:
-                    return getConsumptionTargets()
-                case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
-                    return getAutoconsumptionProductionTargets()
-                default:
-                    // Reset to prev when user click on the same button.
-                    return prev
-            }
-        })
-    }, [
-        consumptionToggleButton,
-        getAutoconsumptionProductionTargets,
-        getConsumptionTargets,
-        isEurosButtonToggled,
-        onPeriodChange,
-        onRangeChange,
-        period,
-        setMetricsInterval,
-    ])
+        updateTargets(period, isEurosButtonToggled)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [consumptionToggleButton, isEurosButtonToggled, onPeriodChange, onRangeChange, period, setMetricsInterval])
 
     // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
     useEffect(() => {
@@ -612,26 +610,28 @@ ConsumptionChartContainerProps) => {
                             </Typography>
                         </div>
                     )}
-                    <MyConsumptionChart
-                        data={consumptionChartData}
-                        period={period}
-                        axisColor={theme.palette.common.black}
-                        tooltipFormatter={(
-                            params: EChartTooltipFormatterParams,
-                            valueFormatter?: TooltipValueFormatter,
-                        ) =>
-                            renderToStaticMarkup(
-                                <ConsumptionChartTooltip
-                                    params={params}
-                                    valueFormatter={valueFormatter}
-                                    getTotalConsumption={getTotalConsumption}
-                                    getTotalEuroCost={getTotalEuroCost}
-                                    onDisplayTooltipLabel={onDisplayTooltipLabel}
-                                    renderComponentOnMissingLabels={renderComponentOnMissingLabels}
-                                />,
-                            )
-                        }
-                    />
+                    <div className="relative">
+                        <MyConsumptionChart
+                            data={consumptionChartData}
+                            period={period}
+                            axisColor={theme.palette.common.black}
+                            tooltipFormatter={(
+                                params: EChartTooltipFormatterParams,
+                                valueFormatter?: TooltipValueFormatter,
+                            ) =>
+                                renderToStaticMarkup(
+                                    <ConsumptionChartTooltip
+                                        params={params}
+                                        valueFormatter={valueFormatter}
+                                        getTotalConsumption={getTotalConsumption}
+                                        getTotalEuroCost={getTotalEuroCost}
+                                        onDisplayTooltipLabel={onDisplayTooltipLabel}
+                                        renderComponentOnMissingLabels={renderComponentOnMissingLabels}
+                                    />,
+                                )
+                            }
+                        />
+                    </div>
                 </>
             )}
             {period === PeriodEnum.YEARLY && !isMetricsLoading && !checkIfAllYearlyDataExist() && (
