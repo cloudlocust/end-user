@@ -63,6 +63,10 @@ export enum targetYAxisIndexEnum {
      * Euros yAxis index.
      */
     EUROS = '3',
+    /**
+     * Production yAxis index.
+     */
+    PRODUCTION = '4',
 }
 
 /**
@@ -85,7 +89,8 @@ export type targetsYAxisValueFormattersType = { [x in targetYAxisIndexEnum]: axi
  * @returns Value formatters to group yAxisLine and tooltip labels.
  */
 export type getTargetsYAxisValueFormattersType = (
-    values: targetTimestampsValuesFormat,
+    consumptionValues: targetTimestampsValuesFormat,
+    productionValues: targetTimestampsValuesFormat,
     period: periodType,
     isConsumptionYValueRounded?: boolean,
 ) => targetsYAxisValueFormattersType

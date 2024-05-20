@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
 import { useTheme } from '@mui/material/styles'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
@@ -43,9 +44,7 @@ const MyConsumptionChart = ({
     const theme = useTheme()
     const { consumptionToggleButton } = useMyConsumptionStore()
 
-    const { timestamps, values } = useMemo(() => {
-        return formatMetricsDataToTimestampsValues(data)
-    }, [data])
+    const { timestamps, values } = formatMetricsDataToTimestampsValues(data)
 
     // TODO - Change Echarts options params to use XAxisTimeStamps directly instead of converting it inside the options.
     const xAxisData = useMemo(() => {
@@ -127,7 +126,12 @@ const MyConsumptionChart = ({
                     brush: handleBrushSelected,
                 }}
                 option={option}
-                style={{ height: 360, margin: '0 auto' }}
+                style={{
+                    height:
+                        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                            ? 500
+                            : 360,
+                }}
             />
         </>
     )
