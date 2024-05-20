@@ -19,6 +19,7 @@ import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/com
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import {
     arePlugsUsedBasedOnProductionStatus,
+    globalProductionFeatureState,
     isProductionActiveAndHousingHasAccess,
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
@@ -28,6 +29,7 @@ import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
+import SolarProductionDiscoveringPrompt from 'src/modules/MyConsumption/components/SolarProductionDiscoveringPrompt'
 
 /**
  * MyConsumptionContainer.
@@ -37,6 +39,8 @@ import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/S
  * @param root0.defaultPeriod The default period will be displayed on the page.
  * @returns MyConsumptionContainer and its children.
  */
+// This error will be resolved in the next PR.
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyConsumptionContainerProps) => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
@@ -133,12 +137,16 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
             <div style={{ background: theme.palette.common.white }} className="pb-8 w-full flex justify-center">
                 <SwitchConsumptionButton
                     isIdleShown={isSolarProductionConsentOff}
-                    isAutoConsumptionProductionShown={isProductionActiveAndHousingHasAccess(currentHousingScopes)}
+                    isAutoConsumptionProductionShown={globalProductionFeatureState}
                 />
             </div>
             {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
             isSolarProductionConsentOff ? (
-                <SolarProductionLinkingPrompt />
+                isProductionActiveAndHousingHasAccess(currentHousingScopes) ? (
+                    <SolarProductionLinkingPrompt />
+                ) : (
+                    <SolarProductionDiscoveringPrompt />
+                )
             ) : (
                 <>
                     <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
