@@ -159,11 +159,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
                     {/* FAQ used to understand the charts  */}
                     <div className="p-12 sm:p-24">
-                        <ChartFAQ
-                            period={period}
-                            housingId={currentHousing?.id as number}
-                            key={currentHousing?.id || 'faq'}
-                        />
+                        <ChartFAQ period={period} housingId={currentHousing?.id} key={currentHousing?.id || 'faq'} />
                     </div>
 
                     {/* Ecowatt Widget */}
