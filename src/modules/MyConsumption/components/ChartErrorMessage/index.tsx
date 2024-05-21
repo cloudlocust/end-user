@@ -13,6 +13,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
  * @param root0.linkTo Redirect link.
  * @param root0.nrlinkEnedisOffMessage Message for nrlinkEnedisOff error.
  * @param root0.productionConsentOffMessage Message for productionConsentOff error.
+ * @param root0.style Custom style.
  * @returns ConsumptionErrorMessage component.
  */
 export const ChartErrorMessage = ({
@@ -21,11 +22,12 @@ export const ChartErrorMessage = ({
     productionConsentOff,
     productionConsentOffMessage,
     linkTo,
+    style,
 }: ChartErrorMessageProps) => {
     const theme = useTheme()
 
     return (
-        <div style={{ background: theme.palette.primary.dark }}>
+        <div style={{ background: theme.palette.primary.dark, ...style }}>
             <div className="container relative p-16 sm:p-24 text-center flex items-start justify-center gap-8">
                 <ErrorOutlineIcon
                     sx={{
