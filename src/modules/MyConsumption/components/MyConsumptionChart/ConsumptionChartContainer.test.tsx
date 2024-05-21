@@ -66,6 +66,7 @@ const enphaseConsent: IEnphaseConsent = {
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
 let mockEnedisConsent: IEnedisSgeConsent | undefined = mockEnedisSgeConsentConnected
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent as IEnphaseConsent
+let mockProductionChartErrorState = false
 
 let mockIsMetricsLoading = false
 const mockSetFilters = jest.fn()
@@ -197,6 +198,27 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     get manualContractFillingIsEnabled() {
         return mockManualContractFillingIsEnabled
+    },
+
+    /**
+     * Function to check if plugs are used based on production status.
+     *
+     * @returns True if plugs are used based on production status.
+     */
+    arePlugsUsedBasedOnProductionStatus: () => {
+        return process.env.REACT_APP_CONNECTED_PLUGS_FEATURE_STATE === 'enabled'
+    },
+}))
+
+jest.mock('src/modules/MyConsumption/MyConsumptionConfig', () => ({
+    ...jest.requireActual('src/modules/MyConsumption/MyConsumptionConfig'),
+    /**
+     * Mock the productionChartErrorState const.
+     *
+     * @returns Mocked productionChartErrorState.
+     */
+    get productionChartErrorState() {
+        return mockProductionChartErrorState
     },
 }))
 
@@ -446,7 +468,12 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption],
+                targets: [
+                    metricTargetsEnum.autoconsumption,
+                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.injectedProduction,
+                    metricTargetsEnum.totalProduction,
+                ],
             })
         })
     })

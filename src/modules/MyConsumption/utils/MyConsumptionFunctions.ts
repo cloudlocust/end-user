@@ -563,7 +563,12 @@ export function getRangeV2(period: PeriodEnum) {
 export const getDefaultConsumptionTargets = (switchButtonType: SwitchConsumptionButtonTypeEnum): metricTargetType[] => {
     switch (switchButtonType) {
         case SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction:
-            return [metricTargetsEnum.autoconsumption, metricTargetsEnum.consumption]
+            return [
+                metricTargetsEnum.autoconsumption,
+                metricTargetsEnum.consumption,
+                metricTargetsEnum.injectedProduction,
+                metricTargetsEnum.totalProduction,
+            ]
         case SwitchConsumptionButtonTypeEnum.Consumption:
             return [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption]
         default:

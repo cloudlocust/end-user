@@ -24,6 +24,7 @@ module.exports = {
         'no-console': 'warn',
         'react/prop-types': 'off',
         semi: [2, 'never'],
+        'sonarjs/max-switch-cases': ['error', 35],
         // By default prettier raise an error, lets use warnings
         'prettier/prettier': 'warn',
         'jsdoc/require-returns-type': 0,

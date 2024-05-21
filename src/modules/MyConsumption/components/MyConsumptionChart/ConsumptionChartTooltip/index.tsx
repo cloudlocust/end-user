@@ -1,3 +1,5 @@
+import sortBy from 'lodash/sortBy'
+import uniqBy from 'lodash/uniqBy'
 import { styled, alpha } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import { ConsumptionChartTooltipProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
@@ -76,11 +78,12 @@ export const ConsumptionChartTooltip = ({
 }: ConsumptionChartTooltipProps) => {
     const labels = useMemo(() => {
         const items: JSX.Element[] = []
-        params.forEach((item, index: number) => {
+        // Remove the duplicated seriesName and sort by axisIndex.
+        sortBy(uniqBy(params, 'seriesName'), 'axisIndex').forEach((item, index: number) => {
             if (onDisplayTooltipLabel(item)) {
                 const value = valueFormatter ? valueFormatter(item.seriesIndex)(item.value) : item.value
                 items.push(
-                    <div className="label" key={index}>
+                    <div className="label" key={index} role="listitem" data-testid={item.seriesName}>
                         <Typography>
                             <span dangerouslySetInnerHTML={{ __html: item.marker }} /> {item.seriesName}
                         </Typography>
