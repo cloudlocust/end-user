@@ -198,7 +198,9 @@ export const SolarProductionConsentStatus = ({
         <>
             {/* Enphase Consent Status */}
             {solarProductionConsentLoadingInProgress || isConnectedPlugListLoadingInProgress ? (
-                <CircularProgress size={25} />
+                <div className="circular-progress">
+                    <CircularProgress size={25} />
+                </div>
             ) : (
                 <>
                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">

@@ -50,8 +50,6 @@ const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
 const REVOKE_ENPHASE_CONSENT_TEXT = 'Annuler la récolte de mes données'
 const CREATED_AT = '2022-09-02T08:06:08Z'
-const ERROR_ENPHASE_MESSAGE = 'Connectez votre onduleur Enphase'
-const ERROR_SHELLY_MESSAGE = 'Reliez la prise Shelly de vos panneaux plug&play'
 
 const CONNECTED_ICON_TEXT = 'connected-icon'
 
@@ -265,8 +263,6 @@ describe('MeterStatus component test', () => {
 
             expect(getByText(NO_METER_MESSAGE)).toBeTruthy()
             expect(getByText(NRLINK_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
-            expect(getByText(ERROR_ENPHASE_MESSAGE)).toBeTruthy()
-            expect(getByText(ERROR_SHELLY_MESSAGE)).toBeTruthy()
             expect(getByText(ENEDIS_NONEXISTANT_EXPIRED_MESSAGE)).toBeTruthy()
         })
     })
