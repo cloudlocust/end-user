@@ -125,19 +125,6 @@ export const housingModel = createModel<RootModel>()({
                 alpiqSubscriptionSpecs: alpiqSubscriptionSpecs,
             }
         },
-        /**
-         * Set Solar sizing state.
-         *
-         * @param state Current State.
-         * @param solarSizing The solar sizing to save.
-         * @returns New State updated.
-         */
-        setSolarSizing(state: IHousingState, solarSizing: ISolarSizing | null): IHousingState {
-            return {
-                ...state,
-                solarSizing,
-            }
-        },
     },
     state: defaultState,
 })
