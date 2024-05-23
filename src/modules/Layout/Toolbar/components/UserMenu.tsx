@@ -107,8 +107,8 @@ function UserMenu() {
                             history.push('/nrlink-contract-management')
                         }}
                         iconLabel="assignment"
-                        idLabel="Mon contract / nrLINK"
-                        defaultMessageLabel="Mon contract / nrLINK"
+                        idLabel="Mon contrat / nrLINK"
+                        defaultMessageLabel="Mon contrat / nrLINK"
                     />
                     <ToolbarMenuItem
                         onMenuItemClick={() => {
