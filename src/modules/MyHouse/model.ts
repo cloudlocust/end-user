@@ -8,7 +8,6 @@ import { ScopesAccessRightsType, ScopesTypesEnum } from './utils/MyHouseCommonTy
 import { isAccessRightsActive } from 'src/configs'
 import { ACCESS_RIGHTS_API } from './utils/MyHouseVariables'
 import { AlpiqSubscriptionSpecsType } from 'src/modules/User/AlpiqSubscription/index.d'
-import { ISolarSizing } from 'src/modules/SolarSizing/solarSizeing.types'
 
 /**
  * Default state of housing state.

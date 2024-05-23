@@ -1,4 +1,3 @@
-import { requiredBuilder } from 'src/common/react-platform-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { ButtonLoader } from 'src/common/ui-kit'
 import {
@@ -12,7 +11,6 @@ import TextField from '@mui/material/TextField'
 import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import isNull from 'lodash/isNull'
-import { useCurrentSolarSizing } from 'src/hooks/SolarSizing'
 import { useSolarSizing } from 'src/modules/SolarSizing/solarSizingHook'
 import { useCurrentHousing } from 'src/hooks/CurrentHousing'
 import convert from 'convert-units'
@@ -81,7 +79,7 @@ export default function SolarSizingForm() {
             setLastSolarSizing(lastSolarSizing)
             setValue('surface', lastSolarSizing.surface)
         }
-    }, [fetchAllHousingSolarSizing])
+    }, [fetchAllHousingSolarSizing, setValue])
 
     /**
      * Handle the response.
