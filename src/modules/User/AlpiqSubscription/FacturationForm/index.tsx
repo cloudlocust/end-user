@@ -282,6 +282,41 @@ export const FacturationForm = ({
                             />
                             <SectionText text="J'ai un cotitulaire." />
                         </div>
+                        {isCotitulaire && (
+                            <Grid container spacing={1} className="mt-12">
+                                <Grid item md={4} xs={12}>
+                                    <Select
+                                        name="civilityCotitulaire"
+                                        label="Civilité du cotitulaire"
+                                        validateFunctions={[requiredBuilder()]}
+                                        className="mb-12"
+                                    >
+                                        {civilityOptions.map((option) => (
+                                            <MenuItem key={option.id} value={option.value}>
+                                                {formatMessage({
+                                                    id: option.label,
+                                                    defaultMessage: option.label,
+                                                })}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </Grid>
+                                <Grid item md={4} xs={12}>
+                                    <TextField
+                                        name="nomCotitulaire"
+                                        label="Nom du cotitulaire"
+                                        validateFunctions={[requiredBuilder()]}
+                                    />
+                                </Grid>
+                                <Grid item md={4} xs={12}>
+                                    <TextField
+                                        name="prenomCotitilaure"
+                                        label="Prenom du cotitulaire"
+                                        validateFunctions={[requiredBuilder()]}
+                                    />
+                                </Grid>
+                            </Grid>
+                        )}
                     </div>
                     <div className="flex flex-col items-start justify-center w-full mb-32">
                         <SectionTitle title="Date de début de fourniture" />
@@ -322,49 +357,13 @@ export const FacturationForm = ({
                                     validateFunctions={[requiredBuilder()]}
                                 />
                             </Grid>
-
-                            {isCotitulaire && (
-                                <>
-                                    <Grid item md={4} xs={12}>
-                                        <Select
-                                            name="civilityCotitulaire"
-                                            label="Civilité du cotitulaire"
-                                            validateFunctions={[requiredBuilder()]}
-                                            className="mb-12"
-                                        >
-                                            {civilityOptions.map((option) => (
-                                                <MenuItem key={option.id} value={option.value}>
-                                                    {formatMessage({
-                                                        id: option.label,
-                                                        defaultMessage: option.label,
-                                                    })}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </Grid>
-                                    <Grid item md={4} xs={12}>
-                                        <TextField
-                                            name="nomCotitulaire"
-                                            label="Nom du cotitulaire"
-                                            validateFunctions={[requiredBuilder()]}
-                                        />
-                                    </Grid>
-                                    <Grid item md={4} xs={12}>
-                                        <TextField
-                                            name="prenomCotitilaure"
-                                            label="Prenom du cotitulaire"
-                                            validateFunctions={[requiredBuilder()]}
-                                        />
-                                    </Grid>
-                                </>
-                            )}
                         </Grid>
                     </div>
                     <div className="w-full flex flex-col">
                         <Checkbox
                             color="primary"
                             name="isAlpiqPrelevementAccepted"
-                            label="J'autorise Alpiq à prélever sur le compte bancaire désigné ci-dessus les sommes dues au titre de mon contrat. J'autorise ma banque à accepter les prélèvement automatiques d'Alpiq"
+                            label="* J'autorise Alpiq à prélever sur le compte bancaire désigné ci-dessus les sommes dues au titre de mon contrat. J'autorise ma banque à accepter les prélèvement automatiques d'Alpiq"
                             validate={[accept(requiredFieldErrorMessage), requiredBuilder(requiredFieldErrorMessage)]}
                         />
                         <div className="w-full flex-col items-center justify-start mt-10">
@@ -374,9 +373,9 @@ export const FacturationForm = ({
                                     label={
                                         formatMessage(
                                             {
-                                                id: "J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
+                                                id: "* J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
                                                 defaultMessage:
-                                                    "J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
+                                                    "* J'ai pris connaissance et j'accepte les {cgv}, {tarif}",
                                             },
                                             {
                                                 cgv: <LinkRedirection label="CGV" url={CGV_DOCUMENT_URL} />,
