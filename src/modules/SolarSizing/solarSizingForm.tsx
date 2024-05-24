@@ -1,24 +1,24 @@
-import { Form, requiredBuilder } from 'src/common/react-platform-components'
-import { ButtonLoader, MuiTextField as TextField } from 'src/common/ui-kit'
+import { FormProvider, useForm } from 'react-hook-form'
+import { ButtonLoader } from 'src/common/ui-kit'
 import {
     AddUpdateSolarSizingType,
     AllHousingSolarSizingType,
+    ISolarSizing,
     SolarSizingFormType,
 } from 'src/modules/SolarSizing/solarSizeing.types'
 import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
 import { CustomRadioGroup } from 'src/modules/shared/CustomRadioGroup/CustomRadioGroup'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import isNull from 'lodash/isNull'
-import { useCurrentSolarSizing } from 'src/hooks/SolarSizing'
 import { useSolarSizing } from 'src/modules/SolarSizing/solarSizingHook'
 import { useCurrentHousing } from 'src/hooks/CurrentHousing'
-import { useDispatch } from 'react-redux'
-import { Dispatch } from 'src/redux'
 import convert from 'convert-units'
 import type { AxiosResponse } from 'axios'
 import floor from 'lodash/floor'
 import clsx from 'clsx'
 import isNumber from 'lodash/isNumber'
+import last from 'lodash/last'
 
 const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
 
@@ -29,25 +29,28 @@ const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
  */
 export default function SolarSizingForm() {
     const currentHousing = useCurrentHousing()
-    const reduxSolarSizingDetails = useCurrentSolarSizing()
-    const dispatch = useDispatch<Dispatch>()
-
-    const {
-        addSolarSizing,
-        updateHousingSolarSizingBySolarSizingId,
-        allHousingSolarSizing: { refetch: fetchAllHousingSolarSizing },
-    } = useSolarSizing(currentHousing?.id, reduxSolarSizingDetails?.id)
-
-    // Only surface is needed because the other states are handled by the useState.
-    const formDefaultValues = {
-        surface: reduxSolarSizingDetails?.surface ?? '',
-    }
 
     const [orientationValue, setOrientationValue] = useState<number | null>(null)
     const [inclinationValue, setInclinationValue] = useState<number | null>(null)
     const [potentialSolarPanelPerSurface, setPotentialSolarPanelPerSurface] = useState<number | null>(null)
     const [solarSizingData, setSolarSizingData] = useState<AllHousingSolarSizingType | null>(null)
     const [isCalculating, setIsCalculating] = useState<boolean>(false)
+    const [lastSolarSizing, setLastSolarSizing] = useState<ISolarSizing | null>(null)
+
+    const {
+        addSolarSizing,
+        updateHousingSolarSizingBySolarSizingId,
+        allHousingSolarSizing: { refetch: fetchAllHousingSolarSizing },
+    } = useSolarSizing(currentHousing?.id, lastSolarSizing?.id)
+
+    // Only surface is needed because the other states are handled by the useState.
+    const methods = useForm({
+        defaultValues: {
+            surface: lastSolarSizing?.surface,
+        },
+    })
+
+    const { handleSubmit, register, setValue } = methods
 
     /**
      * On change handler for the Orientation value.
@@ -67,6 +70,17 @@ export default function SolarSizingForm() {
         setInclinationValue(parseInt(value))
     }
 
+    const getLastSolarSizing = useCallback(async () => {
+        const allHousingSolarSizingResponse = await fetchAllHousingSolarSizing()
+
+        const lastSolarSizing = last(allHousingSolarSizingResponse.data?.data.solarSizings)
+
+        if (lastSolarSizing) {
+            setLastSolarSizing(lastSolarSizing)
+            setValue('surface', lastSolarSizing.surface)
+        }
+    }, [fetchAllHousingSolarSizing, setValue])
+
     /**
      * Handle the response.
      *
@@ -74,7 +88,6 @@ export default function SolarSizingForm() {
      */
     const handleResponse = async (response: AxiosResponse<AddUpdateSolarSizingType>) => {
         if (response.status === 200 || response.status === 201) {
-            dispatch.housingModel.setSolarSizing(response.data)
             setPotentialSolarPanelPerSurface(Math.floor(response.data.surface / oneSolarPanelSurface))
             setIsCalculating(true)
             const allHousingSolarSizingResponse = await fetchAllHousingSolarSizing()
@@ -109,7 +122,7 @@ export default function SolarSizingForm() {
     async function handleFormSubmit(data: SolarSizingFormType) {
         if (!data.surface || !orientationValue || !inclinationValue) return
 
-        let surface = parseInt(data.surface as string)
+        let surface = parseInt(data.surface as unknown as string) // surface is a string in the input
         let orientation = orientationValue
         let inclination = inclinationValue
 
@@ -122,9 +135,9 @@ export default function SolarSizingForm() {
         // If the solar sizing details already exist, update them, else add new solar sizing details.
         // User case: At first the user adds the solar sizing details, then updates them.
         const response =
-            !isNull(reduxSolarSizingDetails) && reduxSolarSizingDetails?.id
+            lastSolarSizing && !isNull(lastSolarSizing) && lastSolarSizing.id
                 ? await updateHousingSolarSizingBySolarSizingId.mutateAsync({
-                      id: reduxSolarSizingDetails.id,
+                      id: lastSolarSizing.id,
                       ...dataToBeSent,
                   })
                 : await addSolarSizing.mutateAsync({
@@ -155,11 +168,15 @@ export default function SolarSizingForm() {
     ])
 
     useEffect(() => {
-        if (reduxSolarSizingDetails) {
-            setOrientationValue(reduxSolarSizingDetails.orientation)
-            setInclinationValue(reduxSolarSizingDetails.inclination)
+        getLastSolarSizing()
+    }, [getLastSolarSizing])
+
+    useEffect(() => {
+        if (lastSolarSizing) {
+            setOrientationValue(lastSolarSizing.orientation)
+            setInclinationValue(lastSolarSizing.inclination)
         }
-    }, [reduxSolarSizingDetails])
+    }, [lastSolarSizing])
 
     return (
         <div
@@ -170,62 +187,63 @@ export default function SolarSizingForm() {
             )}
         >
             <div className={isDataReadyToBeShown ? 'col-span-5' : 'col-span-6'}>
-                <Form onSubmit={handleFormSubmit} defaultValues={formDefaultValues}>
-                    <TextField
-                        className="mb-10"
-                        name="surface"
-                        label="Dimensions de ma toiture"
-                        placeholder="m2"
-                        fullWidth
-                        type="number"
-                        validateFunctions={[requiredBuilder()]}
-                        // No negative numbers
-                        inputProps={{ min: '0' }}
-                    />
-                    <div className="flex flex-col full-w mb-14">
-                        <Typography className="mb-3 text-14 font-medium">Orientation :</Typography>
-                        <CustomRadioGroup
-                            data-testid="orientation-radio-group"
-                            boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
-                            elements={[
-                                { value: '180', label: 'Nord' },
-                                { value: '135', label: 'Nord-Est' },
-                                { value: '90', label: 'Est' },
-                                { value: '45', label: 'Sud-Est' },
-                                { value: '0', label: 'Sud' },
-                                { value: '-45', label: 'Sud-Ouest' },
-                                { value: '-90', label: 'Ouest' },
-                                { value: '-135', label: 'Nord-Ouest' },
-                            ]}
-                            value={orientationValue?.toString()}
-                            onValueChange={onOrientationValueChange}
+                <FormProvider {...methods}>
+                    <form onSubmit={handleSubmit(handleFormSubmit)}>
+                        <TextField
+                            className="mb-10"
+                            {...register('surface')}
+                            label="Dimensions de ma toiture"
+                            placeholder="m2"
+                            fullWidth
+                            type="number"
+                            // No negative numbers
+                            inputProps={{ min: '0' }}
                         />
-                    </div>
-                    <div className="flex flex-col full-w mb-14">
-                        <Typography className="mb-3 text-14 font-medium">Inclinaison :</Typography>
-                        <CustomRadioGroup
-                            data-testid="inclination-radio-group"
-                            boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
-                            elements={[
-                                { value: '0', label: '0%' },
-                                { value: '15', label: '15%' },
-                                { value: '30', label: '30%' },
-                                { value: '40', label: '40%' },
-                            ]}
-                            value={inclinationValue?.toString()}
-                            onValueChange={onInclinationValueChange}
-                        />
-                    </div>
-                    <ButtonLoader
-                        className="mt-10"
-                        type="submit"
-                        fullWidth
-                        inProgress={addSolarSizing.isLoading || updateHousingSolarSizingBySolarSizingId.isLoading}
-                        disabled={isNull(orientationValue) || isNull(inclinationValue)}
-                    >
-                        <Typography>Simuler mon installation solaire</Typography>
-                    </ButtonLoader>
-                </Form>
+                        <div className="flex flex-col full-w mb-14">
+                            <Typography className="mb-3 text-14 font-medium">Orientation :</Typography>
+                            <CustomRadioGroup
+                                data-testid="orientation-radio-group"
+                                boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
+                                elements={[
+                                    { value: '180', label: 'Nord' },
+                                    { value: '135', label: 'Nord-Est' },
+                                    { value: '90', label: 'Est' },
+                                    { value: '45', label: 'Sud-Est' },
+                                    { value: '0', label: 'Sud' },
+                                    { value: '-45', label: 'Sud-Ouest' },
+                                    { value: '-90', label: 'Ouest' },
+                                    { value: '-135', label: 'Nord-Ouest' },
+                                ]}
+                                value={orientationValue?.toString()}
+                                onValueChange={onOrientationValueChange}
+                            />
+                        </div>
+                        <div className="flex flex-col full-w mb-14">
+                            <Typography className="mb-3 text-14 font-medium">Inclinaison :</Typography>
+                            <CustomRadioGroup
+                                data-testid="inclination-radio-group"
+                                boxClassName="grid grid-cols-2 md:grid-cols-4 gap-5"
+                                elements={[
+                                    { value: '0', label: '0%' },
+                                    { value: '15', label: '15%' },
+                                    { value: '30', label: '30%' },
+                                    { value: '40', label: '40%' },
+                                ]}
+                                value={inclinationValue?.toString()}
+                                onValueChange={onInclinationValueChange}
+                            />
+                        </div>
+                        <ButtonLoader
+                            className="mt-10"
+                            type="submit"
+                            fullWidth
+                            inProgress={addSolarSizing.isLoading || updateHousingSolarSizingBySolarSizingId.isLoading}
+                            disabled={isNull(orientationValue) || isNull(inclinationValue)}
+                        >
+                            <Typography>Simuler mon installation solaire</Typography>
+                        </ButtonLoader>
+                    </form>
+                </FormProvider>
             </div>
             {isCalculating ? (
                 <div className="col-span-3">
