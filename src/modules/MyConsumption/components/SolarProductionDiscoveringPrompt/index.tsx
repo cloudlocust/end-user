@@ -5,8 +5,7 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 /**
  * The URL for the solar installation recommendation.
  */
-// TODO: Replace 'link-to-solar-installation-recommendation' with the correcr URL.
-export const URL_SOLAR_INSTALLATION_DISCOVERING = 'link-to-solar-installation-discovering'
+export const URL_SOLAR_INSTALLATION_DISCOVERING = 'https://nrlink.myshopify.com/products/fonctionnalites-solaires'
 
 /**
  * This component displays information about the solar production mode and allows users to discover more about the option.
