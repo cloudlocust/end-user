@@ -37,7 +37,10 @@ import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/compo
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { useIntl } from 'src/common/react-platform-translation'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { getMessageOfSuccessiveMissingDataOfCurrentDay } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
+import {
+    checkWhetherResalePriceFormShouldBeShown,
+    getMessageOfSuccessiveMissingDataOfCurrentDay,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import {
@@ -49,6 +52,8 @@ import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyCo
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
+import { ResalePriceForm } from 'src/modules/MyConsumption/components/ResalePriceForm'
+import { useEquipmentList, useInstallation } from 'src/modules/MyHouse/components/Installation/installationHook'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -102,6 +107,22 @@ ConsumptionChartContainerProps) => {
     const history = useHistory()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
+    const { equipmentsList } = useEquipmentList(currentHousing?.id)
+    const {
+        installationInfos,
+        addUpdateInstallationInfosInProgress,
+        getInstallationInfos,
+        addUpdateInstallationInfos,
+    } = useInstallation(currentHousing?.id)
+
+    useEffect(() => {
+        getInstallationInfos()
+    }, [getInstallationInfos])
+
+    const isResalePriceFormShouldBeShown = useMemo(
+        () => checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos),
+        [equipmentsList, installationInfos],
+    )
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -593,6 +614,32 @@ ConsumptionChartContainerProps) => {
                     isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
                 />
             </div>
+
+            {isResalePriceFormShouldBeShown && (
+                <div className="my-16">
+                    <ResalePriceForm
+                        updateResalePriceValue={(resalePrice) => {
+                            addUpdateInstallationInfos({
+                                housingEquipments: [],
+                                solarInstallation: {
+                                    ...installationInfos?.solarInstallation,
+                                    resaleTariff: resalePrice,
+                                },
+                            })
+                        }}
+                        setResaleContractPossessionToFalse={() => {
+                            addUpdateInstallationInfos({
+                                housingEquipments: [],
+                                solarInstallation: {
+                                    ...installationInfos?.solarInstallation,
+                                    hasResaleContract: false,
+                                },
+                            })
+                        }}
+                        updateResalePriceInProgress={addUpdateInstallationInfosInProgress}
+                    />
+                </div>
+            )}
 
             {isMetricsLoading || isAdditionalMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>

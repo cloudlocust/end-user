@@ -5,9 +5,9 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { styled } from '@mui/material'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded'
-import { EquipmentDetailsPageLocationState } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetails'
-import { EquipmentDetailsHeader } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsHeader'
-import { EquipmentDetailsContent } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent'
+import { EquipmentMeasurementsHeader } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsHeader'
+import { EquipmentMeasurementsContent } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsContent'
+import { EquipmentMeasurementsPageLocationState } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurements.types'
 
 const Root = styled(FusePageCarded)(() => ({
     '& .FusePageCarded-header': {
@@ -31,9 +31,9 @@ const Root = styled(FusePageCarded)(() => ({
  *
  * @returns Equipment details component.
  */
-export const EquipmentDetails = () => {
+export default function EquipmentMeasurements() {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const location = useLocation<EquipmentDetailsPageLocationState>()
+    const location = useLocation<EquipmentMeasurementsPageLocationState>()
     const { equipment } = location.state
     const history = useHistory()
     const isInitialRender = useRef(true)
@@ -44,15 +44,15 @@ export const EquipmentDetails = () => {
     useEffect(() => {
         if (isInitialRender.current) {
             isInitialRender.current = false
-        } else if (history.location.pathname.endsWith('/equipments/details') && currentHousing?.id) {
-            history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments`)
+        } else if (history.location.pathname.endsWith('/equipments/measurements') && currentHousing?.id) {
+            history.replace(`${URL_MY_HOUSE}/${currentHousing?.id}/equipments`)
         }
     }, [currentHousing?.id, history])
 
     return (
         <Root
-            header={<EquipmentDetailsHeader equipmentName={equipment.name} />}
-            content={<EquipmentDetailsContent equipmentDetails={equipment} />}
+            header={<EquipmentMeasurementsHeader equipmentName={equipment.name} />}
+            content={<EquipmentMeasurementsContent equipmentDetails={equipment} />}
         />
     )
 }
