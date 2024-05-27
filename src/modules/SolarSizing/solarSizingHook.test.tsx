@@ -54,7 +54,7 @@ describe('test solar sizing hooks', () => {
         // await waitForNextUpdate()
 
         expect(result.current.allHousingSolarSizing.data).toEqual({
-            solarSizing: TEST_SOLAR_SIZING,
+            solarSizings: TEST_SOLAR_SIZING,
             annualProduction: 1000,
             autoConsumptionPercentage: 50,
             autoProductionPercentage: 50,

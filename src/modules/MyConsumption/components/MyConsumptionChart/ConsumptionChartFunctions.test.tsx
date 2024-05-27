@@ -8,7 +8,9 @@ import {
     getMaxTimeBetweenSuccessiveMissingValue,
     getMessageOfSuccessiveMissingDataOfCurrentDayByGapInterval,
     getMessageOfSuccessiveMissingDataOfCurrentDay,
+    checkWhetherResalePriceFormShouldBeShown,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
+import { equipmentType, installationInfosType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
 let datapointsOfMetrics = [
     [
@@ -148,5 +150,71 @@ describe('getMessageOfSuccessiveMissingDataOfCurrentDay', () => {
         // Use this component to test the result because it should return FormattedMessage.
         const { getByText } = reduxedRender(createElement(Fragment, { children: result }))
         expect(getByText(MESSAGE_OF_MESSING_VALUES_OF_LAST_TIME)).toBeInTheDocument()
+    })
+})
+
+describe('checkWhetherResalePriceFormShouldBeShown', () => {
+    test('should return false if equipmentsList is null', () => {
+        const result = checkWhetherResalePriceFormShouldBeShown(null, { housingEquipments: [] })
+        expect(result).toBe(false)
+    })
+
+    test('should return false if installationInfos is null', () => {
+        const result = checkWhetherResalePriceFormShouldBeShown([], null)
+        expect(result).toBe(false)
+    })
+
+    test('should return false if no solar panel equipment is present in equipmentsList', () => {
+        const equipmentsList: equipmentType[] = [{ id: 1, name: 'heater', allowedType: ['electricity'] }]
+        const installationInfos = { housingEquipments: [] }
+        const result = checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos)
+        expect(result).toBe(false)
+    })
+
+    test('should return false if no housing equipment matches the solar panel id', () => {
+        const equipmentsList: equipmentType[] = [{ id: 1, name: 'solarpanel', allowedType: ['electricity'] }]
+        const installationInfos = { housingEquipments: [] }
+        const result = checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos)
+        expect(result).toBe(false)
+    })
+
+    test('should return false if solar panel equipmentType is not existant', () => {
+        const equipmentsList: equipmentType[] = [{ id: 1, name: 'solarpanel', allowedType: ['electricity'] }]
+        const installationInfos: installationInfosType = {
+            housingEquipments: [{ equipmentId: 1, equipmentType: 'nonexistant' }],
+            solarInstallation: { hasResaleContract: true, resaleTariff: undefined },
+        }
+        const result = checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos)
+        expect(result).toBe(false)
+    })
+
+    test('should return false if hasResaleContract is false', () => {
+        const equipmentsList: equipmentType[] = [{ id: 1, name: 'solarpanel', allowedType: ['electricity'] }]
+        const installationInfos: installationInfosType = {
+            housingEquipments: [{ equipmentId: 1, equipmentType: 'existant' }],
+            solarInstallation: { hasResaleContract: false, resaleTariff: undefined },
+        }
+        const result = checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos)
+        expect(result).toBe(false)
+    })
+
+    test('should return false if resaleTariff is specified', () => {
+        const equipmentsList: equipmentType[] = [{ id: 1, name: 'solarpanel', allowedType: ['electricity'] }]
+        const installationInfos: installationInfosType = {
+            housingEquipments: [{ equipmentId: 1, equipmentType: 'existant' }],
+            solarInstallation: { hasResaleContract: true, resaleTariff: 0.15 },
+        }
+        const result = checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos)
+        expect(result).toBe(false)
+    })
+
+    test('should return true if solar panel exists, has resale contract, and resaleTariff is null', () => {
+        const equipmentsList: equipmentType[] = [{ id: 1, name: 'solarpanel', allowedType: ['electricity'] }]
+        const installationInfos: installationInfosType = {
+            housingEquipments: [{ equipmentId: 1, equipmentType: 'existant' }],
+            solarInstallation: { hasResaleContract: true, resaleTariff: undefined },
+        }
+        const result = checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos)
+        expect(result).toBe(true)
     })
 })
