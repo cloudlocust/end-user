@@ -28,6 +28,7 @@ describe('ResalePriceForm Component', () => {
         // Assert that the label, text field and button are present
         expect(getByText('Mon tarif de revente')).toBeInTheDocument()
         expect(getByPlaceholderText('0.0000')).toBeInTheDocument()
+        expect(getByText('€ / kwh')).toBeInTheDocument()
         expect(getByRole('button', { name: 'OK' })).toBeInTheDocument()
 
         // Assert that the "Je n’ai pas de contrat de revente" button is present

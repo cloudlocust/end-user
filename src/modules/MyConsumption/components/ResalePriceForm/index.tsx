@@ -2,7 +2,7 @@ import { TextField, Typography, Button } from '@mui/material'
 import { ResalePriceFormProps } from 'src/modules/MyConsumption/components/ResalePriceForm/ResalePriceForm.type'
 import { useIntl } from 'src/common/react-platform-translation'
 import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 /**
  * Form to set the resale price.
@@ -20,6 +20,28 @@ export const ResalePriceForm = ({
 }: ResalePriceFormProps) => {
     const { formatMessage } = useIntl()
     const [resalePriceInputValue, setResalePriceInputValue] = useState<number | null>(null)
+
+    /**
+     * Handle resale tariff input value change.
+     *
+     * @param event Input change event.
+     */
+    const handleResaleTariffChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        if (event.target.value === '' || isNaN(Number(event.target.value))) {
+            setResalePriceInputValue(null)
+            return
+        }
+        setResalePriceInputValue(Number(event.target.value))
+    }
+
+    /**
+     * Handle submit button click.
+     */
+    const handleSubmitButtonClick = () => {
+        if (resalePriceInputValue !== null) {
+            updateResalePriceValue(resalePriceInputValue)
+        }
+    }
 
     return (
         <div className="rounded-12 p-20" style={{ backgroundColor: '#B5DBDF', color: '#1A6970', maxWidth: '580px' }}>
@@ -45,24 +67,14 @@ export const ResalePriceForm = ({
                         className="w-64 hide-number-input-arrows"
                         inputProps={{ type: 'number', className: 'p-7 text-right' }}
                         value={resalePriceInputValue}
-                        onChange={(e) => {
-                            if (e.target.value === '' || isNaN(Number(e.target.value))) {
-                                setResalePriceInputValue(null)
-                                return
-                            }
-                            setResalePriceInputValue(Number(e.target.value))
-                        }}
+                        onChange={handleResaleTariffChange}
                     />
                     <span>€ / kwh</span>
                     <Button
-                        className="rounded-4 text-14 py-2 px-0 ml-14"
-                        onClick={() => {
-                            if (resalePriceInputValue !== null) {
-                                updateResalePriceValue(resalePriceInputValue)
-                            }
-                        }}
-                        disabled={updateResalePriceInProgress}
                         variant="contained"
+                        className="rounded-4 text-14 py-2 px-0 ml-14"
+                        disabled={updateResalePriceInProgress}
+                        onClick={handleSubmitButtonClick}
                     >
                         OK
                     </Button>

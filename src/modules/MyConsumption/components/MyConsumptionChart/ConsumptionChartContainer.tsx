@@ -37,7 +37,10 @@ import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/compo
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { useIntl } from 'src/common/react-platform-translation'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { getMessageOfSuccessiveMissingDataOfCurrentDay } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
+import {
+    checkWhetherResalePriceFormShouldBeShown,
+    getMessageOfSuccessiveMissingDataOfCurrentDay,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import {
@@ -116,23 +119,10 @@ ConsumptionChartContainerProps) => {
         getInstallationInfos()
     }, [getInstallationInfos])
 
-    const showResalePriceForm = useMemo(() => {
-        if (!equipmentsList || !installationInfos) return false
-        const solarPanelEquipment = equipmentsList.find((equipment) => equipment.name === 'solarpanel')
-
-        // Check if the housing has a solar panel
-        const hasSolarPanel = installationInfos.housingEquipments.some(
-            (equipment) => equipment.equipmentId === solarPanelEquipment?.id && equipment.equipmentType === 'existant',
-        )
-        if (!hasSolarPanel) return false
-
-        // Check if the housing has a resale contract
-        const hasResaleContract = installationInfos.solarInstallation?.hasResaleContract
-        if (!hasResaleContract) return false
-
-        // Check if the resale tariff is not yet specified
-        return installationInfos.solarInstallation?.resaleTariff === null
-    }, [equipmentsList, installationInfos])
+    const isResalePriceFormShouldBeShown = useMemo(
+        () => checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos),
+        [equipmentsList, installationInfos],
+    )
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
     const [targets, setTargets] = useState<metricTargetType[]>(
@@ -625,28 +615,30 @@ ConsumptionChartContainerProps) => {
                 />
             </div>
 
-            {showResalePriceForm && (
-                <ResalePriceForm
-                    updateResalePriceValue={(resalePrice) => {
-                        addUpdateInstallationInfos({
-                            housingEquipments: [],
-                            solarInstallation: {
-                                ...installationInfos?.solarInstallation,
-                                resaleTariff: resalePrice,
-                            },
-                        })
-                    }}
-                    setResaleContractPossessionToFalse={() => {
-                        addUpdateInstallationInfos({
-                            housingEquipments: [],
-                            solarInstallation: {
-                                ...installationInfos?.solarInstallation,
-                                hasResaleContract: false,
-                            },
-                        })
-                    }}
-                    updateResalePriceInProgress={addUpdateInstallationInfosInProgress}
-                />
+            {isResalePriceFormShouldBeShown && (
+                <div className="my-16">
+                    <ResalePriceForm
+                        updateResalePriceValue={(resalePrice) => {
+                            addUpdateInstallationInfos({
+                                housingEquipments: [],
+                                solarInstallation: {
+                                    ...installationInfos?.solarInstallation,
+                                    resaleTariff: resalePrice,
+                                },
+                            })
+                        }}
+                        setResaleContractPossessionToFalse={() => {
+                            addUpdateInstallationInfos({
+                                housingEquipments: [],
+                                solarInstallation: {
+                                    ...installationInfos?.solarInstallation,
+                                    hasResaleContract: false,
+                                },
+                            })
+                        }}
+                        updateResalePriceInProgress={addUpdateInstallationInfosInProgress}
+                    />
+                </div>
             )}
 
             {isMetricsLoading || isAdditionalMetricsLoading ? (
