@@ -28,6 +28,7 @@ import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsump
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
 import SolarProductionDiscoveringPrompt from 'src/modules/MyConsumption/components/SolarProductionDiscoveringPrompt'
+import { useCurrentHousingScopes } from 'src/hooks/CurrentHousing'
 
 /**
  * MyConsumptionContainer.
@@ -38,7 +39,6 @@ import SolarProductionDiscoveringPrompt from 'src/modules/MyConsumption/componen
  * @returns MyConsumptionContainer and its children.
  */
 // This error will be resolved in the next PR.
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyConsumptionContainerProps) => {
     const theme = useTheme()
     const { getConsents, nrlinkConsent, enedisSgeConsent, enphaseConsent, consentsLoading } = useConsents()
@@ -97,26 +97,12 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList()
     }, [loadConnectedPlugList])
 
-    if (consentsLoading || isConnectedPlugListLoadingInProgress)
-        return (
-            <Box
-                sx={{ height: { xs: '424px', md: '584px' } }}
-                className="p-24 CircularProgress flex flex-col justify-center items-center "
-            >
-                <CircularProgress style={{ color: theme.palette.primary.main }} />
-            </Box>
-        )
+    if (consentsLoading || isConnectedPlugListLoadingInProgress) <LoadingState />
 
     if (!currentHousing?.meter?.guid) return <MissingHousingMeterErrorMessage />
 
     if ((!nrlinkConsent || nrlinkOff) && (!enedisSgeConsent || enedisSgeOff))
-        return (
-            <ChartErrorMessage
-                nrLinkEnedisOff={true}
-                nrlinkEnedisOffMessage={NRLINK_ENEDIS_OFF_MESSAGE}
-                linkTo={`/my-houses/${currentHousing?.id}`}
-            />
-        )
+        return <ConsentErrorState housingId={currentHousing.id} />
 
     return (
         <>
@@ -128,11 +114,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
             </div>
             {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
             isSolarProductionConsentOff ? (
-                isProductionActiveAndHousingHasAccess(currentHousingScopes) ? (
-                    <SolarProductionLinkingPrompt />
-                ) : (
-                    <SolarProductionDiscoveringPrompt />
-                )
+                <SolarProductionSection />
             ) : (
                 <>
                     <div style={{ background: theme.palette.common.white }} className="px-12 py-12 sm:px-24 sm:pb-24">
@@ -184,5 +166,55 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                 </>
             )}
         </>
+    )
+}
+
+/**
+ * Loading state when the data is being fetched.
+ *
+ * @returns The LoadingState component.
+ */
+const LoadingState = () => {
+    const theme = useTheme()
+    return (
+        <Box
+            sx={{ height: { xs: '424px', md: '584px' } }}
+            className="p-24 CircularProgress flex flex-col justify-center items-center "
+        >
+            <CircularProgress style={{ color: theme.palette.primary.main }} />
+        </Box>
+    )
+}
+
+/**
+ * Error state when the user has not given consent to access their data.
+ * This component will be displayed when the user has not given consent to access their data.
+ *
+ * @param root0 N/A.
+ * @param root0.housingId The housing ID.
+ * @returns The ConsentErrorState component.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+const ConsentErrorState = ({ housingId }: { housingId: number }) => (
+    <ChartErrorMessage
+        nrLinkEnedisOff={true}
+        nrlinkEnedisOffMessage={NRLINK_ENEDIS_OFF_MESSAGE}
+        linkTo={`/my-houses/${housingId}`}
+    />
+)
+
+/**
+ * Component to display the corresponding prompt based on the user's production status.
+ * This component will display the SolarProductionLinkingPrompt if the user has access to production and is not linked.
+ *
+ * @returns The SolarProductionLinkingPrompt component.
+ */
+const SolarProductionSection = () => {
+    const currentHousingScopes = useCurrentHousingScopes()
+
+    return isProductionActiveAndHousingHasAccess(currentHousingScopes) ? (
+        <SolarProductionLinkingPrompt />
+    ) : (
+        <SolarProductionDiscoveringPrompt />
     )
 }
