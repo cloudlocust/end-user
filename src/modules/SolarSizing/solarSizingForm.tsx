@@ -19,6 +19,7 @@ import floor from 'lodash/floor'
 import clsx from 'clsx'
 import isNumber from 'lodash/isNumber'
 import last from 'lodash/last'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
 
 const oneSolarPanelSurface = 1.6 // m2 (Hard coded for now)
 
@@ -40,7 +41,7 @@ export default function SolarSizingForm() {
     const {
         addSolarSizing,
         updateHousingSolarSizingBySolarSizingId,
-        allHousingSolarSizing: { refetch: fetchAllHousingSolarSizing },
+        allHousingSolarSizing: { refetch: fetchAllHousingSolarSizing, isLoading: isFetchingAllHousingSolarSizing },
     } = useSolarSizing(currentHousing?.id, lastSolarSizing?.id)
 
     // Only surface is needed because the other states are handled by the useState.
@@ -178,6 +179,10 @@ export default function SolarSizingForm() {
         }
     }, [lastSolarSizing])
 
+    if (isFetchingAllHousingSolarSizing) {
+        return <FuseLoading />
+    }
+
     return (
         <div
             className={clsx(
@@ -235,7 +240,7 @@ export default function SolarSizingForm() {
                         </div>
                         <ButtonLoader
                             className="mt-10"
-                            type="submit"
+                            onClick={() => handleSubmit(handleFormSubmit)()}
                             fullWidth
                             inProgress={addSolarSizing.isLoading || updateHousingSolarSizingBySolarSizingId.isLoading}
                             disabled={isNull(orientationValue) || isNull(inclinationValue)}
@@ -259,7 +264,10 @@ export default function SolarSizingForm() {
                             <strong>{potentialSolarPanelPerSurface}</strong>
                             {` panneaux solaires, cela représente un potentiel `}
                             <strong>{nominalPower}</strong>
-                            {` kWc / an avec l'ensoleillement de l'année passée dans votre ville. En fonction de la répartition de votre consommation dans la journée, vous pourriez alors autoconsommer `}
+                            {` kWc / an soit `}
+                            <strong>{annualProduction}</strong>
+                            {` MWh`}
+                            {` avec l'ensoleillement de l'année passée dans votre ville. En fonction de la répartition de votre consommation dans la journée, vous pourriez alors autoconsommer `}
                             <strong>{averageConsumptionFromAnualProduction}</strong>
                             {` MWh soit `}
                             <strong>{autoConsumptionPercentage}</strong>
