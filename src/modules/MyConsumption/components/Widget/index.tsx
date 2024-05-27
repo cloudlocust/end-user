@@ -173,7 +173,7 @@ export const Widget = memo(
                                     <WidgetItem
                                         key={index}
                                         target={target}
-                                        title={renderWidgetTitle(target, enphaseOff)}
+                                        title={renderWidgetTitle(target, enphaseOff, consumptionToggleButton)}
                                         infoIcon={infoIcons && infoIcons[target]}
                                         value={targetsInfos[target].value}
                                         unit={targetsInfos[target].unit}
