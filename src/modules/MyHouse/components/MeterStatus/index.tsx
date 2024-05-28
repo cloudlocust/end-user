@@ -22,6 +22,10 @@ import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/Met
 import { RevokeNrlinkConsent } from 'src/modules/MyHouse/components/RevokeNrlinkConsent'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import clsx from 'clsx'
+import { useModal } from 'src/hooks/useModal'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -43,6 +47,31 @@ const GreyTooltip = styled(({ className, ...props }: TooltipProps) => (
         fontSize: 11,
     },
 }))
+
+/**
+ * Component for UnSynchronizedInfoDialog.
+ *
+ * @param param0 N/A.
+ * @param param0.open Open state of the dialog.
+ * @param param0.onClose Callback function to close the dialog.
+ * @returns UnSynchronizedInfoDialog component.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+function UnSynchronizedInfoDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+    return (
+        <Dialog open={open} onClose={onClose}>
+            <DialogContent>
+                <Typography>
+                    Afin que nous puissions faire un rapport à Enedis, veuillez contacter le service client par mail à{' '}
+                    <strong>contact@myem.fr</strong> <span>avec les informations suivantes : N°nrLINK et N° PDL.</span>
+                </Typography>
+                <Typography>
+                    <strong>Important : </strong>L'objet du mail doit être code erreur : <strong>unsynchronised</strong>
+                </Typography>
+            </DialogContent>
+        </Dialog>
+    )
+}
 
 /**
  * Meter Status Component.
@@ -68,6 +97,11 @@ export const MeterStatus = () => {
     } = useConsents()
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
+    const {
+        closeModal: closeUnsynchronizedInfoDialog,
+        isOpen: isUnsynchronizedInfoDialogOpen,
+        openModal: openUnsynchronizedInfoDialog,
+    } = useModal()
 
     const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
 
@@ -284,6 +318,13 @@ export const MeterStatus = () => {
                                 Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
                                 votre nrLINK
                             </TypographyFormatMessage>
+                            <TypographyFormatMessage
+                                className="italic underline font-600 cursor-pointer"
+                                color={theme.palette.grey[500]}
+                                onClick={() => openUnsynchronizedInfoDialog()}
+                            >
+                                Que faire ?
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )
@@ -415,6 +456,13 @@ export const MeterStatus = () => {
                     </div>
                 </MuiCardContent>
             </Card>
+
+            {isUnsynchronizedInfoDialogOpen && (
+                <UnSynchronizedInfoDialog
+                    open={isUnsynchronizedInfoDialogOpen}
+                    onClose={closeUnsynchronizedInfoDialog}
+                />
+            )}
         </>
     )
 }
