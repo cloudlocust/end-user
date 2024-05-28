@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTheme, Button } from '@mui/material'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
