@@ -74,7 +74,7 @@ export default function SolarSizingForm() {
     const getLastSolarSizing = useCallback(async () => {
         const allHousingSolarSizingResponse = await fetchAllHousingSolarSizing()
 
-        const lastSolarSizing = last(allHousingSolarSizingResponse.data?.data.solarSizings)
+        const lastSolarSizing = last(allHousingSolarSizingResponse?.data?.data.solarSizings)
 
         if (lastSolarSizing) {
             setLastSolarSizing(lastSolarSizing)
