@@ -87,7 +87,7 @@ export const DashboardConsumptionWidget = () => {
         }
 
         if (currentDayEuroConsumption !== null) {
-            setTotalDailyEuroConsumption(currentDayEuroConsumption!)
+            setTotalDailyEuroConsumption(Number(currentDayEuroConsumption!.toFixed(2)))
         } else {
             const { value } = !todayDataInterval1m?.length
                 ? emptyEuroValueUnit
