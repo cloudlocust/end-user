@@ -28,9 +28,9 @@ export const GET_CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
  * @returns Current day consumption hook.
  */
 export const useCurrentDayConsumption = (housingId?: number) => {
-    const [currentDayConsumption, setCurrentDayConsumption] = useState<number | null>(null)
-    const [currentDayAutoConsumption, setCurrentDayAutoConsumption] = useState<number | null>(null)
-    const [currentDayEuroConsumption, setCurrentDayEuroConsumption] = useState<number | null>(null)
+    const [currentDayConsumption, setCurrentDayConsumption] = useState<number | null | undefined>(undefined)
+    const [currentDayAutoConsumption, setCurrentDayAutoConsumption] = useState<number | null | undefined>(undefined)
+    const [currentDayEuroConsumption, setCurrentDayEuroConsumption] = useState<number | null | undefined>(undefined)
     const [isGetCurrentDayConsumptionLoading, setIsGetCurrentDayConsumptionLoading] = useState(false)
     const [isGetCurrentDayEuroConsumptionLoading, setIsGetCurrentDayEuroConsumptionLoading] = useState(false)
 
