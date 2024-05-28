@@ -157,7 +157,7 @@ export const Widget = memo(
                         case metricTargetsEnum.eurosConsumption:
                             if (currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
                                 unit = '€'
-                                value = currentDayEuroConsumption
+                                value = Number(currentDayEuroConsumption.toFixed(2))
                             }
                             break
                     }

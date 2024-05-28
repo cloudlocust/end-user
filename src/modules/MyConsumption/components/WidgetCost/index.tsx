@@ -97,16 +97,16 @@ export const WidgetCost = (props: IWidgetProps) => {
             if (!euroConsumptionData.length || !data.length) {
                 return emptyValueUnit
             }
-            if (currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
+            if (isCurrentDayRange && currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
                 const { value: totalSubscriptionPrice } = computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
                 return {
-                    value: currentDayEuroConsumption + totalSubscriptionPrice,
+                    value: Number((currentDayEuroConsumption + totalSubscriptionPrice).toFixed(2)),
                     unit: '€',
                 }
             }
             return computeTotalEurosWithSubscriptionPrice([...euroConsumptionData, ...data])
         },
-        [currentDayEuroConsumption, data, euroConsumptionData],
+        [currentDayEuroConsumption, data, euroConsumptionData, isCurrentDayRange],
     )
 
     return (
