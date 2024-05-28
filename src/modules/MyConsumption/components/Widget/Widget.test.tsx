@@ -12,8 +12,12 @@ import { applyCamelCase } from 'src/common/react-platform-components'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { ProductionWidgetErrorIcon } from 'src/modules/MyConsumption/components/WidgetInfoIcons'
-import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import {
+    ConsumptionWidgetsMetricsContext,
+    ConsumptionWidgetsMetricsProvider,
+} from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { renderWidgetTitle } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 const TEST_WEEK_DATA: IMetric[] = TEST_SUCCESS_WEEK_METRICS([metricTargetsEnum.consumption])
 let mockData: IMetric[] = TEST_WEEK_DATA
@@ -54,6 +58,8 @@ let mockWidgetPropsDefault: IWidgetProps = {
     targets: [metricTargetsEnum.consumption],
 }
 
+const mockConsumptionToggleButton = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -75,6 +81,17 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
     //eslint-disable-next-line
     isProductionActiveAndHousingHasAccess: () => true,
+}))
+
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    /**
+     * Mock useMyConsumptionStore hook for we can change between tabs.
+     *
+     * @returns Current tab.
+     */
+    useMyConsumptionStore: () => ({
+        consumptionToggleButton: mockConsumptionToggleButton,
+    }),
 }))
 
 /**
@@ -140,10 +157,30 @@ describe('Widget component test', () => {
 
     test('when there is many targets, all targets should be rendered', async () => {
         mockData = []
-        const { getByText } = renderTestComponent({
-            ...mockWidgetPropsDefault,
-            targets: [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption],
-        })
+
+        const mockCurrentRangeMetricWidgetsData = [
+            {
+                target: metricTargetsEnum.injectedProduction,
+                datapoints: [[123, 1651406400]],
+            },
+        ]
+        // mock injectedProduction metric data, so that the autoconsumption widget is shown.
+        const contextValue = {
+            storeWidgetMetricsData: jest.fn(),
+            currentRangeMetricWidgetsData: mockCurrentRangeMetricWidgetsData,
+            oldRangeMetricWidgetsData: [],
+            getMetricsWidgetsData: jest.fn(),
+            resetMetricsWidgetData: jest.fn(),
+        }
+
+        const { getByText } = reduxedRender(
+            <ConsumptionWidgetsMetricsContext.Provider value={contextValue}>
+                <Widget
+                    {...mockWidgetPropsDefault}
+                    targets={[metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption]}
+                />
+            </ConsumptionWidgetsMetricsContext.Provider>,
+        )
 
         expect(getByText(renderWidgetTitle(metricTargetsEnum.totalProduction))).toBeInTheDocument()
         expect(getByText(renderWidgetTitle(metricTargetsEnum.autoconsumption))).toBeInTheDocument()
