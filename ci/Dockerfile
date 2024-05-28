@@ -10,7 +10,7 @@ COPY package.json yarn.lock ./
 COPY src/common/package.json ./src/common/package.json
 RUN yarn install
 COPY . ./
-RUN yarn build
+RUN yarn build && yarn rm-source-maps
 
 FROM nginx:stable-alpine
 COPY --from=builder /app/build /usr/share/nginx/html

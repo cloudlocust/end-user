@@ -6,15 +6,13 @@ import Select from '@mui/material/Select'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import {
-    EquipmentDetailsContentProps,
-    SelectOnChangeHandler,
-} from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsContent/EquipmentDetailsContent'
+import { SelectChangeEvent } from '@mui/material'
 import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
+import { EquipmentMeasurementsResults } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
-import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
+import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/EquipmentMeasurementResultsHook'
+import { EquipmentMeasurementsContentProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsContent/EquipmentMeasurementsContent.types'
 
 /**
  * EquipmentDetailsContent compoonent.
@@ -23,10 +21,10 @@ import { useEquipmentMeasurementResults } from 'src/modules/MyHouse/components/E
  * @param root0.equipmentDetails The equipment details object.
  * @returns EquipmentDetailsContent JSX.
  */
-export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsContentProps) => {
+export const EquipmentMeasurementsContent = ({ equipmentDetails }: EquipmentMeasurementsContentProps) => {
     const { formatMessage } = useIntl()
     const MAX_WIDTH_600 = useMediaQuery('(max-width:600px)')
-    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(equipmentDetails.number === 1 ? 1 : null)
+    const [selectedEquipmentNumber, setSelectedEquipmentNumber] = useState(1)
     const { measurementResults, isLoadingMeasurements, updateEquipmentMeasurementResults } =
         useEquipmentMeasurementResults()
     const {
@@ -64,8 +62,8 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
      *
      * @param event The onChange event.
      */
-    const handleSelectEquipmentChange: SelectOnChangeHandler = (event) => {
-        setSelectedEquipmentNumber(event.target.value)
+    const handleSelectEquipmentChange = (event: SelectChangeEvent<number | null>) => {
+        setSelectedEquipmentNumber(event.target.value as number)
     }
 
     const isMeasurementButtonShown =
@@ -73,10 +71,10 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
 
     return (
         <>
-            <div className="flex flex-col h-full p-16">
+            <div className="flex flex-col h-full p-16 max-w-640 mx-auto">
                 {/* The equipment select input */}
                 {equipmentDetails.number && equipmentDetails.number > 1 && (
-                    <div className="w-full max-w-640 mx-auto mb-36">
+                    <div className="w-full max-w-400 mx-auto mb-20 sm:my-20">
                         <FormControl fullWidth>
                             <InputLabel
                                 id="equipment-select-label"
@@ -121,7 +119,7 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 {/* Measurement result list */}
                 <div className="flex-1">
                     {equipmentDetails.number && (
-                        <EquipmentMeasurementResults
+                        <EquipmentMeasurementsResults
                             measurementModes={equipmentDetails.measurementModes}
                             housingEquipmentId={equipmentDetails.housingEquipmentId!}
                             equipmentsNumber={equipmentDetails.number}
@@ -134,10 +132,9 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                 </div>
 
                 {/* Buttons */}
-                <div className={`flex justify-end`}>
+                <div className="flex justify-end mt-28">
                     <Button
                         variant="contained"
-                        size="large"
                         className={'flex-1 sm:flex-none'}
                         onClick={onOpenMeasurementModal}
                         disabled={!isMeasurementButtonShown}
@@ -159,7 +156,6 @@ export const EquipmentDetailsContent = ({ equipmentDetails }: EquipmentDetailsCo
                     onCloseMeasurementModal={onCloseMeasurementModal}
                     defaultMicrowaveNumber={selectedEquipmentNumber}
                     updateEquipmentMeasurementResults={updateCurrentEquipmentMeasurementResults}
-                    startMeasurementFromEquipmentsDetailsPage
                 />
             )}
         </>
