@@ -208,8 +208,14 @@ export const InstallationTab = () => {
                          * Check if the value of the equipment is different from the default value,
                          * if yes, add it to the array of data to send to the backend.
                          */
+                        (data[curr.name as housingInstallationEquipmentsType] !== '' ||
+                            formFieldsValuesAccordingToCurrentInstallation[
+                                curr.name as housingInstallationEquipmentsType
+                            ] !== undefined) &&
                         data[curr.name as housingInstallationEquipmentsType] !==
-                        formFieldsValuesAccordingToCurrentInstallation[curr.name as housingInstallationEquipmentsType]
+                            formFieldsValuesAccordingToCurrentInstallation[
+                                curr.name as housingInstallationEquipmentsType
+                            ]
                             ? [
                                   ...prev,
                                   {
