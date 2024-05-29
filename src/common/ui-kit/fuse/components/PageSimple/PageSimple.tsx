@@ -57,6 +57,7 @@ const Root = styled('div')(({ theme }) => ({
         flex: '1 1 auto',
         '-webkit-overflow-scrolling': 'touch',
         zIndex: 9999,
+        width: '100%',
     },
 
     '& .PageSimple-toolbar': {

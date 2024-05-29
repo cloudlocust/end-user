@@ -4,6 +4,8 @@ import { FAQProps } from 'src/modules/MyConsumption/components/ChartFAQ/ChartFAQ
 import { getFAQItemsByPeriodAndContractType } from 'src/modules/MyConsumption/components/ChartFAQ/ChartFAQFunctions'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * ChartFAQ Component used to help understand the charts.
@@ -15,6 +17,7 @@ import { useContractList } from 'src/modules/Contracts/contractsHook'
  */
 export const ChartFAQ: FC<FAQProps> = ({ period, housingId }) => {
     const { elementList: contractList } = useContractList(housingId)
+    const { consumptionToggleButton } = useMyConsumptionStore()
 
     // check if the user has a tempo contract
     const doesUserHasTempoContract = useMemo(() => {
@@ -27,8 +30,10 @@ export const ChartFAQ: FC<FAQProps> = ({ period, housingId }) => {
         [period, doesUserHasTempoContract],
     )
 
+    const isProduction = consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+
     // todo: activate later when the FAQ content be ready
-    if (period !== PeriodEnum.DAILY || doesUserHasTempoContract) {
+    if (period !== PeriodEnum.DAILY || doesUserHasTempoContract || isProduction) {
         return null
     }
     return <FAQ items={faqItems} title={faqTitle} />
