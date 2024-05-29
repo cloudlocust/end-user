@@ -57,7 +57,7 @@ const GreyTooltip = styled(({ className, ...props }: TooltipProps) => (
  * @returns UnSynchronizedInfoDialog component.
  */
 // eslint-disable-next-line jsdoc/require-jsdoc
-function UnSynchronizedInfoDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function UnSynchronizedInfoDialog({ open, onClose }: Readonly<{ open: boolean; onClose: () => void }>) {
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogContent>
