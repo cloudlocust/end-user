@@ -21,6 +21,8 @@ export const HOUSING_EQUIPMENTS_API = (housingId: number) => `${HOUSING_API}/${h
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const ALL_EQUIPMENTS_API = `${API_RESOURCES_URL}/equipments`
 
+const SUCCESS_ADDING_EQUIPMENT_MESSAGE = "Succès lors de l'enregistrement de vos équipments"
+
 /**
 `* Hooks for equipmentList.
  *
@@ -38,6 +40,9 @@ export const useEquipmentList = (housingId?: number) => {
     const [equipmentsList, setEquipmentsList] = useState<equipmentType[] | null>(null)
     const [housingEquipmentsList, setHousingEquipmentsList] = useState<IEquipmentMeter[] | null>(null)
     const [isAddEquipmentLoading, setIsAddEquipmentLoading] = useState(false)
+    const [isGetHousingEquipmentsDetailsLoading, setIsGetHousingEquipmentsDetailsLoading] = useState(false)
+    const [housingEquipmentsDetailsByHousingIdAndEquipmentId, setHousingEquipmentsDetailsByHousingIdAndEquipmentId] =
+        useState<IEquipmentMeter[] | null>(null)
 
     /**
      * Load Customers function responsing for fetching customersList.
@@ -120,17 +125,12 @@ export const useEquipmentList = (housingId?: number) => {
                     await loadEquipmentList(false)
                     enqueueSnackbar(
                         formatMessage({
-                            id: "Succès lors de l'enregistrement de vos équipments",
-                            defaultMessage: "Succès lors de l'enregistrement de vos équipments",
+                            id: SUCCESS_ADDING_EQUIPMENT_MESSAGE,
+                            defaultMessage: SUCCESS_ADDING_EQUIPMENT_MESSAGE,
                         }),
                         { variant: 'success' },
                     )
                 }
-
-                // Remove the equipmentIds from the addingInProgressEquipmentsIds state
-                setAddingInProgressEquipmentsIds((addingInProgressEquipmentsIds) =>
-                    addingInProgressEquipmentsIds.filter((id) => !equipmentIds.includes(id)),
-                )
 
                 return responseData
             } catch (error: any) {
@@ -146,7 +146,7 @@ export const useEquipmentList = (housingId?: number) => {
                           }),
                     { variant: 'error' },
                 )
-
+            } finally {
                 // Remove the equipmentIds from the addingInProgressEquipmentsIds state
                 setAddingInProgressEquipmentsIds((addingInProgressEquipmentsIds) =>
                     addingInProgressEquipmentsIds.filter((id) => !equipmentIds.includes(id)),
@@ -170,14 +170,14 @@ export const useEquipmentList = (housingId?: number) => {
                 )
 
                 if (response.status === 201) {
-                    const addedHousingEquipment = await addHousingEquipment([
-                        {
-                            equipmentId: response.data.id,
-                        },
-                    ])
-                    if (addedHousingEquipment && addedHousingEquipment.length > 0) {
-                        return addedHousingEquipment
-                    }
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: SUCCESS_ADDING_EQUIPMENT_MESSAGE,
+                            defaultMessage: SUCCESS_ADDING_EQUIPMENT_MESSAGE,
+                        }),
+                        { variant: 'success' },
+                    )
+                    return response.data
                 }
             } catch (error: any) {
                 enqueueSnackbar(
@@ -196,7 +196,25 @@ export const useEquipmentList = (housingId?: number) => {
                 setIsAddEquipmentLoading(false)
             }
         },
-        [enqueueSnackbar, formatMessage, addHousingEquipment],
+        [enqueueSnackbar, formatMessage],
+    )
+
+    const getHousingEquipmentDetailsByHousingIdAndEquipmentId = useCallback(
+        async (equipmentId: string | number) => {
+            try {
+                setIsGetHousingEquipmentsDetailsLoading(true)
+                const response = await axios.get(`${HOUSING_EQUIPMENTS_API(housingId!)}/${equipmentId}`)
+
+                if (response.status === 200) {
+                    setHousingEquipmentsDetailsByHousingIdAndEquipmentId(response.data)
+                }
+            } catch (error: any) {
+                throw new Error(error || 'Erreur lors du chargement des détails de votre équipement')
+            } finally {
+                setIsGetHousingEquipmentsDetailsLoading(false)
+            }
+        },
+        [housingId],
     )
 
     return {
@@ -209,6 +227,10 @@ export const useEquipmentList = (housingId?: number) => {
         loadEquipmentList,
         addEquipment,
         isAddEquipmentLoading,
+        getHousingEquipmentDetailsByHousingIdAndEquipmentId,
+        setIsGetHousingEquipmentsDetailsLoading,
+        isGetHousingEquipmentsDetailsLoading,
+        housingEquipmentsDetailsByHousingIdAndEquipmentId,
     }
 }
 
