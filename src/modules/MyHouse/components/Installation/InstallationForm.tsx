@@ -202,32 +202,42 @@ export const InstallationTab = () => {
         const housingEquipments: equipmentMeterType[] =
             equipmentsList
                 ?.filter((e) => ['heater', 'hotplate', 'sanitary', 'solarpanel'].includes(e.name))
-                .reduce(
-                    (prev, curr) =>
-                        /**
-                         * Check if the value of the equipment is different from the default value,
-                         * if yes, add it to the array of data to send to the backend.
-                         */
-                        (data[curr.name as housingInstallationEquipmentsType] !== '' ||
-                            formFieldsValuesAccordingToCurrentInstallation[
-                                curr.name as housingInstallationEquipmentsType
-                            ] !== undefined) &&
-                        data[curr.name as housingInstallationEquipmentsType] !==
+                .reduce((prev, curr) =>
+                    /**
+                     * Check if the value of the equipment is different from the default value,
+                     * if yes, add it to the array of data to send to the backend.
+                     */
+                    {
+                        // The current value of the equipment type in the backend.
+                        const equipmentTypeCurrrentValue =
                             formFieldsValuesAccordingToCurrentInstallation[
                                 curr.name as housingInstallationEquipmentsType
                             ]
-                            ? [
-                                  ...prev,
-                                  {
-                                      equipmentId: curr.id,
-                                      equipmentType: data[
-                                          curr.name as housingInstallationEquipmentsType
-                                      ] as equipmentAllowedTypeT,
-                                  },
-                              ]
-                            : [...prev],
-                    [] as equipmentMeterType[],
-                ) ?? []
+
+                        // The value of the equipment type in the form.
+                        const equipmentTypeFormFieldValue = data[curr.name as housingInstallationEquipmentsType]
+
+                        /**
+                         * Check if the current value of the equipment type is different from the value in the form
+                         * and handle the case when the value is not yet specified, where they has the default values
+                         * undefined and '', which are considered as same values.
+                         */
+                        if (
+                            (equipmentTypeFormFieldValue !== '' || equipmentTypeCurrrentValue !== undefined) &&
+                            equipmentTypeFormFieldValue !== equipmentTypeCurrrentValue
+                        ) {
+                            return [
+                                ...prev,
+                                {
+                                    equipmentId: curr.id,
+                                    equipmentType: data[
+                                        curr.name as housingInstallationEquipmentsType
+                                    ] as equipmentAllowedTypeT,
+                                },
+                            ]
+                        }
+                        return [...prev]
+                    }, [] as equipmentMeterType[]) ?? []
 
         addUpdateInstallationInfos({
             housingEquipments,
