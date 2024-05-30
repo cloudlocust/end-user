@@ -616,7 +616,7 @@ ConsumptionChartContainerProps) => {
             </div>
 
             {isResalePriceFormShouldBeShown && (
-                <div className="my-16">
+                <div className="my-16" style={{ marginLeft: '4%', marginRight: '4%' }}>
                     <ResalePriceForm
                         updateResalePriceValue={(resalePrice) => {
                             addUpdateInstallationInfos({
