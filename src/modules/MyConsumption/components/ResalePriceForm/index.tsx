@@ -65,7 +65,10 @@ export const ResalePriceForm = ({
                         placeholder="0.0000"
                         variant="filled"
                         className="w-64 hide-number-input-arrows"
-                        inputProps={{ type: 'number', className: 'p-7 text-right' }}
+                        inputProps={{
+                            type: 'number',
+                            className: 'p-7 text-right bg-white rounded-4 border-1 border-solid border-gray-300',
+                        }}
                         value={resalePriceInputValue}
                         onChange={handleResaleTariffChange}
                     />
