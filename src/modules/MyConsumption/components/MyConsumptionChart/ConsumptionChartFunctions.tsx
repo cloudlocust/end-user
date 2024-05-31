@@ -4,6 +4,7 @@ import { IMetric, metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { metricRangeType } from 'src/modules/Metrics/Metrics'
 import { equipmentType, installationInfosType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * Check the presence of value in the given datapoints of metrics on each time point.
@@ -171,27 +172,31 @@ export const getMessageOfSuccessiveMissingDataOfCurrentDay = (
 /**
  * Function to check whether the resale price form should be shown or not.
  *
+ * @param consumptionToggleButton The current consumption button value.
  * @param equipmentsList The list of equipments.
  * @param installationInfos The installation infos.
  * @returns Boolean indicating whether the resale price form should be shown or not.
  */
 export const checkWhetherResalePriceFormShouldBeShown = (
+    consumptionToggleButton: SwitchConsumptionButtonTypeEnum,
     equipmentsList: equipmentType[] | null,
     installationInfos: installationInfosType | null,
 ): boolean => {
-    if (!equipmentsList || !installationInfos) return false
+    if (
+        consumptionToggleButton !== SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ||
+        !equipmentsList ||
+        !installationInfos
+    )
+        return false
     const solarPanelEquipment = equipmentsList.find((equipment) => equipment.name === 'solarpanel')
-
     // Check if the housing has a solar panel
     const hasSolarPanel = installationInfos.housingEquipments.some(
         (equipment) => equipment.equipmentId === solarPanelEquipment?.id && equipment.equipmentType === 'existant',
     )
     if (!hasSolarPanel) return false
-
     // Check if the housing has a resale contract
     const hasResaleContract = installationInfos.solarInstallation?.hasResaleContract
     if (!hasResaleContract) return false
-
     // Check if the resale tariff is not yet specified
     return (
         installationInfos.solarInstallation?.resaleTariff === null ||
