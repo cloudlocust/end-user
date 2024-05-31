@@ -120,8 +120,8 @@ ConsumptionChartContainerProps) => {
     }, [getInstallationInfos])
 
     const isResalePriceFormShouldBeShown = useMemo(
-        () => checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos),
-        [equipmentsList, installationInfos],
+        () => checkWhetherResalePriceFormShouldBeShown(consumptionToggleButton, equipmentsList, installationInfos),
+        [equipmentsList, installationInfos, consumptionToggleButton],
     )
 
     // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
