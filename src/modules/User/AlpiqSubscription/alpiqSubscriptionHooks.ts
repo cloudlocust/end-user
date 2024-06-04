@@ -100,22 +100,36 @@ export const useAlpiqProvider = () => {
             return
         }
         setLoadingInProgress(true)
-        try {
-            const { data: responseData } = await axios.get<IApliqMonthlySubscriptionEstimationResponse>(
-                `${HOUSING_API}/${housingId}/alpiq/monthly-subscription-estimation?power=${power}&offer_name=${contractType}`,
-            )
 
-            setLoadingInProgress(false)
-            return responseData
-        } catch (error) {
-            enqueueSnackbar(
-                formatMessage({
-                    id: MONTHLY_ESTIMATION_ERROR_MESSAGE,
-                    defaultMessage: MONTHLY_ESTIMATION_ERROR_MESSAGE,
-                }),
-                { variant: 'error' },
-            )
-            setLoadingInProgress(false)
+        // eslint-disable-next-line
+        const fetchData = async (isErrorRaised: boolean) => {
+            try {
+                const { data: responseData } = await axios.get<IApliqMonthlySubscriptionEstimationResponse>(
+                    `${HOUSING_API}/${housingId}/alpiq/monthly-subscription-estimation?power=${power}&offer_name=${contractType}`,
+                )
+                setLoadingInProgress(false)
+                return responseData
+            } catch (error) {
+                if (isErrorRaised) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: MONTHLY_ESTIMATION_ERROR_MESSAGE,
+                            defaultMessage: MONTHLY_ESTIMATION_ERROR_MESSAGE,
+                        }),
+                        { variant: 'error' },
+                    )
+                    setLoadingInProgress(false)
+                }
+            }
+        }
+
+        // Try 3 times, each 10 secondes
+        for (let i = 0; i < 3; i++) {
+            const responseData = await fetchData(i === 2) // raise error if it's the third time
+            if (responseData) {
+                return responseData // If we got a response, return it
+            }
+            if (i < 2) await new Promise((resolve) => setTimeout(resolve, 10000)) // Wait 10 seconds before the next try, if it's last one no waiting
         }
     }
 
