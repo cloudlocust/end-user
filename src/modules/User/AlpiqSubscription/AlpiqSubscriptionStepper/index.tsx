@@ -77,7 +77,8 @@ const AlpiqSubscriptionStepper = () => {
     /**
      * Next Step callback.
      */
-    const handleNext = () => {
+    const handleNext = async () => {
+        if (activeStep === AlpiqSubscriptionStepsEnum.secondStep) await getConsents(currentHousing?.id)
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
     }
 
