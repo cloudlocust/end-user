@@ -11,7 +11,7 @@ import { RootState } from 'src/redux'
 import { Form } from 'src/common/react-platform-components'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import ConsumptionLabelCard from 'src/modules/MyConsumption/components/LabelizationContainer/ConsumptionLabelCard'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { equipmentsOptions } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 import {
     SimplifiedConsumptionChartContainerPropsType,
     addActivityFormFieldsType,
@@ -134,9 +134,8 @@ const SimplifiedConsumptionChartContainer = ({
                     return {
                         labelId: activity.id,
                         equipmentName:
-                            myEquipmentOptions.find(
-                                (option) => option.name === activity.housingEquipment.equipment.name,
-                            )?.labelTitle || activity.housingEquipment.equipment.name,
+                            equipmentsOptions.find((option) => option.name === activity.housingEquipment.equipment.name)
+                                ?.labelTitle || activity.housingEquipment.equipment.name,
                         day: activity.startDate.split('T')[0],
                         startTime: `${hourStartTime}:${minutStartTime}`,
                         endTime: `${hourEndTime}:${minutEndTime}`,

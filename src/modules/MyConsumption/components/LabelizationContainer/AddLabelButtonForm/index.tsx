@@ -13,12 +13,11 @@ import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/Add
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
-import { getAvailableEquipments } from 'src/modules/MyHouse/components/Equipments/utils'
 import {
-    mappingEquipmentNameToType,
-    mapppingEquipmentToLabel,
-    myEquipmentOptions,
-} from 'src/modules/MyHouse/utils/MyHouseVariables'
+    filterAndFormathousingEquipments,
+    getAvailableEquipments,
+} from 'src/modules/MyHouse/components/Equipments/utils'
+import { mapppingEquipmentToLabel } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { IPeriodTime } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
@@ -68,40 +67,12 @@ const AddLabelButtonForm = ({
         isAddEquipmentLoading,
     } = useEquipmentList(currentHousing?.id)
 
-    // TODO: Refactor this to avoid repeating the same code in several places.
-    const mappedHousingEquipmentsList = useMemo(
-        () =>
-            housingEquipmentsList
-                ?.filter(
-                    (housingEquipment) =>
-                        housingEquipment.equipment.allowedType.includes('existant') ||
-                        housingEquipment.equipment.allowedType.includes('electricity'),
-                )
-                ?.map((housingEquipment) => {
-                    const equipmentOption = myEquipmentOptions.find(
-                        (option) => option.name === housingEquipment.equipment.name,
-                    )
-                    return {
-                        id: housingEquipment.equipmentId,
-                        housingEquipmentId: housingEquipment.id,
-                        name: housingEquipment.equipment.name,
-                        equipmentLabel: equipmentOption?.labelTitle || housingEquipment.equipment.name,
-                        iconComponent: equipmentOption?.iconComponent,
-                        allowedType: housingEquipment.equipment.allowedType,
-                        number: housingEquipment.equipmentNumber,
-                        isNumber:
-                            mappingEquipmentNameToType[housingEquipment.equipment.name as equipmentNameType] ===
-                            'number',
-                        measurementModes: housingEquipment.equipment.measurementModes,
-                        customerId: housingEquipment.equipment.customerId,
-                    }
-                })
-                .filter((eq) => eq.number && (eq.isNumber || eq.customerId)),
+    const formatHousingEquipmentsList = useMemo(
+        () => filterAndFormathousingEquipments(housingEquipmentsList),
         [housingEquipmentsList],
     )
 
-    // TODO: fix type for mappedHousingEquipmentsList
-    const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList as any, equipmentsList)
+    const availableEquipments = getAvailableEquipments(formatHousingEquipmentsList, equipmentsList)
 
     /**
      * Reset the form fields.
@@ -172,12 +143,12 @@ const AddLabelButtonForm = ({
         if (addedEquipmentId !== null) {
             setValue(
                 'housingEquipmentId',
-                mappedHousingEquipmentsList?.find((housingEquipment) => housingEquipment.id === addedEquipmentId)
+                formatHousingEquipmentsList?.find((housingEquipment) => housingEquipment.id === addedEquipmentId)
                     ?.housingEquipmentId ?? '',
             )
             setAddedEquipmentId(null)
         }
-    }, [addedEquipmentId, mappedHousingEquipmentsList, setValue])
+    }, [addedEquipmentId, formatHousingEquipmentsList, setValue])
 
     /**
      * Get the index of the label.
@@ -275,7 +246,7 @@ const AddLabelButtonForm = ({
                                     'data-testid': 'housing-equipment-select-input',
                                 }}
                             >
-                                {mappedHousingEquipmentsList?.map((housingEquipment) => (
+                                {formatHousingEquipmentsList?.map((housingEquipment) => (
                                     <MenuItem
                                         key={housingEquipment.housingEquipmentId}
                                         value={housingEquipment.housingEquipmentId}
