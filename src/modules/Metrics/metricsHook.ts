@@ -9,11 +9,13 @@ import {
     metricFiltersType,
     metricTargetType,
     getMetricsWithParamsType,
+    metricHistoryTargetsEnum,
 } from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
+import { getOptimalTargets, reverseTargetHistoryMapping } from 'src/modules/Metrics/metricsFunctions'
 
 /**
  * Get Metrics Error Message.
@@ -60,19 +62,24 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
     const getMetrics = useCallback(async () => {
         setIsMetricsLoading(true)
         try {
-            const response = await axios.post(
+            const { data: metricsData } = await axios.post<IMetric[]>(
                 METRICS_API,
                 {
                     interval: metricsInterval,
                     range,
-                    targets,
+                    targets: getOptimalTargets(targets, metricsInterval),
                     adhocFilters: filters,
                 },
                 {
                     cancelToken: source.current.token,
                 },
             )
-            setData(response.data)
+            setData(
+                metricsData.map((metric) => ({
+                    ...metric,
+                    target: reverseTargetHistoryMapping[metric.target as metricHistoryTargetsEnum] ?? metric.target,
+                })),
+            )
         } catch (error) {
             if (isCancel(error)) return
             enqueueSnackbar(
@@ -118,6 +125,7 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
             })
         }
     }
+
     /**
      * Remove a target in the metrics request.
      *
@@ -141,16 +149,20 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
             setIsMetricsLoading(true)
             const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
             try {
-                const response = await axios.post(METRICS_API, {
+                const { data: metricsData } = await axios.post<IMetric[]>(METRICS_API, {
                     interval: params.interval,
                     range: params.range,
-                    targets: targetsBody,
+                    targets: getOptimalTargets(targetsBody, params.interval),
                     adhocFilters: params.filters,
                 })
+                const metricDataWithoutHistoryTargets = metricsData.map((metric) => ({
+                    ...metric,
+                    target: reverseTargetHistoryMapping[metric.target as metricHistoryTargetsEnum] ?? metric.target,
+                }))
                 if (isSettingData) {
-                    setData(response.data)
+                    setData(metricDataWithoutHistoryTargets)
                 }
-                return response.data
+                return metricDataWithoutHistoryTargets
             } catch (error) {
                 enqueueSnackbar(
                     formatMessage({

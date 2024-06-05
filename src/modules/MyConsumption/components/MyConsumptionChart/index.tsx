@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
-import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
+import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/metricsFunctions'
 import { useTheme } from '@mui/material/styles'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
 import {

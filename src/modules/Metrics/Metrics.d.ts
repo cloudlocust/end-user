@@ -45,6 +45,16 @@ export type metricTargetType =
     | '__euros__hc_jour_blanc_consumption_metrics'
 
 /**
+ * Metric History Targets.
+ */
+export type metricHistoryTargetType =
+    | 'consumption_metrics_history'
+    | '__euros__consumption_metrics_history'
+    | 'idle_consumption_history'
+    | 'consumption_metrics_history_by_tariff_component'
+    | '__euros__consumption_metrics_history_by_tariff_component'
+
+/**
  * Enum representing the metricTarget without exposing the backend naming.
  */
 export enum metricTargetsEnum {
@@ -297,6 +307,32 @@ export enum metricTargetsEnum {
      * Only euro consumption metrics.
      */
     onlyEuroConsumption = 'only_euro_consumption_metrics',
+}
+
+/**
+ * Enum representing the metric History Targets without exposing the backend naming.
+ */
+export enum metricHistoryTargetsEnum {
+    /**
+     * Enum value for the history version of the target consumption_metrics.
+     */
+    consumptionHistory = 'consumption_metrics_history',
+    /**
+     * Enum value for the history version of the target __euros__consumption_metrics.
+     */
+    eurosConsumptionHistory = '__euros__consumption_metrics_history',
+    /**
+     * Enum value for the history version of the target idle_consumption.
+     */
+    idleConsumptionHistory = 'idle_consumption_history',
+    /**
+     * Enum value for the history version of the target consumption_metrics_by_tariff_component.
+     */
+    consumptionHistoryByTariffComponent = 'consumption_metrics_history_by_tariff_component',
+    /**
+     * Enum value for the history version of the target __euros__consumption_metrics_by_tariff_component.
+     */
+    euroConsumptionHistoryByTariffComponent = '__euros__consumption_metrics_history_by_tariff_component',
 }
 
 /**

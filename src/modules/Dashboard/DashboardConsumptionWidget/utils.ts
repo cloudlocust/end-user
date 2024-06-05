@@ -1,5 +1,5 @@
 import { IMetric } from 'src/modules/Metrics/Metrics'
-import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
+import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/metricsFunctions'
 import { getXAxisCategoriesData } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { ApexOptions } from 'apexcharts'
 import { convertConsumptionToWatt } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
