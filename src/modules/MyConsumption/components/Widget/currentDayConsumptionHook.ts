@@ -49,8 +49,13 @@ export const useCurrentDayConsumption = (housingId?: number) => {
             if (status === 200) {
                 setCurrentDayConsumption(consumption.consumption)
                 setCurrentDayAutoConsumption(consumption.autoConsumption)
+            } else {
+                setCurrentDayConsumption(null)
+                setCurrentDayAutoConsumption(null)
             }
         } catch (error) {
+            setCurrentDayConsumption(null)
+            setCurrentDayAutoConsumption(null)
         } finally {
             setIsGetCurrentDayConsumptionLoading(false)
         }
@@ -65,8 +70,11 @@ export const useCurrentDayConsumption = (housingId?: number) => {
             )
             if (status === 200) {
                 setCurrentDayEuroConsumption(euroConsumption.euroConsumption)
+            } else {
+                setCurrentDayEuroConsumption(null)
             }
         } catch (error) {
+            setCurrentDayEuroConsumption(null)
         } finally {
             setIsGetCurrentDayEuroConsumptionLoading(false)
         }
