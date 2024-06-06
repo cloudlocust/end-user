@@ -46,7 +46,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
+    const { consumptionToggleButton } = useMyConsumptionStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -87,11 +87,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         if (!currentHousing?.id) return
         setFilters(formatMetricFilter(currentHousing?.id))
         getConsents(currentHousing?.id)
-
-        return () => {
-            resetToDefault()
-        }
-    }, [setFilters, getConsents, currentHousing?.id, resetToDefault])
+    }, [setFilters, getConsents, currentHousing?.id])
 
     useEffect(() => {
         loadConnectedPlugList()

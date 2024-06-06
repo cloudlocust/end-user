@@ -14,66 +14,95 @@ jest.mock('notistack', () => ({
 }))
 
 describe('Testing useAccomodation hooks', () => {
-    test('updateAccomodation. Request success and isLoadingInProgress should change following request state', async () => {
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useAccomodation(1), {
-            initialState: {},
+    describe('Testing updateAccomodation Request', () => {
+        test('Request (updateAccomodation) success and isLoadingInProgress should change following request state', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useAccomodation(1), {
+                initialState: {},
+            })
+            act(async () => {
+                try {
+                    await result.current.updateAccomodation({
+                        houseType: 'Appartement',
+                    })
+                } catch (error) {}
+            })
+            expect(result.current.isLoadingInProgress).toBe(true)
+            await waitForValueToChange(
+                () => {
+                    return result.current.isLoadingInProgress
+                },
+                { timeout: 10000 },
+            )
+            expect(result.current.isLoadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Vos modifications ont été sauvegardées', {
+                variant: 'success',
+            })
         })
-        act(async () => {
-            try {
-                await result.current.updateAccomodation({
-                    houseType: 'Appartement',
-                })
-            } catch (error) {}
-        })
-        expect(result.current.isLoadingInProgress).toBe(true)
-        await waitForValueToChange(
-            () => {
-                return result.current.isLoadingInProgress
-            },
-            { timeout: 10000 },
-        )
-        expect(result.current.isLoadingInProgress).toBe(false)
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Vos modifications ont été sauvegardées', {
-            variant: 'success',
+        test('Request (updateAccomodation) error and isLoadingInProgress should change following request state', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useAccomodation(1), {
+                initialState: {},
+            })
+            act(async () => {
+                try {
+                    await result.current.updateAccomodation(1, { houseType: 'Maison' })
+                } catch (error) {}
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.isLoadingInProgress
+                },
+                { timeout: 10000 },
+            )
+            expect(result.current.isLoadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Une erreur s'est produite.", {
+                variant: 'error',
+            })
         })
     })
-    test('updateAccomodation. Request error and isLoadingInProgress should change following request state', async () => {
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useAccomodation(1), {
-            initialState: {},
+    describe('Testing loadAccomodation Request', () => {
+        test('Request (loadAccomodation) success', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useAccomodation(1), { initialState: {} })
+            act(() => {
+                result.current.loadAccomodation(TEST_METERS[0].id)
+            })
+            await waitForValueToChange(
+                () => {
+                    return result.current.isLoadingInProgress
+                },
+                { timeout: 10000 },
+            )
+            expect(result.current.isLoadingInProgress).toBe(false)
         })
-        act(async () => {
-            try {
-                await result.current.updateAccomodation(1, { houseType: 'Maison' })
-            } catch (error) {}
+        test('Request (loadAccomodation) failed', async () => {
+            const { store } = require('src/redux')
+            await store.dispatch.userModel.setAuthenticationToken('failed')
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useAccomodation(1), { initialState: {} })
+
+            act(() => {
+                result.current.loadAccomodation(TEST_METERS[0].id)
+            })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.isLoadingInProgress
+                },
+                { timeout: 10000 },
+            )
+            expect(result.current.isLoadingInProgress).toBe(false)
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'Une erreur est survenue lors de la récupération des informations domicile.',
+                {
+                    variant: 'error',
+                },
+            )
         })
-        await waitForValueToChange(
-            () => {
-                return result.current.isLoadingInProgress
-            },
-            { timeout: 10000 },
-        )
-        expect(result.current.isLoadingInProgress).toBe(false)
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Une erreur s'est produite.", {
-            variant: 'error',
-        })
-    })
-    test('loadAccomodation. Request success', async () => {
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useAccomodation(1), { initialState: {} })
-        act(() => {
-            result.current.loadAccomodation(TEST_METERS[0].id)
-        })
-        await waitForValueToChange(
-            () => {
-                return result.current.isLoadingInProgress
-            },
-            { timeout: 10000 },
-        )
-        expect(result.current.isLoadingInProgress).toBe(false)
     })
 })

@@ -17,6 +17,10 @@ export const TEST_ACCOMODATION_RESPONSE = {
 export const accomodationEndpoints = [
     // Get All Meters
     rest.get(ACCOMODATION_API(TEST_METERS[0].id), (_req, res, ctx) => {
+        const authorization = _req.headers.get('authorization')
+        if (authorization && authorization === 'failed') {
+            return res(ctx.status(400), ctx.delay(1000))
+        }
         return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_ACCOMODATION_RESPONSE))
     }),
 

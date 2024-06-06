@@ -81,8 +81,12 @@ export function useAccomodation(housingId?: number) {
             }
             enqueueSnackbar(
                 formatMessage({
-                    id: error.response.data.detail,
-                    defaultMessage: error.response.data.detail,
+                    id:
+                        error.response.data.detail ??
+                        'Une erreur est survenue lors de la récupération des informations domicile.',
+                    defaultMessage:
+                        error.response.data.detail ??
+                        'Une erreur est survenue lors de la récupération des informations domicile.',
                 }),
                 { variant: 'error' },
             )

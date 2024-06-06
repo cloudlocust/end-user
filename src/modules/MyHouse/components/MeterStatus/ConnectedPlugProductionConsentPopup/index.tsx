@@ -11,7 +11,9 @@ import { useHistory } from 'react-router-dom'
 import { useShellyConnectedPlugs } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import SelectConnectedPlugProductionList from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup/SelectConnectedPlugProductionList'
 import { IConnectedPlugProductionConsentPopupProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * ConnectedPlugProductionConsentPopup Page Component.
@@ -23,6 +25,7 @@ import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProductionConsentPopupProps) => {
     const { formatMessage } = useIntl()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { setConsumptionToggleButton } = useMyConsumptionStore()
 
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
@@ -82,7 +85,11 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                                 currentHousing!.id,
                                 currentHousing?.meter?.guid,
                             )
-                            if (isSuccessResponse) history.push(`${URL_MY_HOUSE}/${currentHousing?.id}/connected-plugs`)
+                            if (isSuccessResponse) {
+                                onClose && onClose()
+                                setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
+                                history.push(URL_CONSUMPTION)
+                            }
                         }}
                         connectedPlugList={connectedPlugList}
                     />
