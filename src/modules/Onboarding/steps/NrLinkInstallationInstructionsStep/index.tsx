@@ -4,8 +4,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { Step } from 'src/modules/Onboarding/components/Step'
 import { NrLinkInstallationInstructionsStepProps } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep/NrLinkInstallationInstructionsStep.types'
 import meterNrlinkInstallation from 'src/assets/images/content/onboarding/meterNrlinkInstallation.png'
-
-const primaryMainColor = 'primary.main'
+import { primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 
 /**
  * NrLinkInstallationInstructionsStep step used to help users to setup their nrlink device on the meter.

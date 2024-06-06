@@ -7,8 +7,7 @@ import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
 import { SolarProductionConnectionStepProps } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep/SolarProductionConnectionStep.types'
 import { useModal } from 'src/hooks/useModal'
-
-const primaryLightColor = 'primary.light'
+import { primaryLightColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 
 /**
  * SolarProductionConnectionStep step to link the solar panels installation using shelly plugs & enphase.
@@ -48,7 +47,7 @@ export const SolarProductionConnectionStep = ({
             })}
             content={
                 <>
-                    <Typography variant="subtitle1" className="self-start mt-24" sx={{ color: 'primary.main' }}>
+                    <Typography variant="subtitle1" className="self-start mt-24" sx={{ color: primaryMainColor }}>
                         {formatMessage({
                             id: 'Avez-vous une installation solaire avec des identifiants Enphase ou une prise connectée Shelly plug S ?',
                             defaultMessage:
@@ -93,7 +92,7 @@ export const SolarProductionConnectionStep = ({
                     {/* <Button
                         variant="contained"
                         className="self-start text-left mt-12 mb-72 rounded-4"
-                        sx={{ backgroundColor: 'grey.500', '&:hover': { backgroundColor: 'grey.500', opacity: 0.7 } }}
+                        sx={{ backgroundColor: greyTitleColor, '&:hover': { backgroundColor: greyTitleColor, opacity: 0.7 } }}
                         disableElevation={true}
                         disableRipple={true}
                     >

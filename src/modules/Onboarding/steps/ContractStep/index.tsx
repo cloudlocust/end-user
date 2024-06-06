@@ -8,6 +8,7 @@ import { useContractList } from 'src/modules/Contracts/contractsHook'
 import { useState } from 'react'
 import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/ContractStep.types'
 import { useContractDetails } from 'src/modules/Contracts/contractsHook'
+import { greyTitleColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 
 /**
  * Contract step in nrLink connection.
@@ -76,13 +77,13 @@ export const ContractStep = ({ onNext, housingId, isHideOnboardingInProgress }: 
             )}
             content={
                 <>
-                    <Typography variant="subtitle1" className="mt-24 self-start" sx={{ color: 'primary.main' }}>
+                    <Typography variant="subtitle1" className="mt-24 self-start" sx={{ color: primaryMainColor }}>
                         {formatMessage({
                             id: 'Pour afficher votre consommation en € choisissez votre contrat :',
                             defaultMessage: 'Pour afficher votre consommation en € choisissez votre contrat :',
                         })}
                     </Typography>
-                    <Typography variant="subtitle2" className="mt-5" sx={{ color: 'grey.500' }}>
+                    <Typography variant="subtitle2" className="mt-5" sx={{ color: greyTitleColor }}>
                         {formatMessage({
                             id: 'Toutes les informations nécessaires sont disponibles sur votre facture ou votre contrat d’électricité.',
                             defaultMessage:

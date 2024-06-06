@@ -16,6 +16,7 @@ import {
 import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
 import { EnedisDistributorClientDialog } from 'src/modules/Onboarding/steps/MeterConnectionStep/components/EnedisDistributorClientDialog'
 import { useState } from 'react'
+import { greyTitleColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 
 /**
  * MeterConnectionStep component use it to set meter guid & accept the enedis consent.
@@ -120,7 +121,7 @@ export const MeterConnectionStep = ({
                         enedisSgeConsentStatus: enedisSgeConsent?.enedisSgeConsentState === 'CONNECTED',
                     }}
                 >
-                    <Typography variant="subtitle1" className="mt-76" sx={{ color: 'primary.main' }}>
+                    <Typography variant="subtitle1" className="mt-76" sx={{ color: primaryMainColor }}>
                         {formatMessage({
                             id: 'Pour lier votre logement à l’application, saisissez ici votre N° de PDL :',
                             defaultMessage: 'Pour lier votre logement à l’application, saisissez ici votre N° de PDL :',
@@ -137,7 +138,7 @@ export const MeterConnectionStep = ({
                         fullWidth={true}
                         disabled={isAlpiqSubscriptionForm}
                     />
-                    <Typography variant="body2" className="mt-3" sx={{ color: 'grey.500' }}>
+                    <Typography variant="body2" className="mt-3" sx={{ color: greyTitleColor }}>
                         {formatMessage({
                             id: 'Votre N° PDL (point de livraison) est visible sur votre facture d’électricité ou sur votre compteur',
                             defaultMessage:
@@ -148,7 +149,7 @@ export const MeterConnectionStep = ({
                     <Checkbox
                         name="enedisSgeConsentStatus"
                         label={
-                            <Typography variant="body1" className="mt-6" sx={{ color: 'primary.main' }}>
+                            <Typography variant="body1" className="mt-6" sx={{ color: primaryMainColor }}>
                                 {formatMessage({
                                     id: 'Pour sortir les 3 dernières années données de votre Linky du placard et bénéficier de toutes nos fonctionnalités, j’autorise l’accès à mon historique de consommation.',
                                     defaultMessage:
@@ -187,7 +188,7 @@ export const MeterConnectionStep = ({
                     >
                         <img src="" className="rounded-32" alt="meter guid" />
                     </motion.div> */}
-                    <Typography variant="subtitle1" className="mt-16 mb-52" sx={{ color: 'grey.500' }}>
+                    <Typography variant="subtitle1" className="mt-16 mb-52" sx={{ color: greyTitleColor }}>
                         {formatMessage(
                             {
                                 id: '{icon} Chez nous, vos données sont gardées sous haute tension, pas de court-circuit de confidentialité ici ! Ni partagées, ni vendues !',

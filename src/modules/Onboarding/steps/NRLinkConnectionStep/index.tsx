@@ -15,6 +15,7 @@ import {
     NRLinkFormSubmitParams,
 } from 'src/modules/Onboarding/steps/NRLinkConnectionStep/NRLinkConnectionStep.types'
 import nlinkGuid from 'src/assets/images/content/onboarding/nlinkGuid.png'
+import { greyTitleColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 
 const GUID_FIXED_PART = '0CA2F40000'
 
@@ -114,7 +115,7 @@ export const NRLinkConnectionStep = ({ housingId, nrlinkConsent, onNext }: NRLin
                     }}
                     style={{ display: 'inherit', flexDirection: 'inherit', alignItems: 'inherit' }}
                 >
-                    <Typography variant="subtitle1" className="mt-44" sx={{ color: 'primary.main' }}>
+                    <Typography variant="subtitle1" className="mt-44" sx={{ color: primaryMainColor }}>
                         {formatMessage({
                             id: 'Afin de suivre votre consommation électrique à la minute dans l’application, saisissez ici les derniers caractères du N° de votre nrLINK :',
                             defaultMessage:
@@ -122,7 +123,7 @@ export const NRLinkConnectionStep = ({ housingId, nrlinkConsent, onNext }: NRLin
                         })}
                     </Typography>
                     <div className="flex items-baseline w-full justify-center mt-6" ref={containerRef}>
-                        <Typography variant="subtitle1" className="text-center mt-12" sx={{ color: 'primary.main' }}>
+                        <Typography variant="subtitle1" className="text-center mt-12" sx={{ color: primaryMainColor }}>
                             {GUID_FIXED_PART}
                         </Typography>
                         <TextField
@@ -150,7 +151,7 @@ export const NRLinkConnectionStep = ({ housingId, nrlinkConsent, onNext }: NRLin
                             }}
                         />
                     </div>
-                    <Typography variant="subtitle1" className="text-center mt-4" sx={{ color: 'grey.500' }}>
+                    <Typography variant="subtitle1" className="text-center mt-4" sx={{ color: greyTitleColor }}>
                         {formatMessage({
                             id: 'Votre N° de nrLINK se trouve en dessous de l’écran.',
                             defaultMessage: 'Votre N° de nrLINK se trouve en dessous de l’écran.',

@@ -5,6 +5,7 @@ import { useIntl } from 'src/common/react-platform-translation'
 import { Step } from 'src/modules/Onboarding/components/Step'
 import { WelcomeIcon } from 'src/modules/Onboarding/components/WelcomeIcon'
 import { IntroductionStepProps } from 'src/modules/Onboarding/steps/IntroductionStep/IntroductionStep.types'
+import { primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 /**
  * Introduction step used to greeting the user.
  *
@@ -24,14 +25,14 @@ export const IntroductionStep = ({ onNext }: IntroductionStepProps) => {
                     <Typography
                         variant="h6"
                         className="font-semibold text-center text-18 sm:text-26 mt-10"
-                        sx={{ color: 'primary.main' }}
+                        sx={{ color: primaryMainColor }}
                     >
                         {formatMessage(
                             { id: 'Bienvenue {name}', defaultMessage: 'Bienvenue {name}' },
                             { name: user!.firstName },
                         )}
                     </Typography>
-                    <Typography variant="subtitle1" className="text-center mt-20" sx={{ color: 'primary.main' }}>
+                    <Typography variant="subtitle1" className="text-center mt-20" sx={{ color: primaryMainColor }}>
                         {formatMessage({
                             id: 'Nous sommes ravis de vous compter parmi les utitisateurs du nrLINK!',
                             defaultMessage: 'Nous sommes ravis de vous compter parmi les utitisateurs du nrLINK!',
