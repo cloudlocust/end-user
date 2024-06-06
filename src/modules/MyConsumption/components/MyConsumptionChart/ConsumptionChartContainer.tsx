@@ -130,23 +130,31 @@ export const ConsumptionChartContainer = ({
     /*
      ********************************************************* Hooks: **********************************************************
      */
-    const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [],
-        filters,
-    })
+    const { data, getMetricsWithParams, isMetricsLoading } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [],
+            filters,
+        },
+        false,
+        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period),
+    )
     // now we used this hooks to get some data used to calculate total cost + total consumption.
     const {
         data: additionalMetricsData,
         getMetricsWithParams: getAdditionalMetricsWithParams,
         isMetricsLoading: isAdditionalMetricsLoading,
-    } = useAdditionalMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [],
-        filters,
-    })
+    } = useAdditionalMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [],
+            filters,
+        },
+        false,
+        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period),
+    )
 
     /*
      ********************************************************* States: **********************************************************

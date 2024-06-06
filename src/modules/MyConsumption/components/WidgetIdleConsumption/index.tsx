@@ -14,6 +14,7 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Grid, Card, CircularProgress, useTheme } from '@mui/material'
 import { DEFAULT_NO_VALUE_MESSAGE } from 'src/modules/MyConsumption/components/Widget'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: '' }
 
@@ -28,32 +29,40 @@ const WidgetIdleConsumption = (props: IWidgetProps) => {
     const target = targets[0]
     const theme = useTheme()
 
-    const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics({
-        interval: metricsInterval,
-        range: getWidgetRange(range, period),
-        targets: [
-            {
-                target: target,
-                type: 'timeserie',
-            },
-        ],
-        filters,
-    })
+    const { data, setMetricsInterval, setRange, isMetricsLoading } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: getWidgetRange(range, period),
+            targets: [
+                {
+                    target: target,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        false,
+        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+    )
     const {
         data: oldData,
         setMetricsInterval: setMetricsIntervalPrevious,
         setRange: setRangePrevious,
-    } = useMetrics({
-        interval: metricsInterval,
-        range: getWidgetPreviousRange(getWidgetRange(range, period), period),
-        targets: [
-            {
-                target: target,
-                type: 'timeserie',
-            },
-        ],
-        filters,
-    })
+    } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+            targets: [
+                {
+                    target: target,
+                    type: 'timeserie',
+                },
+            ],
+            filters,
+        },
+        false,
+        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+    )
 
     useEffect(() => {
         setMetricsInterval('1d')

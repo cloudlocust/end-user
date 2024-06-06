@@ -90,7 +90,12 @@ describe('useMetrics hook test', () => {
         })
     }, 8000)
     test('When add and remove target, targets should change and getMetrics should work', async () => {
-        mockHookArguments.targets = []
+        mockHookArguments.targets = [
+            {
+                target: '__euros__consumption_metrics',
+                type: 'timeserie',
+            },
+        ]
         mockHookArguments.interval = '1m'
         mockHookArguments.range = getRange('day')
         const {
@@ -105,7 +110,7 @@ describe('useMetrics hook test', () => {
             { timeout: 4000 },
         )
         expect(result.current.isMetricsLoading).toBeFalsy()
-        expect(result.current.data.length).toBe(0)
+        expect(result.current.data.length).toBe(1)
         // Add Target
         act(() => {
             result.current.addTarget(FAKE_TARGETS[0].target)
@@ -117,7 +122,7 @@ describe('useMetrics hook test', () => {
             { timeout: 8000 },
         )
         expect(result.current.data.length).toBeGreaterThan(0)
-        expect(result.current.data[0].target).toBe(FAKE_TARGETS[0].target)
+        expect(result.current.data[1].target).toBe(FAKE_TARGETS[0].target)
         // Remove target
         act(() => {
             result.current.removeTarget(FAKE_TARGETS[0].target)
@@ -128,7 +133,7 @@ describe('useMetrics hook test', () => {
             },
             { timeout: 8000 },
         )
-        expect(result.current.data.length).toBe(0)
+        expect(result.current.data.length).toBe(1)
     }, 30000)
     describe('Test getMetricsWithParams', () => {
         test('success', async () => {

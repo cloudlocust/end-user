@@ -93,7 +93,7 @@ export const reverseTargetHistoryMapping: Record<metricHistoryTargetsEnum, metri
  * @returns Metric Targets to use.
  */
 export const getOptimalTargets = (targets: metricTargetsType, metricsInterval: metricIntervalType) => {
-    if (['1d', '1M'].includes(metricsInterval)) {
+    if (['30m', '1d', '1M'].includes(metricsInterval)) {
         return targets.map((target) => ({
             ...target,
             target:

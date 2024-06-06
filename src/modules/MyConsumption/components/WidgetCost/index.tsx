@@ -14,6 +14,7 @@ import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: '' }
 const parisTimeZone = 'Europe/Paris'
@@ -37,17 +38,21 @@ export const WidgetCost = (props: IWidgetProps) => {
         [getMetricsWidgetsData, props.targets],
     )
 
-    const { data, setData, setMetricsInterval, setRange } = useMetrics({
-        interval: metricsInterval,
-        range: getWidgetRange(range, period),
-        targets: [
-            {
-                target: metricTargetsEnum.subscriptionPrices,
-                type: 'timeserie',
-            },
-        ],
-        filters: filters,
-    })
+    const { data, setData, setMetricsInterval, setRange } = useMetrics(
+        {
+            interval: ['1m', '30m'].includes(metricsInterval) ? '1d' : metricsInterval,
+            range: getWidgetRange(range, period),
+            targets: [
+                {
+                    target: metricTargetsEnum.subscriptionPrices,
+                    type: 'timeserie',
+                },
+            ],
+            filters: filters,
+        },
+        false,
+        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+    )
 
     const isRangeChanged = useRef(false)
 

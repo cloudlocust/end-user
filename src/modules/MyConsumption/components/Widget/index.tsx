@@ -21,6 +21,7 @@ import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/u
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 const emptyValueUnit = { value: 0, unit: '' }
 
 /**
@@ -73,29 +74,37 @@ export const Widget = memo(
 
         const isCurrentDayRange = useMemo(() => checkIfItIsCurrentDayRange(period, range.from), [period, range.from])
 
-        const { data, setMetricsInterval, getMetricsWithParams, setRange, isMetricsLoading } = useMetrics({
-            interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
-            range: getWidgetRange(range, period),
-            targets: targets.map((target) => ({
-                target: target,
-                type: 'timeserie',
-            })),
-            filters,
-        })
+        const { data, setMetricsInterval, getMetricsWithParams, setRange, isMetricsLoading } = useMetrics(
+            {
+                interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
+                range: getWidgetRange(range, period),
+                targets: targets.map((target) => ({
+                    target: target,
+                    type: 'timeserie',
+                })),
+                filters,
+            },
+            false,
+            [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+        )
         const {
             data: oldData,
             setMetricsInterval: setMetricsIntervalPrevious,
             getMetricsWithParams: getMetricsWithParamsPrevious,
             setRange: setRangePrevious,
-        } = useMetrics({
-            interval: isConsumptionTarget ? '1d' : metricsInterval,
-            range: getWidgetPreviousRange(getWidgetRange(range, period), period),
-            targets: targets.map((target) => ({
-                target: target,
-                type: 'timeserie',
-            })),
-            filters,
-        })
+        } = useMetrics(
+            {
+                interval: isConsumptionTarget ? '1d' : metricsInterval,
+                range: getWidgetPreviousRange(getWidgetRange(range, period), period),
+                targets: targets.map((target) => ({
+                    target: target,
+                    type: 'timeserie',
+                })),
+                filters,
+            },
+            false,
+            [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+        )
 
         const { storeWidgetMetricsData, currentRangeMetricWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
 

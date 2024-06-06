@@ -90,12 +90,35 @@ describe('getTotalOffIdleConsumptionData test with different cases', () => {
 })
 
 describe('getOptimalTargets', () => {
+    test('should return the optimal targets when interval is 30m', () => {
+        const targets: metricTargetsType = [
+            { target: metricTargetsEnum.consumption, type: 'timeserie' },
+            { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
+            { target: metricTargetsEnum.eurosConsumption, type: 'timeserie' },
+            { target: metricTargetsEnum.idleConsumption, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
+        ]
+
+        const result = getOptimalTargets(targets, '30m')
+
+        const expected = [
+            { target: metricHistoryTargetsEnum.consumptionHistory, type: 'timeserie' },
+            { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
+            { target: metricHistoryTargetsEnum.eurosConsumptionHistory, type: 'timeserie' },
+            { target: metricHistoryTargetsEnum.idleConsumptionHistory, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
+        ]
+
+        expect(result).toEqual(expected)
+    })
+
     test('should return the optimal targets when interval is 1d', () => {
         const targets: metricTargetsType = [
             { target: metricTargetsEnum.consumption, type: 'timeserie' },
             { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
             { target: metricTargetsEnum.eurosConsumption, type: 'timeserie' },
             { target: metricTargetsEnum.idleConsumption, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
         ]
 
         const result = getOptimalTargets(targets, '1d')
@@ -105,6 +128,7 @@ describe('getOptimalTargets', () => {
             { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
             { target: metricHistoryTargetsEnum.eurosConsumptionHistory, type: 'timeserie' },
             { target: metricHistoryTargetsEnum.idleConsumptionHistory, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
         ]
 
         expect(result).toEqual(expected)
@@ -116,6 +140,7 @@ describe('getOptimalTargets', () => {
             { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
             { target: metricTargetsEnum.eurosConsumption, type: 'timeserie' },
             { target: metricTargetsEnum.idleConsumption, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
         ]
 
         const result = getOptimalTargets(targets, '1M')
@@ -125,6 +150,7 @@ describe('getOptimalTargets', () => {
             { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
             { target: metricHistoryTargetsEnum.eurosConsumptionHistory, type: 'timeserie' },
             { target: metricHistoryTargetsEnum.idleConsumptionHistory, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
         ]
 
         expect(result).toEqual(expected)
@@ -136,22 +162,10 @@ describe('getOptimalTargets', () => {
             { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
             { target: metricTargetsEnum.eurosConsumption, type: 'timeserie' },
             { target: metricTargetsEnum.idleConsumption, type: 'timeserie' },
+            { target: metricTargetsEnum.internalTemperature, type: 'timeserie' },
         ]
 
         const result = getOptimalTargets(targets, '1m')
-
-        expect(result).toEqual(targets)
-    })
-
-    test('should return the same targets when interval is 30m', () => {
-        const targets: metricTargetsType = [
-            { target: metricTargetsEnum.consumption, type: 'timeserie' },
-            { target: metricTargetsEnum.totalProduction, type: 'timeserie' },
-            { target: metricTargetsEnum.eurosConsumption, type: 'timeserie' },
-            { target: metricTargetsEnum.idleConsumption, type: 'timeserie' },
-        ]
-
-        const result = getOptimalTargets(targets, '30m')
 
         expect(result).toEqual(targets)
     })
