@@ -67,3 +67,19 @@ export type ITariffType =
  * Type of power.
  */
 export type IPower = number
+
+
+/**
+ * Commercial offer model.
+ */
+//eslint-disable-next-line jsdoc/require-jsdoc
+export type ICustomProvider = {
+    /**
+     * Name of the provider.
+     */
+    name: string
+    /**
+     * Id of the housing.
+     */
+    networkIdentifier: number
+}

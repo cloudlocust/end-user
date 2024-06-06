@@ -14,7 +14,14 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
 import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
-import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
+import {
+    IContractType,
+    ICustomProvider,
+    IOffer,
+    IPower,
+    IProvider,
+    ITariffType,
+} from 'src/hooks/CommercialOffer/CommercialOffers.d'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isNil, isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -26,6 +33,7 @@ import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/Contrac
 import { isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
 import TariffsContract from 'src/modules/Contracts/components/TariffsContract'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import ContractOtherField from 'src/modules/Contracts/components/ContractOtherField'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -121,6 +129,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         isPowersLoading,
         isProvidersLoading,
         isTariffTypesLoading,
+        createCustomProvider,
+        isCreateCustomProviderLoading,
     } = useCommercialOffer()
     const { formatMessage } = useIntl()
     // Track if the user originally had a deprecated offer.
@@ -220,26 +230,37 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                         validateFunctions={[requiredBuilder()]}
                         onChange={(e) => onSelectChange(e, ['contractTypeId'])}
                     />
-                    <OtherProviderOfferOptionMessage isShowMessage={formData.providerId === -1} />
                 </>
             )}
-            {Number(formData.providerId) > 0 && (
-                <>
-                    <ContractFormSelect<IOffer>
-                        formatOptionLabel={(option) => option.name}
-                        formatOptionValue={(option) => option.id}
-                        isOptionsInProgress={isOffersLoading}
-                        loadOptions={loadOfferOptions}
-                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
-                        optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
-                        name="offerId"
-                        label="Offre"
-                        validateFunctions={[requiredBuilder()]}
-                        onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
-                    />
-                    <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
-                </>
+            {/* When "Autre fournisseur" is selected */}
+            {Number(formData.providerId) === -1 && (
+                <ContractOtherField<ICustomProvider>
+                    name="name"
+                    label="Votre fournisseur"
+                    buttonAction={createCustomProvider as any}
+                    buttonLoading={isCreateCustomProviderLoading}
+                    buttonLabel="Créer le fournisseur"
+                    validateFunctions={[requiredBuilder()]}
+                />
             )}
+            {Number(formData.providerId) === -1 ||
+                (Number(formData.providerId) > 0 && (
+                    <>
+                        <ContractFormSelect<IOffer>
+                            formatOptionLabel={(option) => option.name}
+                            formatOptionValue={(option) => option.id}
+                            isOptionsInProgress={isOffersLoading}
+                            loadOptions={loadOfferOptions}
+                            otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
+                            optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
+                            name="offerId"
+                            label="Offre"
+                            validateFunctions={[requiredBuilder()]}
+                            onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
+                        />
+                        <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
+                    </>
+                ))}
 
             {Number(formData.offerId) > 0 && (
                 <ContractFormSelect<ITariffType>

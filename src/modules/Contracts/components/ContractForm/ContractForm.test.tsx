@@ -272,44 +272,6 @@ describe('Test ContractFormSelect Component', () => {
         })
     }, 30000)
 
-    test('When Selecting OtherProvider option, a message is shown and offer not shown', async () => {
-        const CONTRACT_FORM_FIELDS_LABELS = [...CONTRACT_FORM_FIELDS_LABEL_LIST]
-
-        const { getByText, getByLabelText, getAllByRole } = reduxedRender(<ContractForm {...mockContractFormProps} />)
-
-        // Initially only Type is shown
-        expect(getByLabelText(TYPE_LABEL_TEXT, { exact: false })).toBeTruthy()
-        CONTRACT_FORM_FIELDS_LABELS.shift()
-        await waitFor(() => {
-            expect(mockLoadContractTypes).toHaveBeenCalled()
-        })
-        // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
-
-        // When selecting Type, provider is shown
-        userEvent.click(getByLabelText(TYPE_LABEL_TEXT, { exact: false }))
-        selectOption(getAllByRole)
-        CONTRACT_FORM_FIELDS_LABELS.shift()
-        expect(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false })).toBeTruthy()
-        await waitFor(() => {
-            expect(mockLoadProviders).toHaveBeenCalled()
-        })
-        // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
-
-        // When selecting other provider, message shown and offer not shown
-        userEvent.click(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false }))
-        selectOption(getAllByRole, TEST_PROVIDERS.length)
-        expect(getByText(OTHER_PROVIDER_OFFER_OPTION_MESSAGE, { exact: false })).toBeTruthy()
-        expect(() => getByLabelText(OFFER_LABEL_TEXT, { exact: false })).toThrow()
-        await waitFor(() => {
-            expect(mockLoadOffers).not.toHaveBeenCalled()
-        })
-
-        // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
-    }, 30000)
-
     test('When Selecting OtherOffer option, a message is shown and tariffType not shown', async () => {
         const CONTRACT_FORM_FIELDS_LABELS = [...CONTRACT_FORM_FIELDS_LABEL_LIST]
 
