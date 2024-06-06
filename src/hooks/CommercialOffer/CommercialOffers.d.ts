@@ -68,7 +68,6 @@ export type ITariffType =
  */
 export type IPower = number
 
-
 /**
  * Commercial offer model.
  */
