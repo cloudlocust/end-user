@@ -88,7 +88,7 @@ export const Widget = memo(
             getMetricsWithParams: getMetricsWithParamsPrevious,
             setRange: setRangePrevious,
         } = useMetrics({
-            interval: isConsumptionTarget && !isCurrentDayRange ? '1d' : metricsInterval,
+            interval: isConsumptionTarget ? '1d' : metricsInterval,
             range: getWidgetPreviousRange(getWidgetRange(range, period), period),
             targets: targets.map((target) => ({
                 target: target,
@@ -140,14 +140,14 @@ export const Widget = memo(
                 ) {
                     switch (target) {
                         case metricTargetsEnum.consumption:
-                            if (currentDayConsumption !== null) {
+                            if (currentDayConsumption !== null && currentDayConsumption !== undefined) {
                                 const consumptionWidgetAssets = consumptionWattUnitConversion(currentDayConsumption)
                                 unit = consumptionWidgetAssets.unit
                                 value = consumptionWidgetAssets.value
                             }
                             break
                         case metricTargetsEnum.autoconsumption:
-                            if (currentDayAutoConsumption !== null) {
+                            if (currentDayAutoConsumption !== null && currentDayAutoConsumption !== undefined) {
                                 const autoConsumptionWidgetAssets =
                                     consumptionWattUnitConversion(currentDayAutoConsumption)
                                 unit = autoConsumptionWidgetAssets.unit
@@ -155,7 +155,7 @@ export const Widget = memo(
                             }
                             break
                         case metricTargetsEnum.eurosConsumption:
-                            if (currentDayEuroConsumption !== null) {
+                            if (currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
                                 unit = '€'
                                 value = Number(currentDayEuroConsumption.toFixed(2))
                             }

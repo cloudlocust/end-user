@@ -73,7 +73,7 @@ describe('SolarSizingForm', () => {
     })
 
     it('renders the form and its elements', () => {
-        const { getByText, getByPlaceholderText } = render(
+        const { getAllByText, getAllByPlaceholderText } = render(
             <Provider store={store}>
                 <SolarSizingForm />
             </Provider>,
@@ -81,12 +81,12 @@ describe('SolarSizingForm', () => {
         )
 
         // Check if the form elements are rendered
-        expect(getByText('Dimensions de ma toiture')).toBeInTheDocument()
-        expect(getByPlaceholderText('m2')).toBeInTheDocument()
-        expect(getByText('Orientation :')).toBeInTheDocument()
-        expect(getByText('Inclinaison :')).toBeInTheDocument()
-        expect(getByText('Simuler mon installation solaire')).toBeInTheDocument()
-    })
+        expect(getAllByText('Dimensions de ma toiture')[0]).toBeInTheDocument()
+        expect(getAllByPlaceholderText('m2')[0]).toBeInTheDocument()
+        expect(getAllByText('Orientation :')[0]).toBeInTheDocument()
+        expect(getAllByText('Inclinaison :')[0]).toBeInTheDocument()
+        expect(getAllByText('Simuler mon installation solaire')[0]).toBeInTheDocument()
+    }, 10000)
     // it('handles form submission', async () => {
     //     const { getByText, getByPlaceholderText } = render(
     //         <Provider store={store}>

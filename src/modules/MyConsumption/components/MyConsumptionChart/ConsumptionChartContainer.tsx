@@ -100,11 +100,14 @@ export const ConsumptionChartContainer = ({
     setMetricsInterval,
     onPeriodChange,
     onRangeChange,
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
-ConsumptionChartContainerProps) => {
+}: ConsumptionChartContainerProps) => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
     const history = useHistory()
+
+    /*
+     ********************************************************* Zustand States: *************************************************
+     */
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
     const { equipmentsList } = useEquipmentList(currentHousing?.id)
@@ -120,26 +123,13 @@ ConsumptionChartContainerProps) => {
     }, [getInstallationInfos])
 
     const isResalePriceFormShouldBeShown = useMemo(
-        () => checkWhetherResalePriceFormShouldBeShown(equipmentsList, installationInfos),
-        [equipmentsList, installationInfos],
+        () => checkWhetherResalePriceFormShouldBeShown(consumptionToggleButton, equipmentsList, installationInfos),
+        [equipmentsList, installationInfos, consumptionToggleButton],
     )
 
-    // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
-    const [targets, setTargets] = useState<metricTargetType[]>(
-        getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
-    )
-
-    // Switch consumption button should be reset to consumption when the other two are not shown.
-    useEffect(() => {
-        if (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
-            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
-        }
-    }, [consumptionToggleButton, isIdleShown, setConsumptionToggleButton])
-
-    // Indicates if enedisSgeConsent is not Connected
-    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
-    const hidePmax = period === 'daily' || enedisSgeOff
-
+    /*
+     ********************************************************* Hooks: **********************************************************
+     */
     const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
         interval: metricsInterval,
         range: range,
@@ -157,11 +147,24 @@ ConsumptionChartContainerProps) => {
         targets: [],
         filters,
     })
+
+    /*
+     ********************************************************* States: **********************************************************
+     */
+    // Handling the targets makes it simpler instead of the useMetrics as it's a straightforward array of metricTargetType
+    const [targets, setTargets] = useState<metricTargetType[]>(
+        getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption),
+    )
     // Using ConsumptionChartData allow the front end to add additional chart data not only those from useMetrics.
     // Such as totalOffIdleConsumption
     // TODO Remove with Echarts now (and everything that set consumptionChart, let only target with setTargets).
     const [consumptionChartData, setConsumptionChartData] = useState<IMetric[]>(data)
 
+    /*
+     ********************************************************* Variables: *******************************************************
+     */
+    const enedisSgeOff = enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED'
+    const hidePmax = period === PeriodEnum.DAILY || enedisSgeOff
     // MetricRequest shouldn't be allowed when period is daily (metric interval is '1m' or '30m' and targets include euros or idle).
     const isMetricRequestNotAllowed = useMemo(() => {
         return (
@@ -176,10 +179,13 @@ ConsumptionChartContainerProps) => {
         )
     }, [targets, metricsInterval])
 
-    const getMetrics = useCallback(async () => {
-        if (isMetricRequestNotAllowed) return
-        await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
-    }, [getMetricsWithParams, metricsInterval, range, targets, filters, isMetricRequestNotAllowed])
+    const isTargetsNotAllowed = useMemo(() => {
+        // this should be refactored when we refactor the whole file, we need this condition to avoid fetching consumption metrics when AutoConsumptionProduction is toggled.
+        return (
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
+            targets.some((target) => metricTargetsEnum.consumptionByTariffComponent === target)
+        )
+    }, [consumptionToggleButton, targets])
 
     const isEurosButtonToggled = useMemo(
         () => targets.some((target) => [...eurosConsumptionTargets, ...eurosIdleConsumptionTargets].includes(target)),
@@ -196,27 +202,20 @@ ConsumptionChartContainerProps) => {
         return 'reset'
     }, [targets])
 
-    // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
-    useEffect(() => {
-        if (data.length > 0) {
-            let chartData = data
-            // When it's idleConsumption, chartData is handled differently from filteredMetricsData
-            const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
-            if (totalOffIdleConsumptionData) {
-                chartData = nullifyTodayIdleConsumptionValue([totalOffIdleConsumptionData, ...chartData])
-            } else {
-                // Filter target cases.
-                const fileteredMetricsData = filterMetricsData(chartData, period, consumptionToggleButton)
-                if (fileteredMetricsData.length > 0) chartData = fileteredMetricsData
-            }
-            setConsumptionChartData(chartData)
-        } else {
-            setConsumptionChartData(data)
-        }
-        // Only use data & targets as dependencies.
-        // TODO REMOVE this exhausitve-deps due to filteredMetricsData
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, targets])
+    const isTotalsOnChartTooltipDisplayed =
+        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Consumption && period !== PeriodEnum.DAILY
+
+    const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
+        return getMessageOfSuccessiveMissingDataOfCurrentDay(consumptionChartData, period, range)
+    }, [consumptionChartData, period, range])
+
+    /*
+     ********************************************************* Functions: *******************************************************
+     */
+    const getMetrics = useCallback(async () => {
+        if (isMetricRequestNotAllowed || isTargetsNotAllowed) return
+        await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
+    }, [isMetricRequestNotAllowed, isTargetsNotAllowed, getMetricsWithParams, metricsInterval, range, targets, filters])
 
     /**
      * Handler when clicking on temperature or pMax menu.
@@ -249,7 +248,7 @@ ConsumptionChartContainerProps) => {
      * @returns The consumption targets.
      */
     const getConsumptionTargets = (period: PeriodEnum, isEurosButtonToggled: boolean) => {
-        if (period === 'daily') {
+        if (period === PeriodEnum.DAILY) {
             setMetricsInterval('1m')
         }
         return isEurosButtonToggled
@@ -265,15 +264,14 @@ ConsumptionChartContainerProps) => {
      * @returns The autoconsumption and production targets.
      */
     const getAutoconsumptionProductionTargets = (period: PeriodEnum, isEurosButtonToggled: boolean) => {
-        if (period === 'daily') {
+        if (period === PeriodEnum.DAILY) {
             setMetricsInterval('30m')
         }
         return [
             metricTargetsEnum.autoconsumption,
-            ...(isEurosButtonToggled ? [] : [metricTargetsEnum.consumption]),
+            ...(isEurosButtonToggled ? eurosConsumptionTargets : [metricTargetsEnum.consumption]),
             metricTargetsEnum.injectedProduction,
             metricTargetsEnum.totalProduction,
-            ...(isEurosButtonToggled ? eurosConsumptionTargets : []),
         ]
     }
 
@@ -299,28 +297,6 @@ ConsumptionChartContainerProps) => {
         })
     }
 
-    useEffect(() => {
-        if (consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
-            const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find((item) => item.period === PeriodEnum.WEEKLY)!
-            onPeriodChange(dataConsumptionWeeklyPeriod.period)
-            onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
-            setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
-        }
-        updateTargets(period, isEurosButtonToggled)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [consumptionToggleButton, isEurosButtonToggled, onPeriodChange, onRangeChange, period, setMetricsInterval])
-
-    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
-    useEffect(() => {
-        if (isMetricRequestNotAllowed) {
-            setTargets(getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption))
-        }
-    }, [isMetricRequestNotAllowed])
-
-    // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
-    useEffect(() => {
-        getMetrics()
-    }, [getMetrics])
     // Callback use to fetch the some metrics
     const getAdditionalMetrics = useCallback(async () => {
         await getAdditionalMetricsWithParams({
@@ -331,14 +307,6 @@ ConsumptionChartContainerProps) => {
         })
     }, [getAdditionalMetricsWithParams, metricsInterval, range, filters])
 
-    const isTotalsOnChartTooltipDisplayed =
-        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Consumption && period !== 'daily'
-    // Effect used to get additional metrics.
-    useEffect(() => {
-        if (isTotalsOnChartTooltipDisplayed) {
-            getAdditionalMetrics()
-        }
-    }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
     /**
      * Callback to return the total consumption of hovered element based on the additional metrics data.
      * If `isTotalsOnChartTooltipDisplayed` is true and `additionalMetricsData` has items.
@@ -389,10 +357,6 @@ ConsumptionChartContainerProps) => {
         [additionalMetricsData, isTotalsOnChartTooltipDisplayed],
     )
 
-    const messageOfSuccessiveMissingDataOfCurrentDay = useMemo(() => {
-        return getMessageOfSuccessiveMissingDataOfCurrentDay(consumptionChartData, period, range)
-    }, [consumptionChartData, period, range])
-
     // Callback to check if the range is in the current year.
     const isRangeInCurrentYear = useCallback(() => {
         return new Date(range.from).getFullYear() === new Date().getFullYear()
@@ -435,15 +399,6 @@ ConsumptionChartContainerProps) => {
         },
         [enedisSgeOff, period],
     )
-
-    /**
-     * We use this hook to check if the data is partially available for yearly period.
-     */
-    useEffect(() => {
-        if (period === PeriodEnum.YEARLY && !isRangeInCurrentYear()) {
-            setPartiallyYearlyDataExist(consumptionChartData.length > 0)
-        }
-    }, [consumptionChartData, period, setPartiallyYearlyDataExist, isRangeInCurrentYear, range])
 
     /**
      * Determines whether the previous year navigation button should be disabled in the yearly view.
@@ -525,6 +480,80 @@ ConsumptionChartContainerProps) => {
         window.open(URL_SOLAR_INSTALLATION_RECOMMENDATION, '_blank', 'noopener noreferrer')
     }
 
+    /*
+     ********************************************************* Life Cycles: *****************************************************
+     */
+    // Switch consumption button should be reset to consumption when the other two are not shown.
+    useEffect(() => {
+        if (!isIdleShown && consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle) {
+            setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.Consumption)
+        }
+    }, [consumptionToggleButton, isIdleShown, setConsumptionToggleButton])
+
+    // To avoid multiple rerendering and thus calculation in MyConsumptionChart, CosnumptionChartData change only once, when targets change or when the first getMetrics targets is loaded, thus avoiding to rerender when the second getMetrics is loaded with all targets which should only happen in the background.
+    useEffect(() => {
+        if (data.length > 0) {
+            let chartData = data
+            // When it's idleConsumption, chartData is handled differently from filteredMetricsData
+            const totalOffIdleConsumptionData = getTotalOffIdleConsumptionData(chartData)
+            if (totalOffIdleConsumptionData) {
+                chartData = nullifyTodayIdleConsumptionValue([totalOffIdleConsumptionData, ...chartData])
+            } else {
+                // Filter target cases.
+                const fileteredMetricsData = filterMetricsData(chartData, period, consumptionToggleButton)
+                if (fileteredMetricsData.length > 0) chartData = fileteredMetricsData
+            }
+            setConsumptionChartData(chartData)
+        } else {
+            setConsumptionChartData(data)
+        }
+        // Only use data & targets as dependencies.
+        // TODO REMOVE this exhausitve-deps due to filteredMetricsData
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, targets])
+
+    useEffect(() => {
+        if (consumptionToggleButton === SwitchConsumptionButtonTypeEnum.Idle && period === PeriodEnum.DAILY) {
+            const dataConsumptionWeeklyPeriod = dataConsumptionPeriod.find((item) => item.period === PeriodEnum.WEEKLY)!
+            onPeriodChange(dataConsumptionWeeklyPeriod.period)
+            onRangeChange(getRangeV2(dataConsumptionWeeklyPeriod.period))
+            setMetricsInterval(dataConsumptionWeeklyPeriod.interval as metricIntervalType)
+        }
+        updateTargets(period, isEurosButtonToggled)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [consumptionToggleButton, isEurosButtonToggled, onPeriodChange, onRangeChange, period, setMetricsInterval])
+
+    // When switching to period daily, if Euros Charts or Idle charts buttons are selected, metrics should be reset to default.
+    useEffect(() => {
+        if (isMetricRequestNotAllowed) {
+            setTargets(getDefaultConsumptionTargets(SwitchConsumptionButtonTypeEnum.Consumption))
+        }
+    }, [isMetricRequestNotAllowed])
+
+    // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
+    useEffect(() => {
+        getMetrics()
+    }, [getMetrics])
+
+    // Effect used to get additional metrics.
+    useEffect(() => {
+        if (isTotalsOnChartTooltipDisplayed) {
+            getAdditionalMetrics()
+        }
+    }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
+
+    /**
+     * We use this hook to check if the data is partially available for yearly period.
+     */
+    useEffect(() => {
+        if (period === PeriodEnum.YEARLY && !isRangeInCurrentYear()) {
+            setPartiallyYearlyDataExist(consumptionChartData.length > 0)
+        }
+    }, [consumptionChartData, period, setPartiallyYearlyDataExist, isRangeInCurrentYear, range])
+
+    /*
+     ********************************************************* Rendering Logic: *****************************************************
+     */
     const NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT = formatMessage({
         id: 'Identifier un pic de conso',
         defaultMessage: 'Identifier un pic de conso',
@@ -563,7 +592,7 @@ ConsumptionChartContainerProps) => {
                         />
                     </>
                 ) : (
-                    period === 'daily' && (
+                    period === PeriodEnum.DAILY && (
                         <ConsumptionChartHeaderButton
                             text={NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT}
                             hasBorder
@@ -578,7 +607,7 @@ ConsumptionChartContainerProps) => {
                 className="mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
             >
-                {period !== 'daily' && (
+                {period !== PeriodEnum.DAILY && (
                     <EurosConsumptionButtonToggler
                         onChange={() => onEurosConsumptionButtonToggle(!isEurosButtonToggled)}
                         checked={isEurosButtonToggled}
@@ -616,7 +645,7 @@ ConsumptionChartContainerProps) => {
             </div>
 
             {isResalePriceFormShouldBeShown && (
-                <div className="my-16">
+                <div className="my-16" style={{ marginLeft: '4%', marginRight: '4%' }}>
                     <ResalePriceForm
                         updateResalePriceValue={(resalePrice) => {
                             addUpdateInstallationInfos({
