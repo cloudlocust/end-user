@@ -1,6 +1,14 @@
 import { isNil } from 'lodash'
-import { HousingEquipmentListType } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
-import { equipmentNameType, equipmentType } from 'src/modules/MyHouse/components/Installation/InstallationType'
+import {
+    HousingEquipmentListType,
+    HousingEquipmentType,
+} from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
+import {
+    IEquipmentMeter,
+    equipmentAllowedTypeT,
+    equipmentNameType,
+    equipmentType,
+} from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { ReactComponent as TvIcon } from 'src/assets/images/content/housing/equipments/tv.svg'
 import { ReactComponent as DesktopComputerIcon } from 'src/assets/images/content/housing/equipments/desktopcomputer.svg'
 import { ReactComponent as LaptopIcon } from 'src/assets/images/content/housing/equipments/laptop.svg'
@@ -28,6 +36,12 @@ import { ReactComponent as AirConditionerIcon } from 'src/assets/images/content/
 import { ReactComponent as DryTowelIcon } from 'src/assets/images/content/housing/equipments/dry_towel.svg'
 import { ReactComponent as WaterHeaterIcon } from 'src/assets/images/content/housing/equipments/water_heater.svg'
 import { SolarPower as SolarPanelIcon } from '@mui/icons-material'
+import {
+    ALLOWED_EQUIPMENT_TYPES,
+    equipmentsOptions,
+    mappingEquipmentNameToType,
+} from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
+import { orderListBy } from 'src/modules/utils'
 
 /**
  * Function that compares housingEquipments & equipments.
@@ -115,4 +129,59 @@ export const getIconComponent = (equipmentName: equipmentNameType) => {
         default:
             throw new Error(`No icon component found for equipment name: ${equipmentName}`)
     }
+}
+
+/**
+ * Checks if the given housing equipment has an allowed equipment type.
+ *
+ * @param housingEquipment The housing equipment to be checked.
+ * @returns A boolean indicating if the housing equipment has at least one allowed type.
+ */
+function isAllowedEquipmentType(housingEquipment: IEquipmentMeter) {
+    return ALLOWED_EQUIPMENT_TYPES.some((type) =>
+        housingEquipment.equipment.allowedType.includes(type as equipmentAllowedTypeT),
+    )
+}
+
+/**
+ * Formats a given housing equipment object into a standardized format.
+ *
+ * @param housingEquipment The housing equipment to be formatted.
+ * @returns A formatted housing equipment object.
+ */
+export function formatHousingEquipment(housingEquipment: IEquipmentMeter): HousingEquipmentType {
+    const equipmentOption = equipmentsOptions.find((option) => option.name === housingEquipment.equipment.name)
+
+    return {
+        ...housingEquipment,
+        id: housingEquipment.equipmentId,
+        housingEquipmentId: housingEquipment.id,
+        name: housingEquipment.equipment.name,
+        equipmentTitle: equipmentOption?.labelTitle,
+        iconComponent: equipmentOption?.iconComponent,
+        allowedType: housingEquipment.equipment.allowedType,
+        number: housingEquipment.equipmentNumber,
+        isNumber: mappingEquipmentNameToType[housingEquipment.equipment.name as equipmentNameType] === 'number',
+        measurementModes: housingEquipment.equipment.measurementModes,
+        customerId: housingEquipment.equipment.customerId,
+    }
+}
+
+/**
+ * Filters a list of housing equipments by allowed equipment types and formats them into a standardized format.
+ *
+ * @param housingEquipments The list of housing equipments to be filtered and formatted.
+ * @returns A list of formatted housing equipment objects.
+ */
+export const filterAndFormathousingEquipments = (
+    housingEquipments: IEquipmentMeter[] | null,
+): HousingEquipmentType[] => {
+    if (!housingEquipments?.length) return []
+    return orderListBy(
+        housingEquipments
+            .filter(isAllowedEquipmentType)
+            .map(formatHousingEquipment)
+            .filter((equipments) => equipments.number && (equipments.isNumber || equipments.customerId)),
+        (item) => item.equipmentLabel || item.name,
+    )
 }
