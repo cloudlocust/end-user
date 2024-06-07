@@ -4,6 +4,11 @@ import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
 
 /**
+ * Consumption value type.
+ */
+type ConsumptionValueType = number | null | undefined
+
+/**
  * Function to get the current day consumption API.
  *
  * @param housingId The housing id.
@@ -28,9 +33,9 @@ export const GET_CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
  * @returns Current day consumption hook.
  */
 export const useCurrentDayConsumption = (housingId?: number) => {
-    const [currentDayConsumption, setCurrentDayConsumption] = useState<number | null>(null)
-    const [currentDayAutoConsumption, setCurrentDayAutoConsumption] = useState<number | null>(null)
-    const [currentDayEuroConsumption, setCurrentDayEuroConsumption] = useState<number | null>(null)
+    const [currentDayConsumption, setCurrentDayConsumption] = useState<ConsumptionValueType>(undefined)
+    const [currentDayAutoConsumption, setCurrentDayAutoConsumption] = useState<ConsumptionValueType>(undefined)
+    const [currentDayEuroConsumption, setCurrentDayEuroConsumption] = useState<ConsumptionValueType>(undefined)
     const [isGetCurrentDayConsumptionLoading, setIsGetCurrentDayConsumptionLoading] = useState(false)
     const [isGetCurrentDayEuroConsumptionLoading, setIsGetCurrentDayEuroConsumptionLoading] = useState(false)
 
@@ -44,8 +49,13 @@ export const useCurrentDayConsumption = (housingId?: number) => {
             if (status === 200) {
                 setCurrentDayConsumption(consumption.consumption)
                 setCurrentDayAutoConsumption(consumption.autoConsumption)
+            } else {
+                setCurrentDayConsumption(null)
+                setCurrentDayAutoConsumption(null)
             }
         } catch (error) {
+            setCurrentDayConsumption(null)
+            setCurrentDayAutoConsumption(null)
         } finally {
             setIsGetCurrentDayConsumptionLoading(false)
         }
@@ -60,8 +70,11 @@ export const useCurrentDayConsumption = (housingId?: number) => {
             )
             if (status === 200) {
                 setCurrentDayEuroConsumption(euroConsumption.euroConsumption)
+            } else {
+                setCurrentDayEuroConsumption(null)
             }
         } catch (error) {
+            setCurrentDayEuroConsumption(null)
         } finally {
             setIsGetCurrentDayEuroConsumptionLoading(false)
         }
