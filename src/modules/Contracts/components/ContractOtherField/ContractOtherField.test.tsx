@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { ICustomProvider } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { ICreateCustomProvider } from 'src/hooks/CommercialOffer/CommercialOffers'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import ContractOtherField from 'src/modules/Contracts/components/ContractOtherField'
 import { ContractOtherFieldProps } from 'src/modules/Contracts/components/ContractOtherField/ContractOtherField.types'
 
-let mockContractOtherFieldProps: ContractOtherFieldProps<ICustomProvider>
+let mockContractOtherFieldProps: ContractOtherFieldProps<ICreateCustomProvider>
 
 let mockHouse = TEST_HOUSES[0]
 

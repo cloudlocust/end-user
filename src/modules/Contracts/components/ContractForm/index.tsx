@@ -242,24 +242,23 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     validateFunctions={[requiredBuilder()]}
                 />
             )}
-            {Number(formData.providerId) === -1 ||
-                (Number(formData.providerId) > 0 && (
-                    <>
-                        <ContractFormSelect<IOffer>
-                            formatOptionLabel={(option) => option.name}
-                            formatOptionValue={(option) => option.id}
-                            isOptionsInProgress={isOffersLoading}
-                            loadOptions={loadOfferOptions}
-                            otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
-                            optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
-                            name="offerId"
-                            label="Offre"
-                            validateFunctions={[requiredBuilder()]}
-                            onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
-                        />
-                        <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
-                    </>
-                ))}
+            {Number(formData.providerId) > 0 && (
+                <>
+                    <ContractFormSelect<IOffer>
+                        formatOptionLabel={(option) => option.name}
+                        formatOptionValue={(option) => option.id}
+                        isOptionsInProgress={isOffersLoading}
+                        loadOptions={loadOfferOptions}
+                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
+                        optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
+                        name="offerId"
+                        label="Offre"
+                        validateFunctions={[requiredBuilder()]}
+                        onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
+                    />
+                    <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
+                </>
+            )}
 
             {Number(formData.offerId) > 0 && (
                 <ContractFormSelect<ITariffType>

@@ -28,7 +28,7 @@ export type IProvider =
         /**
          * Network identifier.
          */
-        networkIdentifier: number | null
+        networkIdentifier?: number | null
     }
 
 /**
