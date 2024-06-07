@@ -5,9 +5,9 @@ import {
     metricTargetsType,
     metricIntervalType,
     metricTargetsEnum,
-    metricHistoryTargetsEnum,
     metricHistoryTargetType,
 } from 'src/modules/Metrics/Metrics.d'
+import { targetHistoryMapping } from 'src/modules/Metrics/metricsVariables'
 
 /**
  * Pure Function to format Metrics Data to {values & timestamps} for a simpler access and usability by chart library.
@@ -62,43 +62,19 @@ export const formatMetricsDataToTimestampsValues = (data: IMetric[]): formattedM
 }
 
 /**
- * Object that map every target to its history target version.
- */
-export const targetHistoryMapping: Partial<Record<metricTargetsEnum, metricHistoryTargetsEnum>> = {
-    [metricTargetsEnum.consumption]: metricHistoryTargetsEnum.consumptionHistory,
-    [metricTargetsEnum.eurosConsumption]: metricHistoryTargetsEnum.eurosConsumptionHistory,
-    [metricTargetsEnum.idleConsumption]: metricHistoryTargetsEnum.idleConsumptionHistory,
-    [metricTargetsEnum.consumptionByTariffComponent]: metricHistoryTargetsEnum.consumptionHistoryByTariffComponent,
-    [metricTargetsEnum.euroConsumptionByTariffComponent]:
-        metricHistoryTargetsEnum.euroConsumptionHistoryByTariffComponent,
-}
-
-/**
- * Object that map every history target to its original target.
- */
-export const reverseTargetHistoryMapping: Record<metricHistoryTargetsEnum, metricTargetsEnum> = {
-    [metricHistoryTargetsEnum.consumptionHistory]: metricTargetsEnum.consumption,
-    [metricHistoryTargetsEnum.eurosConsumptionHistory]: metricTargetsEnum.eurosConsumption,
-    [metricHistoryTargetsEnum.idleConsumptionHistory]: metricTargetsEnum.idleConsumption,
-    [metricHistoryTargetsEnum.consumptionHistoryByTariffComponent]: metricTargetsEnum.consumptionByTariffComponent,
-    [metricHistoryTargetsEnum.euroConsumptionHistoryByTariffComponent]:
-        metricTargetsEnum.euroConsumptionByTariffComponent,
-}
-
-/**
  * Function to get the optimal targets to use (simple target or history target) depending on the interval used.
  *
- * @param targets Metric Targets.
+ * @param metricsTargets Metrics Targets.
  * @param metricsInterval Metrics Interval.
  * @returns Metric Targets to use.
  */
-export const getOptimalTargets = (targets: metricTargetsType, metricsInterval: metricIntervalType) => {
+export const getOptimalTargets = (metricsTargets: metricTargetsType, metricsInterval: metricIntervalType) => {
     if (['30m', '1d', '1M'].includes(metricsInterval)) {
-        return targets.map((target) => ({
+        return metricsTargets.map((target) => ({
             ...target,
             target:
                 (targetHistoryMapping[target.target as metricTargetsEnum] as metricHistoryTargetType) ?? target.target,
         }))
     }
-    return targets
+    return metricsTargets
 }

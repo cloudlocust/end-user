@@ -137,8 +137,7 @@ export const ConsumptionChartContainer = ({
             targets: [],
             filters,
         },
-        false,
-        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period),
+        { isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period) },
     )
     // now we used this hooks to get some data used to calculate total cost + total consumption.
     const {
@@ -152,8 +151,7 @@ export const ConsumptionChartContainer = ({
             targets: [],
             filters,
         },
-        false,
-        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period),
+        { isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period) },
     )
 
     /*

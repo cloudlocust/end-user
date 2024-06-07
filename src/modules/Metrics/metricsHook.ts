@@ -10,12 +10,14 @@ import {
     metricTargetType,
     getMetricsWithParamsType,
     metricHistoryTargetsEnum,
+    useMetricsOptionsType,
 } from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
-import { getOptimalTargets, reverseTargetHistoryMapping } from 'src/modules/Metrics/metricsFunctions'
+import { getOptimalTargets } from 'src/modules/Metrics/metricsFunctions'
+import { reverseTargetHistoryMapping } from 'src/modules/Metrics/metricsVariables'
 
 /**
  * Get Metrics Error Message.
@@ -40,16 +42,12 @@ const defaultInitialState: getMetricType = {
  * Consumption Metrics hook.
  *
  * @param initialState Initial State of the hook.
- * @param immediate Indicates if getMetrics will execute when useMetrics instanciated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
- * @param isUsingHistoryTargets Boolean indicating that we should use history targets instaed of the simple targets.
+ * @param options Options object for the useMetrics hook.
  * @returns Consumption metrics hook.
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function useMetrics(
-    initialState: getMetricType = defaultInitialState,
-    immediate: boolean = false,
-    isUsingHistoryTargets: boolean = false,
-) {
+export function useMetrics(initialState: getMetricType = defaultInitialState, options: useMetricsOptionsType = {}) {
+    const { immediate = false, isUsingHistoryTargets = false } = options
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
@@ -90,23 +88,22 @@ export function useMetrics(
                 })),
             )
         } catch (error) {
-            if (isCancel(error)) {
-                setIsMetricsLoading(false)
-                return
+            if (!isCancel(error)) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: GET_METRICS_ERROR_MESSAGE,
+                        defaultMessage: GET_METRICS_ERROR_MESSAGE,
+                    }),
+                    {
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    },
+                )
+                setData([])
             }
-            enqueueSnackbar(
-                formatMessage({
-                    id: GET_METRICS_ERROR_MESSAGE,
-                    defaultMessage: GET_METRICS_ERROR_MESSAGE,
-                }),
-                {
-                    variant: 'error',
-                    autoHideDuration: 5000,
-                },
-            )
-            setData([])
+        } finally {
+            setIsMetricsLoading(false)
         }
-        setIsMetricsLoading(false)
     }, [
         enqueueSnackbar,
         filters,
@@ -235,14 +232,12 @@ export function useMetrics(
  * Hook used to wrapper useMetrics for we can use it in the same component and mock it in the tests.
  *
  * @param initialState Initial State of the hook.
- * @param immediate Indicates if getMetrics will execute when useMetrics instantiated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
- * @param isUsingHistoryTargets Boolean indicating that we should use history targets instaed of the simple targets.
+ * @param options Options object for the useMetrics hook.
  * @returns Consumption metrics hook.
  */
 export function useAdditionalMetrics(
     initialState: getMetricType = defaultInitialState,
-    immediate: boolean = false,
-    isUsingHistoryTargets: boolean = false,
+    options: useMetricsOptionsType = {},
 ) {
-    return useMetrics(initialState, immediate, isUsingHistoryTargets)
+    return useMetrics(initialState, options)
 }

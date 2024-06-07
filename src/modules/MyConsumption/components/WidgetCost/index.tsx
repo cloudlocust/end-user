@@ -50,8 +50,11 @@ export const WidgetCost = (props: IWidgetProps) => {
             ],
             filters: filters,
         },
-        false,
-        [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+        {
+            isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(
+                period as PeriodEnum,
+            ),
+        },
     )
 
     const isRangeChanged = useRef(false)

@@ -429,6 +429,21 @@ export type getMetricType = {
 }
 
 /**
+ * Options of useMetrics hook function.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type useMetricsOptionsType = {
+    /**
+     * Indicates if getMetrics will execute when useMetrics instanciated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
+     */
+    immediate?: boolean
+    /**
+     * Boolean indicating that we should use history targets instaed of the simple targets.
+     */
+    isUsingHistoryTargets?: boolean
+}
+
+/**
  * Params of getMetricsWithParamsType hook function.
  */
 //eslint-disable-next-line jsdoc/require-jsdoc

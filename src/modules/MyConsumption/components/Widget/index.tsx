@@ -84,8 +84,11 @@ export const Widget = memo(
                 })),
                 filters,
             },
-            false,
-            [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+            {
+                isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(
+                    period as PeriodEnum,
+                ),
+            },
         )
         const {
             data: oldData,
@@ -102,8 +105,11 @@ export const Widget = memo(
                 })),
                 filters,
             },
-            false,
-            [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period as PeriodEnum),
+            {
+                isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(
+                    period as PeriodEnum,
+                ),
+            },
         )
 
         const { storeWidgetMetricsData, currentRangeMetricWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
