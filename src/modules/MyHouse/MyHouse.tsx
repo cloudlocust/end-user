@@ -7,8 +7,8 @@ import { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
 import CircularProgress from '@mui/material/CircularProgress'
-import { HousingDetails } from 'src/modules/MyHouse/components/HousingDetails'
 import { isEmpty } from 'lodash'
+import { HouseOverview } from 'src/modules/MyHouse/components/MyHouseOverview'
 
 /**
  * MyHouse Component is used for urls that follow /my-houses and /my-houses/:id.
@@ -52,5 +52,5 @@ export const MyHouse = () => {
                 <CircularProgress size={32} />
             </div>
         )
-    return <HousingDetails />
+    return <HouseOverview />
 }
