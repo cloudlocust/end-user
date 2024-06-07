@@ -86,7 +86,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                                 currentHousing?.meter?.guid,
                             )
                             if (isSuccessResponse) {
-                                onClose && onClose()
+                                onClose()
                                 setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
                                 history.push(URL_CONSUMPTION)
                             }
