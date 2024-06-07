@@ -14,7 +14,7 @@ import {
     EquipmentsUsageFormSubmitType,
     usageOptions,
 } from 'src/modules/MyHouse/components/EquipmentsUsage/EquipmentsUsage.types'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { equipmentsOptions } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 import { ButtonLoader } from 'src/common/ui-kit'
 import isString from 'lodash/isString'
 import FormControl from '@mui/material/FormControl'
@@ -89,7 +89,7 @@ export default function EquipmentsUsageForm({
     }, [housingEquipmentsDetails, selectedEquipmentId])
 
     const equipnentIcon = useMemo(
-        () => myEquipmentOptions.find((option) => option.labelTitle === title)?.iconComponent,
+        () => equipmentsOptions.find((option) => option.labelTitle === title)?.iconComponent,
         [title],
     )
 
