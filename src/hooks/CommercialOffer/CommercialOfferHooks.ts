@@ -57,8 +57,6 @@ export const useCommercialOffer = () => {
     const [tariffTypeList, setTariffTypeList] = useState<ITariffType[] | null>(null)
     const [powerList, setPowerList] = useState<IPower[] | null>(null)
     const [tariffs, setTariffs] = useState<tariffContract[] | null>(null)
-    const [isCreateCustomProviderLoading, setIsCreateCustomProviderLoading] = useState(false)
-
     /**
      * Fetching Contract Types function.
      */
@@ -214,41 +212,6 @@ export const useCommercialOffer = () => {
         [enqueueSnackbar, formatMessage],
     )
 
-    const createCustomProvider = useCallback(
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        async ({ name, housingId }: { name: string; housingId: number }) => {
-            try {
-                setIsCreateCustomProviderLoading(true)
-                const { data, status } = await axios.post(CREATE_CUSTOM_PROVIDER_API, {
-                    name,
-                    networkIdentifier: housingId,
-                })
-
-                if (status === 201) {
-                    enqueueSnackbar(
-                        formatMessage({
-                            id: 'Votre fournisseur a été créé avec succès',
-                            defaultMessage: 'Votre fournisseur a été créé avec succès',
-                        }),
-                        { variant: 'success' },
-                    )
-                    return data
-                }
-            } catch (error) {
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la création de votre fournisseur',
-                        defaultMessage: 'Erreur lors de la création de votre fournisseur',
-                    }),
-                    { variant: 'error' },
-                )
-            } finally {
-                setIsCreateCustomProviderLoading(false)
-            }
-        },
-        [enqueueSnackbar, formatMessage],
-    )
-
     return {
         isProvidersLoading,
         isContractTypesLoading,
@@ -269,7 +232,61 @@ export const useCommercialOffer = () => {
         loadTariffsHousingContract,
         setTariffs,
         tariffs,
-        createCustomProvider,
+    }
+}
+
+/**
+ * Hook to create custom provider.
+ *
+ * @returns Hook useCreateCustomProvider.
+ */
+export function useCreateCustomProvider() {
+    const [isCreateCustomProviderLoading, setIsCreateCustomProviderLoading] = useState(false)
+    const [isCustomProviderCreated, setIsCustomProviderCreated] = useState(false)
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
+
+    // Create custom provider
+    const createCustomProvider = useCallback(
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        async ({ name, housingId }: { name: string; housingId: number }) => {
+            try {
+                setIsCreateCustomProviderLoading(true)
+                const { data, status } = await axios.post<IProvider>(CREATE_CUSTOM_PROVIDER_API, {
+                    name,
+                    networkIdentifier: housingId,
+                })
+
+                if (status === 201) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: 'Votre fournisseur a été créé avec succès',
+                            defaultMessage: 'Votre fournisseur a été créé avec succès',
+                        }),
+                        { variant: 'success' },
+                    )
+                    setIsCustomProviderCreated(true)
+                    return data
+                }
+            } catch (error) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: 'Erreur lors de la création de votre fournisseur',
+                        defaultMessage: 'Erreur lors de la création de votre fournisseur',
+                    }),
+                    { variant: 'error' },
+                )
+            } finally {
+                setIsCreateCustomProviderLoading(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
+    return {
         isCreateCustomProviderLoading,
+        createCustomProvider,
+        isCustomProviderCreated,
+        setIsCustomProviderCreated,
     }
 }

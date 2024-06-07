@@ -25,6 +25,10 @@ export type IProvider =
          * Name of provider.
          */
         name: string
+        /**
+         * Network identifier.
+         */
+        networkIdentifier: number | null
     }
 
 /**
@@ -72,7 +76,7 @@ export type IPower = number
  * Commercial offer model.
  */
 //eslint-disable-next-line jsdoc/require-jsdoc
-export type ICustomProvider = {
+export type ICreateCustomProvider = {
     /**
      * Name of the provider.
      */

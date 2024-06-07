@@ -2,6 +2,7 @@ import { rest } from 'msw'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import {
     CONTRACT_TYPE_LIST_API,
+    CREATE_CUSTOM_PROVIDER_API,
     OFFERS_API,
     POWERS_API,
     PROVIDERS_API,
@@ -58,50 +59,62 @@ export var TEST_PROVIDERS: SnakeCasedPropertiesDeep<IProvider>[] = [
     {
         id: 1,
         name: 'EDF',
+        network_identifier: null,
     },
     {
         id: 2,
         name: 'ENGIE',
+        network_identifier: null,
     },
     {
         id: 3,
         name: 'TotalEnergies',
+        network_identifier: null,
     },
     {
         id: 4,
         name: 'Eni',
+        network_identifier: null,
     },
     {
         id: 5,
         name: 'Vattenfall',
+        network_identifier: null,
     },
     {
         id: 6,
         name: 'Méga Energie',
+        network_identifier: null,
     },
     {
         id: 7,
         name: 'Planète Oui',
+        network_identifier: null,
     },
     {
         id: 8,
         name: 'ekWateur',
+        network_identifier: null,
     },
     {
         id: 9,
         name: 'OHM Energie',
+        network_identifier: null,
     },
     {
         id: 10,
         name: 'Alpiq',
+        network_identifier: null,
     },
     {
         id: 11,
         name: 'Wekiwi',
+        network_identifier: null,
     },
     {
         id: 12,
         name: 'Ilek',
+        network_identifier: null,
     },
 ]
 
@@ -222,5 +235,38 @@ export const commercialOfferEndpoints = [
             return res(ctx.status(200), ctx.delay(1000), ctx.json(TEST_TARIFFS_CONTRACT))
         }
         return res(ctx.status(404), ctx.delay(1000), ctx.json('error'))
+    }),
+
+    // Create custom provider
+    rest.post(CREATE_CUSTOM_PROVIDER_API, (req, res, ctx) => {
+        // Check if the request body is correct
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        const { name, network_identifier } = req.body as {
+            /**
+             *
+             */
+            name: string
+            /**
+             *
+             */
+            network_identifier: number
+        }
+        if (!name) {
+            return res(ctx.status(400), ctx.json({ message: 'Name is required' }))
+        }
+
+        if (!network_identifier) {
+            return res(ctx.status(400), ctx.json({ message: 'Network identifier is required' }))
+        }
+
+        // Check if the provider already exists
+        if (TEST_PROVIDERS.some((provider) => provider.name === name)) {
+            return res(ctx.status(400), ctx.json({ message: 'Provider already exists' }))
+        }
+
+        // Create the provider
+        TEST_PROVIDERS.push({ id: TEST_PROVIDERS.length + 1, name, network_identifier })
+
+        return res(ctx.status(201), ctx.delay(1000), ctx.json({ id: 1, name: 'Custom Provider', network_identifier }))
     }),
 ]

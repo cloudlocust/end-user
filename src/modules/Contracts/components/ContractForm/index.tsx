@@ -13,10 +13,10 @@ import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
-import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
+import { useCommercialOffer, useCreateCustomProvider } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import {
     IContractType,
-    ICustomProvider,
+    ICreateCustomProvider,
     IOffer,
     IPower,
     IProvider,
@@ -129,9 +129,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         isPowersLoading,
         isProvidersLoading,
         isTariffTypesLoading,
-        createCustomProvider,
-        isCreateCustomProviderLoading,
     } = useCommercialOffer()
+    const { createCustomProvider, isCreateCustomProviderLoading } = useCreateCustomProvider()
     const { formatMessage } = useIntl()
     // Track if the user originally had a deprecated offer.
     const [isUserHasDeprecatedOffer, setIsUserHasDeprecatedOffer] = useState(false)
@@ -234,7 +233,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
             )}
             {/* When "Autre fournisseur" is selected */}
             {Number(formData.providerId) === -1 && (
-                <ContractOtherField<ICustomProvider>
+                <ContractOtherField<ICreateCustomProvider>
                     name="name"
                     label="Votre fournisseur"
                     buttonAction={createCustomProvider as any}
