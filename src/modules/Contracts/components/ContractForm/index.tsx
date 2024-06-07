@@ -216,20 +216,18 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 onChange={(e) => onSelectChange(e, [])}
             />
             {Boolean(formData.contractTypeId) && (
-                <>
-                    <ContractFormSelect<IProvider>
-                        formatOptionLabel={(option) => option.name}
-                        formatOptionValue={(option) => option.id}
-                        isOptionsInProgress={isProvidersLoading}
-                        loadOptions={loadProviderOptions}
-                        optionList={orderBy(providerList, 'name', 'asc')}
-                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre fournisseur' : undefined}
-                        name="providerId"
-                        label="Fournisseur"
-                        validateFunctions={[requiredBuilder()]}
-                        onChange={(e) => onSelectChange(e, ['contractTypeId'])}
-                    />
-                </>
+                <ContractFormSelect<IProvider>
+                    formatOptionLabel={(option) => option.name}
+                    formatOptionValue={(option) => option.id}
+                    isOptionsInProgress={isProvidersLoading}
+                    loadOptions={loadProviderOptions}
+                    optionList={orderBy(providerList, 'name', 'asc')}
+                    otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre fournisseur' : undefined}
+                    name="providerId"
+                    label="Fournisseur"
+                    validateFunctions={[requiredBuilder()]}
+                    onChange={(e) => onSelectChange(e, ['contractTypeId'])}
+                />
             )}
             {/* When "Autre fournisseur" is selected */}
             {Number(formData.providerId) === -1 && (
