@@ -80,6 +80,7 @@ export const mapppingEquipmentToLabel = {
     other: 'Autre',
 } as { [key in equipmentNameType]?: string }
 
+// TODO: check the utility of `disableDecrement` property, it's not needed, so it should be removed.
 // eslint-disable-next-line jsdoc/require-jsdoc
 export const equipmentsOptions: EquipmentOptionsType[] = [
     {

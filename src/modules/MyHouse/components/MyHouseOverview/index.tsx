@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
 import { AccomodationTab } from 'src/modules/MyHouse/components/Accomodation/AccomodationTab'
 import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 import { HousingInformationPageLocationState } from 'src/modules/MyHouse/components/HousingInformation/HousingInformation.type'
-import { Equipments } from 'src/modules/MyHouse/components/Equipments'
+import { EquipmentsTab } from 'src/modules/MyHouse/components/Equipments'
 
 const Root = styled('div')(() => ({
     '& .FusePageCarded-topBg': {
@@ -36,7 +36,7 @@ export const HouseOverview = () => {
         {
             tabTitle: 'Mes équipements',
             tabSlug: 'équipements',
-            tabContent: <Equipments />,
+            tabContent: <EquipmentsTab />,
         },
         {
             tabTitle: 'Ma maison',

@@ -16,7 +16,7 @@ import {
  *
  * @returns Housing Equipments.
  */
-export const Equipments = () => {
+export const EquipmentsTab = () => {
     const currentHousing = useCurrentHousing()
     const {
         equipmentsList,
