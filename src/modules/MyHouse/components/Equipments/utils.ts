@@ -182,6 +182,6 @@ export const filterAndFormathousingEquipments = (
             .filter(isAllowedEquipmentType)
             .map(formatHousingEquipment)
             .filter((equipments) => equipments.number && (equipments.isNumber || equipments.customerId)),
-        (item) => item.equipmentLabel || item.name,
+        (item) => item.equipmentLabel ?? item.name,
     )
 }

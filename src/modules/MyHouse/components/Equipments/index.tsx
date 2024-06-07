@@ -51,7 +51,7 @@ export const EquipmentsTab = () => {
 
     return (
         <>
-            {Boolean(formatedHousingEquipmentsList?.length) ? (
+            {formatedHousingEquipmentsList?.length ? (
                 <EquipmentsList
                     housingEquipmentsList={formatedHousingEquipmentsList}
                     addingInProgressEquipmentsIds={addingInProgressEquipmentsIds}

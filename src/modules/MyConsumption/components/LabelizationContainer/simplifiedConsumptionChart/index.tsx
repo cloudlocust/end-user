@@ -135,7 +135,7 @@ const SimplifiedConsumptionChartContainer = ({
                         labelId: activity.id,
                         equipmentName:
                             equipmentsOptions.find((option) => option.name === activity.housingEquipment.equipment.name)
-                                ?.labelTitle || activity.housingEquipment.equipment.name,
+                                ?.labelTitle ?? activity.housingEquipment.equipment.name,
                         day: activity.startDate.split('T')[0],
                         startTime: `${hourStartTime}:${minutStartTime}`,
                         endTime: `${hourEndTime}:${minutEndTime}`,
