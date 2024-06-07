@@ -22,6 +22,7 @@ const mockHistoryGoBack = jest.fn()
 const mockHistoryPush = jest.fn()
 const mockOpenShellyConnectedPlugsWindow = jest.fn()
 const mockSetConsumptionToggleButton = jest.fn()
+const mockOnClosePopup = jest.fn()
 const CONNECTED_PLUGS_EMPTY_TEXT = `Aucune prise détectée. Renseignez vos prises connectées Shelly dans l'espace dedié`
 const ASSOCIATE_BUTTON_TEXT = 'Enregistrer'
 const circularProgressRole = 'progressbar'
@@ -75,7 +76,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
         mockConnectedPlugsList = []
         const { getByText } = reduxedRender(
             <Router>
-                <ConnectedPlugProductionConsentPopup />
+                <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -91,7 +92,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
     test('Opening shelly window when Clicking on Configure', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <ConnectedPlugProductionConsentPopup />
+                <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -105,7 +106,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
         mockLoadingInProgress = true
         const { getByRole } = reduxedRender(
             <Router>
-                <ConnectedPlugProductionConsentPopup />
+                <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -121,7 +122,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
             mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS.slice(0, 2)
             const { getByText } = reduxedRender(
                 <Router>
-                    <ConnectedPlugProductionConsentPopup />
+                    <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
                 </Router>,
                 {
                     initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -134,10 +135,9 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
 
         test('when Selecting a connected plug and submitting, associate connected plug should be called and history pushed', async () => {
             mockAssociateConnectedPlug = jest.fn().mockImplementationOnce(() => true)
-            const mockOnClose = jest.fn()
             const { getByLabelText, getByText } = reduxedRender(
                 <Router>
-                    <ConnectedPlugProductionConsentPopup onClose={mockOnClose} />
+                    <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
                 </Router>,
                 {
                     initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -158,7 +158,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                     mockHouseMeterGuid,
                 )
             })
-            expect(mockOnClose).toHaveBeenCalledWith()
+            expect(mockOnClosePopup).toHaveBeenCalledWith()
             expect(mockSetConsumptionToggleButton).toHaveBeenCalledWith(
                 SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
             )
