@@ -37,7 +37,7 @@ export function AnalysisIdleConsumption({ totalConsumption, range, filters }: An
             ],
             filters,
         },
-        Boolean(filters),
+        { immediate: Boolean(filters) },
     )
 
     const convertedAverageIdleConsumptionDataToKwh = useMemo(

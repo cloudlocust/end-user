@@ -45,6 +45,16 @@ export type metricTargetType =
     | '__euros__hc_jour_blanc_consumption_metrics'
 
 /**
+ * Metric History Targets.
+ */
+export type metricHistoryTargetType =
+    | 'consumption_metrics_history'
+    | '__euros__consumption_metrics_history'
+    | 'idle_consumption_history'
+    | 'consumption_metrics_history_by_tariff_component'
+    | '__euros__consumption_metrics_history_by_tariff_component'
+
+/**
  * Enum representing the metricTarget without exposing the backend naming.
  */
 export enum metricTargetsEnum {
@@ -300,6 +310,32 @@ export enum metricTargetsEnum {
 }
 
 /**
+ * Enum representing the metric History Targets without exposing the backend naming.
+ */
+export enum metricHistoryTargetsEnum {
+    /**
+     * Enum value for the history version of the target consumption_metrics.
+     */
+    consumptionHistory = 'consumption_metrics_history',
+    /**
+     * Enum value for the history version of the target __euros__consumption_metrics.
+     */
+    eurosConsumptionHistory = '__euros__consumption_metrics_history',
+    /**
+     * Enum value for the history version of the target idle_consumption.
+     */
+    idleConsumptionHistory = 'idle_consumption_history',
+    /**
+     * Enum value for the history version of the target consumption_metrics_by_tariff_component.
+     */
+    consumptionHistoryByTariffComponent = 'consumption_metrics_history_by_tariff_component',
+    /**
+     * Enum value for the history version of the target __euros__consumption_metrics_by_tariff_component.
+     */
+    euroConsumptionHistoryByTariffComponent = '__euros__consumption_metrics_history_by_tariff_component',
+}
+
+/**
  * Metrics intervals.
  */
 export type metricIntervalType = '1m' | '1d' | '1M' | '30m'
@@ -390,6 +426,21 @@ export type getMetricType = {
      * Metric filters.
      */
     filters?: metricFiltersType
+}
+
+/**
+ * Options of useMetrics hook function.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type useMetricsOptionsType = {
+    /**
+     * Indicates if getMetrics will execute when useMetrics instanciated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
+     */
+    immediate?: boolean
+    /**
+     * Boolean indicating that we should use history targets instaed of the simple targets.
+     */
+    isUsingHistoryTargets?: boolean
 }
 
 /**

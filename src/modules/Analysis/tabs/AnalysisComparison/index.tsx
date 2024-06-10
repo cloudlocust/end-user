@@ -33,7 +33,7 @@ export default function AnalysisComparison({ filters, monthlyRange }: AnalysisCo
             ],
             filters,
         },
-        Boolean(filters.length),
+        { immediate: Boolean(filters.length) },
     )
 
     const data = getDataCorrespendingToRange(metricsData!, monthlyRange, metricTargetsEnum.consumption)
