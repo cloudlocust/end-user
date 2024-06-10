@@ -111,7 +111,7 @@ export const EurosConsumptionButtonToggler = ({
      * @returns The total consumption or undefined.
      */
     const totalConsumption = useMemo(() => {
-        if (currentDayConsumption !== null) {
+        if (typeof currentDayConsumption === 'number') {
             return consumptionWattUnitConversion(currentDayConsumption)
         }
         if (dataMetrics.length) return computeTotalConsumption(dataMetrics)
@@ -133,7 +133,7 @@ export const EurosConsumptionButtonToggler = ({
             ? computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
             : emptyValueUnit
 
-        if (currentDayEuroConsumption !== null)
+        if (typeof currentDayEuroConsumption === 'number')
             return {
                 ...totalSubscription,
                 value: Number((currentDayEuroConsumption + totalSubscription.value).toFixed(2)),
