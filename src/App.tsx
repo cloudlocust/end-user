@@ -19,8 +19,8 @@ import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { getTokenFromFirebase } from 'src/firebase'
 import { URL_ALPIQ_SUBSCRIPTION_FORM } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
-import { useConsents } from 'src/modules/Consents/consentsHook'
 import { URL_ONBOARDING } from 'src/modules/Onboarding/OnboardingConfig'
+import { useGetShowNrLinkPopupHook } from './modules/nrLinkConnection/NrLinkConnectionHook'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -85,20 +85,8 @@ const Routes = () => {
     const location = useLocation()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { getConsents, nrlinkConsent } = useConsents()
-    const isInitialMount = useRef(true)
     const history = useHistory()
-    // Ref used to check if we already passed by onboarding page to avoid infinite cycle of redirection.
-    const isPassedThroughOnboarding = useRef(false)
-
-    // TODO - DELETE IT !
-    useEffect(() => {
-        if (isInitialMount.current && currentHousing?.id) {
-            isInitialMount.current = false
-            getConsents(currentHousing?.id)
-        }
-    }, [getConsents, currentHousing])
+    const { isGetShowNrLinkLoading, isNrLinkPopupShowing } = useGetShowNrLinkPopupHook()
 
     useEffect(() => {
         /**
@@ -110,21 +98,15 @@ const Routes = () => {
     }, [location.pathname, updateLastVisitTime, user])
 
     useEffect(() => {
-        if (!isMaintenanceMode && user) {
+        if (!isMaintenanceMode && user && !isGetShowNrLinkLoading) {
             // Check if the user is in alpiq subscription or not.
             if (isAlpiqSubscriptionForm && !user.isProviderSubscriptionCompleted) {
                 location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && history.push(URL_ALPIQ_SUBSCRIPTION_FORM)
-            } else if (
-                // Check if the user not configured his nrlink
-                (!nrlinkConsent || nrlinkConsent?.nrlinkConsentState === 'NONEXISTENT') &&
-                location.pathname !== URL_ONBOARDING &&
-                !isPassedThroughOnboarding.current
-            ) {
-                isPassedThroughOnboarding.current = true
+            } else if (isNrLinkPopupShowing === true && location.pathname !== URL_ONBOARDING) {
                 history.push(URL_ONBOARDING)
             }
         }
-    }, [user, location.pathname, history, nrlinkConsent])
+    }, [user, location.pathname, history, isNrLinkPopupShowing, isGetShowNrLinkLoading])
 
     const { hasAccess, getUrlRedirection } = useAuth()
 
