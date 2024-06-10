@@ -33,12 +33,14 @@ let equipmentsListProps: EquipmentsListProps = {
     housingEquipmentsList: mockHousingEquipmentsList,
     addingInProgressEquipmentsIds: [],
     addHousingEquipment: jest.fn(),
+    onOpenAddEquipmentPopup: jest.fn(),
 }
 
 describe('EquipmentsList tests', () => {
     test("renders correctly when housingEquipmentsList isn't empty", () => {
         const { getByText } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
 
+        expect(getByText('Ajouter un équipement')).toBeInTheDocument()
         mockHousingEquipmentsList.forEach((housingEquipment) => {
             expect(getByText(housingEquipment.name!)).toBeInTheDocument()
         })
@@ -49,5 +51,15 @@ describe('EquipmentsList tests', () => {
         const { getAllByRole } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
 
         expect(getAllByRole('progressbar')).toHaveLength(2)
+
+        equipmentsListProps.addingInProgressEquipmentsIds = []
+    })
+
+    test('when click on add equipement, openAddEquipmentPopup callback should be called', async () => {
+        const { getByText } = reduxedRender(<EquipmentsList {...equipmentsListProps} />)
+
+        getByText('Ajouter un équipement').click()
+
+        expect(equipmentsListProps.onOpenAddEquipmentPopup).toBeCalled()
     })
 })

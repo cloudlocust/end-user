@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useHistory } from 'react-router-dom'
 import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { useIntl } from 'react-intl'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { equipmentsOptions } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 import { EquipmentMeasurementsHeaderProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsHeader/EquipmentMeasurementsHeader.types'
 
 /**
@@ -19,7 +19,7 @@ export const EquipmentMeasurementsHeader = ({ equipmentName }: EquipmentMeasurem
     const { formatMessage } = useIntl()
 
     const { iconComponent: equipmentIcon, labelTitle: equipmentLabel } =
-        myEquipmentOptions.find((element) => element.name === equipmentName) || {}
+        equipmentsOptions.find((element) => element.name === equipmentName) || {}
 
     return (
         <ThemeProvider theme={theme}>
