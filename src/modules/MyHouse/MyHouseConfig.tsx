@@ -11,11 +11,8 @@ import { EquipmentDetails } from 'src/modules/MyHouse/components/EquipmentDetail
 import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 
-/**
- * Url for myHouse.
- */
-export const URL_MY_HOUSE = '/my-houses'
 /**
  * Url for myHouse Details.
  */

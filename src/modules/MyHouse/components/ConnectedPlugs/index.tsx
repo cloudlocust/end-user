@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 import CircularProgress from '@mui/material/CircularProgress'
 import ConnectedPlugsList from 'src/modules/MyHouse/components/ConnectedPlugs/ConnectedPlugsList'
 

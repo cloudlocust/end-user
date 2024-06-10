@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import CircularProgress from '@mui/material/CircularProgress'
 import ContractList from 'src/modules/Contracts/components/ContractList'
 

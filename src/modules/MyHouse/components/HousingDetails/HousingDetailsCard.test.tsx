@@ -7,7 +7,7 @@ import { HousingDetailsCard } from 'src/modules/MyHouse/components/HousingDetail
 import { ReactComponent as SuperficieIcon } from 'src/assets/images/content/housing/Superficie.svg'
 import { ReactComponent as OccupantIcon } from 'src/assets/images/content/housing/Occupant.svg'
 import { ReactComponent as MainIcon } from 'src/assets/images/content/housing/Main.svg'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 import { HousingCardTypeOfDetailsEnum } from 'src/modules/MyHouse/components/HousingDetails/housingDetails.d'
 
 // mocks text and icons

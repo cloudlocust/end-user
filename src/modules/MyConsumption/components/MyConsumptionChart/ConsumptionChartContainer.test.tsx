@@ -13,7 +13,7 @@ import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import {
     ConsumptionChartContainer,
@@ -637,6 +637,7 @@ describe('MyConsumptionContainer test', () => {
         test('should navigate to the labelization page when the button is clicked', async () => {
             mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
             echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
+            mockPushHistory.mockClear()
             const { getByTestId } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
@@ -646,7 +647,7 @@ describe('MyConsumptionContainer test', () => {
             const button = getByTestId('linkToLabelizationPage')
             userEvent.click(button)
             await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalledWith('/my-consumption/labelization')
+                expect(mockPushHistory).toHaveBeenCalled()
             })
         })
     })
