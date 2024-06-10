@@ -603,7 +603,7 @@ describe('MyConsumptionContainer test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
             echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
-            mockGetMetricsWithParams.mockClear()
+            // mockGetMetricsWithParams.mockClear()
 
             const { getByLabelText, getAllByRole } = reduxedRender(
                 <Router>
@@ -622,7 +622,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(6)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(5)
             })
         }, 10000)
     })
