@@ -96,7 +96,7 @@ export const getDateWithTimezoneOffset = (date: string) => {
  * @param date Current date.
  * @returns Date without utc offset.
  */
-export const getDateWithoutTimezoneOffset = (date: Date) => {
+export function getDateWithoutTimezoneOffset(date: Date) {
     const localOffset = date.getTimezoneOffset()
     return subMinutes(date, localOffset).toISOString()
 }

@@ -152,7 +152,7 @@ describe('Widget component test', () => {
 
         expect(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON)).toBeTruthy()
         userEvent.click(getByTestId(ENPHASE_CONSENT_INACTIVE_ERROR_ICON))
-        expect(window.location.pathname).toBe(`${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`)
+        expect(window.location.pathname).toBe(`/${URL_MY_HOUSE}/${LIST_OF_HOUSES[0].id}`)
     })
 
     test('when there is many targets, all targets should be rendered', async () => {
