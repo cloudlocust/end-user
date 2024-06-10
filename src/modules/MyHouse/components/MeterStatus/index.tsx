@@ -1,4 +1,5 @@
-import { Card, CircularProgress, Divider, Icon, Tooltip, styled, useMediaQuery, useTheme } from '@mui/material'
+import 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus/MeterStatus.scss'
+import { Card, CircularProgress, Icon, Tooltip, styled, useTheme } from '@mui/material'
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -21,6 +22,10 @@ import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/Met
 import { RevokeNrlinkConsent } from 'src/modules/MyHouse/components/RevokeNrlinkConsent'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import clsx from 'clsx'
+import { useModal } from 'src/hooks/useModal'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -44,6 +49,31 @@ const GreyTooltip = styled(({ className, ...props }: TooltipProps) => (
 }))
 
 /**
+ * Component for UnSynchronizedInfoDialog.
+ *
+ * @param param0 N/A.
+ * @param param0.open Open state of the dialog.
+ * @param param0.onClose Callback function to close the dialog.
+ * @returns UnSynchronizedInfoDialog component.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+function UnSynchronizedInfoDialog({ open, onClose }: Readonly<{ open: boolean; onClose: () => void }>) {
+    return (
+        <Dialog open={open} onClose={onClose}>
+            <DialogContent>
+                <Typography>
+                    Afin que nous puissions faire un rapport à Enedis, veuillez contacter le service client par mail à{' '}
+                    <strong>contact@myem.fr</strong> <span>avec les informations suivantes : N°nrLINK et N° PDL.</span>
+                </Typography>
+                <Typography>
+                    <strong>Important : </strong>L'objet du mail doit être code erreur : <strong>unsynchronised</strong>
+                </Typography>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+/**
  * Meter Status Component.
  *
  * @returns Meter Status component with different status for Nrlibk & Enedis.
@@ -52,7 +82,6 @@ const GreyTooltip = styled(({ className, ...props }: TooltipProps) => (
 export const MeterStatus = () => {
     const theme = useTheme()
     const { formatMessage } = useIntl()
-    const mdDown = useMediaQuery(theme.breakpoints.down('md'))
     const {
         getConsents,
         consentsLoading,
@@ -68,6 +97,11 @@ export const MeterStatus = () => {
     } = useConsents()
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
+    const {
+        closeModal: closeUnsynchronizedInfoDialog,
+        isOpen: isUnsynchronizedInfoDialogOpen,
+        openModal: openUnsynchronizedInfoDialog,
+    } = useModal()
 
     const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
 
@@ -75,9 +109,6 @@ export const MeterStatus = () => {
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
-
-    const mdBorderRight = 'border-r-2'
-    const consentContainerClassses = 'w-full md:w-1/3 p-12'
 
     /**
      * This useEffect listen to changes in localStorage for enphaseConsentState.
@@ -287,6 +318,13 @@ export const MeterStatus = () => {
                                 Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
                                 votre nrLINK
                             </TypographyFormatMessage>
+                            <TypographyFormatMessage
+                                className="italic underline font-600 cursor-pointer"
+                                color={theme.palette.grey[500]}
+                                onClick={() => openUnsynchronizedInfoDialog()}
+                            >
+                                Que faire ?
+                            </TypographyFormatMessage>
                         </div>
                     </>
                 )
@@ -336,7 +374,9 @@ export const MeterStatus = () => {
             <Card className="my-12 md:mx-16" variant="outlined">
                 <MuiCardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                     <HousingAddressCard />
-                    <div className={`flex flex-row justify-between bg-gray-50 p-12 border-1 border-slate-600`}>
+                    <div
+                        className={`flex flex-row justify-between bg-gray-50 p-12 border-t-1 border-b-1 border-slate-600`}
+                    >
                         <MeterInfos element={currentHousing!} />
                         <NavLink to={`${URL_MY_HOUSE}/${currentHousing?.id}/contracts`} className="flex">
                             <Card className="flex flex-col items-center rounded p-8">
@@ -354,16 +394,13 @@ export const MeterStatus = () => {
                             </Card>
                         </NavLink>
                     </div>
-                    <div
-                        className={clsx(
-                            'flex flex-col md:flex-row items-stretch',
-                            isProductionActive ? 'justify-evenly' : 'justify-between',
-                        )}
-                    >
+                    <div className={clsx('flex flex-col md:flex-row items-stretch consents-container')}>
                         {/* Nrlink Consent Status */}
-                        <div className={clsx(consentContainerClassses, !mdDown && mdBorderRight)}>
+                        <div>
                             {consentsLoading ? (
-                                <CircularProgress size={25} />
+                                <div className="circular-progress">
+                                    <CircularProgress size={25} />
+                                </div>
                             ) : (
                                 <>
                                     <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
@@ -375,7 +412,6 @@ export const MeterStatus = () => {
                                 </>
                             )}
                         </div>
-                        <Divider orientation={'horizontal'} flexItem variant="fullWidth" />
 
                         {/* Enedis Consent Status */}
                         <Tooltip
@@ -387,15 +423,11 @@ export const MeterStatus = () => {
                                 defaultMessage: `${sgeConsentFeatureStatePopup}`,
                             })}
                         >
-                            <div
-                                className={clsx(
-                                    consentContainerClassses,
-                                    !sgeConsentFeatureState && 'cursor-not-allowed',
-                                    !mdDown && isProductionActive && mdBorderRight,
-                                )}
-                            >
+                            <div className={!sgeConsentFeatureState ? 'cursor-not-allowed' : ''}>
                                 {consentsLoading ? (
-                                    <CircularProgress size={25} />
+                                    <div className="circular-progress">
+                                        <CircularProgress size={25} />
+                                    </div>
                                 ) : (
                                     <>
                                         <TypographyFormatMessage className="text-xs md:text-sm font-semibold mb-6">
@@ -408,21 +440,29 @@ export const MeterStatus = () => {
                                 )}
                             </div>
                         </Tooltip>
-                        <Divider orientation={mdDown ? 'horizontal' : undefined} flexItem variant="fullWidth" />
-                        <div className={clsx(consentContainerClassses, !isProductionActive && 'hidden')}>
-                            <SolarProductionConsentStatus
-                                solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
-                                solarProductionConsent={enphaseConsent}
-                                onRevokeEnphaseConsent={async () => {
-                                    // When revoking enphase Consent means there is currentHousing!.meter.guid
-                                    await revokeEnphaseConsent(currentHousing!.id)
-                                    getConsents(currentHousing?.id)
-                                }}
-                            />
-                        </div>
+                        {['CONNECTED', 'DISCONNECTED'].includes(nrlinkConsent?.nrlinkConsentState ?? '') && (
+                            <div className={!isProductionActive ? 'hidden' : ''}>
+                                <SolarProductionConsentStatus
+                                    solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
+                                    solarProductionConsent={enphaseConsent}
+                                    onRevokeEnphaseConsent={async () => {
+                                        // When revoking enphase Consent means there is currentHousing!.meter.guid
+                                        await revokeEnphaseConsent(currentHousing!.id)
+                                        getConsents(currentHousing?.id)
+                                    }}
+                                />
+                            </div>
+                        )}
                     </div>
                 </MuiCardContent>
             </Card>
+
+            {isUnsynchronizedInfoDialogOpen && (
+                <UnSynchronizedInfoDialog
+                    open={isUnsynchronizedInfoDialogOpen}
+                    onClose={closeUnsynchronizedInfoDialog}
+                />
+            )}
         </>
     )
 }

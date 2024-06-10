@@ -480,12 +480,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: [
-                    metricTargetsEnum.autoconsumption,
-                    metricTargetsEnum.consumption,
-                    metricTargetsEnum.injectedProduction,
-                    metricTargetsEnum.totalProduction,
-                ],
+                targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
             })
         })
     })
@@ -608,6 +603,7 @@ describe('MyConsumptionContainer test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
             echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
+            mockGetMetricsWithParams.mockClear()
 
             const { getByLabelText, getAllByRole } = reduxedRender(
                 <Router>

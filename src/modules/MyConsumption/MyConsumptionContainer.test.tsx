@@ -43,6 +43,7 @@ const enphaseConsent: IEnphaseConsent = {
 let mockNrlinkConsent: INrlinkConsent | undefined = nrLinkConsent
 let mockEnedisConsent: IEnedisSgeConsent | undefined = enedisSGeConsent
 let mockEnphaseConsent: IEnphaseConsent | undefined = enphaseConsent
+let mockGlobalProductionFeatureState = true
 const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT1 = "Pour voir votre consommation vous devez d'abord"
 const MISSING_CURRENT_HOUSING_METER_ERROR_TEXT2 = 'enregistrer votre compteur et votre nrLINK'
 const LIST_WIDGETS_TEXT = 'Chiffres clés'
@@ -126,6 +127,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     isProductionActiveAndHousingHasAccess: () => mockIsProductionActiveAndHousingHasAccess(),
     // eslint-disable-next-line jsdoc/require-jsdoc
     arePlugsUsedBasedOnProductionStatus: () => true,
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    get globalProductionFeatureState() {
+        return mockGlobalProductionFeatureState
+    },
 }))
 
 describe('MyConsumptionContainer test', () => {
@@ -291,7 +296,7 @@ describe('MyConsumptionContainer test', () => {
             // we mock enphase consent to be off, to show the idle button also.
             mockEnphaseConsent!.enphaseConsentState = 'EXPIRED'
             // eslint-disable-next-line jsdoc/require-jsdoc
-            mockIsProductionActiveAndHousingHasAccess = () => false
+            mockGlobalProductionFeatureState = false
             const { getByText, queryByText } = reduxedRender(
                 <Router>
                     <MyConsumptionContainer />
@@ -302,6 +307,8 @@ describe('MyConsumptionContainer test', () => {
             expect(getByText(SwitchConsumptionButtonLabelEnum.General)).toBeInTheDocument()
             expect(getByText(SwitchConsumptionButtonLabelEnum.Idle)).toBeInTheDocument()
             expect(queryByText(SwitchConsumptionButtonLabelEnum.AutoconsmptionProduction)).not.toBeInTheDocument()
+
+            mockGlobalProductionFeatureState = true
         })
         test('when enphase is off, and "Autoconso & Production" has is toggled, links part to add prod consent should be shown', async () => {
             // we mock enphase consent to be off, to show the idle button also.

@@ -52,7 +52,7 @@ export var TEST_SOLAR_SIZING: ISolarSizing[] = [
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export let TEST_HOUSING_SOLAR_SIZING: AllHousingSolarSizingType = {
-    solarSizing: TEST_SOLAR_SIZING,
+    solarSizings: TEST_SOLAR_SIZING,
     annualProduction: 1000,
     autoConsumptionPercentage: 50,
     autoProductionPercentage: 50,

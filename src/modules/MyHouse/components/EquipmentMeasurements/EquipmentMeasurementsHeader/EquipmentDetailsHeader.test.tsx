@@ -2,11 +2,11 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { EquipmentMeasurementsHeader } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsHeader'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { equipmentsOptions } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 
 let mockHistoryGoBack = jest.fn()
-let EQUIPMENT_NAME = myEquipmentOptions[0].name
-let EQUIPMENT_LABEL_TITLE = myEquipmentOptions[0].labelTitle
+let EQUIPMENT_NAME = equipmentsOptions[0].name
+let EQUIPMENT_LABEL_TITLE = equipmentsOptions[0].labelTitle
 let GO_BACK_BUTTON_TEXT = 'Retour'
 
 jest.mock('react-router', () => ({

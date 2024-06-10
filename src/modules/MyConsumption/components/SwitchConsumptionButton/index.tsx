@@ -30,25 +30,27 @@ const Container = styled('div')(({ theme }) => ({
     width: '100%',
     whiteSpace: 'nowrap',
     scrollbarWidth: 'none',
-    padding: '24px 16px 4px 16px',
+    padding: '10px',
     alignItems: 'flex-start',
     gap: 8,
     display: 'inline-flex',
     alignSelf: 'stretch',
     justifyContent: 'center',
-    [theme.breakpoints.down('md')]: {
-        paddingTop: '4px',
-    },
     [theme.breakpoints.down('sm')]: {
         justifyContent: 'flex-start',
-        paddingLeft: 0,
-        paddingRight: 0,
     },
     '& .MuiButton-root': {
         [theme.breakpoints.down('md')]: {
             height: 24,
             fontSize: 12,
             minWidth: 160,
+        },
+        [theme.breakpoints.down('sm')]: {
+            height: 24,
+            fontSize: 12,
+            width: 140,
+            minWidth: 140,
+            padding: '8px 8px',
         },
         height: 30,
         minWidth: 200,

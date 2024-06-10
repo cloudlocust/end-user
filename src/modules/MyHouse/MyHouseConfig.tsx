@@ -6,7 +6,7 @@ import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/hou
 import { ReactComponent as HousingSelectedIcon } from 'src/assets/images/navbarItems/housing-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
-import { Equipments } from 'src/modules/MyHouse/components/Equipments'
+import { EquipmentsTab } from 'src/modules/MyHouse/components/Equipments'
 import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
@@ -241,7 +241,7 @@ export const MyHouseConfig = [
     } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_EQUIPMENTS,
-        component: Equipments,
+        component: EquipmentsTab,
         auth: { authType: authTypes.loginRequired },
         settings: {
             layout: {

@@ -70,39 +70,6 @@ const ContractEstimation = ({
         false,
     )
 
-    const loadOffpeakHouse = useCallback(async () => {
-        await loadMeterInfos()
-    }, [loadMeterInfos])
-
-    useEffect(() => {
-        if (initialMountConsent.current && currentHousing) {
-            loadOffpeakHouse()
-            initialMountConsent.current = false
-        }
-    }, [currentHousing, loadOffpeakHouse])
-
-    /**
-     * Format timestring from 22:00:00 to 22h00.
-     *
-     * @param timeString Time string to format.
-     * @returns Time formatted.
-     */
-    const formatTime = (timeString: string) => {
-        const [hours, minutes] = timeString.split(':')
-        return `${hours}h${minutes}`
-    }
-
-    /**
-     * Get peak hours text.
-     *
-     * @returns Peak hours text.
-     */
-    const getPeakHoursText = () => {
-        return housingMeter?.features?.offpeak?.offpeakHours.map(
-            (offpeakHour) => `${formatTime(offpeakHour.start)} à ${formatTime(offpeakHour.end)}`,
-        )
-    }
-
     /**
      * Function that allows to set default contract infos.
      *
@@ -129,6 +96,43 @@ const ContractEstimation = ({
     const defaultFormValue = setDefaultContractInfos()
 
     const [contractInfos, setContractInfos] = useState<IContractInfos>(defaultFormValue)
+
+    const loadOffpeakHouse = useCallback(async () => {
+        await loadMeterInfos()
+    }, [loadMeterInfos])
+
+    useEffect(() => {
+        if (initialMountConsent.current && currentHousing && enedisSgeConsent?.extraData) {
+            loadOffpeakHouse()
+            setContractInfos({
+                power: enedisSgeConsent.extraData.maxPower.value,
+                contractType: enedisSgeConsent.extraData.contractType === 'Base' ? 'BASE' : 'HPHC',
+            })
+            initialMountConsent.current = false
+        }
+    }, [currentHousing, loadOffpeakHouse, enedisSgeConsent])
+
+    /**
+     * Format timestring from 22:00:00 to 22h00.
+     *
+     * @param timeString Time string to format.
+     * @returns Time formatted.
+     */
+    const formatTime = (timeString: string) => {
+        const [hours, minutes] = timeString.split(':')
+        return `${hours}h${minutes}`
+    }
+
+    /**
+     * Get peak hours text.
+     *
+     * @returns Peak hours text.
+     */
+    const getPeakHoursText = () => {
+        return housingMeter?.features?.offpeak?.offpeakHours.map(
+            (offpeakHour) => `${formatTime(offpeakHour.start)} à ${formatTime(offpeakHour.end)}`,
+        )
+    }
 
     /**
      * On Submit function.

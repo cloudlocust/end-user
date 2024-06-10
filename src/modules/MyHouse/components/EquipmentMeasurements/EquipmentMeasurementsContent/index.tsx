@@ -7,7 +7,7 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { SelectChangeEvent } from '@mui/material'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
+import { equipmentsOptions } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 import { EquipmentMeasurementsResults } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults'
 import { MicrowaveMeasurement } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement'
 import { useModal } from 'src/hooks/useModal'
@@ -34,7 +34,7 @@ export const EquipmentMeasurementsContent = ({ equipmentDetails }: EquipmentMeas
     } = useModal()
     const MY_EQUIPEMENT = 'Mon équipement'
     const { labelTitle: equipmentLabel } =
-        myEquipmentOptions.find((element) => element.name === equipmentDetails.name) || {}
+        equipmentsOptions.find((element) => element.name === equipmentDetails.name) || {}
 
     /**
      * Function to update the measurement results for the current equipment.

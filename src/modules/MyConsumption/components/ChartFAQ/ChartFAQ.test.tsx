@@ -15,6 +15,7 @@ import { TEST_DATETIME } from 'src/mocks/handlers/contracts'
 import { TEST_OFFERS } from 'src/mocks/handlers/commercialOffer'
 import { TEST_PROVIDERS } from 'src/mocks/handlers/commercialOffer'
 import { TEST_CONTRACT_TYPES } from 'src/mocks/handlers/commercialOffer'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 let mockContracts = [
     {
@@ -38,6 +39,16 @@ jest.mock('src/modules/Contracts/contractsHook', () => ({
     }),
 }))
 
+let mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    /**
+     * Mock useMyConsumptionStore hook for we can change between tabs.
+     *
+     * @returns Current tab.
+     */
+    useMyConsumptionStore: () => ({ consumptionToggleButton: mockMyConsumptionTab }),
+}))
+
 describe('ChartFAQ', () => {
     test('renders FAQ component with correct props for daily period', () => {
         const { getByText } = reduxedRender(<ChartFAQ period={PeriodEnum.DAILY} housingId={1} />)
@@ -53,8 +64,14 @@ describe('ChartFAQ', () => {
             expect(queryByTestId('faq')).not.toBeInTheDocument()
         },
     )
+    test('should FAQ component not be not shown on production view', () => {
+        mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        const { queryByTestId } = reduxedRender(<ChartFAQ period={PeriodEnum.DAILY} housingId={2} />)
+        expect(queryByTestId('faq')).not.toBeInTheDocument()
+    })
     test('should FAQ component not be not shown on tempo contract', () => {
         mockContracts[0].tariffType.name = 'Jour Tempo'
+        mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
         const { queryByTestId } = reduxedRender(<ChartFAQ period={PeriodEnum.DAILY} housingId={2} />)
         expect(queryByTestId('faq')).not.toBeInTheDocument()
     })

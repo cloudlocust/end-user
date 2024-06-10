@@ -1,5 +1,4 @@
 import { useTheme, Button } from '@mui/material'
-import { alpha } from '@mui/material/styles'
 import { useIntl } from 'react-intl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/EnphaseConsentPopup'
@@ -39,10 +38,7 @@ const SolarProductionLinkingPrompt = (): JSX.Element => {
                     >
                         Actuellement aucune production solaire n'est liée à l'application
                     </TypographyFormatMessage>
-                    <div
-                        style={{ backgroundColor: alpha(theme.palette.primary.main, 0.2) }}
-                        className="flex flex-col p-16 md:p-24 rounded-lg"
-                    >
+                    <div style={{ backgroundColor: '#B5DBDF' }} className="flex flex-col p-16 md:p-24 rounded-lg">
                         <TypographyFormatMessage
                             color={theme.palette.primary.main}
                             className="text-base md:text-xl font-bold"

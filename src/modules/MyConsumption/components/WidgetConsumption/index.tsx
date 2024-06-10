@@ -59,7 +59,7 @@ const WidgetConsumption = (props: IWidgetProps) => {
             if (currentRangeConsumptionData.length < 2) {
                 return emptyValueUnit
             }
-            if (currentDayConsumption !== null && currentDayAutoConsumption !== null) {
+            if (typeof currentDayConsumption === 'number' && typeof currentDayAutoConsumption === 'number') {
                 return consumptionWattUnitConversion(currentDayConsumption + currentDayAutoConsumption)
             }
             return computeTotalOfAllConsumptions(currentRangeConsumptionData)

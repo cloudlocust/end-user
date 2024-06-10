@@ -110,6 +110,7 @@ export const ConsumptionChartContainer = ({
      */
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
+
     const { equipmentsList } = useEquipmentList(currentHousing?.id)
     const {
         installationInfos,
@@ -232,15 +233,6 @@ export const ConsumptionChartContainer = ({
     }, [])
 
     /**
-     * OnEurosConsumptionToggl Handler Function.
-     *
-     * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
-     */
-    const onEurosConsumptionButtonToggle = (isEuroToggled: boolean) => {
-        updateTargets(period, isEuroToggled)
-    }
-
-    /**
      * Get the consumption targets based on the period and the Euros button toggle.
      *
      * @param period The period of the consumption.
@@ -270,6 +262,7 @@ export const ConsumptionChartContainer = ({
         return [
             metricTargetsEnum.autoconsumption,
             ...(isEurosButtonToggled ? eurosConsumptionTargets : [metricTargetsEnum.consumption]),
+            ...(isEurosButtonToggled ? eurosConsumptionTargets : [metricTargetsEnum.consumption]),
             metricTargetsEnum.injectedProduction,
             metricTargetsEnum.totalProduction,
         ]
@@ -295,6 +288,15 @@ export const ConsumptionChartContainer = ({
                     return prev
             }
         })
+    }
+
+    /**
+     * OnEurosConsumptionToggl Handler Function.
+     *
+     * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
+     */
+    const onEurosConsumptionButtonToggle = (isEuroToggled: boolean) => {
+        updateTargets(period, isEuroToggled)
     }
 
     // Callback use to fetch the some metrics

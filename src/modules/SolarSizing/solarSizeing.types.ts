@@ -56,7 +56,7 @@ export type AllHousingSolarSizingType = {
     /**
      * Solar sizing ids.
      */
-    solarSizing: ISolarSizing[]
+    solarSizings: ISolarSizing[]
     /**
      * Annual production measured in kWh.
      */
@@ -94,13 +94,5 @@ export type SolarSizingFormType =
         /**
          * Surface measured in m2.
          */
-        surface: string | number
-        /**
-         * Orientation measured in degrees.
-         */
-        orientation: string | number
-        /**
-         * Inclination measured in degrees.
-         */
-        inclination: string | number
+        surface?: number
     }

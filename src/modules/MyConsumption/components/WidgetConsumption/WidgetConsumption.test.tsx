@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { TEST_SUCCESS_WEEK_METRICS } from 'src/mocks/handlers/metrics'
 import { renderWidgetTitle } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 const CONSOMMATION_TOTALE_TEXT = 'Consommation Totale'
 const CONSOMMATION_PURCHASED_TEXT = renderWidgetTitle(metricTargetsEnum.consumption)
@@ -49,6 +50,9 @@ let mockWidgetPropsDefault: IWidgetProps = {
     targets: [metricTargetsEnum.consumption],
 }
 
+// This component (WidgetConsumption) is using only when AutoconsmptionProduction is toggled, so we'll test only this case.
+const mockConsumptionToggleButton = SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+
 // Mock metricsHook
 jest.mock('src/modules/Metrics/metricsHook.ts', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -74,6 +78,17 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     isProductionActiveAndHousingHasAccess: () => true,
 }))
 
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    /**
+     * Mock useMyConsumptionStore hook for we can change between tabs.
+     *
+     * @returns Current tab.
+     */
+    useMyConsumptionStore: () => ({
+        consumptionToggleButton: mockConsumptionToggleButton,
+    }),
+}))
+
 /**
  * Reusable render Test Component.
  *
@@ -96,7 +111,7 @@ describe('WidgetConsumption test', () => {
 
         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
     })
-    test('Two value should be shown, consumption & (consumption + autoconsumption)', async () => {
+    test('Two value should be shown in consuption widget, "purchased consumption" & "total consumption" (consumption + autoconsumption)', async () => {
         mockIsMetricsLoading = false
         mockData[0].datapoints = [[500, 1651406400]]
         mockData[1].datapoints = [[500, 1651406400]]
@@ -123,7 +138,7 @@ describe('WidgetConsumption test', () => {
         expect(getAllByText(500)).toHaveLength(2)
         expect(getAllByText(WH_UNIT_TEXT)).toHaveLength(2)
     })
-    test('When there is no data, an error message is shown the two title', () => {
+    test('When there is no data, an error message is showning', () => {
         mockData = []
         const { queryByText, getAllByText } = renderTestComponent()
 

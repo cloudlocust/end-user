@@ -179,8 +179,8 @@ export function useConsents() {
                 )
                 if (status === 201) {
                     setEnedisSgeConsent(data)
+                    if (onAfterCreation) await onAfterCreation()
                     setIsCreateEnedisSgeConsentLoading(false)
-                    if (onAfterCreation) onAfterCreation()
                 } else setIsCreateEnedisSgeConsentLoading(false)
             } catch (error: any) {
                 setIsCreateEnedisSgeConsentLoading(false)

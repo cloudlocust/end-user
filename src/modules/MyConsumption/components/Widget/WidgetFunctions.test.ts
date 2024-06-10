@@ -26,6 +26,7 @@ import {
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { utcToZonedTime } from 'date-fns-tz'
 
 let mockGlobalProductionFeatureState = true
@@ -392,47 +393,39 @@ describe('Test widget functions', () => {
     })
 
     describe('test renderWidgetTitle', () => {
-        test('returns the different metric targets title', () => {
-            const cases = [
-                {
-                    target: metricTargetsEnum.eurosConsumption,
-                    value: 'Coût Total',
-                },
-                {
-                    target: metricTargetsEnum.consumption,
-                    value: 'Achetée',
-                },
-                {
-                    target: metricTargetsEnum.pMax,
-                    value: 'Puissance Maximale',
-                },
-                {
-                    target: metricTargetsEnum.pMax,
-                    value: 'Puissance Maximale',
-                },
-                {
-                    target: metricTargetsEnum.totalProduction,
-                    value: 'Production Totale',
-                },
-                {
-                    target: metricTargetsEnum.autoconsumption,
-                    value: 'Autoconsommation',
-                },
-            ]
-
-            cases.forEach(({ value, target }) => {
-                const result = renderWidgetTitle(target)
-                expect(result).toBe(value)
-            })
+        const CONSUMPTION_TOTAL_TEXT = 'Consommation Totale'
+        test.each([
+            { target: metricTargetsEnum.eurosConsumption, expected: 'Coût Total' },
+            {
+                target: metricTargetsEnum.consumption,
+                expected: 'Achetée',
+                enphaseOff: false,
+                toggleButton: SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+            },
+            { target: metricTargetsEnum.consumption, expected: CONSUMPTION_TOTAL_TEXT, enphaseOff: true },
+            { target: metricTargetsEnum.pMax, expected: 'Puissance Maximale' },
+            { target: metricTargetsEnum.totalProduction, expected: 'Production Totale' },
+            { target: metricTargetsEnum.injectedProduction, expected: 'Injectée' },
+            { target: metricTargetsEnum.autoconsumption, expected: 'Autoconsommation' },
+            { target: metricTargetsEnum.idleConsumption, expected: 'Consommation de Veille' },
+        ])(`returns $expected for target is $target`, ({ target, expected, enphaseOff, toggleButton }) => {
+            const result = renderWidgetTitle(target, enphaseOff, toggleButton)
+            expect(result).toBe(expected)
         })
-        test('when globalProductionFeatureState is disabled, it returns `Consommation Totale` title for consumption target', () => {
-            mockGlobalProductionFeatureState = false // in tests we don't realy need it
+        test('when (Production is not active / housing has not access), it returns `Consommation Totale` title for consumption target', () => {
             mockIsProductionActiveAndHousingHasAccess = false
-            expect(renderWidgetTitle(metricTargetsEnum.consumption)).toBe('Consommation Totale')
+            expect(
+                renderWidgetTitle(
+                    metricTargetsEnum.consumption,
+                    false,
+                    SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+                ),
+            ).toBe(CONSUMPTION_TOTAL_TEXT)
         })
-        test('when globalProductionFeatureState & enphase is off, it returns `Consommation Totale` title for consumption target', () => {
-            mockGlobalProductionFeatureState = true
-            expect(renderWidgetTitle(metricTargetsEnum.consumption, true)).toBe('Consommation Totale')
+        test('when consumption button is toggled, it returns `Consommation Totale` title for consumption target', () => {
+            expect(
+                renderWidgetTitle(metricTargetsEnum.consumption, false, SwitchConsumptionButtonTypeEnum.Consumption),
+            ).toBe(CONSUMPTION_TOTAL_TEXT)
         })
         test('when it throws', () => {
             expect(() => renderWidgetTitle('error target' as unknown as metricTargetType)).toThrow(
