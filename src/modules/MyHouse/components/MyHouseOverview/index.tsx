@@ -1,12 +1,14 @@
 import { useLocation } from 'react-router-dom'
 import { AccomodationTab } from 'src/modules/MyHouse/components/Accomodation/AccomodationTab'
 import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
-import { HousingInformationPageLocationState } from 'src/modules/MyHouse/components/HousingInformation/HousingInformation.type'
 import { EquipmentsTab } from 'src/modules/MyHouse/components/Equipments'
 import { ReactElement, useState } from 'react'
 import { ButtonSwitcherParamsType } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
 import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
-import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
+import {
+    HyHousePageLocationState,
+    IHouseOverviewSectionsEnum,
+} from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
 // Mapping of section identifiers to their respective components
 const SectionContents: Record<IHouseOverviewSectionsEnum, ReactElement> = {
@@ -22,12 +24,11 @@ const SectionContents: Record<IHouseOverviewSectionsEnum, ReactElement> = {
  * @returns The House Summary component.
  */
 export function HouseOverview() {
-    const location = useLocation<HousingInformationPageLocationState>()
-    const focusOnInstallationForm: boolean = location?.state?.focusOnInstallationForm ?? false
+    const location = useLocation<HyHousePageLocationState>()
+    const defaultSelectedSection: IHouseOverviewSectionsEnum =
+        location?.state?.defaultSelectedSection ?? IHouseOverviewSectionsEnum.EQUIPMENTS
 
-    const [selectedSection, setSelectedSection] = useState<IHouseOverviewSectionsEnum>(
-        focusOnInstallationForm ? IHouseOverviewSectionsEnum.INSTALLATION : IHouseOverviewSectionsEnum.EQUIPMENTS,
-    )
+    const [selectedSection, setSelectedSection] = useState<IHouseOverviewSectionsEnum>(defaultSelectedSection)
 
     const buttonsSwitcherParams: ButtonSwitcherParamsType[] = [
         {

@@ -1,8 +1,9 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
 import { HouseOverview } from 'src/modules/MyHouse/components/MyHouseOverview'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
-let mockFocusOnInstallationForm = false
+let mockDefaultSelectedSection: IHouseOverviewSectionsEnum | undefined = undefined
 
 // mock useLocation hook
 jest.mock('react-router-dom', () => ({
@@ -10,9 +11,9 @@ jest.mock('react-router-dom', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useLocation: () => ({
         state: {
-            focusOnInstallationForm: mockFocusOnInstallationForm,
+            defaultSelectedSection: mockDefaultSelectedSection,
         },
-        pathname: '/my-houses/1/information',
+        pathname: '/my-houses',
     }),
 }))
 
@@ -30,8 +31,8 @@ describe('test MyHouseOverview component', () => {
 
         expect(getByText('Mes équipements')).toHaveClass('selected')
     })
-    test('when focusOnInstallationForm is true, `Mes énergies` tab is selected by default', () => {
-        mockFocusOnInstallationForm = true
+    test('when defaultSelectedSection is setted by "installation", `Mes énergies` tab is selected by default', () => {
+        mockDefaultSelectedSection = IHouseOverviewSectionsEnum.INSTALLATION
         const { getByText } = reduxedRender(
             <Router>
                 <HouseOverview />
@@ -39,6 +40,6 @@ describe('test MyHouseOverview component', () => {
         )
 
         expect(getByText('Mes énergies')).toHaveClass('selected')
-        mockFocusOnInstallationForm = false
+        mockDefaultSelectedSection = undefined
     })
 })

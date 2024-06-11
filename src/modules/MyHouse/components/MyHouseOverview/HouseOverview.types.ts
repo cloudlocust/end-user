@@ -1,5 +1,5 @@
 /**
- * Enum listing all Ecogestes Category Type.
+ * Enum of the different sections of the house overview page.
  */
 export enum IHouseOverviewSectionsEnum {
     /**
@@ -14,4 +14,14 @@ export enum IHouseOverviewSectionsEnum {
      * Installation.
      */
     INSTALLATION = 'installation',
+}
+
+/**
+ * Type of the location state object for the house overview page.
+ */
+export interface HyHousePageLocationState {
+    /**
+     * Boolean indicating if we should focus on the installation form.
+     */
+    defaultSelectedSection?: IHouseOverviewSectionsEnum
 }

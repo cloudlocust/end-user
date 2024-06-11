@@ -25,6 +25,7 @@ import { NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW } from 's
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { screen, within } from '@testing-library/react'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -680,8 +681,8 @@ describe('MyConsumptionContainer test', () => {
             const button = getByTestId('linkToSolarInstallationForm')
             userEvent.click(button)
             await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses/1/information', {
-                    focusOnInstallationForm: true,
+                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses', {
+                    defaultSelectedSection: IHouseOverviewSectionsEnum.INSTALLATION,
                 })
             })
         })

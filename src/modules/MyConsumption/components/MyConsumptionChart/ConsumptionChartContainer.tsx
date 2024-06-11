@@ -23,7 +23,7 @@ import {
     ConsumptionEnedisSgeWarning,
     MissingDataWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
-import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 import {
     eurosConsumptionTargets,
@@ -54,6 +54,7 @@ import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/componen
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { ResalePriceForm } from 'src/modules/MyConsumption/components/ResalePriceForm'
 import { useEquipmentList, useInstallation } from 'src/modules/MyHouse/components/Installation/installationHook'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -473,8 +474,8 @@ export const ConsumptionChartContainer = ({
      */
     const navigateToSolarInstallationForm = () => {
         if (currentHousing?.id) {
-            history.push(URL_HOUSING_INFORMATION(currentHousing.id), {
-                focusOnInstallationForm: true,
+            history.push(URL_MY_HOUSE, {
+                defaultSelectedSection: IHouseOverviewSectionsEnum.INSTALLATION,
             })
         }
     }
