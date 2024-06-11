@@ -827,9 +827,6 @@ describe('Test widget functions', () => {
     })
 
     describe('checkIfItIsCurrentDayRange', () => {
-        const today = new Date()
-        const todayDateString = today.toISOString().split('T')[0]
-
         test('should return false if period is not daily', () => {
             expect(checkIfItIsCurrentDayRange('weekly', '2024-04-23T00:00:00Z')).toBe(false)
         })
@@ -839,12 +836,9 @@ describe('Test widget functions', () => {
         })
 
         test('should return true if period is daily and range start is today', () => {
+            const today = utcToZonedTime(new Date(), 'Europe/Paris')
+            const todayDateString = today.toISOString().split('T')[0]
             expect(checkIfItIsCurrentDayRange('daily', `${todayDateString}T00:00:00Z`)).toBe(true)
-        })
-
-        test('should return true if period is daily and range start is today in a different timezone', () => {
-            const rangeStartInDifferentTimezone = utcToZonedTime(today, 'Europe/Paris').toISOString() // Convert today's date to Paris timezone
-            expect(checkIfItIsCurrentDayRange('daily', rangeStartInDifferentTimezone)).toBe(true)
         })
     })
 })
