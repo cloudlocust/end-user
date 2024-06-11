@@ -8,7 +8,7 @@ import { ForgotPasswordConfig } from './modules/User/ForgotPassword/ForgotPasswo
 import { ResetPasswordConfig } from 'src/modules/User/ResetPassword/ResetPasswordConfig'
 import { RegisterConfig } from './modules/User/Register/RegisterConfig'
 import { NrLinkConnectionConfig } from './modules/nrLinkConnection'
-import { MyHouseConfig } from './modules/MyHouse'
+import { MyHouseConfig } from 'src/modules/MyHouse/MyHouseConfig'
 import { ContractsConfig } from './modules/Contracts/ContractsConfig'
 import { ProfileManagementConfig } from './modules/User/ProfileManagement/ProfileManagementConfig'
 import { InstallationsRequestsConfig } from 'src/modules/InstallationRequests/InstallationRequestsConfig'
