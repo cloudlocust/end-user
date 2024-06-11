@@ -23,7 +23,7 @@ const SectionContents: Record<IHouseOverviewSectionsEnum, ReactElement> = {
  *
  * @returns The House Summary component.
  */
-export function HouseOverview() {
+export const HouseOverview = () => {
     const location = useLocation<HyHousePageLocationState>()
     const defaultSelectedSection: IHouseOverviewSectionsEnum =
         location?.state?.defaultSelectedSection ?? IHouseOverviewSectionsEnum.EQUIPMENTS
