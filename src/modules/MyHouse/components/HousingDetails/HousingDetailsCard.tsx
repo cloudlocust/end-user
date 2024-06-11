@@ -2,7 +2,7 @@ import { Card, useTheme, CardContent, CardActions, Tooltip } from '@mui/material
 import { HousingDetailsCardProps } from 'src/modules/MyHouse/components/HousingDetails/housingDetails'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { NavLink, useParams } from 'react-router-dom'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isEquipmentsAccomodationFeatureDisabled } from 'src/modules/MyHouse/MyHouseConfig'
