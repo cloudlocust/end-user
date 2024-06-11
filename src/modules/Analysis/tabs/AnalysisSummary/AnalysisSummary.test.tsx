@@ -9,7 +9,7 @@ import { createTheme } from '@mui/material/styles'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { IEnedisSgeConsent } from 'src/modules/Consents/Consents'
 
 // List of houses to add to the redux state
