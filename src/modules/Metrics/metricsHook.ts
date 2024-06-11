@@ -9,11 +9,15 @@ import {
     metricFiltersType,
     metricTargetType,
     getMetricsWithParamsType,
+    metricHistoryTargetsEnum,
+    useMetricsOptionsType,
 } from 'src/modules/Metrics/Metrics'
 import { useSnackbar } from 'notistack'
 import { useIntl } from 'react-intl'
 import { axios } from 'src/common/react-platform-components'
 import { useAxiosCancelToken } from 'src/hooks/AxiosCancelToken'
+import { getOptimalTargets } from 'src/modules/Metrics/metricsFunctions'
+import { reverseTargetHistoryMapping } from 'src/modules/Metrics/metricsVariables'
 
 /**
  * Get Metrics Error Message.
@@ -38,11 +42,12 @@ const defaultInitialState: getMetricType = {
  * Consumption Metrics hook.
  *
  * @param initialState Initial State of the hook.
- * @param immediate Indicates if getMetrics will execute when useMetrics instanciated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
+ * @param options Options object for the useMetrics hook.
  * @returns Consumption metrics hook.
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function useMetrics(initialState: getMetricType = defaultInitialState, immediate: boolean = false) {
+export function useMetrics(initialState: getMetricType = defaultInitialState, options: useMetricsOptionsType = {}) {
+    const { immediate = false, isUsingHistoryTargets = false } = options
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
     const [isMetricsLoading, setIsMetricsLoading] = useState(false)
@@ -58,37 +63,58 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
      * Get Metrics function: Everytime filters or range or targets or metricsInterval has changed, it triggers the function call.
      */
     const getMetrics = useCallback(async () => {
+        if (!targets?.length) {
+            setData([])
+            return
+        }
         setIsMetricsLoading(true)
         try {
-            const response = await axios.post(
+            const { data: metricsData } = await axios.post<IMetric[]>(
                 METRICS_API,
                 {
                     interval: metricsInterval,
                     range,
-                    targets,
+                    targets: isUsingHistoryTargets ? getOptimalTargets(targets, metricsInterval) : targets,
                     adhocFilters: filters,
                 },
                 {
                     cancelToken: source.current.token,
                 },
             )
-            setData(response.data)
-        } catch (error) {
-            if (isCancel(error)) return
-            enqueueSnackbar(
-                formatMessage({
-                    id: GET_METRICS_ERROR_MESSAGE,
-                    defaultMessage: GET_METRICS_ERROR_MESSAGE,
-                }),
-                {
-                    variant: 'error',
-                    autoHideDuration: 5000,
-                },
+            setData(
+                metricsData.map((metric) => ({
+                    ...metric,
+                    target: reverseTargetHistoryMapping[metric.target as metricHistoryTargetsEnum] ?? metric.target,
+                })),
             )
-            setData([])
+        } catch (error) {
+            if (!isCancel(error)) {
+                enqueueSnackbar(
+                    formatMessage({
+                        id: GET_METRICS_ERROR_MESSAGE,
+                        defaultMessage: GET_METRICS_ERROR_MESSAGE,
+                    }),
+                    {
+                        variant: 'error',
+                        autoHideDuration: 5000,
+                    },
+                )
+                setData([])
+            }
+        } finally {
+            setIsMetricsLoading(false)
         }
-        setIsMetricsLoading(false)
-    }, [enqueueSnackbar, filters, formatMessage, isCancel, metricsInterval, range, source, targets])
+    }, [
+        enqueueSnackbar,
+        filters,
+        formatMessage,
+        isCancel,
+        isUsingHistoryTargets,
+        metricsInterval,
+        range,
+        source,
+        targets,
+    ])
 
     // Happens everytime getMetrics dependencies change, doesn't happen first time hook is instanciated.
     useEffect(() => {
@@ -118,6 +144,7 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
             })
         }
     }
+
     /**
      * Remove a target in the metrics request.
      *
@@ -138,19 +165,29 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
      */
     const getMetricsWithParams = useCallback(
         async (params: getMetricsWithParamsType, isSettingData: boolean = true): Promise<IMetric[]> => {
+            if (!params.targets?.length) {
+                if (isSettingData) {
+                    setData([])
+                }
+                return []
+            }
             setIsMetricsLoading(true)
             const targetsBody: metricTargetsType = params.targets.map((target) => ({ target, type: 'timeserie' }))
             try {
-                const response = await axios.post(METRICS_API, {
+                const { data: metricsData } = await axios.post<IMetric[]>(METRICS_API, {
                     interval: params.interval,
                     range: params.range,
-                    targets: targetsBody,
+                    targets: isUsingHistoryTargets ? getOptimalTargets(targetsBody, params.interval) : targetsBody,
                     adhocFilters: params.filters,
                 })
+                const metricDataWithoutHistoryTargets = metricsData.map((metric) => ({
+                    ...metric,
+                    target: reverseTargetHistoryMapping[metric.target as metricHistoryTargetsEnum] ?? metric.target,
+                }))
                 if (isSettingData) {
-                    setData(response.data)
+                    setData(metricDataWithoutHistoryTargets)
                 }
-                return response.data
+                return metricDataWithoutHistoryTargets
             } catch (error) {
                 enqueueSnackbar(
                     formatMessage({
@@ -170,7 +207,7 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
                 setIsMetricsLoading(false)
             }
         },
-        [enqueueSnackbar, formatMessage],
+        [enqueueSnackbar, formatMessage, isUsingHistoryTargets],
     )
 
     return {
@@ -195,9 +232,12 @@ export function useMetrics(initialState: getMetricType = defaultInitialState, im
  * Hook used to wrapper useMetrics for we can use it in the same component and mock it in the tests.
  *
  * @param initialState Initial State of the hook.
- * @param immediate Indicates if getMetrics will execute when useMetrics instantiated, by default its false because usually the filters meterGuid param is empty thus the getMetrics will always show an error on instaciation of the hook when filters meterGuid is not set.
+ * @param options Options object for the useMetrics hook.
  * @returns Consumption metrics hook.
  */
-export function useAdditionalMetrics(initialState: getMetricType = defaultInitialState, immediate: boolean = false) {
-    return useMetrics(initialState, immediate)
+export function useAdditionalMetrics(
+    initialState: getMetricType = defaultInitialState,
+    options: useMetricsOptionsType = {},
+) {
+    return useMetrics(initialState, options)
 }

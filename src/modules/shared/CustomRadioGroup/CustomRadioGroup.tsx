@@ -9,9 +9,9 @@ import { CustomRadioButton } from 'src/modules/shared/CustomRadioButton/CustomRa
  * @param root0 N/A.
  * @param root0.elements The parameters of the CustomRadioButton children components.
  * @param root0.onValueChange Function triggered when the radio group value change.
+ * @param root0.value The radio group value.
  * @param root0.boxProps Props of the MUI Box component.
  * @param root0.boxClassName The class name of the MUI Box component.
- * @param root0.value The radio group value.
  * @returns CustomRadioGroup component.
  */
 export const CustomRadioGroup = ({

@@ -32,6 +32,18 @@ export type HousingEquipmentType =
         measurementModes?: string[] | null
         // eslint-disable-next-line jsdoc/require-jsdoc
         customerId?: number | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentBrand?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentModel?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        yearOfPurchase?: number | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentLabel?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentTitle?: string | null
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        equipmentId?: number
     }
 
 /**
@@ -55,4 +67,8 @@ export interface EquipmentsListProps {
      * Saving the equipment.
      */
     addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
+    /**
+     * Callback function to open addEquipmentPopup component.
+     */
+    onOpenAddEquipmentPopup: () => void
 }

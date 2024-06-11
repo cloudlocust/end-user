@@ -59,7 +59,7 @@ describe('useMetrics hook test', () => {
     test('When there is an HTTP request with the right body', async () => {
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMetrics(mockHookArguments, true))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments, { immediate: true }))
         expect(result.current.isMetricsLoading).toBeTruthy()
         await waitForValueToChange(
             () => {
@@ -74,7 +74,7 @@ describe('useMetrics hook test', () => {
         mockHookArguments.range.to = '2022-06-06T23:59:59.999Z'
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMetrics(mockHookArguments, true))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments, { immediate: true }))
 
         expect(result.current.isMetricsLoading).toBeTruthy()
         await waitForValueToChange(
@@ -90,12 +90,17 @@ describe('useMetrics hook test', () => {
         })
     }, 8000)
     test('When add and remove target, targets should change and getMetrics should work', async () => {
-        mockHookArguments.targets = []
+        mockHookArguments.targets = [
+            {
+                target: '__euros__consumption_metrics',
+                type: 'timeserie',
+            },
+        ]
         mockHookArguments.interval = '1m'
         mockHookArguments.range = getRange('day')
         const {
             renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useMetrics(mockHookArguments, true))
+        } = reduxedRenderHook(() => useMetrics(mockHookArguments, { immediate: true }))
 
         expect(result.current.isMetricsLoading).toBeTruthy()
         await waitForValueToChange(
@@ -105,7 +110,7 @@ describe('useMetrics hook test', () => {
             { timeout: 4000 },
         )
         expect(result.current.isMetricsLoading).toBeFalsy()
-        expect(result.current.data.length).toBe(0)
+        expect(result.current.data.length).toBe(1)
         // Add Target
         act(() => {
             result.current.addTarget(FAKE_TARGETS[0].target)
@@ -117,7 +122,7 @@ describe('useMetrics hook test', () => {
             { timeout: 8000 },
         )
         expect(result.current.data.length).toBeGreaterThan(0)
-        expect(result.current.data[0].target).toBe(FAKE_TARGETS[0].target)
+        expect(result.current.data[1].target).toBe(FAKE_TARGETS[0].target)
         // Remove target
         act(() => {
             result.current.removeTarget(FAKE_TARGETS[0].target)
@@ -128,13 +133,13 @@ describe('useMetrics hook test', () => {
             },
             { timeout: 8000 },
         )
-        expect(result.current.data.length).toBe(0)
+        expect(result.current.data.length).toBe(1)
     }, 30000)
     describe('Test getMetricsWithParams', () => {
         test('success', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
+            } = reduxedRenderHook(() => useMetrics(mockHookArguments, { immediate: false }))
             expect(result.current.isMetricsLoading).toBeFalsy()
 
             // GetMetricsWithParams
@@ -159,7 +164,7 @@ describe('useMetrics hook test', () => {
         test('success (when the parameter isSettingData is equal to false)', async () => {
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
+            } = reduxedRenderHook(() => useMetrics(mockHookArguments, { immediate: false }))
             expect(result.current.isMetricsLoading).toBeFalsy()
 
             let returnedData: IMetric[] | [] = []
@@ -179,7 +184,7 @@ describe('useMetrics hook test', () => {
             mockHookArguments.range.to = '2022-06-06T23:59:59.999Z'
             const {
                 renderedHook: { result, waitForValueToChange },
-            } = reduxedRenderHook(() => useMetrics(mockHookArguments, false))
+            } = reduxedRenderHook(() => useMetrics(mockHookArguments, { immediate: false }))
             expect(result.current.isMetricsLoading).toBeFalsy()
             // GetMetricsWithParams
             let returnedData: IMetric[] | [] = []

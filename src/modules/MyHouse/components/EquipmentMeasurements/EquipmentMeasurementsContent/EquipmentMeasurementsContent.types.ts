@@ -1,11 +1,11 @@
 import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/EquipmentsList/equipmentsList'
 
 /**
- * Type of the location state object for the equipment details page.
+ * EquipmentDetailsContentProps.
  */
-interface EquipmentDetailsPageLocationState {
+export interface EquipmentMeasurementsContentProps {
     /**
      * The equipment details object.
      */
-    equipment: HousingEquipmentType
+    equipmentDetails: HousingEquipmentType
 }

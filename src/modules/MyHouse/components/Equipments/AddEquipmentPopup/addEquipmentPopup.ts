@@ -23,7 +23,7 @@ export interface AddEquipmentPopupProps {
     /**
      * Add equipment function.
      */
-    addEquipment: (data: addEquipmentType) => Promise<postEquipmentInputType | undefined>
+    addEquipment: (data: addEquipmentType) => Promise<equipmentType | undefined>
     /**
      * Loading boolean for adding equipment.
      */

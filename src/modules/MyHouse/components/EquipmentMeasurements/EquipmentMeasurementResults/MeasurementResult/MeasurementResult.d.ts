@@ -3,9 +3,13 @@
  */
 export interface MeasurementResultProps {
     /**
-     * Function that open the measurement modal.
+     * Function that open the measurement modal on the result.
      */
     handleClickingOnMeasurementResult: () => void
+    /**
+     * Function that open the measurement modal to perform a new test.
+     */
+    handleClickingOnMeasurementButton: () => void
     /**
      * The measurement result.
      */

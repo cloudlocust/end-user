@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { useHistory } from 'react-router-dom'
 import { selectTheme } from 'src/common/ui-kit/fuse/utils/theming-generator'
 import { useIntl } from 'react-intl'
-import { myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { EquipmentDetailsHeaderProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentDetailsHeader/EquipmentDetailsHeader'
+import { equipmentsOptions } from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
+import { EquipmentMeasurementsHeaderProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementsHeader/EquipmentMeasurementsHeader.types'
 
 /**
  * EquipmentDetailsHeader compoonent.
@@ -13,13 +13,13 @@ import { EquipmentDetailsHeaderProps } from 'src/modules/MyHouse/components/Equi
  * @param root0.equipmentName The equipment name.
  * @returns EquipmentDetailsHeader JSX.
  */
-export const EquipmentDetailsHeader = ({ equipmentName }: EquipmentDetailsHeaderProps) => {
+export const EquipmentMeasurementsHeader = ({ equipmentName }: EquipmentMeasurementsHeaderProps) => {
     const theme = selectTheme()
     const history = useHistory()
     const { formatMessage } = useIntl()
 
     const { iconComponent: equipmentIcon, labelTitle: equipmentLabel } =
-        myEquipmentOptions.find((element) => element.name === equipmentName) || {}
+        equipmentsOptions.find((element) => element.name === equipmentName) || {}
 
     return (
         <ThemeProvider theme={theme}>

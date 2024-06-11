@@ -1,6 +1,6 @@
 import { reduxedRender } from 'src/common/react-platform-components/test'
-import { EquipmentMeasurementResults } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults'
-import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentDetails/EquipmentMeasurementResults/EquipmentMeasurementResults'
+import { EquipmentMeasurementsResults } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults'
+import { EquipmentMeasurementResultsProps } from 'src/modules/MyHouse/components/EquipmentMeasurements/EquipmentMeasurementResults/EquipmentMeasurementResults'
 
 const mockedMeasurementModes: ['mode1', 'mode2'] = ['mode1', 'mode2']
 const mockedMeasurementResults = { mode1: 500, mode2: 1200 }
@@ -24,7 +24,7 @@ const tableContainerTestId = 'table-container'
 
 describe('EquipmentMeasurementResultsList', () => {
     test('renders correctly with measurement modes', async () => {
-        const { getByText, getByTestId } = reduxedRender(<EquipmentMeasurementResults {...props} />)
+        const { getByText, getByTestId } = reduxedRender(<EquipmentMeasurementsResults {...props} />)
 
         expect(
             getByText((content, _) => {
@@ -39,7 +39,7 @@ describe('EquipmentMeasurementResultsList', () => {
     })
 
     test('doesn nott display anything when there are no measurementModes', () => {
-        const { container } = reduxedRender(<EquipmentMeasurementResults {...props} measurementModes={[]} />)
+        const { container } = reduxedRender(<EquipmentMeasurementsResults {...props} measurementModes={[]} />)
         expect(container.firstChild).toBeNull()
     })
 })

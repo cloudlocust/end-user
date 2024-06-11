@@ -11,6 +11,7 @@ import { SnakeCasedPropertiesDeep } from 'type-fest'
 import dayjs from 'dayjs'
 import { generateXAxisValues, getRange } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import Chance from 'chance'
+
 /**
  * Data of one day with 2min interval.
  */

@@ -31,7 +31,7 @@ export interface ConfigurationStepProps {
     /**
      * The setter linked to the state responsible for storing the current step.
      */
-    stepSetter: Dispatch<SetStateAction<number>>
+    stepSetter: Dispatch<SetStateAction<measurementStepsEnum>>
 }
 
 /**
