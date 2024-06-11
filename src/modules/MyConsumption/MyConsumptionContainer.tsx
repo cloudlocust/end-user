@@ -29,6 +29,7 @@ import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/Sw
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
 import SolarProductionDiscoveringPrompt from 'src/modules/MyConsumption/components/SolarProductionDiscoveringPrompt'
 import { useCurrentHousingScopes } from 'src/hooks/CurrentHousing'
+import useEnphaseConsentChecker from 'src/hooks/useEnphaseConsentChecker'
 
 /**
  * MyConsumptionContainer.
@@ -82,12 +83,12 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         return metricsInterval
     }, [consumptionToggleButton, metricsInterval, period])
 
-    // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (!currentHousing?.id) return
         setFilters(formatMetricFilter(currentHousing?.id))
-        getConsents(currentHousing?.id)
-    }, [setFilters, getConsents, currentHousing?.id])
+    }, [setFilters, currentHousing?.id])
+
+    useEnphaseConsentChecker(currentHousing, getConsents)
 
     useEffect(() => {
         loadConnectedPlugList()
