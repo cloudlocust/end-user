@@ -1,70 +1,71 @@
-import MultiTab from 'src/common/ui-kit/components/MultiTab/MultiTab'
-import { ThemeProvider, useTheme } from '@mui/material'
-import { styled } from '@mui/material/styles'
 import { useLocation } from 'react-router-dom'
 import { AccomodationTab } from 'src/modules/MyHouse/components/Accomodation/AccomodationTab'
 import { InstallationTab } from 'src/modules/MyHouse/components/Installation/InstallationForm'
 import { HousingInformationPageLocationState } from 'src/modules/MyHouse/components/HousingInformation/HousingInformation.type'
 import { EquipmentsTab } from 'src/modules/MyHouse/components/Equipments'
+import { ReactElement, useState } from 'react'
+import { ButtonSwitcherParamsType } from 'src/modules/shared/ButtonsSwitcher/ButtonsSwitcher'
+import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
-const Root = styled('div')(() => ({
-    '& .FusePageCarded-topBg': {
-        display: 'none',
-    },
-    '& > div .FusePageCarded-contentWrapper ': {
-        '& .FusePageCarded-header': {
-            display: 'none',
-        },
-        '& .FusePageCarded-contentCard': {
-            margin: '20px 0px 0px 0px',
-        },
-    },
-}))
+// Mapping of section identifiers to their respective components
+const SectionContents: Record<IHouseOverviewSectionsEnum, ReactElement> = {
+    [IHouseOverviewSectionsEnum.EQUIPMENTS]: <EquipmentsTab />,
+    [IHouseOverviewSectionsEnum.ACCOMODATION]: <AccomodationTab />,
+    [IHouseOverviewSectionsEnum.INSTALLATION]: <InstallationTab />,
+}
 
 /**
- * HouseOverview component renders a multi-tab interface for managing different aspects of a house.
- * It includes tabs for viewing and managing house equipment, accommodation details, and energy installations.
+ * HouseSummary component renders a summary of a house, including its equipment, accommodation details, and energy installations.
+ * It includes a tab switcher to navigate between the different aspects of the house.
  *
- * @returns The House Overview component.
+ * @returns The House Summary component.
  */
-export const HouseOverview = () => {
-    const theme = useTheme()
+export function HouseOverview() {
     const location = useLocation<HousingInformationPageLocationState>()
     const focusOnInstallationForm: boolean = location?.state?.focusOnInstallationForm ?? false
 
-    const tabsContent = [
+    const [selectedSection, setSelectedSection] = useState<IHouseOverviewSectionsEnum>(
+        focusOnInstallationForm ? IHouseOverviewSectionsEnum.INSTALLATION : IHouseOverviewSectionsEnum.EQUIPMENTS,
+    )
+
+    const buttonsSwitcherParams: ButtonSwitcherParamsType[] = [
         {
-            tabTitle: 'Mes équipements',
-            tabSlug: 'équipements',
-            tabContent: <EquipmentsTab />,
+            buttonText: 'Mes équipements',
+            /**
+             * Switch to Equipments when a User fire a Click.
+             */
+            clickHandler: () => {
+                setSelectedSection(IHouseOverviewSectionsEnum.EQUIPMENTS)
+            },
+            isSelected: selectedSection === IHouseOverviewSectionsEnum.EQUIPMENTS,
         },
         {
-            tabTitle: 'Ma maison',
-            tabSlug: 'accomodation',
-            tabContent: <AccomodationTab />,
+            buttonText: 'Ma maison',
+            /**
+             * Switch to Accomodation when a User fire a Click.
+             */
+            clickHandler: () => {
+                setSelectedSection(IHouseOverviewSectionsEnum.ACCOMODATION)
+            },
+            isSelected: selectedSection === IHouseOverviewSectionsEnum.ACCOMODATION,
         },
         {
-            tabTitle: 'Mes énergies',
-            tabSlug: 'installation',
-            tabContent: <InstallationTab />,
+            buttonText: 'Mes énergies',
+            /**
+             * Switch to Installation when a User fire a Click.
+             */
+            clickHandler: () => {
+                setSelectedSection(IHouseOverviewSectionsEnum.INSTALLATION)
+            },
+            isSelected: selectedSection === IHouseOverviewSectionsEnum.INSTALLATION,
         },
     ]
 
     return (
-        <ThemeProvider theme={theme}>
-            <Root>
-                <MultiTab
-                    content={tabsContent}
-                    innerScroll
-                    TabsProps={{ variant: 'fullWidth' }}
-                    rootCss={{
-                        height: 'none',
-                        minHeight: '0',
-                    }}
-                    isUseRouting={false}
-                    initialTabSlug={focusOnInstallationForm ? 'installation' : undefined}
-                />
-            </Root>
-        </ThemeProvider>
+        <div className="w-full flex flex-col gap-20 p-16">
+            <ButtonsSwitcher buttonsSwitcherParams={buttonsSwitcherParams} />
+            <div>{SectionContents[selectedSection]}</div>
+        </div>
     )
 }

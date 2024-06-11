@@ -28,7 +28,7 @@ describe('test MyHouseOverview component', () => {
         expect(getByText('Ma maison')).toBeInTheDocument()
         expect(getByText('Mes énergies')).toBeInTheDocument()
 
-        expect(getByText('Mes équipements')).toHaveClass('Mui-selected')
+        expect(getByText('Mes équipements')).toHaveClass('selected')
     })
     test('when focusOnInstallationForm is true, `Mes énergies` tab is selected by default', () => {
         mockFocusOnInstallationForm = true
@@ -38,7 +38,7 @@ describe('test MyHouseOverview component', () => {
             </Router>,
         )
 
-        expect(getByText('Mes énergies')).toHaveClass('Mui-selected')
+        expect(getByText('Mes énergies')).toHaveClass('selected')
         mockFocusOnInstallationForm = false
     })
 })
