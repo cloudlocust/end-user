@@ -23,7 +23,8 @@ import {
     ConsumptionEnedisSgeWarning,
     MissingDataWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
-import { URL_MY_HOUSE, sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 import {
     eurosConsumptionTargets,
