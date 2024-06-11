@@ -128,7 +128,7 @@ export const EurosConsumptionButtonToggler = ({
      * @returns The total cost in euros or undefined.
      */
     const totalEuroCost: any = useMemo(() => {
-        if (currentDayEuroConsumption === null && !dataMetrics.length) return undefined
+        if (typeof currentDayEuroConsumption !== 'number' && !dataMetrics.length) return undefined
         const totalSubscription = data.length
             ? computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
             : emptyValueUnit
