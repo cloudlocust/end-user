@@ -2,7 +2,12 @@ import {
     IMetric,
     targetTimestampsValuesFormat,
     formattedMetricsDataToTimestampsValues,
+    metricTargetsType,
+    metricIntervalType,
+    metricTargetsEnum,
+    metricHistoryTargetType,
 } from 'src/modules/Metrics/Metrics.d'
+import { targetHistoryMapping } from 'src/modules/Metrics/metricsVariables'
 
 /**
  * Pure Function to format Metrics Data to {values & timestamps} for a simpler access and usability by chart library.
@@ -54,4 +59,22 @@ export const formatMetricsDataToTimestampsValues = (data: IMetric[]): formattedM
     })
 
     return { values, timestamps }
+}
+
+/**
+ * Function to get the optimal targets to use (simple target or history target) depending on the interval used.
+ *
+ * @param metricsTargets Metrics Targets.
+ * @param metricsInterval Metrics Interval.
+ * @returns Metric Targets to use.
+ */
+export const getOptimalTargets = (metricsTargets: metricTargetsType, metricsInterval: metricIntervalType) => {
+    if (['30m', '1d', '1M'].includes(metricsInterval)) {
+        return metricsTargets.map((target) => ({
+            ...target,
+            target:
+                (targetHistoryMapping[target.target as metricTargetsEnum] as metricHistoryTargetType) ?? target.target,
+        }))
+    }
+    return metricsTargets
 }

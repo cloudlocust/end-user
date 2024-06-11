@@ -34,7 +34,7 @@ export const EquipmentMeasurementsContent = ({ equipmentDetails }: EquipmentMeas
     } = useModal()
     const MY_EQUIPEMENT = 'Mon équipement'
     const { labelTitle: equipmentLabel } =
-        equipmentsOptions.find((element) => element.name === equipmentDetails.name) || {}
+        equipmentsOptions.find((element) => element.name === equipmentDetails.name) ?? {}
 
     /**
      * Function to update the measurement results for the current equipment.
