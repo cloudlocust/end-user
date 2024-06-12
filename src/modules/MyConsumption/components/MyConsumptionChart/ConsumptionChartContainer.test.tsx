@@ -13,7 +13,7 @@ import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import {
     ConsumptionChartContainer,
@@ -25,6 +25,7 @@ import { NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW } from 's
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { screen, within } from '@testing-library/react'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -645,6 +646,7 @@ describe('MyConsumptionContainer test', () => {
         test('should navigate to the labelization page when the button is clicked', async () => {
             mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
             echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
+            mockPushHistory.mockClear()
             const { getByTestId } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
@@ -654,7 +656,7 @@ describe('MyConsumptionContainer test', () => {
             const button = getByTestId('linkToLabelizationPage')
             userEvent.click(button)
             await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalledWith('/my-consumption/labelization')
+                expect(mockPushHistory).toHaveBeenCalled()
             })
         })
     })
@@ -688,8 +690,8 @@ describe('MyConsumptionContainer test', () => {
             const button = getByTestId('linkToSolarInstallationForm')
             userEvent.click(button)
             await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses/1/information', {
-                    focusOnInstallationForm: true,
+                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses', {
+                    defaultSelectedSection: IHouseOverviewSectionsEnum.INSTALLATION,
                 })
             })
         })

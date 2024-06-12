@@ -10,14 +10,11 @@ import { EquipmentsTab } from 'src/modules/MyHouse/components/Equipments'
 import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 import EquipmentMeasurements from 'src/modules/MyHouse/components/EquipmentMeasurements'
 import EquipmentsDetails from 'src/modules/MyHouse/components/EquipmentsDetails'
 import EquipmentsUsage from 'src/modules/MyHouse/components/EquipmentsUsage'
 
-/**
- * Url for myHouse.
- */
-export const URL_MY_HOUSE = '/my-houses'
 /**
  * Url for myHouse Details.
  */

@@ -80,7 +80,7 @@ export interface IConnectedPlugProductionConsentPopupProps {
     /**
      * Callback on Close popup.
      */
-    onClose?: () => void
+    onClose: () => void
 }
 
 /**
