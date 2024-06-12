@@ -1,4 +1,4 @@
-import { metricFiltersType, metricIntervalType, metricRangeType, IMetric } from 'src/modules/Metrics/Metrics'
+import { metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**
@@ -35,8 +35,4 @@ export type EurosConsumptionButtonTogglerProps =
          * The interval for the metrics.
          */
         metricsInterval: metricIntervalType
-        /**
-         * The metrics data.
-         */
-        dataMetrics: IMetric[]
     }

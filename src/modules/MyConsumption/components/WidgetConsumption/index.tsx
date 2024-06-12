@@ -25,7 +25,7 @@ const emptyValueUnit = { value: 0, unit: 'Wh' as totalConsumptionUnits }
 const WidgetConsumption = (props: IWidgetProps) => {
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { currentDayConsumption, currentDayAutoConsumption, getCurrentDayConsumption } = useCurrentDayConsumption(
+    const { currentDayConsumption, currentDayAutoConsumption, getCurrentDayTotalValues } = useCurrentDayConsumption(
         currentHousing?.id,
     )
 
@@ -49,9 +49,11 @@ const WidgetConsumption = (props: IWidgetProps) => {
 
     useEffect(() => {
         if (isCurrentDayRange) {
-            getCurrentDayConsumption()
+            getCurrentDayTotalValues({
+                [metricTargetsEnum.consumption]: true,
+            })
         }
-    }, [getCurrentDayConsumption, isCurrentDayRange])
+    }, [getCurrentDayTotalValues, isCurrentDayRange])
 
     const { unit, value } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (consumption and autoconsumption)

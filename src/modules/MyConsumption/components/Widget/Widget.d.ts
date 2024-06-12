@@ -113,3 +113,33 @@ export type targetsInfosType = Record<
         percentageChange: number
     }
 >
+
+/**
+ * Consumption Value Unit type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type consumptionValueUnitType = {
+    /**
+     * Total value.
+     */
+    value: number
+    /**
+     * Total value unit.
+     */
+    unit: totalConsumptionUnits
+}
+
+/**
+ * Euro Value Unit type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type euroValueUnitType = {
+    /**
+     * Total value.
+     */
+    value: number
+    /**
+     * Total value unit.
+     */
+    unit: '€'
+}

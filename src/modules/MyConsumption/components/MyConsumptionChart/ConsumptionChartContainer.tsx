@@ -651,7 +651,6 @@ export const ConsumptionChartContainer = ({
                     range={range}
                     metricsInterval={metricsInterval}
                     filters={filters}
-                    dataMetrics={additionalMetricsData}
                 />
             </div>
 
