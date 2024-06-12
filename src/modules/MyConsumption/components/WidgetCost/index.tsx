@@ -4,19 +4,20 @@ import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import {
-    checkIfItIsCurrentDayRange,
     computeTotalEuros,
     computeTotalEurosWithSubscriptionPrice,
     getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: '' }
+const parisTimeZone = 'Europe/Paris'
 
 /**
  * WidgetCost Component.
@@ -27,7 +28,7 @@ const emptyValueUnit = { value: 0, unit: '' }
 export const WidgetCost = (props: IWidgetProps) => {
     const { metricsInterval, range, period, filters } = props
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { currentDayEuroConsumption, getCurrentDayTotalValues } = useCurrentDayConsumption(currentHousing?.id)
+    const { currentDayEuroConsumption, getCurrentDayEuroConsumption } = useCurrentDayConsumption(currentHousing?.id)
 
     const { getMetricsWidgetsData } = useContext(ConsumptionWidgetsMetricsContext)
     const { isPartiallyYearlyDataExist } = useMyConsumptionStore()
@@ -63,7 +64,13 @@ export const WidgetCost = (props: IWidgetProps) => {
         isRangeChanged.current = true
     }, [range])
 
-    const isCurrentDayRange = useMemo(() => checkIfItIsCurrentDayRange(period, range.from), [period, range.from])
+    const isCurrentDayRange = useMemo(
+        () =>
+            period === 'daily' &&
+            utcToZonedTime(new Date(range.from), parisTimeZone).getDate() ===
+                utcToZonedTime(new Date(), parisTimeZone).getDate(),
+        [period, range.from],
+    )
 
     // get metrics when metricsInterval change.
     useEffect(() => {
@@ -88,11 +95,9 @@ export const WidgetCost = (props: IWidgetProps) => {
 
     useEffect(() => {
         if (isCurrentDayRange) {
-            getCurrentDayTotalValues({
-                [metricTargetsEnum.eurosConsumption]: true,
-            })
+            getCurrentDayEuroConsumption()
         }
-    }, [getCurrentDayTotalValues, isCurrentDayRange])
+    }, [getCurrentDayEuroConsumption, isCurrentDayRange])
 
     const { unit, value: totalEurosWithSubscription } = useMemo(
         // we should wait for all metrics needed to be loaded, in this case, 2 (euroconsumption and subscriptionPrices)
@@ -103,7 +108,7 @@ export const WidgetCost = (props: IWidgetProps) => {
             if (isCurrentDayRange && currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
                 const { value: totalSubscriptionPrice } = computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
                 return {
-                    value: Number((currentDayEuroConsumption.value + totalSubscriptionPrice).toFixed(2)),
+                    value: Number((currentDayEuroConsumption + totalSubscriptionPrice).toFixed(2)),
                     unit: '€',
                 }
             }

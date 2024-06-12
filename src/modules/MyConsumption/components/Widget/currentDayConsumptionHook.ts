@@ -1,21 +1,12 @@
 import { useCallback, useState } from 'react'
-import {
-    CurrentDayConsumptionType,
-    CurrentDayEuroConsumptionType,
-    metricTargetsEnum,
-} from 'src/modules/Metrics/Metrics.d'
+import { CurrentDayConsumptionType, CurrentDayEuroConsumptionType } from 'src/modules/Metrics/Metrics'
 import { axios } from 'src/common/react-platform-components'
 import { API_RESOURCES_URL } from 'src/configs'
-import { utcToZonedTime } from 'date-fns-tz'
-import {
-    formatMetricFilter,
-    getDateWithoutTimezoneOffset,
-} from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
-import { startOfDay } from 'date-fns'
-import { useMetrics } from 'src/modules/Metrics/metricsHook'
-import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
-import { consumptionValueUnitType, euroValueUnitType } from 'src/modules/MyConsumption/components/Widget/Widget'
-import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
+
+/**
+ * Consumption value type.
+ */
+type ConsumptionValueType = number | null | undefined
 
 /**
  * Function to get the current day consumption API.
@@ -42,187 +33,60 @@ export const GET_CURRENT_DAY_EURO_CONSUMPTION_API = (housingId: number) =>
  * @returns Current day consumption hook.
  */
 export const useCurrentDayConsumption = (housingId?: number) => {
-    const [currentDayConsumption, setCurrentDayConsumption] = useState<consumptionValueUnitType>({
-        value: 0,
-        unit: 'Wh',
-    })
-    const [currentDayAutoConsumption, setCurrentDayAutoConsumption] = useState<consumptionValueUnitType>({
-        value: 0,
-        unit: 'Wh',
-    })
-    const [currentDayEuroConsumption, setCurrentDayEuroConsumption] = useState<euroValueUnitType>({
-        value: 0,
-        unit: '€',
-    })
-    const [isGetCurrentDayTotalValuesLoading, setIsGetCurrentDayTotalValuesLoading] = useState(false)
-    const { getMetricsWithParams } = useMetrics()
+    const [currentDayConsumption, setCurrentDayConsumption] = useState<ConsumptionValueType>(undefined)
+    const [currentDayAutoConsumption, setCurrentDayAutoConsumption] = useState<ConsumptionValueType>(undefined)
+    const [currentDayEuroConsumption, setCurrentDayEuroConsumption] = useState<ConsumptionValueType>(undefined)
+    const [isGetCurrentDayConsumptionLoading, setIsGetCurrentDayConsumptionLoading] = useState(false)
+    const [isGetCurrentDayEuroConsumptionLoading, setIsGetCurrentDayEuroConsumptionLoading] = useState(false)
 
-    const getCurrentDayConsumptionAndAutoConsumption = useCallback(async () => {
-        if (!housingId)
-            return {
-                consumption: null,
-                autoConsumption: null,
-            }
+    const getCurrentDayConsumption = useCallback(async () => {
+        if (!housingId) return
+        setIsGetCurrentDayConsumptionLoading(true)
         try {
             const { data: consumption, status } = await axios.get<CurrentDayConsumptionType>(
                 GET_CURRENT_DAY_CONSUMPTION_API(housingId),
             )
             if (status === 200) {
-                return {
-                    consumption: consumption.consumption,
-                    autoConsumption: consumption.autoConsumption,
-                }
+                setCurrentDayConsumption(consumption.consumption)
+                setCurrentDayAutoConsumption(consumption.autoConsumption)
+            } else {
+                setCurrentDayConsumption(null)
+                setCurrentDayAutoConsumption(null)
             }
         } catch (error) {
+            setCurrentDayConsumption(null)
+            setCurrentDayAutoConsumption(null)
         } finally {
-            return {
-                consumption: null,
-                autoConsumption: null,
-            }
+            setIsGetCurrentDayConsumptionLoading(false)
         }
     }, [housingId])
 
     const getCurrentDayEuroConsumption = useCallback(async () => {
-        if (!housingId)
-            return {
-                euroConsumption: null,
-            }
+        if (!housingId) return
+        setIsGetCurrentDayEuroConsumptionLoading(true)
         try {
             const { data: euroConsumption, status } = await axios.get<CurrentDayEuroConsumptionType>(
                 GET_CURRENT_DAY_EURO_CONSUMPTION_API(housingId),
             )
             if (status === 200) {
-                return {
-                    euroConsumption: euroConsumption.euroConsumption,
-                }
+                setCurrentDayEuroConsumption(euroConsumption.euroConsumption)
+            } else {
+                setCurrentDayEuroConsumption(null)
             }
         } catch (error) {
+            setCurrentDayEuroConsumption(null)
         } finally {
-            return {
-                euroConsumption: null,
-            }
+            setIsGetCurrentDayEuroConsumptionLoading(false)
         }
     }, [housingId])
-
-    const getCurrentDayTotalValuesFromMetricsData = useCallback(
-        async (targetsToGetDataFor: metricTargetsEnum[]) => {
-            if (!housingId) return
-            try {
-                const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-                const todayRange = {
-                    from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
-                    to: getDateWithoutTimezoneOffset(currentTime),
-                }
-                const data = await getMetricsWithParams(
-                    {
-                        interval: '1m',
-                        range: todayRange,
-                        targets: targetsToGetDataFor,
-                        filters: formatMetricFilter(housingId) ?? [],
-                    },
-                    false,
-                )
-
-                targetsToGetDataFor.forEach((target) => {
-                    switch (target) {
-                        case metricTargetsEnum.consumption:
-                            setCurrentDayConsumption(
-                                computeWidgetAssets(data, metricTargetsEnum.consumption) as consumptionValueUnitType,
-                            )
-                            break
-                        case metricTargetsEnum.autoconsumption:
-                            setCurrentDayAutoConsumption(
-                                computeWidgetAssets(
-                                    data,
-                                    metricTargetsEnum.autoconsumption,
-                                ) as consumptionValueUnitType,
-                            )
-                            break
-                        case metricTargetsEnum.eurosConsumption:
-                            setCurrentDayEuroConsumption(
-                                computeWidgetAssets(data, metricTargetsEnum.eurosConsumption) as euroValueUnitType,
-                            )
-                            break
-                    }
-                })
-            } catch (error) {}
-        },
-        [getMetricsWithParams, housingId],
-    )
-
-    const getCurrentDayTotalValues = useCallback(
-        async (targetsToCalculateTotalValuesFor: /**
-         * The targets to get the current day total values for.
-         */
-        {
-            /**
-             * If true, get the current consumption value.
-             */
-            [metricTargetsEnum.consumption]?: boolean
-            /**
-             * If true, get the current autoconsumption value.
-             */
-            [metricTargetsEnum.autoconsumption]?: boolean
-            /**
-             * If true, get the current eurosConsumption value.
-             */
-            [metricTargetsEnum.eurosConsumption]?: boolean
-        }) => {
-            if (!housingId) return
-            setIsGetCurrentDayTotalValuesLoading(true)
-            const isCalculateTotalConsumption = targetsToCalculateTotalValuesFor[metricTargetsEnum.consumption]
-            const isCalculateTotalAutoConsumption = targetsToCalculateTotalValuesFor[metricTargetsEnum.autoconsumption]
-            const isCalculateTotalEuroConsumption = targetsToCalculateTotalValuesFor[metricTargetsEnum.eurosConsumption]
-            let targetsToGetDataFor: metricTargetsEnum[] = []
-
-            // 1) get currentDayConsumption and autoconsumption with specific endpoint.
-            if (isCalculateTotalConsumption || isCalculateTotalAutoConsumption) {
-                const { consumption, autoConsumption } = await getCurrentDayConsumptionAndAutoConsumption()
-                if (typeof consumption === 'number') {
-                    setCurrentDayConsumption(consumptionWattUnitConversion(consumption))
-                } else {
-                    targetsToGetDataFor.push(metricTargetsEnum.consumption)
-                }
-                if (typeof autoConsumption === 'number') {
-                    setCurrentDayAutoConsumption(consumptionWattUnitConversion(autoConsumption))
-                } else {
-                    targetsToGetDataFor.push(metricTargetsEnum.autoconsumption)
-                }
-            }
-
-            // 2) get currentDayEuroConsumption with specific endpoint.
-            if (isCalculateTotalEuroConsumption) {
-                const { euroConsumption } = await getCurrentDayEuroConsumption()
-                if (typeof euroConsumption === 'number') {
-                    setCurrentDayEuroConsumption({
-                        value: euroConsumption,
-                        unit: '€',
-                    })
-                } else {
-                    targetsToGetDataFor.push(metricTargetsEnum.eurosConsumption)
-                }
-            }
-
-            // 3) get currentDayvalues with query.
-            if (targetsToGetDataFor.length) {
-                await getCurrentDayTotalValuesFromMetricsData(targetsToGetDataFor)
-            }
-
-            setIsGetCurrentDayTotalValuesLoading(false)
-        },
-        [
-            getCurrentDayConsumptionAndAutoConsumption,
-            getCurrentDayEuroConsumption,
-            getCurrentDayTotalValuesFromMetricsData,
-            housingId,
-        ],
-    )
 
     return {
         currentDayConsumption,
         currentDayAutoConsumption,
         currentDayEuroConsumption,
-        isGetCurrentDayTotalValuesLoading,
-        getCurrentDayTotalValues,
+        isGetCurrentDayConsumptionLoading,
+        isGetCurrentDayEuroConsumptionLoading,
+        getCurrentDayConsumption,
+        getCurrentDayEuroConsumption,
     }
 }

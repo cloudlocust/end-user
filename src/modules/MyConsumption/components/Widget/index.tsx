@@ -17,6 +17,7 @@ import { metricTargetType, metricTargetsEnum } from 'src/modules/Metrics/Metrics
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
@@ -59,7 +60,8 @@ export const Widget = memo(
             currentDayConsumption,
             currentDayAutoConsumption,
             currentDayEuroConsumption,
-            getCurrentDayTotalValues,
+            getCurrentDayConsumption,
+            getCurrentDayEuroConsumption,
         } = useCurrentDayConsumption(currentHousing?.id)
 
         const isConsumptionTarget = useMemo(
@@ -128,20 +130,15 @@ export const Widget = memo(
                     targets.includes(metricTargetsEnum.consumption) ||
                     targets.includes(metricTargetsEnum.autoconsumption)
                 ) {
-                    getCurrentDayTotalValues({
-                        [metricTargetsEnum.consumption]: true,
-                        [metricTargetsEnum.autoconsumption]: true,
-                    })
+                    getCurrentDayConsumption()
                 }
                 if (targets.includes(metricTargetsEnum.eurosConsumption)) {
-                    getCurrentDayTotalValues({
-                        [metricTargetsEnum.eurosConsumption]: true,
-                    })
+                    getCurrentDayEuroConsumption()
                 }
             }
             // ! Don't remove the eslint-disable. These dependencies must not contain the targets prop.
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [getCurrentDayTotalValues, isCurrentDayRange])
+        }, [getCurrentDayConsumption, getCurrentDayEuroConsumption, isCurrentDayRange])
 
         const targetsInfos = useMemo(() => {
             const targetsInfos: targetsInfosType = {}
@@ -159,20 +156,23 @@ export const Widget = memo(
                     switch (target) {
                         case metricTargetsEnum.consumption:
                             if (currentDayConsumption !== null && currentDayConsumption !== undefined) {
-                                unit = currentDayConsumption.unit
-                                value = currentDayConsumption.value
+                                const consumptionWidgetAssets = consumptionWattUnitConversion(currentDayConsumption)
+                                unit = consumptionWidgetAssets.unit
+                                value = consumptionWidgetAssets.value
                             }
                             break
                         case metricTargetsEnum.autoconsumption:
                             if (currentDayAutoConsumption !== null && currentDayAutoConsumption !== undefined) {
-                                unit = currentDayAutoConsumption.unit
-                                value = currentDayAutoConsumption.value
+                                const autoConsumptionWidgetAssets =
+                                    consumptionWattUnitConversion(currentDayAutoConsumption)
+                                unit = autoConsumptionWidgetAssets.unit
+                                value = autoConsumptionWidgetAssets.value
                             }
                             break
                         case metricTargetsEnum.eurosConsumption:
                             if (currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
-                                unit = currentDayEuroConsumption.unit
-                                value = currentDayEuroConsumption.value
+                                unit = '€'
+                                value = Number(currentDayEuroConsumption.toFixed(2))
                             }
                             break
                     }

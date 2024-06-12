@@ -18,6 +18,7 @@ import {
 } from 'src/modules/Dashboard/DashboardConsumptionWidget/utils'
 import { FuseCard } from 'src/modules/shared/FuseCard'
 import { ConsumptionAndPrice } from 'src/modules/Dashboard/DashboardConsumptionWidget/ConsumptionAndPrice'
+import { ConsumptionStatisticsType } from 'src/modules/Dashboard/DashboardConsumptionWidget/DashboardConsumptionWidget'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { computeWidgetAssets } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
@@ -26,7 +27,9 @@ import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyForm
 import { totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 import convert from 'convert-units'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
+import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 const emptyConsumptionValueUnit = { value: 0, unit: 'Wh' }
+const emptyEuroValueUnit = { value: 0, unit: '€' }
 const PARIS_TIMEZONE = 'Europe/Paris'
 
 /**
@@ -40,11 +43,67 @@ export const DashboardConsumptionWidget = () => {
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const [serieValues, setSerieValues] = useState<number[]>([])
     const [labels, setLabels] = useState<string[]>([])
+    const [totalDailyConsumption, setTotalDailyConsumption] = useState<ConsumptionStatisticsType>({
+        value: 0,
+        unit: 'Wh',
+    })
+    const [totalDailyEuroConsumption, setTotalDailyEuroConsumption] = useState<number>(0)
     const [percentageChange, setPercentageChange] = useState<number>(0)
-    const { currentDayConsumption, currentDayEuroConsumption, getCurrentDayTotalValues } = useCurrentDayConsumption(
-        currentHousing?.id,
-    )
+    const { currentDayConsumption, currentDayEuroConsumption, getCurrentDayConsumption, getCurrentDayEuroConsumption } =
+        useCurrentDayConsumption(currentHousing?.id)
     const { isMetricsLoading, getMetricsWithParams } = useMetrics()
+
+    /**
+     * Calculate the total daily consumption and price for the current day.
+     */
+    const calculateCurrentDayConsumptionAndEuro = useCallback(async () => {
+        const currentTime = utcToZonedTime(new Date(), PARIS_TIMEZONE)
+        const todayRange = {
+            from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
+            to: getDateWithoutTimezoneOffset(currentTime),
+        }
+
+        const todayDataInterval1m = await getMetricsWithParams(
+            {
+                interval: '1m',
+                range: todayRange,
+                targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+                filters: formatMetricFilter(currentHousing!.id) ?? [],
+            },
+            false,
+        )
+
+        let totalDailyConsumptionValue: number
+        let totalDailyConsumptionUnit: totalConsumptionUnits
+
+        if (currentDayConsumption !== null) {
+            const { value, unit } = consumptionWattUnitConversion(currentDayConsumption!)
+            setTotalDailyConsumption({ value, unit })
+            totalDailyConsumptionValue = value
+            totalDailyConsumptionUnit = unit
+        } else {
+            const { value, unit } = todayDataInterval1m?.length
+                ? computeWidgetAssets(todayDataInterval1m, metricTargetsEnum.consumption)
+                : emptyConsumptionValueUnit
+            setTotalDailyConsumption({
+                value,
+                unit: unit as totalConsumptionUnits,
+            })
+            totalDailyConsumptionValue = value
+            totalDailyConsumptionUnit = unit as totalConsumptionUnits
+        }
+
+        if (currentDayEuroConsumption !== null) {
+            setTotalDailyEuroConsumption(Number(currentDayEuroConsumption!.toFixed(2)))
+        } else {
+            const { value } = todayDataInterval1m?.length
+                ? computeWidgetAssets(todayDataInterval1m, metricTargetsEnum.eurosConsumption)
+                : emptyEuroValueUnit
+            setTotalDailyEuroConsumption(value)
+        }
+
+        return { totalDailyConsumptionValue, totalDailyConsumptionUnit }
+    }, [currentDayConsumption, currentDayEuroConsumption, currentHousing, getMetricsWithParams])
 
     /**
      * Calculate the total daily consumption for yesterday.
@@ -95,6 +154,9 @@ export const DashboardConsumptionWidget = () => {
             setSerieValues(serieValues)
         }
 
+        // Calculate the total daily consumption and price for the current day
+        const { totalDailyConsumptionValue, totalDailyConsumptionUnit } = await calculateCurrentDayConsumptionAndEuro()
+
         // Calculate the total daily consumption for yesterday
         const { value: yesterdayConsumptionValue, unit: yesterdayConsumptionUnit } =
             await calculateYesterdayConsumption()
@@ -106,20 +168,15 @@ export const DashboardConsumptionWidget = () => {
                     .from(yesterdayConsumptionUnit as totalConsumptionUnits)
                     .to('Wh'),
             ),
-            Number(convert(currentDayConsumption.value).from(currentDayConsumption.unit).to('Wh')),
+            Number(convert(totalDailyConsumptionValue).from(totalDailyConsumptionUnit).to('Wh')),
         )
         setPercentageChange(percentageChange)
-    }, [
-        calculateYesterdayConsumption,
-        currentDayConsumption.unit,
-        currentDayConsumption.value,
-        currentHousing,
-        getMetricsWithParams,
-    ])
+    }, [calculateCurrentDayConsumptionAndEuro, calculateYesterdayConsumption, currentHousing, getMetricsWithParams])
 
     useEffect(() => {
-        getCurrentDayTotalValues({ [metricTargetsEnum.consumption]: true, [metricTargetsEnum.eurosConsumption]: true })
-    }, [getCurrentDayTotalValues])
+        getCurrentDayConsumption()
+        getCurrentDayEuroConsumption()
+    }, [getCurrentDayConsumption, getCurrentDayEuroConsumption])
 
     useEffect(() => {
         if (currentDayConsumption !== undefined && currentDayEuroConsumption !== undefined) {
@@ -145,10 +202,9 @@ export const DashboardConsumptionWidget = () => {
                 </TypographyFormatMessage>
                 <div className="flex justify-between items-center gap-5 flex-wrap">
                     <ConsumptionAndPrice
-                        consumptionValue={currentDayConsumption.value}
-                        consumptionUnit={currentDayConsumption.unit}
-                        priceValue={currentDayEuroConsumption.value}
-                        priceUnit={currentDayEuroConsumption.unit}
+                        consumptionValue={totalDailyConsumption.value}
+                        consumptionUnit={totalDailyConsumption.unit}
+                        priceValue={totalDailyEuroConsumption}
                     />
                     <ChangeTrend percentageChange={percentageChange} />
                 </div>
