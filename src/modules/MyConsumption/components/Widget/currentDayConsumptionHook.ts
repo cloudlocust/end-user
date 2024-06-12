@@ -57,6 +57,99 @@ export const useCurrentDayConsumption = (housingId?: number) => {
     const [isGetCurrentDayTotalValuesLoading, setIsGetCurrentDayTotalValuesLoading] = useState(false)
     const { getMetricsWithParams } = useMetrics()
 
+    const getCurrentDayConsumptionAndAutoConsumption = useCallback(async () => {
+        if (!housingId)
+            return {
+                consumption: null,
+                autoConsumption: null,
+            }
+        try {
+            const { data: consumption, status } = await axios.get<CurrentDayConsumptionType>(
+                GET_CURRENT_DAY_CONSUMPTION_API(housingId),
+            )
+            if (status === 200) {
+                return {
+                    consumption: consumption.consumption,
+                    autoConsumption: consumption.autoConsumption,
+                }
+            }
+        } catch (error) {
+        } finally {
+            return {
+                consumption: null,
+                autoConsumption: null,
+            }
+        }
+    }, [housingId])
+
+    const getCurrentDayEuroConsumption = useCallback(async () => {
+        if (!housingId)
+            return {
+                euroConsumption: null,
+            }
+        try {
+            const { data: euroConsumption, status } = await axios.get<CurrentDayEuroConsumptionType>(
+                GET_CURRENT_DAY_EURO_CONSUMPTION_API(housingId),
+            )
+            if (status === 200) {
+                return {
+                    euroConsumption: euroConsumption.euroConsumption,
+                }
+            }
+        } catch (error) {
+        } finally {
+            return {
+                euroConsumption: null,
+            }
+        }
+    }, [housingId])
+
+    const getCurrentDayTotalValuesFromMetricsData = useCallback(
+        async (targetsToGetDataFor: metricTargetsEnum[]) => {
+            if (!housingId) return
+            try {
+                const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
+                const todayRange = {
+                    from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
+                    to: getDateWithoutTimezoneOffset(currentTime),
+                }
+                const data = await getMetricsWithParams(
+                    {
+                        interval: '1m',
+                        range: todayRange,
+                        targets: targetsToGetDataFor,
+                        filters: formatMetricFilter(housingId) ?? [],
+                    },
+                    false,
+                )
+
+                targetsToGetDataFor.forEach((target) => {
+                    switch (target) {
+                        case metricTargetsEnum.consumption:
+                            setCurrentDayConsumption(
+                                computeWidgetAssets(data, metricTargetsEnum.consumption) as consumptionValueUnitType,
+                            )
+                            break
+                        case metricTargetsEnum.autoconsumption:
+                            setCurrentDayAutoConsumption(
+                                computeWidgetAssets(
+                                    data,
+                                    metricTargetsEnum.autoconsumption,
+                                ) as consumptionValueUnitType,
+                            )
+                            break
+                        case metricTargetsEnum.eurosConsumption:
+                            setCurrentDayEuroConsumption(
+                                computeWidgetAssets(data, metricTargetsEnum.eurosConsumption) as euroValueUnitType,
+                            )
+                            break
+                    }
+                })
+            } catch (error) {}
+        },
+        [getMetricsWithParams, housingId],
+    )
+
     const getCurrentDayTotalValues = useCallback(
         async (targetsToCalculateTotalValuesFor: /**
          * The targets to get the current day total values for.
@@ -74,77 +167,35 @@ export const useCurrentDayConsumption = (housingId?: number) => {
              * If true, get the current eurosConsumption value.
              */
             [metricTargetsEnum.eurosConsumption]?: boolean
-            // eslint-disable-next-line sonarjs/cognitive-complexity
         }) => {
             if (!housingId) return
+            setIsGetCurrentDayTotalValuesLoading(true)
             const isCalculateTotalConsumption = targetsToCalculateTotalValuesFor[metricTargetsEnum.consumption]
             const isCalculateTotalAutoConsumption = targetsToCalculateTotalValuesFor[metricTargetsEnum.autoconsumption]
             const isCalculateTotalEuroConsumption = targetsToCalculateTotalValuesFor[metricTargetsEnum.eurosConsumption]
-
-            setIsGetCurrentDayTotalValuesLoading(true)
-
-            let currentDayTotalValues: Partial<Record<metricTargetsEnum, number | null>> = {
-                [metricTargetsEnum.consumption]: null,
-                [metricTargetsEnum.autoconsumption]: null,
-                [metricTargetsEnum.eurosConsumption]: null,
-            }
+            let targetsToGetDataFor: metricTargetsEnum[] = []
 
             // 1) get currentDayConsumption and autoconsumption with specific endpoint.
             if (isCalculateTotalConsumption || isCalculateTotalAutoConsumption) {
-                try {
-                    const { data: consumption, status } = await axios.get<CurrentDayConsumptionType>(
-                        GET_CURRENT_DAY_CONSUMPTION_API(housingId),
-                    )
-                    if (status === 200) {
-                        if (isCalculateTotalConsumption) {
-                            currentDayTotalValues[metricTargetsEnum.consumption] = consumption.consumption
-                        }
-                        if (isCalculateTotalAutoConsumption) {
-                            currentDayTotalValues[metricTargetsEnum.autoconsumption] = consumption.autoConsumption
-                        }
-                    }
-                } catch (error) {}
-            }
-
-            // 2) get currentDayEuroConsumption with specific endpoint.
-            if (isCalculateTotalEuroConsumption) {
-                try {
-                    const { data: euroConsumption, status } = await axios.get<CurrentDayEuroConsumptionType>(
-                        GET_CURRENT_DAY_EURO_CONSUMPTION_API(housingId),
-                    )
-                    if (status === 200) {
-                        currentDayTotalValues[metricTargetsEnum.eurosConsumption] = euroConsumption.euroConsumption
-                    }
-                } catch (error) {}
-            }
-
-            // 3) get currentDayvalues with query.
-            let targetsToGetDataFor: metricTargetsEnum[] = []
-
-            if (isCalculateTotalConsumption) {
-                if (typeof currentDayTotalValues[metricTargetsEnum.consumption] === 'number') {
-                    setCurrentDayConsumption(
-                        consumptionWattUnitConversion(currentDayTotalValues[metricTargetsEnum.consumption]!),
-                    )
+                const { consumption, autoConsumption } = await getCurrentDayConsumptionAndAutoConsumption()
+                if (typeof consumption === 'number') {
+                    setCurrentDayConsumption(consumptionWattUnitConversion(consumption))
                 } else {
                     targetsToGetDataFor.push(metricTargetsEnum.consumption)
                 }
-            }
-
-            if (isCalculateTotalAutoConsumption) {
-                if (typeof currentDayTotalValues[metricTargetsEnum.autoconsumption] === 'number') {
-                    setCurrentDayAutoConsumption(
-                        consumptionWattUnitConversion(currentDayTotalValues[metricTargetsEnum.autoconsumption]!),
-                    )
+                if (typeof autoConsumption === 'number') {
+                    setCurrentDayAutoConsumption(consumptionWattUnitConversion(autoConsumption))
                 } else {
                     targetsToGetDataFor.push(metricTargetsEnum.autoconsumption)
                 }
             }
 
+            // 2) get currentDayEuroConsumption with specific endpoint.
             if (isCalculateTotalEuroConsumption) {
-                if (typeof currentDayTotalValues[metricTargetsEnum.eurosConsumption] === 'number') {
+                const { euroConsumption } = await getCurrentDayEuroConsumption()
+                if (typeof euroConsumption === 'number') {
                     setCurrentDayEuroConsumption({
-                        value: currentDayTotalValues[metricTargetsEnum.eurosConsumption]!,
+                        value: euroConsumption,
                         unit: '€',
                     })
                 } else {
@@ -152,54 +203,19 @@ export const useCurrentDayConsumption = (housingId?: number) => {
                 }
             }
 
+            // 3) get currentDayvalues with query.
             if (targetsToGetDataFor.length) {
-                try {
-                    const currentTime = utcToZonedTime(new Date(), 'Europe/Paris')
-                    const todayRange = {
-                        from: getDateWithoutTimezoneOffset(startOfDay(currentTime)),
-                        to: getDateWithoutTimezoneOffset(currentTime),
-                    }
-                    const data = await getMetricsWithParams(
-                        {
-                            interval: '1m',
-                            range: todayRange,
-                            targets: targetsToGetDataFor,
-                            filters: formatMetricFilter(housingId) ?? [],
-                        },
-                        false,
-                    )
-
-                    targetsToGetDataFor.forEach((target) => {
-                        switch (target) {
-                            case metricTargetsEnum.consumption:
-                                setCurrentDayConsumption(
-                                    computeWidgetAssets(
-                                        data,
-                                        metricTargetsEnum.consumption,
-                                    ) as consumptionValueUnitType,
-                                )
-                                break
-                            case metricTargetsEnum.autoconsumption:
-                                setCurrentDayAutoConsumption(
-                                    computeWidgetAssets(
-                                        data,
-                                        metricTargetsEnum.autoconsumption,
-                                    ) as consumptionValueUnitType,
-                                )
-                                break
-                            case metricTargetsEnum.eurosConsumption:
-                                setCurrentDayEuroConsumption(
-                                    computeWidgetAssets(data, metricTargetsEnum.eurosConsumption) as euroValueUnitType,
-                                )
-                                break
-                        }
-                    })
-                } catch (error) {}
+                await getCurrentDayTotalValuesFromMetricsData(targetsToGetDataFor)
             }
 
             setIsGetCurrentDayTotalValuesLoading(false)
         },
-        [getMetricsWithParams, housingId],
+        [
+            getCurrentDayConsumptionAndAutoConsumption,
+            getCurrentDayEuroConsumption,
+            getCurrentDayTotalValuesFromMetricsData,
+            housingId,
+        ],
     )
 
     return {
