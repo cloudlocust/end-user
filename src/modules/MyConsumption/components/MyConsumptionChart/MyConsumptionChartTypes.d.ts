@@ -1,9 +1,15 @@
 import { RefObject } from 'react'
-import { metricIntervalType, targetTimestampsValuesFormat } from 'src/modules/Metrics/Metrics'
+import {
+    metricFiltersType,
+    metricIntervalType,
+    metricRangeType,
+    targetTimestampsValuesFormat,
+} from 'src/modules/Metrics/Metrics'
 import { Dispatch, SetStateAction } from 'react'
-import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
+import { PeriodEnum, periodType } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import ReactECharts from 'echarts-for-react'
 import { TooltipFormatter } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartTooltip/ConsumptionChartTooltip.types'
+import { IEnedisSgeConsent } from 'src/modules/Consents/Consents'
 
 /**
  * Period of time type, with start and end time.
@@ -57,6 +63,10 @@ export enum targetYAxisIndexEnum {
      * Euros yAxis index.
      */
     EUROS = '3',
+    /**
+     * Production yAxis index.
+     */
+    PRODUCTION = '4',
 }
 
 /**
@@ -79,7 +89,8 @@ export type targetsYAxisValueFormattersType = { [x in targetYAxisIndexEnum]: axi
  * @returns Value formatters to group yAxisLine and tooltip labels.
  */
 export type getTargetsYAxisValueFormattersType = (
-    values: targetTimestampsValuesFormat,
+    consumptionValues: targetTimestampsValuesFormat,
+    productionValues: targetTimestampsValuesFormat,
     period: periodType,
     isConsumptionYValueRounded?: boolean,
 ) => targetsYAxisValueFormattersType
@@ -112,10 +123,6 @@ export interface ConsumptionChartContainerProps {
      * Enedis SGE consent.
      */
     enedisSgeConsent?: IEnedisSgeConsent
-    /**
-     * Boolean indicating if solar production consent is off.
-     */
-    isSolarProductionConsentOff: boolean
     /**
      * Boolean indicating whether the idle chart is shown or not.
      */

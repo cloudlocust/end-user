@@ -183,7 +183,7 @@ export const EnedisSgePopup = ({
                                     <div className="p-24">
                                         <div className="flex flex-row items-center justify-center mb-24">
                                             <TypographyFormatMessage fontWeight={500} className="text-center">
-                                                Demande d'authorisation SGE en cours
+                                                Demande d’autorisation en cours
                                             </TypographyFormatMessage>
                                         </div>
                                         <LinearProgress

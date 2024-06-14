@@ -30,17 +30,14 @@ const Container = styled('div')(({ theme }) => ({
     width: '100%',
     whiteSpace: 'nowrap',
     scrollbarWidth: 'none',
-    paddingLeft: 16,
-    paddingRight: 16,
+    padding: '10px',
     alignItems: 'flex-start',
     gap: 8,
     display: 'inline-flex',
     alignSelf: 'stretch',
-    paddingTop: 24,
-    paddingBottom: 4,
     justifyContent: 'center',
-    [theme.breakpoints.down('md')]: {
-        paddingTop: 4,
+    [theme.breakpoints.down('sm')]: {
+        justifyContent: 'flex-start',
     },
     '& .MuiButton-root': {
         [theme.breakpoints.down('md')]: {
@@ -48,14 +45,17 @@ const Container = styled('div')(({ theme }) => ({
             fontSize: 12,
             minWidth: 160,
         },
+        [theme.breakpoints.down('sm')]: {
+            height: 24,
+            fontSize: 12,
+            width: 140,
+            minWidth: 140,
+            padding: '8px 8px',
+        },
         height: 30,
         minWidth: 200,
         display: 'flex',
         padding: '8px 16px',
-        paddingLeft: 16,
-        paddingRight: 16,
-        paddingTop: 8,
-        paddingBottom: 8,
         borderRadius: 90,
         border: '1px solid',
         borderColor: theme.palette.primary.main,
@@ -85,13 +85,11 @@ const Container = styled('div')(({ theme }) => ({
  * Component for idle consumption switch button.
  *
  * @param props N/A.
- * @param props.onSwitchConsumptionButton Function handling switch of ConsumptionButton.
  * @param props.isIdleShown Boolean indicate if the veille element is shown.
  * @param props.isAutoConsumptionProductionShown Boolean indicate if the autoconsumption-prod element is shown.
  * @returns Switch Consumption button.
  */
 export const SwitchConsumptionButton = ({
-    onSwitchConsumptionButton,
     isIdleShown,
     isAutoConsumptionProductionShown,
 }: SwitchConsumptionButtonProps): JSX.Element => {
@@ -106,7 +104,6 @@ export const SwitchConsumptionButton = ({
     const onChange = (value: SwitchConsumptionButtonTypeEnum) => {
         if (consumptionToggleButton !== value) {
             setConsumptionToggleButton(value)
-            onSwitchConsumptionButton(value)
         }
     }
 

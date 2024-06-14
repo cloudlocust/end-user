@@ -21,6 +21,7 @@ import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/My
 import dayjs from 'dayjs'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import { store } from 'src/redux'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * Wrong target error text.
@@ -263,15 +264,24 @@ export const isWidgetMonthlyMetrics = (type: metricTargetType, period: periodTyp
  *
  * @param target Metric Target.
  * @param enphaseOff Enphase Consent is inactive.
+ * @param consumptionToggleButton Consumption toggle button.
  * @returns Widget title.
  */
-export const renderWidgetTitle = (target: metricTargetType, enphaseOff?: boolean): widgetTitleType => {
+export const renderWidgetTitle = (
+    target: metricTargetType,
+    enphaseOff?: boolean,
+    consumptionToggleButton?: SwitchConsumptionButtonTypeEnum,
+): widgetTitleType => {
     switch (target) {
         case metricTargetsEnum.consumption:
-            return isProductionActiveAndHousingHasAccess(store.getState().housingModel.currentHousingScopes) &&
-                !enphaseOff
-                ? 'Achetée'
-                : 'Consommation Totale'
+            if (
+                isProductionActiveAndHousingHasAccess(store.getState().housingModel.currentHousingScopes) &&
+                !enphaseOff &&
+                consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+            ) {
+                return 'Achetée'
+            }
+            return 'Consommation Totale'
         case metricTargetsEnum.pMax:
             return 'Puissance Maximale'
         case metricTargetsEnum.eurosConsumption:

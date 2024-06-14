@@ -23,11 +23,11 @@ export enum SwitchConsumptionButtonLabelEnum {
     /**
      * Label for Consumption.
      */
-    General = 'Ma Conso',
+    General = 'Conso',
     /**
      * Label for Auto consumption & Production.
      */
-    AutoconsmptionProduction = 'Autoconso & Production',
+    AutoconsmptionProduction = 'Solaire',
     /**
      * Label for Idle.
      */
@@ -65,13 +65,6 @@ export type SwitchConsumpytionButtonType =
  * Interface for SwitchIdleConsumptionProps.
  */
 export interface SwitchConsumptionButtonProps {
-    /**
-     * Handle the click event on the switch consumption button.
-     *
-     * @param switchConsumptionButtonTypeEnum Indicates which button should will be active.
-     * @returns Void.
-     */
-    onSwitchConsumptionButton: (switchConsumptionButtonTypeEnum: SwitchConsumptionButtonTypeEnum) => void
     /**
      * Indicates if the veille is shown.
      */

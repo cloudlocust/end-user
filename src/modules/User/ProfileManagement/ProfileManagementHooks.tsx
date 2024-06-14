@@ -68,7 +68,10 @@ export const useProfileManagement = () => {
     // eslint-disable-next-line jsdoc/require-jsdoc
     const updatePassword = async (password: string) => {
         const formattedBirthdate = dayjs(user?.birthdate).format('DD/MM/YYYY')
-        await updateProfile({ ...user!, birthdate: formattedBirthdate, password }, 'Mot de passe modifié avec succès')
+        await updateProfile(
+            { ...user!, birthdate: user?.birthdate ? formattedBirthdate : undefined, password },
+            'Mot de passe modifié avec succès',
+        )
     }
 
     /**

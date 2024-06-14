@@ -458,7 +458,7 @@ export const InstallationTab = () => {
                                                             break
                                                     }
                                                 }}
-                                                className="flex-1 grid grid-cols-1 sm:grid-cols-2 sm:max-w-400"
+                                                className="flex sm:max-w-400"
                                             >
                                                 <FormControlLabel
                                                     value={SOLAR_PANEL_TYPES.onRoof}

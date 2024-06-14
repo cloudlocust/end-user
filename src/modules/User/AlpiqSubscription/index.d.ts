@@ -51,6 +51,10 @@ export interface IApliqMonthlySubscriptionEstimationResponse {
      * Monthly subscription estimation.
      */
     monthlySubscriptionEstimation: number
+    /**
+     * Annual Consumption Reference.
+     */
+    annualReferenceConsumption: number
 }
 
 /**
@@ -86,7 +90,37 @@ export type AlpiqFacturationDataType = /**
      * Prenom iban.
      */
     prenomAssocieIban: string
+    /**
+     * Civility Cotitulaire.
+     */
+    civilityCotitulaire?: string
+    /**
+     * Nom cotitulaire.
+     */
+    nomCotitulaire?: string
+    /**
+     * Prenom cotitulaire.
+     */
+    prenomCotitulaire?: string
 }
+
+/**
+ * Contract infos for estimation.
+ */
+export type IContractInfos =
+    /**
+     *
+     */
+    {
+        /**
+         * Contract type.
+         */
+        contractType: 'BASE' | 'HPHC'
+        /**
+         * Power.
+         */
+        power: number
+    }
 
 /**
  * Alpiq subscription specs.
@@ -105,6 +139,10 @@ export type AlpiqSubscriptionSpecsType = /**
      * Mensualite.
      */
     mensualite: number
+    /**
+     * Annual reference consumption.
+     */
+    car?: number
 }
 
 /**

@@ -29,6 +29,7 @@ let mockWindowOpen = jest.fn()
 const REVOKE_SOLAR_PRODUCTION_CONSENT_TEXT = 'Annuler la récolte de mes données'
 let mockAssociateConnectedPlug = jest.fn()
 let mockLoadConnectedPlugList = jest.fn()
+const mockGetEnphaseLink = jest.fn()
 // eslint-disable-next-line jsdoc/require-jsdoc
 let mockGetProductionConnectedPlug: () => IConnectedPlug | undefined = () => mockConnectedPlugsList[0]
 window.open = mockWindowOpen
@@ -99,6 +100,15 @@ jest.mock(
     },
 )
 
+// Mock consentsHook
+jest.mock('src/modules/Consents/consentsHook.ts', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useConsents: () => ({
+        enphaseLink: 'fake',
+        getEnphaseLink: mockGetEnphaseLink,
+    }),
+}))
+
 /**
  * Solar Production Status Props.
  */
@@ -108,8 +118,6 @@ const mockSolarProductionStatusProps: ISolarProductionConsentStatusProps = {
         enphaseConsentState: 'ACTIVE' as enphaseConsentStatus,
         createdAt: CREATED_AT,
     },
-    enphaseLink: 'fake',
-    getEnphaseLink: jest.fn(),
     solarProductionConsentLoadingInProgress: false,
     onRevokeEnphaseConsent: jest.fn(),
 }
@@ -200,8 +208,6 @@ describe('SolarProductionStatus component test', () => {
         })
     })
     test('When getting consent from enphases, getEnphaseLink should be called & enphasePopup should open and close with handleEnphaseClose', async () => {
-        const mockGetEnphaseLink = jest.fn()
-        mockSolarProductionStatusProps.getEnphaseLink = mockGetEnphaseLink
         const { getByText } = reduxedRender(
             <Router>
                 <SolarProductionConsentStatus {...mockSolarProductionStatusProps} />

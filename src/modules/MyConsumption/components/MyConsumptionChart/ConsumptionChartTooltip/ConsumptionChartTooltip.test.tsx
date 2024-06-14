@@ -10,6 +10,7 @@ const firstChartTooltipParam: EChartTooltipFormatterParamsItem = {
     seriesIndex: 0,
     axisValue: '123456',
     dataIndex: 0,
+    axisIndex: 0,
 }
 
 const secondChartTooltipParam: EChartTooltipFormatterParamsItem = {
@@ -20,9 +21,10 @@ const secondChartTooltipParam: EChartTooltipFormatterParamsItem = {
     seriesIndex: 1,
     axisValue: '123456',
     dataIndex: 0,
+    axisIndex: 0,
 }
 
-const params = [firstChartTooltipParam, secondChartTooltipParam]
+let params = [firstChartTooltipParam, secondChartTooltipParam]
 /**
  * Callback function for get total consumption.
  *
@@ -105,5 +107,29 @@ describe('ConsumptionChartTooltip', () => {
         )
         expect(getByText(message)).toBeInTheDocument()
         expect(document.querySelector('.empty-data')).toBeInTheDocument()
+    })
+
+    test('should remove duplicate labels and order them by axisIndex', () => {
+        // assign the second label to the axis 1
+        secondChartTooltipParam.axisIndex = 1
+        // make duplicate of labels and inverse the orders
+        params = [secondChartTooltipParam, firstChartTooltipParam, firstChartTooltipParam]
+        const { getByText, getAllByRole } = reduxedRender(
+            <ConsumptionChartTooltip
+                params={params}
+                getTotalConsumption={getTotalConsumption}
+                getTotalEuroCost={getTotalEuroCost}
+                valueFormatter={valueFormatter}
+            />,
+        )
+        // check if the labels appear one time
+        expect(getByText(firstChartTooltipParam.seriesName)).toBeInTheDocument()
+        expect(getByText(secondChartTooltipParam.seriesName)).toBeInTheDocument()
+        // check if the labels respect the order of axisIndex
+        const labels = getAllByRole('listitem')
+
+        expect(labels.map((element) => element.getAttribute('data-testid'))).toEqual(
+            [firstChartTooltipParam, secondChartTooltipParam].map((item) => item.seriesName),
+        )
     })
 })

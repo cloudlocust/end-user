@@ -2,6 +2,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Button from '@mui/material/Button'
 import { CustomRadioButtonProps } from 'src/modules/shared/CustomRadioButton/CustomRadioButton.types'
+import { useMemo } from 'react'
 
 /**
  * Custom radio button component.
@@ -19,7 +20,7 @@ export const CustomRadioButton = ({
     selectedValue,
     handleRadioBtnClick,
 }: CustomRadioButtonProps): JSX.Element => {
-    const isSelected = value === selectedValue
+    const isSelected = useMemo(() => value === selectedValue, [selectedValue, value])
 
     /**
      * Click handler for the Button.

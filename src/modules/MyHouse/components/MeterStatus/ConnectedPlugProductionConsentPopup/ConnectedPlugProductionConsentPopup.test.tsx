@@ -8,17 +8,21 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
 import userEvent from '@testing-library/user-event'
 import { waitFor } from '@testing-library/react'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const MOCK_TEST_CONNECTED_PLUGS: IConnectedPlug[] = applyCamelCase(TEST_CONNECTED_PLUGS)
 const CONFIGURE_SHELLY_TEXT = 'Configurer'
 let mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS
+let mockLoadingInProgress = false
 let mockAssociateConnectedPlug = jest.fn()
 let mockLoadConnectedPlugList = jest.fn()
 const mockHistoryGoBack = jest.fn()
 const mockHistoryPush = jest.fn()
 const mockOpenShellyConnectedPlugsWindow = jest.fn()
+const mockSetConsumptionToggleButton = jest.fn()
+const mockOnClosePopup = jest.fn()
 const CONNECTED_PLUGS_EMPTY_TEXT = `Aucune prise détectée. Renseignez vos prises connectées Shelly dans l'espace dedié`
 const ASSOCIATE_BUTTON_TEXT = 'Enregistrer'
 const circularProgressRole = 'progressbar'
@@ -42,15 +46,6 @@ jest.mock('react-router', () => ({
     }),
 }))
 
-let mockLoadingInProgress = false
-
-// TODO - fixe this shity quick fixe for tests by separating myHouseConfig dependencies
-jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
-    ...jest.requireActual('src/modules/MyHouse/MyHouseConfig'),
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    URL_MY_HOUSE: '/my-house',
-}))
-
 // Mock useInstallationRequestsList hook
 jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', () => ({
     ...jest.requireActual('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'),
@@ -68,12 +63,20 @@ jest.mock('src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook', ()
     }),
 }))
 
+jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
+    ...jest.requireActual('src/modules/MyConsumption/store/myConsumptionStore'),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useMyConsumptionStore: () => ({
+        setConsumptionToggleButton: mockSetConsumptionToggleButton,
+    }),
+}))
+
 describe('ConnectedPlugProductionConsentPopup component', () => {
     test('When Connected plug list is empty, Clicking on Configuration', async () => {
         mockConnectedPlugsList = []
         const { getByText } = reduxedRender(
             <Router>
-                <ConnectedPlugProductionConsentPopup />
+                <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -89,7 +92,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
     test('Opening shelly window when Clicking on Configure', async () => {
         const { getByText } = reduxedRender(
             <Router>
-                <ConnectedPlugProductionConsentPopup />
+                <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -103,7 +106,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
         mockLoadingInProgress = true
         const { getByRole } = reduxedRender(
             <Router>
-                <ConnectedPlugProductionConsentPopup />
+                <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
             </Router>,
             {
                 initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -119,7 +122,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
             mockConnectedPlugsList = MOCK_TEST_CONNECTED_PLUGS.slice(0, 2)
             const { getByText } = reduxedRender(
                 <Router>
-                    <ConnectedPlugProductionConsentPopup />
+                    <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
                 </Router>,
                 {
                     initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -134,7 +137,7 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
             mockAssociateConnectedPlug = jest.fn().mockImplementationOnce(() => true)
             const { getByLabelText, getByText } = reduxedRender(
                 <Router>
-                    <ConnectedPlugProductionConsentPopup />
+                    <ConnectedPlugProductionConsentPopup onClose={mockOnClosePopup} />
                 </Router>,
                 {
                     initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0], housingList: LIST_OF_HOUSES } },
@@ -155,7 +158,11 @@ describe('ConnectedPlugProductionConsentPopup component', () => {
                     mockHouseMeterGuid,
                 )
             })
-            expect(mockHistoryPush).toHaveBeenCalledWith(`${URL_MY_HOUSE}/${mockHouseId}/connected-plugs`)
+            expect(mockOnClosePopup).toHaveBeenCalledWith()
+            expect(mockSetConsumptionToggleButton).toHaveBeenCalledWith(
+                SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction,
+            )
+            expect(mockHistoryPush).toHaveBeenCalledWith(URL_CONSUMPTION)
         })
     })
 })

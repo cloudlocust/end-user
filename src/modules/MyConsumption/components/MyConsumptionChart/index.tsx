@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 import { formatMetricsDataToTimestampsValues } from 'src/modules/Metrics/formatMetricsData'
 import { useTheme } from '@mui/material/styles'
 import { ConsumptionChartProps } from 'src/modules/MyConsumption/components/MyConsumptionChart/MyConsumptionChartTypes.d'
@@ -127,7 +128,13 @@ const MyConsumptionChart = ({
                     brush: handleBrushSelected,
                 }}
                 option={option}
-                style={{ height: 360, margin: '0 auto' }}
+                style={{
+                    margin: '0 auto',
+                    height:
+                        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+                            ? 500
+                            : 360,
+                }}
             />
         </>
     )

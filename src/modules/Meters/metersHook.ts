@@ -68,11 +68,14 @@ export const useMeterForHousing = () => {
 
             setLoadingInProgress(false)
             return responseData
-        } catch (error) {
+        } catch (error: any) {
+            const errorAddMeterMsg = error?.response?.data
+                ? handlMeterErrorResponse(error?.response?.data)
+                : ADD_ERROR_MESSAGE
             enqueueSnackbar(
                 formatMessage({
-                    id: ADD_ERROR_MESSAGE,
-                    defaultMessage: ADD_ERROR_MESSAGE,
+                    id: errorAddMeterMsg,
+                    defaultMessage: errorAddMeterMsg,
                 }),
                 { variant: 'error' },
             )

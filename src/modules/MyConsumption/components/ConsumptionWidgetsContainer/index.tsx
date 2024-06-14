@@ -13,6 +13,8 @@ import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHou
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { WidgetCost } from 'src/modules/MyConsumption/components/WidgetCost'
+import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
  * MyConsumptionWidgets Component (it's Wrapper of the list of Widgets).
@@ -41,6 +43,10 @@ const ConsumptionWidgetsContainer = ({
     const theme = useTheme()
     const { resetMetricsWidgetData } = useContext(ConsumptionWidgetsMetricsContext)
     const { currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { consumptionToggleButton } = useMyConsumptionStore()
+
+    const isAutoconsmptionProductionToggled =
+        consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
     const isProductionEnabled = useMemo(
         () => isProductionActiveAndHousingHasAccess(currentHousingScopes) && !enphaseOff,
         [currentHousingScopes, enphaseOff],
@@ -54,12 +60,12 @@ const ConsumptionWidgetsContainer = ({
             widgetsToRender = [...widgetsToRender, metricTargetsEnum.pMax]
         }
 
-        if (isProductionEnabled) {
+        if (isProductionEnabled && isAutoconsmptionProductionToggled) {
             widgetsToRender = [metricTargetsEnum.totalProduction, metricTargetsEnum.autoconsumption, ...widgetsToRender]
         }
 
         return widgetsToRender
-    }, [isProductionEnabled, period])
+    }, [isAutoconsmptionProductionToggled, isProductionEnabled, period])
 
     /**
      *   We should reset the metrics context when the range, filters, metricsInterval or period changes,
@@ -85,7 +91,7 @@ const ConsumptionWidgetsContainer = ({
                      * Otherwise it'll be displayed with then normal Widget component, that displays one info : the consumption total,
                      *    (because in this case consumption total = purchased consumption).
                      */}
-                    {isProductionEnabled ? (
+                    {isProductionEnabled && isAutoconsmptionProductionToggled ? (
                         <WidgetConsumption
                             targets={[metricTargetsEnum.consumption]}
                             range={range}

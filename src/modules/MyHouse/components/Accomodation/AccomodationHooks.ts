@@ -6,7 +6,7 @@ import { getMsgFromAxiosError } from 'src/modules/utils'
 import { AxiosResponse } from 'axios'
 import { AccomodationDataType } from 'src/modules/MyHouse/components/Accomodation/AccomodationType'
 import { HOUSING_API } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
-import { equipmentsAccomodationFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { isEquipmentsAccomodationFeatureDisabled } from 'src/modules/MyHouse/MyHouseConfig'
 /**
  * Accomodation url.
  *
@@ -81,8 +81,12 @@ export function useAccomodation(housingId?: number) {
             }
             enqueueSnackbar(
                 formatMessage({
-                    id: error.response.data.detail,
-                    defaultMessage: error.response.data.detail,
+                    id:
+                        error.response.data.detail ??
+                        'Une erreur est survenue lors de la récupération des informations domicile.',
+                    defaultMessage:
+                        error.response.data.detail ??
+                        'Une erreur est survenue lors de la récupération des informations domicile.',
                 }),
                 { variant: 'error' },
             )
@@ -92,7 +96,7 @@ export function useAccomodation(housingId?: number) {
 
     // UseEffect executes on initial intantiation of Accomodation.
     useEffect(() => {
-        if (isInitialMount.current && !equipmentsAccomodationFeatureState) {
+        if (isInitialMount.current && !isEquipmentsAccomodationFeatureDisabled) {
             isInitialMount.current = false
             loadAccomodation()
         }

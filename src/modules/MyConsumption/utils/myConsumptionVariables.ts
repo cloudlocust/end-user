@@ -293,3 +293,15 @@ export const allTempoMetrics = [
     metricTargetsEnum.peakHourWhiteTempoConsumption,
     metricTargetsEnum.offPeakHourWhiteTempoConsumption,
 ]
+
+/**
+ * All euro tempo related metric targets.
+ */
+export const allEuroTempoMetrics = [
+    metricTargetsEnum.euroPeakHourBlueTempoConsumption,
+    metricTargetsEnum.euroOffPeakHourBlueTempoConsumption,
+    metricTargetsEnum.euroPeakHourRedTempoConsumption,
+    metricTargetsEnum.euroOffPeakHourRedTempoConsumption,
+    metricTargetsEnum.euroPeakHourWhiteTempoConsumption,
+    metricTargetsEnum.euroOffPeakHourWhiteTempoConsumption,
+]

@@ -36,7 +36,7 @@ export const LinkRedirection = ({
                 // In our case the checkbox, it means when if we click on the label even if we have a link in the label and we click on it, it will check the checkbox instead of redirecting
                 // That's why i handle the onClick on the link itself, so that i prevent the default of checkbox clicking through the label
                 e.preventDefault()
-                window.open(url, '_blank')
+                window.open(url, '_blank', 'noopener noreferrer')
             }}
             className="cursor-pointer"
         >

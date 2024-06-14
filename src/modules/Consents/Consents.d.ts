@@ -50,6 +50,30 @@ export enum MeterVerificationEnum {
 }
 
 /**
+ * Enedis extra data.
+ */
+interface enedisExtraData {
+    /**
+     * Max Power kva.
+     */
+    maxPower: /**
+     */ {
+        /**
+         * Unit KVA.
+         */
+        unit: string
+        /**
+         * Value of max power in meter.
+         */
+        value: number
+    }
+    /**
+     * Contract type, Base, ...etc.
+     */
+    contractType: string
+}
+
+/**
  * Inerface for Enedis Sge consent.
  */
 export interface IEnedisSgeConsent {
@@ -73,6 +97,10 @@ export interface IEnedisSgeConsent {
      * Expired at date.
      */
     expiredAt: string
+    /**
+     * Extra Data.
+     */
+    extraData?: enedisExtraData
 }
 
 /**

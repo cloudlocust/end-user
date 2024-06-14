@@ -17,6 +17,7 @@ export const defaultState: IHousingState = {
     currentHousing: null,
     currentHousingScopes: [],
     alpiqSubscriptionSpecs: null, // for when user has alpiq pipeline to save the contract he chose for payement.
+    solarSizing: null,
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
@@ -60,7 +61,8 @@ export const housingModel = createModel<RootModel>()({
                     housingScopes = responseData.scopes
                 }
                 dispatch.housingModel.setCurrentHousingScopesState(housingScopes)
-            } catch (err) {}
+                // eslint-disable-next-line prettier/prettier
+            } catch (err) { }
         },
     }),
     reducers: {

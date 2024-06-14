@@ -130,9 +130,9 @@ const PdlVerificationForm = ({
                     />
                 </div>
                 <TypographyFormatMessage variant="caption" className="mt-12" sx={{ color: textNrlinkColor }}>
-                    * Il est composé de 14 chiffres, il s'agit de l'identifiant de votre compteur utilisé par Enedis,
-                    vous pouvez aussi retrouver votre PDL sur votre compteur Linky en appuyant 6 fois sur la touche « +
-                    » sous le nom «NUMERO PRM»
+                    * Votre N° de PDL (Point De Livraison) est présent sur votre facture. Il est composé de 14 chiffres,
+                    il s'agit de l'identifiant de votre compteur utilisé par Enedis, vous pouvez aussi retrouver votre
+                    PDL sur votre compteur Linky en appuyant 6 fois sur la touche « + » sous le nom «NUMERO PRM»
                 </TypographyFormatMessage>
             </div>
             <div className="flex w-full justify-center mt-32">

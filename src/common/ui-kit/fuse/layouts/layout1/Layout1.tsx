@@ -1,9 +1,8 @@
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import { useToggle } from 'react-use'
 import { navbarItemType } from 'src/common/ui-kit/fuse/components/FuseNavigation/FuseNavigation'
 import NavbarStyle3 from './components/navbar/NavbarStyle3'
 import ToolbarLayout1 from './components/ToolbarLayout1'
-import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 const Root = styled('div')()

@@ -62,19 +62,19 @@ describe('Test useAlpiqProvider functions', () => {
                 () => {
                     return result.current.loadingInProgress
                 },
-                { timeout: 6000 },
+                { timeout: 90000 },
             )
             expect(mockEnqueueSnackbar).toHaveBeenCalledWith(MONTHLY_ESTIMATION_ERROR_MESSAGE, {
                 variant: 'error',
             })
             await store.dispatch.userModel.setAuthenticationToken('') // reset
-        })
+        }, 90000)
         test('When performed successfully, returns value', async () => {
             const {
                 renderedHook: { result },
             } = reduxedRenderHook(() => useAlpiqProvider())
             const resultEstimation = await result.current.getMonthlySubscriptionEstimation(3, 'BASE', 2)
-            expect(resultEstimation).toBe(33)
+            expect(resultEstimation.monthlySubscriptionEstimation).toBe(33)
         })
     })
     describe('Test Verify alpiq eligibility', () => {

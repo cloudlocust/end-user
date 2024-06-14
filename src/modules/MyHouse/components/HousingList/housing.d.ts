@@ -1,6 +1,7 @@
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
 import { IMeter } from 'src/modules/Meters/Meters'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes'
+import { ISolarSizing } from 'src/modules/SolarSizing/solarSizeing.types'
 import { IAlpiqSubscriptionSpecs } from 'src/modules/User/AlpiqSubscription'
 
 /**
@@ -45,4 +46,8 @@ export interface IHousingState {
      * Alpiq contract subscription specs.
      */
     alpiqSubscriptionSpecs: IAlpiqSubscriptionSpecs | null
+    /**
+     * Solar sizing.
+     */
+    solarSizing: ISolarSizing | null
 }

@@ -11,11 +11,8 @@ import { EquipmentDetails } from 'src/modules/MyHouse/components/EquipmentDetail
 import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 
-/**
- * Url for myHouse.
- */
-export const URL_MY_HOUSE = '/my-houses'
 /**
  * Url for myHouse Details.
  */
@@ -63,7 +60,7 @@ export const deleteAddFeatureState = window._env_.REACT_APP_ADD_DELETE_HOUSING_F
 /**
  * Env Variable to know if the equipments and accomodation feature is enabled.
  */
-export const equipmentsAccomodationFeatureState =
+export const isEquipmentsAccomodationFeatureDisabled =
     window._env_.REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE === 'disabled'
 
 /**
@@ -221,7 +218,7 @@ export const MyHouseConfig = [
                             </SvgIcon>
                         ),
                         url: URL_HOUSING_INFORMATION,
-                        disabled: equipmentsAccomodationFeatureState,
+                        disabled: isEquipmentsAccomodationFeatureDisabled,
                     },
                 },
             },

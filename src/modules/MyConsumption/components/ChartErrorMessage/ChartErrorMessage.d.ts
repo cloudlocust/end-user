@@ -21,4 +21,8 @@ export interface ChartErrorMessageProps {
      * Link to redirect.
      */
     linkTo?: string
+    /**
+     * Style of the component.
+     */
+    style?: React.CSSProperties
 }

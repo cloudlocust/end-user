@@ -18,6 +18,7 @@ jest.mock('react-router-dom', () => ({
      */
     useLocation: () => ({
         pathname: mockPathname,
+        state: { focusOnInstallationForm: undefined },
     }),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useHistory: () => ({

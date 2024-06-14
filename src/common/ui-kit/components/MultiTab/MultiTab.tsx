@@ -50,6 +50,7 @@ const Root = styled(FusePageCarded)(
  * @param props.TabProps Rest of Tab props.
  * @param props.rootCss Root component css.
  * @param props.isUseRouting Indicates whether to use routing for tab selection.
+ * @param props.initialTabSlug Initial slug value of the selected tab.
  * @returns  Element Details Tabs.
  */
 const MultiTab = ({
@@ -60,6 +61,7 @@ const MultiTab = ({
     TabProps,
     rootCss,
     isUseRouting = true,
+    initialTabSlug,
 }: MultiTabProps) => {
     const { formatMessage } = useIntl()
 
@@ -78,7 +80,7 @@ const MultiTab = ({
 
     // UseHistory, and tab Handle
     const history = useHistory()
-    const [tabSlug, setTabSlug] = useState(isInvalidValue ? content[0].tabSlug : entryTab)
+    const [tabSlug, setTabSlug] = useState(isInvalidValue ? initialTabSlug ?? content[0].tabSlug : entryTab)
 
     /**
      * Handler for tab change.

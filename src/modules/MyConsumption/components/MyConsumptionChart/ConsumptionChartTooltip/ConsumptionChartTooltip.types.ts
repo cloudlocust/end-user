@@ -44,6 +44,10 @@ export type EChartTooltipFormatterParamsItem =
          * The index of the data item.
          */
         dataIndex: number
+        /**
+         * The index of the axis to display in.
+         */
+        axisIndex: number
     }
 
 /**
