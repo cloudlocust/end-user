@@ -49,6 +49,7 @@ export default function ContractOtherField<T extends unknown>({
                     validateFunctions={validateFunctions}
                     margin="normal"
                     fullWidth
+                    data-testid="custom-provider-textfield"
                 />
                 <div className="mt-5 w-full">
                     <ButtonLoader

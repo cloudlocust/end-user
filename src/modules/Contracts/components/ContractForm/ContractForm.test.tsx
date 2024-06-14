@@ -57,11 +57,11 @@ const CONTRACT_FORM_OFFPEAK_HOURS_LABEL_LIST = [
 /**
  * Function that asserts that contract form fields are hidden, when previous field is not selected.
  *
- * @param LABELS Unselected Fields.
+ * @param labels Unselected Fields.
  * @param getByLabelText Get All By Text jest function.
  */
-const LabelsNotToBeInDocument = (LABELS: string[], getByLabelText: any) => {
-    LABELS.forEach((label) => {
+const assertLabelsNotToBeInDocument = (labels: string[], getByLabelText: Function) => {
+    labels.forEach((label) => {
         expect(() => getByLabelText(label, { exact: false })).toThrow()
     })
 }
@@ -70,9 +70,10 @@ const LabelsNotToBeInDocument = (LABELS: string[], getByLabelText: any) => {
  *
  * @param getAllByRole Get All By Text jest function.
  * @param optionIndex Indicates the Index of the option to be selected.
+ * @returns Click on the option.
  */
-const selectOption = (getAllByRole: any, optionIndex?: number) => {
-    userEvent.click(getAllByRole('option')[optionIndex || 0])
+const selectOption = (getAllByRole: Function, optionIndex?: number) => {
+    return userEvent.click(getAllByRole('option')[optionIndex || 0])
 }
 
 /**
@@ -97,6 +98,8 @@ const mockLoadOffers = jest.fn()
 const mockLoadTariffTypes = jest.fn()
 const mockEditMeter = jest.fn()
 const mockLoadTariffsHousingContract = jest.fn()
+
+const mockCreateCustomProvider = jest.fn()
 let mockIsTariffTypesLoading = false
 let mockIsPowersLoading = false
 let mockIsProvidersLoading = false
@@ -133,6 +136,12 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
         isProvidersLoading: mockIsProvidersLoading,
         isTariffTypesLoading: mockIsTariffTypesLoading,
         isTariffsLoading: mockIsTariffsLoading,
+    }),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useCreateCustomProvider: () => ({
+        createCustomProvider: mockCreateCustomProvider,
+        isCustomProviderCreated: true,
+        isCreateCustomProviderLoading: false,
     }),
 }))
 
@@ -175,6 +184,13 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
     },
 }))
 
+let mockHouse = TEST_HOUSES[0]
+
+jest.mock('src/hooks/CurrentHousing', () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useCurrentHousing: () => mockHouse,
+}))
+
 describe('Test ContractFormSelect Component', () => {
     test('Filling fields should show according to the previous one, and submitting works', async () => {
         const CONTRACT_FORM_FIELDS_LABELS = [...CONTRACT_FORM_FIELDS_LABEL_LIST]
@@ -189,7 +205,7 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadContractTypes).toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
 
         // When selecting Type, provider is shown
         userEvent.click(getByLabelText(TYPE_LABEL_TEXT, { exact: false }))
@@ -200,7 +216,7 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadProviders).toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting provider, offer is shown
         userEvent.click(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false }))
@@ -211,7 +227,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting offer, tariffType is shown
         userEvent.click(getByLabelText(OFFER_LABEL_TEXT, { exact: false }))
@@ -222,7 +238,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting tariffType, power is shown
         userEvent.click(getByLabelText(TARRIF_TYPE_LABEL_TEXT, { exact: false }))
@@ -233,7 +249,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting power, startSubscription is shown
         userEvent.click(getByLabelText(POWER_LABEL_TEXT, { exact: false }))
@@ -241,7 +257,7 @@ describe('Test ContractFormSelect Component', () => {
         expect(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT)).toBeTruthy()
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting startSubscription, tariffs & endSubscription is shown
         userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))
@@ -284,7 +300,7 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadContractTypes).toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
 
         // When selecting Type, provider is shown
         userEvent.click(getByLabelText(TYPE_LABEL_TEXT, { exact: false }))
@@ -295,7 +311,7 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadProviders).toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting provider, offer is shown
         userEvent.click(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false }))
@@ -306,7 +322,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
 
         // When selecting other offer, tariffType is not shown
         userEvent.click(getByLabelText(OFFER_LABEL_TEXT, { exact: false }))
@@ -317,7 +333,49 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadTariffTypes).not.toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByText)
+    }, 30000)
+
+    test('When Autre fournisseur is selected, the ContractOtherField component is rendered', async () => {
+        const CONTRACT_FORM_FIELDS_LABELS = [...CONTRACT_FORM_FIELDS_LABEL_LIST]
+        const { getByText, getByLabelText, getAllByRole, getByRole } = reduxedRender(
+            <ContractForm {...mockContractFormProps} />,
+        )
+
+        // Initially only contact type is shown
+        expect(getByLabelText(TYPE_LABEL_TEXT, { exact: false })).toBeTruthy()
+        CONTRACT_FORM_FIELDS_LABELS.shift()
+        await waitFor(() => {
+            expect(mockLoadContractTypes).toHaveBeenCalled()
+        })
+        // Other fields are not shown
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_FIELDS_LABELS, getByLabelText)
+        expect(() => getByText(OFFPEAK_HOURS_LABEL_TEXT, { exact: false })).toThrow()
+
+        // When selecting contrac type, provider is shown
+        userEvent.click(getByLabelText(TYPE_LABEL_TEXT, { exact: false }))
+        selectOption(getAllByRole)
+        CONTRACT_FORM_FIELDS_LABELS.shift()
+        expect(getByLabelText(PROVIDER_LABEL_TEXT)).toBeTruthy()
+        await waitFor(() => {
+            expect(mockLoadProviders).toHaveBeenCalled()
+        })
+
+        // Select "Autre fournisseur" option
+        userEvent.click(getByLabelText(PROVIDER_LABEL_TEXT, { exact: false }))
+        selectOption(getAllByRole, TEST_PROVIDERS.length)
+
+        const OTHER_PROVIDER_TEXTFIELD = getByRole('textbox')
+
+        expect(OTHER_PROVIDER_TEXTFIELD).toBeTruthy()
+
+        userEvent.click(getByText('Créer le fournisseur'))
+
+        userEvent.type(getByLabelText('Votre fournisseur *'), 'custom')
+
+        await waitFor(() => expect(mockCreateCustomProvider).toHaveBeenCalled(), {
+            timeout: 6000,
+        })
     }, 30000)
 
     test('Submitting form with offPeakhours', async () => {
@@ -333,7 +391,7 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadContractTypes).toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByLabelText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByLabelText)
         expect(() => getByText(OFFPEAK_HOURS_LABEL_TEXT, { exact: false })).toThrow()
 
         // When selecting Type, provider is shown
@@ -345,7 +403,7 @@ describe('Test ContractFormSelect Component', () => {
             expect(mockLoadProviders).toHaveBeenCalled()
         })
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
         expect(() => getByText(OFFPEAK_HOURS_LABEL_TEXT, { exact: false })).toThrow()
 
         // When selecting provider, offer is shown
@@ -357,7 +415,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
         expect(() => getByText(OFFPEAK_HOURS_LABEL_TEXT, { exact: false })).toThrow()
 
         // When selecting offer, tariffType is shown
@@ -369,7 +427,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
         expect(() => getByText(OFFPEAK_HOURS_LABEL_TEXT, { exact: false })).toThrow()
 
         // When selecting tariffType option offpeakHours, then offpeakHours Field is shown
@@ -386,7 +444,7 @@ describe('Test ContractFormSelect Component', () => {
         })
         CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
 
         // When selecting power, startSubscription is shown
         userEvent.click(getByLabelText(POWER_LABEL_TEXT, { exact: false }))
@@ -394,7 +452,7 @@ describe('Test ContractFormSelect Component', () => {
         expect(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT)).toBeTruthy()
         CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS.shift()
         // Other fields are not shown
-        LabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
+        assertLabelsNotToBeInDocument(CONTRACT_FORM_OFFPEAK_HOURS_FIELDS_LABELS, getByText)
 
         // When selecting startSubscription, tariffs & endSubscription is shown
         userEvent.click(getByLabelText(START_SUBSCRIPTION_LABEL_TEXT))

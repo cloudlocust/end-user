@@ -240,7 +240,7 @@ export const useCommercialOffer = () => {
  *
  * @returns Hook useCreateCustomProvider.
  */
-export function useCreateCustomProvider() {
+export const useCreateCustomProvider = () => {
     const [isCreateCustomProviderLoading, setIsCreateCustomProviderLoading] = useState(false)
     const [isCustomProviderCreated, setIsCustomProviderCreated] = useState(false)
     const { enqueueSnackbar } = useSnackbar()
