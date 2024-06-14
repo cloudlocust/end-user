@@ -38,26 +38,12 @@ const OFFPEAK_HOURS_LABEL = 'OFFPEAK Hours'
 const mockHouseId = TEST_HOUSES[0].id
 
 /**
- * Mocking the react-router-dom used in contractsHooks.
- */
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    /**
-     * Mock the useParams to get the houseId from url.
-     *
-     * @returns UseParams containing houseId.
-     */
-    useParams: () => ({
-        houseId: `${mockHouseId}`,
-    }),
-}))
-
-/**
  * Mock for offpeakHoursFieldProps.
  */
 const mockOffpeakHoursProps: offpeakHoursFieldProps = {
     name: OFFPEAK_HOURS_NAME,
     label: OFFPEAK_HOURS_LABEL,
+    houseId: mockHouseId,
 }
 
 /**

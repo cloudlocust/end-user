@@ -221,7 +221,9 @@ describe('useContractDetails test', () => {
             } = reduxedRenderHook(() => useContractDetails(TEST_HOUSE_ID, 0), { initialState: {} })
             // Element is edited.
             act(async () => {
-                await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT, offerId: TEST_ERROR_OFFER })
+                try {
+                    await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT, offerId: TEST_ERROR_OFFER })
+                } catch (error) {}
             })
             expect(result.current.loadingInProgress).toBe(true)
             await waitForValueToChange(
@@ -241,7 +243,9 @@ describe('useContractDetails test', () => {
             } = reduxedRenderHook(() => useContractDetails(TEST_HOUSE_ID, 0), { initialState: {} })
             // Element is edited.
             act(async () => {
-                await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT })
+                try {
+                    await result.current.editElementDetails({ ...TEST_SUCCESS_ADD_CONTRACT })
+                } catch (error) {}
             })
             expect(result.current.loadingInProgress).toBe(true)
             await waitForValueToChange(

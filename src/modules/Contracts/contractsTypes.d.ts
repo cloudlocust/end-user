@@ -53,6 +53,18 @@ export type ContractFormProps =
          * Default values  request.
          */
         defaultValues?: contractFormValuesType
+        /**
+         * Indicates whether the form descriptions is visible.
+         */
+        isFormDescriptionsVisible?: boolean
+        /**
+         * When the submit button is outside of the form.
+         */
+        isUsingRemoteSubmit?: boolean
+        /**
+         * The house id which the contract is associated with.
+         */
+        houseId: number
     }
 
 /**
@@ -69,6 +81,14 @@ export type ContractFormFieldsProps =
          * Indicate if ContractFormFIelds are disabled.
          */
         disabled?: boolean
+        /**
+         * When the submit button is outside of the form.
+         */
+        isUsingRemoteSubmit?: boolean
+        /**
+         * The house id which the contract is associated with.
+         */
+        houseId: number
     }
 
 /**
@@ -307,6 +327,10 @@ export interface offpeakHoursFieldProps {
      * and we remove children from the props because.
      */
     labelProps?: TypographyProps
+    /**
+     * The house id which the contract is associated with.
+     */
+    houseId: number
 }
 
 /**
