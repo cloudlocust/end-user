@@ -259,6 +259,10 @@ export const commercialOfferEndpoints = [
             return res(ctx.status(400), ctx.json({ message: 'Network identifier is required' }))
         }
 
+        if (name === 'error' || network_identifier === 0) {
+            return res(ctx.status(400), ctx.json({ message: 'Error' }))
+        }
+
         // Check if the provider already exists
         if (TEST_PROVIDERS.some((provider) => provider.name === name)) {
             return res(ctx.status(400), ctx.json({ message: 'Provider already exists' }))
