@@ -9,6 +9,7 @@ import { applyCamelCase } from './common/react-platform-components'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const MAINTENANCE_INFO_TEXT = 'Une maintenance est en cours. Nous revenons au plus vite.'
+// eslint-disable-next-line
 const ADD_NRLINK_CONNECTION_TEXT =
     "C'est le début d'une grande aventure pour comprendre & maîtriser votre consommation d'électricité chez vous !"
 const STEPPER_FIRST_STEP_TEXT = 'Connectons votre compteur électrique'
