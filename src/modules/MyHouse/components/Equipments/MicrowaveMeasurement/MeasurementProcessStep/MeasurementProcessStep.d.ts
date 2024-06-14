@@ -1,5 +1,8 @@
 import { Theme } from '@mui/material'
-import { MeasurementStatusStateType } from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
+import {
+    MeasurementStatusStateType,
+    measurementStepsEnum,
+} from 'src/modules/MyHouse/components/Equipments/MicrowaveMeasurement/MicrowaveMeasurement'
 
 /**
  * Props of the ResponseMessage component.
@@ -50,5 +53,5 @@ export interface MeasurementProcessStepProps {
     /**
      * The setter linked to the state responsible for storing the current step.
      */
-    stepSetter: Dispatch<SetStateAction<number>>
+    stepSetter: Dispatch<SetStateAction<measurementStepsEnum>>
 }

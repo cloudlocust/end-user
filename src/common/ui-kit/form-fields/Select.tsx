@@ -22,7 +22,7 @@ export interface SelectFieldProps extends SelectProps {
     /**
      * Override the default label of material ui to make it required.
      */
-    label: string
+    label: string | JSX.Element
     /**
      * We use formControlProps for pass the some props to FormControl component,
      * and we remove required because we take it from requiredBuilder validator.

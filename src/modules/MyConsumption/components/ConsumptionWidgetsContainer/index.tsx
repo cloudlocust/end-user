@@ -167,15 +167,15 @@ const ConsumptionWidgetsContainer = ({
                     {widgetsToRender.map((target) => {
                         return target === metricTargetsEnum.totalProduction ? (
                             <Widget
-                                key={target}
-                                targets={[target, metricTargetsEnum.injectedProduction]}
+                                key={metricTargetsEnum.totalProduction}
+                                targets={[metricTargetsEnum.totalProduction, metricTargetsEnum.injectedProduction]}
                                 range={range}
                                 filters={filters}
                                 metricsInterval={metricsInterval}
                                 period={period}
                                 infoIcons={{
-                                    [target]: getWidgetInfoIcon({
-                                        widgetTarget: target,
+                                    [metricTargetsEnum.totalProduction]: getWidgetInfoIcon({
+                                        widgetTarget: metricTargetsEnum.totalProduction,
                                         hasMissingContracts: hasMissingHousingContracts,
                                         enphaseOff,
                                         enedisSgeOff: enedisOff,

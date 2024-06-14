@@ -90,7 +90,7 @@ describe('AddLabelButtonForm', () => {
         userEvent.click(selectButton)
         await waitFor(async () => {
             const options = screen.getAllByTestId(housingEquipmentOptionTestId)
-            expect(options).toHaveLength(TEST_HOUSING_EQUIPMENTS.length - 4)
+            expect(options).toHaveLength(9)
             const addEquipmentButton = screen.getByRole('button', { name: 'Ajouter un équipement' })
             expect(addEquipmentButton).toBeInTheDocument()
             userEvent.click(addEquipmentButton)

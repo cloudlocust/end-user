@@ -10,11 +10,11 @@ import {
     equipmentValuesType,
 } from 'src/modules/MyHouse/components/Installation/InstallationType'
 import { useState } from 'react'
+import { groupedCards } from 'src/modules/MyHouse/utils/MyHouseVariables'
 import {
-    groupedCards,
+    equipmentsOptions,
     mappingEquipmentNameToType,
-    myEquipmentOptions,
-} from 'src/modules/MyHouse/utils/MyHouseVariables'
+} from 'src/modules/MyHouse/components/Equipments/EquipmentsVariables'
 import { INumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldTypes'
 import { EditButtonsGroup } from 'src/modules/MyHouse/EditButtonsGroup'
 import { NumberFieldForm } from 'src/common/ui-kit/components/NumberField/NumberFieldForm'
@@ -69,7 +69,7 @@ export const EquipmentsQuickAddPopup = ({
     })
 
     // eslint-disable-next-line array-callback-return
-    const updatedMyEquipmentOptions = myEquipmentOptions.map((option) => {
+    const updatedMyEquipmentOptions = equipmentsOptions.map((option) => {
         const matchingEquipment = housingEquipmentsList?.find((equipment) => equipment.equipment.name === option.name)
         if (matchingEquipment) {
             return {

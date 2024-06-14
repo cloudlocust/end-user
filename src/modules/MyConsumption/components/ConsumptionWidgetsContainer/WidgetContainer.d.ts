@@ -1,4 +1,4 @@
-import { metricRangeType } from 'src/modules/Metrics/Metrics'
+import { metricFiltersType, metricIntervalType, metricRangeType } from 'src/modules/Metrics/Metrics'
 import { periodType } from 'src/modules/MyConsumption/myConsumptionTypes'
 
 /**

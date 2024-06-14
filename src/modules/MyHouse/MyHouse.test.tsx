@@ -45,10 +45,10 @@ jest.mock('src/modules/MyHouse/MyHouseConfig', () => ({
 /**
  * Mocking the HousingDetails.
  */
-jest.mock('src/modules/MyHouse/components/HousingDetails', () => ({
-    ...jest.requireActual('src/modules/MyHouse/components/HousingDetails'),
+jest.mock('src/modules/MyHouse/components/MyHouseOverview', () => ({
+    ...jest.requireActual('src/modules/MyHouse/components/MyHouseOverview'),
     // eslint-disable-next-line jsdoc/require-jsdoc
-    HousingDetails: () => <h1>{HOUSING_DETAILS_TEXT}</h1>,
+    HouseOverview: () => <h1>{HOUSING_DETAILS_TEXT}</h1>,
 }))
 
 // mock store.

@@ -7,7 +7,6 @@ import { useIntl } from 'react-intl'
 import CardActions from '@mui/material/CardActions'
 import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
 import { Form, requiredBuilder } from 'src/common/react-platform-components'
-
 import { useHousingList } from 'src/modules/MyHouse/components/HousingList/HousingsHooks'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { defaultValueType } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/utils'
