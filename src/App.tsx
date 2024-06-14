@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
@@ -86,7 +86,8 @@ const Routes = () => {
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
     const history = useHistory()
-    const { isGetShowNrLinkLoading, isNrLinkPopupShowing } = useGetShowNrLinkPopupHook()
+    const { isNrLinkPopupShowing, getShowNrLinkPopup } = useGetShowNrLinkPopupHook(false)
+    const initialGetShowNrLinkPopup = useRef(true)
 
     useEffect(() => {
         /**
@@ -97,16 +98,23 @@ const Routes = () => {
         updateLastVisitTime(dayjs().toISOString())
     }, [location.pathname, updateLastVisitTime, user])
 
-    useEffect(() => {
-        if (!isMaintenanceMode && user && !isGetShowNrLinkLoading) {
+    //eslint-disable-next-line
+    const verifyPaths = useCallback(async () => {
+        if (!isMaintenanceMode && user) {
             // Check if the user is in alpiq subscription or not.
             if (isAlpiqSubscriptionForm && !user.isProviderSubscriptionCompleted) {
                 location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && history.push(URL_ALPIQ_SUBSCRIPTION_FORM)
-            } else if (isNrLinkPopupShowing === true && location.pathname !== URL_ONBOARDING) {
-                history.push(URL_ONBOARDING)
+            } else if (location.pathname !== URL_ONBOARDING && initialGetShowNrLinkPopup.current) {
+                await getShowNrLinkPopup()
+                if (isNrLinkPopupShowing === true) history.push(URL_ONBOARDING)
+                else initialGetShowNrLinkPopup.current = false
             }
         }
-    }, [user, location.pathname, history, isNrLinkPopupShowing, isGetShowNrLinkLoading])
+    }, [user, location.pathname, history, isNrLinkPopupShowing, getShowNrLinkPopup])
+
+    useEffect(() => {
+        verifyPaths()
+    }, [verifyPaths])
 
     const { hasAccess, getUrlRedirection } = useAuth()
 

@@ -7,7 +7,7 @@ import { EnphaseConsentPopup } from 'src/modules/MyHouse/components/MeterStatus/
 import ConnectedPlugProductionConsentPopup from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup'
 import { SolarProductionConnectionStepProps } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep/SolarProductionConnectionStep.types'
 import { useModal } from 'src/hooks/useModal'
-import { primaryLightColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
+import { greyTitleColor, primaryLightColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
 
 /**
  * SolarProductionConnectionStep step to link the solar panels installation using shelly plugs & enphase.
@@ -89,10 +89,14 @@ export const SolarProductionConnectionStep = ({
                             defaultMessage: 'Lier mon installation avec Shelly',
                         })}
                     </Button>
-                    {/* <Button
+                    <Button
+                        onClick={onNext}
                         variant="contained"
                         className="self-start text-left mt-12 mb-72 rounded-4"
-                        sx={{ backgroundColor: greyTitleColor, '&:hover': { backgroundColor: greyTitleColor, opacity: 0.7 } }}
+                        sx={{
+                            backgroundColor: greyTitleColor,
+                            '&:hover': { backgroundColor: greyTitleColor, opacity: 0.7 },
+                        }}
                         disableElevation={true}
                         disableRipple={true}
                     >
@@ -100,7 +104,7 @@ export const SolarProductionConnectionStep = ({
                             id: "Mon installation solaire n'est pas compatible",
                             defaultMessage: "Mon installation solaire n'est pas compatible",
                         })}
-                    </Button> */}
+                    </Button>
                     <ButtonLoader
                         onClick={onNext}
                         variant="contained"
