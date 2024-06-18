@@ -1,22 +1,22 @@
-import { useMemo, useEffect, useRef } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useTheme, alpha } from '@mui/material'
 import { ButtonsSwitcher } from 'src/modules/shared/ButtonsSwitcher'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
-import { utcToZonedTime } from 'date-fns-tz'
 import {
     computeTotalEuros,
     getWidgetRange,
     computeTotalConsumption,
+    checkIfItIsCurrentDayRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { EurosConsumptionButtonTogglerProps } from 'src/modules/MyConsumption/components/EurosConsumptionButtonToggler/EurosConsumptionButtonToggler.types'
+import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: '' }
-const parisTimeZone = 'Europe/Paris'
 
 /**
  * EurosConsumptionButtonToggler Component.
@@ -44,54 +44,26 @@ export const EurosConsumptionButtonToggler = ({
     const { currentDayConsumption, currentDayEuroConsumption, getCurrentDayConsumption, getCurrentDayEuroConsumption } =
         useCurrentDayConsumption(currentHousing?.id)
     const theme = useTheme()
+    const { data, setData, getMetricsWithParams } = useMetrics()
 
-    const { data, setData, setMetricsInterval, setRange } = useMetrics({
-        interval: metricsInterval,
-        range: getWidgetRange(range, period),
-        targets: [
-            {
-                target: metricTargetsEnum.subscriptionPrices,
-                type: 'timeserie',
-            },
-        ],
-        filters: filters,
-    })
+    const isCurrentDayRange = useMemo(() => checkIfItIsCurrentDayRange(period, range.from), [period, range.from])
 
-    const isRangeChanged = useRef(false)
-
-    // When range change, set isRangedChanged
     useEffect(() => {
-        isRangeChanged.current = true
-    }, [range])
-
-    const isCurrentDayRange = useMemo(
-        () =>
-            period === 'daily' &&
-            utcToZonedTime(new Date(range.from), parisTimeZone).getDate() ===
-                utcToZonedTime(new Date(), parisTimeZone).getDate(),
-        [period, range.from],
-    )
-
-    // get metrics when metricsInterval change.
-    useEffect(() => {
-        if (!isCurrentDayRange || period === 'monthly' || period === 'yearly') {
-            setMetricsInterval(period === 'daily' ? '1d' : metricsInterval)
+        if (
+            (period === PeriodEnum.DAILY && !isCurrentDayRange) ||
+            period === PeriodEnum.MONTHLY ||
+            period === PeriodEnum.WEEKLY
+        ) {
+            getMetricsWithParams({
+                interval: ['1m', '30m'].includes(metricsInterval) ? '1d' : metricsInterval,
+                range: getWidgetRange(range, period),
+                targets: [metricTargetsEnum.subscriptionPrices],
+                filters: filters,
+            })
         } else {
             setData([])
         }
-    }, [isCurrentDayRange, metricsInterval, period, range.from, setData, setMetricsInterval])
-
-    // When period or range changes
-    useEffect(() => {
-        // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
-        // 1 call when range change and the other when period change, then only focus on when range changes.
-        if (isRangeChanged.current && (!isCurrentDayRange || period === 'monthly' || period === 'yearly')) {
-            const widgetRange = getWidgetRange(range, period)
-            setRange(widgetRange)
-            // reset isRangeChanged
-            isRangeChanged.current = false
-        }
-    }, [isCurrentDayRange, period, range, setRange])
+    }, [filters, getMetricsWithParams, isCurrentDayRange, metricsInterval, period, range, setData])
 
     useEffect(() => {
         if (isCurrentDayRange) {

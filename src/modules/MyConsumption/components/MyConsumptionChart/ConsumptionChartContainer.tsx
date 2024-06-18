@@ -221,10 +221,6 @@ export const ConsumptionChartContainer = ({
     /*
      ********************************************************* Functions: *******************************************************
      */
-    const getMetrics = useCallback(async () => {
-        if (isMetricRequestNotAllowed || isTargetsNotAllowed) return
-        await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
-    }, [isMetricRequestNotAllowed, isTargetsNotAllowed, getMetricsWithParams, metricsInterval, range, targets, filters])
 
     /**
      * Handler when clicking on temperature or pMax menu.
@@ -270,7 +266,6 @@ export const ConsumptionChartContainer = ({
         return [
             metricTargetsEnum.autoconsumption,
             ...(isEurosButtonToggled ? eurosConsumptionTargets : [metricTargetsEnum.consumption]),
-            ...(isEurosButtonToggled ? eurosConsumptionTargets : [metricTargetsEnum.consumption]),
             metricTargetsEnum.injectedProduction,
             metricTargetsEnum.totalProduction,
         ]
@@ -306,16 +301,6 @@ export const ConsumptionChartContainer = ({
     const onEurosConsumptionButtonToggle = (isEuroToggled: boolean) => {
         updateTargets(period, isEuroToggled)
     }
-
-    // Callback use to fetch the some metrics
-    const getAdditionalMetrics = useCallback(async () => {
-        await getAdditionalMetricsWithParams({
-            interval: metricsInterval,
-            range,
-            targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
-            filters,
-        })
-    }, [getAdditionalMetricsWithParams, metricsInterval, range, filters])
 
     /**
      * Callback to return the total consumption of hovered element based on the additional metrics data.
@@ -542,9 +527,34 @@ export const ConsumptionChartContainer = ({
 
     // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
     useEffect(() => {
-        getMetrics()
-        getAdditionalMetrics()
-    }, [getMetrics, getAdditionalMetrics])
+        let interval = dataConsumptionPeriod.find((item) => item.period === period)?.interval as metricIntervalType
+        if (
+            period === PeriodEnum.DAILY &&
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        ) {
+            interval = '30m' as metricIntervalType
+        }
+        if (!isMetricRequestNotAllowed && !isTargetsNotAllowed) {
+            getMetricsWithParams({ interval: interval ?? metricsInterval, range, targets, filters })
+        }
+        getAdditionalMetricsWithParams({
+            interval: interval ?? metricsInterval,
+            range,
+            targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+            filters,
+        })
+    }, [
+        filters,
+        metricsInterval,
+        period,
+        range,
+        consumptionToggleButton,
+        isMetricRequestNotAllowed,
+        isTargetsNotAllowed,
+        targets,
+        getAdditionalMetricsWithParams,
+        getMetricsWithParams,
+    ])
 
     /**
      * We use this hook to check if the data is partially available for yearly period.
