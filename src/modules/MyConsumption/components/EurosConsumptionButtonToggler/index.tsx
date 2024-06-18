@@ -161,7 +161,7 @@ export const EurosConsumptionButtonToggler = ({
                  */
                 clickHandler: () => onChange(item.value === 'consumption'),
                 isSelected: (!value && item.value === 'consumption') || (value && item.value === 'eurosConsumption'),
-                isDisabled: item.value === 'eurosConsumption' && period === 'daily',
+                isDisabled: item.value === 'eurosConsumption' && period === PeriodEnum.DAILY,
             }))}
             buttonProps={(isSelected, isDisabled) => ({
                 sx: {
