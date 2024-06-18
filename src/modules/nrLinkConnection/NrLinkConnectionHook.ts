@@ -5,10 +5,11 @@ import { GET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrL
 /**
  * Hook to get ShowNrLink Popup.
  *
+ * @param callOnMount - Call on mount.
  * @returns Get ShowNrLink Popup request handler.
  */
-export const useGetShowNrLinkPopupHook = () => {
-    const initialMount = useRef(true)
+export const useGetShowNrLinkPopupHook = (callOnMount?: boolean) => {
+    const initialMount = useRef<boolean>(callOnMount !== undefined ? callOnMount : true)
     const [isNrLinkPopupShowing, setIsNrLinkPopupShowing] = useState<boolean | null>(null)
     const [isGetShowNrLinkLoading, setIsGetShowNrLinkLoading] = useState(false)
 
@@ -37,5 +38,5 @@ export const useGetShowNrLinkPopupHook = () => {
         }
     }, [getShowNrLinkPopup])
 
-    return { isGetShowNrLinkLoading, isNrLinkPopupShowing }
+    return { isGetShowNrLinkLoading, isNrLinkPopupShowing, getShowNrLinkPopup }
 }
