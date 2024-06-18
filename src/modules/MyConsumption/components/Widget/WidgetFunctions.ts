@@ -16,7 +16,7 @@ import {
     subYears,
     addDays,
 } from 'date-fns'
-import { periodType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes'
+import { PeriodEnum, periodType, YAxisChartSerie } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { getDateWithoutTimezoneOffset } from 'src/modules/MyConsumption/utils/MyConsumptionFunctions'
 import dayjs from 'dayjs'
 import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
@@ -453,6 +453,6 @@ export const checkIfDataForConsumptionRelatedTargetWithNullValue = (data: [] | I
  * @returns True if the selected period is for the current day.
  */
 export const checkIfItIsCurrentDayRange = (period: periodType, rangeStart: string) =>
-    period === 'daily' &&
+    period === PeriodEnum.DAILY &&
     utcToZonedTime(new Date(rangeStart), 'Europe/Paris').getDate() ===
         utcToZonedTime(new Date(), 'Europe/Paris').getDate()

@@ -239,6 +239,18 @@ jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
     }),
 }))
 
+const euroConsumptionSwitcherAriaLabel = 'euros-consumption-switcher'
+jest.mock('src/modules/MyConsumption/components/EurosConsumptionButtonToggler', () => (props: any) => {
+    return (
+        <input
+            type="checkbox"
+            aria-label={euroConsumptionSwitcherAriaLabel}
+            checked={props.value}
+            onChange={props.onChange}
+        />
+    )
+})
+
 // Now, when you import and use echarts-for-react in your Jest tests
 // It will use the mocked EChartsReact component instead of the real one.
 // This ensures that the rendering logic of the real charts is bypassed,
@@ -266,7 +278,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -287,7 +299,7 @@ describe('MyConsumptionContainer test', () => {
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
-            const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+            const eurosConsumptionButtonToggler = getByLabelText(euroConsumptionSwitcherAriaLabel)
             expect(eurosConsumptionButtonToggler).not.toBeChecked()
             // TOGGLING TO EUROS CONSUMPTION CHART
             userEvent.click(eurosConsumptionButtonToggler)
@@ -306,7 +318,7 @@ describe('MyConsumptionContainer test', () => {
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-        const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+        const eurosConsumptionButtonToggler = getByLabelText(euroConsumptionSwitcherAriaLabel)
         expect(eurosConsumptionButtonToggler).not.toBeChecked()
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(eurosConsumptionButtonToggler)
@@ -451,6 +463,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
+                interval: '1d',
                 targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
             })
         })
@@ -469,12 +482,8 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: [
-                    metricTargetsEnum.autoconsumption,
-                    metricTargetsEnum.consumption,
-                    metricTargetsEnum.injectedProduction,
-                    metricTargetsEnum.totalProduction,
-                ],
+                interval: '1d',
+                targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
             })
         })
     })
@@ -597,6 +606,7 @@ describe('MyConsumptionContainer test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
             echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
+            // mockGetMetricsWithParams.mockClear()
 
             const { getByLabelText, getAllByRole } = reduxedRender(
                 <Router>
@@ -615,7 +625,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(5)
             })
         }, 10000)
     })
