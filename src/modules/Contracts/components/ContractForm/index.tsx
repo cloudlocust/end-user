@@ -12,8 +12,15 @@ import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
-import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
-import { IContractType, IOffer, IPower, IProvider, ITariffType } from 'src/hooks/CommercialOffer/CommercialOffers'
+import { useCommercialOffer, useCreateCustomProvider } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
+import {
+    IContractType,
+    ICreateCustomProvider,
+    IOffer,
+    IPower,
+    IProvider,
+    ITariffType,
+} from 'src/hooks/CommercialOffer/CommercialOffers.d'
 import { ButtonLoader } from 'src/common/ui-kit'
 import { isNil, isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -24,6 +31,7 @@ import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/Contrac
 import { isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
 import TariffsContract from 'src/modules/Contracts/components/TariffsContract'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import ContractOtherField from 'src/modules/Contracts/components/ContractOtherField'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: '' as unknown as number,
@@ -144,6 +152,7 @@ export const ContractFormFields = ({
         isProvidersLoading,
         isTariffTypesLoading,
     } = useCommercialOffer()
+    const { createCustomProvider, isCreateCustomProviderLoading } = useCreateCustomProvider()
     const { formatMessage } = useIntl()
     // Track if the user originally had a deprecated offer.
     const [isUserHasDeprecatedOffer, setIsUserHasDeprecatedOffer] = useState(false)
@@ -228,21 +237,29 @@ export const ContractFormFields = ({
                 onChange={(e) => onSelectChange(e, [])}
             />
             {Boolean(formData.contractTypeId) && (
-                <>
-                    <ContractFormSelect<IProvider>
-                        formatOptionLabel={(option) => option.name}
-                        formatOptionValue={(option) => option.id}
-                        isOptionsInProgress={isProvidersLoading}
-                        loadOptions={loadProviderOptions}
-                        optionList={orderBy(providerList, 'name', 'asc')}
-                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre fournisseur' : undefined}
-                        name="providerId"
-                        label="Fournisseur"
-                        validateFunctions={[requiredBuilder()]}
-                        onChange={(e) => onSelectChange(e, ['contractTypeId'])}
-                    />
-                    <OtherProviderOfferOptionMessage isShowMessage={formData.providerId === -1} />
-                </>
+                <ContractFormSelect<IProvider>
+                    formatOptionLabel={(option) => option.name}
+                    formatOptionValue={(option) => option.id}
+                    isOptionsInProgress={isProvidersLoading}
+                    loadOptions={loadProviderOptions}
+                    optionList={orderBy(providerList, 'name', 'asc')}
+                    otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre fournisseur' : undefined}
+                    name="providerId"
+                    label="Fournisseur"
+                    validateFunctions={[requiredBuilder()]}
+                    onChange={(e) => onSelectChange(e, ['contractTypeId'])}
+                />
+            )}
+            {/* When "Autre fournisseur" is selected */}
+            {Number(formData.providerId) === -1 && (
+                <ContractOtherField<ICreateCustomProvider>
+                    name="name"
+                    label="Votre fournisseur"
+                    buttonAction={createCustomProvider as any}
+                    buttonLoading={isCreateCustomProviderLoading}
+                    buttonLabel="Créer le fournisseur"
+                    validateFunctions={[requiredBuilder()]}
+                />
             )}
             {Number(formData.providerId) > 0 && (
                 <>

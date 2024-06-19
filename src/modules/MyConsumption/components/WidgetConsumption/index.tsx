@@ -3,16 +3,17 @@ import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps, totalConsumptionUnits } from 'src/modules/MyConsumption/components/Widget/Widget'
 import { WidgetItem } from 'src/modules/MyConsumption/components/WidgetItem'
-import { computeTotalOfAllConsumptions } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
+import {
+    checkIfItIsCurrentDayRange,
+    computeTotalOfAllConsumptions,
+} from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { computePercentageChange } from 'src/modules/Analysis/utils/computationFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import convert from 'convert-units'
-import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
-import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: 'Wh' as totalConsumptionUnits }
 
@@ -40,10 +41,7 @@ const WidgetConsumption = (props: IWidgetProps) => {
     )
 
     const isCurrentDayRange = useMemo(
-        () =>
-            props.period === PeriodEnum.DAILY &&
-            utcToZonedTime(new Date(props.range.from), 'Europe/Paris').getDate() ===
-                utcToZonedTime(new Date(), 'Europe/Paris').getDate(),
+        () => checkIfItIsCurrentDayRange(props.period, props.range.from),
         [props.period, props.range.from],
     )
 

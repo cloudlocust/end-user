@@ -25,6 +25,10 @@ export type IProvider =
          * Name of provider.
          */
         name: string
+        /**
+         * Network identifier.
+         */
+        networkIdentifier?: number | null
     }
 
 /**
@@ -67,3 +71,18 @@ export type ITariffType =
  * Type of power.
  */
 export type IPower = number
+
+/**
+ * Commercial offer model.
+ */
+//eslint-disable-next-line jsdoc/require-jsdoc
+export type ICreateCustomProvider = {
+    /**
+     * Name of the provider.
+     */
+    name: string
+    /**
+     * Id of the housing.
+     */
+    networkIdentifier: number
+}
