@@ -23,6 +23,10 @@ export type FormProps =
          * Form style.
          */
         style?: React.CSSProperties
+        /**
+         * Id of the form.
+         */
+        id?: string
     }
 
 /**

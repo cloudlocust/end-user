@@ -87,17 +87,19 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
                     <div className="mb-24">
                         <Form
                             onSubmit={async (data: solarEquipmentInputType) => {
-                                solarEquipmentDetails
-                                    ? await updateEquipmentDetails({
-                                          ...data,
-                                          type: activeEquipmentButton!,
-                                      })
-                                    : await addEquipment({
-                                          ...data,
-                                          type: activeEquipmentButton!,
-                                      })
-                                onClose()
-                                reloadSolarEquipmentsList()
+                                try {
+                                    solarEquipmentDetails
+                                        ? await updateEquipmentDetails({
+                                              ...data,
+                                              type: activeEquipmentButton!,
+                                          })
+                                        : await addEquipment({
+                                              ...data,
+                                              type: activeEquipmentButton!,
+                                          })
+                                    onClose()
+                                    reloadSolarEquipmentsList()
+                                } catch (error) {}
                             }}
                             defaultValues={solarEquipmentDetails ? defaultFormValues : undefined}
                         >

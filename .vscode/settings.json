@@ -8,8 +8,5 @@
         "revealWithFocus": "none",
         "clearOnRun": "none"
     },
-    "jest.runMode": "on-demand",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "true"
-    }
+    "jest.runMode": "on-demand"
 }

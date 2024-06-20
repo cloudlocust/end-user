@@ -24,6 +24,7 @@ import {
     MissingDataWarning,
 } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartWarnings'
 import { sgeConsentFeatureState } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import TargetMenuGroup from 'src/modules/MyConsumption/components/TargetMenuGroup'
 import {
     eurosConsumptionTargets,
@@ -37,7 +38,10 @@ import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/compo
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { useIntl } from 'src/common/react-platform-translation'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { getMessageOfSuccessiveMissingDataOfCurrentDay } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
+import {
+    checkWhetherResalePriceFormShouldBeShown,
+    getMessageOfSuccessiveMissingDataOfCurrentDay,
+} from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartFunctions'
 import { MyConsumptionPeriod } from 'src/modules/MyConsumption'
 import MyConsumptionDatePicker from 'src/modules/MyConsumption/components/MyConsumptionDatePicker'
 import {
@@ -49,6 +53,9 @@ import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyCo
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
 import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
+import { ResalePriceForm } from 'src/modules/MyConsumption/components/ResalePriceForm'
+import { useEquipmentList, useInstallation } from 'src/modules/MyHouse/components/Installation/installationHook'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
 /**
  * Const represent how many years we want to display on the calender in the yearly view.
@@ -106,26 +113,49 @@ export const ConsumptionChartContainer = ({
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { consumptionToggleButton, setConsumptionToggleButton, setPartiallyYearlyDataExist } = useMyConsumptionStore()
 
+    const { equipmentsList } = useEquipmentList(currentHousing?.id)
+    const {
+        installationInfos,
+        addUpdateInstallationInfosInProgress,
+        getInstallationInfos,
+        addUpdateInstallationInfos,
+    } = useInstallation(currentHousing?.id)
+
+    useEffect(() => {
+        getInstallationInfos()
+    }, [getInstallationInfos])
+
+    const isResalePriceFormShouldBeShown = useMemo(
+        () => checkWhetherResalePriceFormShouldBeShown(consumptionToggleButton, equipmentsList, installationInfos),
+        [equipmentsList, installationInfos, consumptionToggleButton],
+    )
+
     /*
      ********************************************************* Hooks: **********************************************************
      */
-    const { data, getMetricsWithParams, isMetricsLoading } = useMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [],
-        filters,
-    })
+    const { data, getMetricsWithParams, isMetricsLoading } = useMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [],
+            filters,
+        },
+        { isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period) },
+    )
     // now we used this hooks to get some data used to calculate total cost + total consumption.
     const {
         data: additionalMetricsData,
         getMetricsWithParams: getAdditionalMetricsWithParams,
         isMetricsLoading: isAdditionalMetricsLoading,
-    } = useAdditionalMetrics({
-        interval: metricsInterval,
-        range: range,
-        targets: [],
-        filters,
-    })
+    } = useAdditionalMetrics(
+        {
+            interval: metricsInterval,
+            range: range,
+            targets: [],
+            filters,
+        },
+        { isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(period) },
+    )
 
     /*
      ********************************************************* States: **********************************************************
@@ -191,10 +221,6 @@ export const ConsumptionChartContainer = ({
     /*
      ********************************************************* Functions: *******************************************************
      */
-    const getMetrics = useCallback(async () => {
-        if (isMetricRequestNotAllowed || isTargetsNotAllowed) return
-        await getMetricsWithParams({ interval: metricsInterval, range, targets, filters })
-    }, [isMetricRequestNotAllowed, isTargetsNotAllowed, getMetricsWithParams, metricsInterval, range, targets, filters])
 
     /**
      * Handler when clicking on temperature or pMax menu.
@@ -209,15 +235,6 @@ export const ConsumptionChartContainer = ({
             ])
         else setTargets((prevTargets) => prevTargets.filter((target) => !temperatureOrPmaxTargets.includes(target)))
     }, [])
-
-    /**
-     * OnEurosConsumptionToggl Handler Function.
-     *
-     * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
-     */
-    const onEurosConsumptionButtonToggle = (isEuroToggled: boolean) => {
-        updateTargets(period, isEuroToggled)
-    }
 
     /**
      * Get the consumption targets based on the period and the Euros button toggle.
@@ -276,15 +293,14 @@ export const ConsumptionChartContainer = ({
         })
     }
 
-    // Callback use to fetch the some metrics
-    const getAdditionalMetrics = useCallback(async () => {
-        await getAdditionalMetricsWithParams({
-            interval: metricsInterval,
-            range,
-            targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
-            filters,
-        })
-    }, [getAdditionalMetricsWithParams, metricsInterval, range, filters])
+    /**
+     * OnEurosConsumptionToggl Handler Function.
+     *
+     * @param isEuroToggled Indicates if the EurosToggl is set to Euros and was clicked.
+     */
+    const onEurosConsumptionButtonToggle = (isEuroToggled: boolean) => {
+        updateTargets(period, isEuroToggled)
+    }
 
     /**
      * Callback to return the total consumption of hovered element based on the additional metrics data.
@@ -446,8 +462,8 @@ export const ConsumptionChartContainer = ({
      */
     const navigateToSolarInstallationForm = () => {
         if (currentHousing?.id) {
-            history.push(URL_HOUSING_INFORMATION(currentHousing.id), {
-                focusOnInstallationForm: true,
+            history.push(URL_MY_HOUSE, {
+                defaultSelectedSection: IHouseOverviewSectionsEnum.INSTALLATION,
             })
         }
     }
@@ -511,15 +527,34 @@ export const ConsumptionChartContainer = ({
 
     // Happens every time getMetrics dependencies change, and doesn't execute when hook is instantiated.
     useEffect(() => {
-        getMetrics()
-    }, [getMetrics])
-
-    // Effect used to get additional metrics.
-    useEffect(() => {
-        if (isTotalsOnChartTooltipDisplayed) {
-            getAdditionalMetrics()
+        let interval = dataConsumptionPeriod.find((item) => item.period === period)?.interval as metricIntervalType
+        if (
+            period === PeriodEnum.DAILY &&
+            consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
+        ) {
+            interval = '30m' as metricIntervalType
         }
-    }, [getAdditionalMetrics, isTotalsOnChartTooltipDisplayed])
+        if (!isMetricRequestNotAllowed && !isTargetsNotAllowed) {
+            getMetricsWithParams({ interval: interval ?? metricsInterval, range, targets, filters })
+        }
+        getAdditionalMetricsWithParams({
+            interval: interval ?? metricsInterval,
+            range,
+            targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+            filters,
+        })
+    }, [
+        filters,
+        metricsInterval,
+        period,
+        range,
+        consumptionToggleButton,
+        isMetricRequestNotAllowed,
+        isTargetsNotAllowed,
+        targets,
+        getAdditionalMetricsWithParams,
+        getMetricsWithParams,
+    ])
 
     /**
      * We use this hook to check if the data is partially available for yearly period.
@@ -586,16 +621,14 @@ export const ConsumptionChartContainer = ({
                 className="mt-22 h-28 flex justify-evenly items-center sm:justify-center sm:gap-12 sm:pb-12 sm:h-auto"
                 style={{ marginTop: 22 }}
             >
-                {period !== PeriodEnum.DAILY && (
-                    <EurosConsumptionButtonToggler
-                        onChange={() => onEurosConsumptionButtonToggle(!isEurosButtonToggled)}
-                        checked={isEurosButtonToggled}
-                        inputProps={{ 'aria-label': 'euros-consumption-switcher' }}
-                    />
-                )}
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={onPeriodChange}
+                        setPeriod={(value) => {
+                            if (value !== PeriodEnum.DAILY) {
+                                onEurosConsumptionButtonToggle(true)
+                            }
+                            onPeriodChange(value)
+                        }}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
@@ -622,6 +655,43 @@ export const ConsumptionChartContainer = ({
                     isPreviousButtonDisabling={disablePreviousYearOfNavigationButton}
                 />
             </div>
+            <div className="mt-12    mb-16">
+                <EurosConsumptionButtonToggler
+                    onChange={() => onEurosConsumptionButtonToggle(!isEurosButtonToggled)}
+                    value={isEurosButtonToggled}
+                    period={period}
+                    range={range}
+                    metricsInterval={metricsInterval}
+                    filters={filters}
+                    dataMetrics={additionalMetricsData}
+                />
+            </div>
+
+            {isResalePriceFormShouldBeShown && (
+                <div className="my-16" style={{ marginLeft: '4%', marginRight: '4%' }}>
+                    <ResalePriceForm
+                        updateResalePriceValue={(resalePrice) => {
+                            addUpdateInstallationInfos({
+                                housingEquipments: [],
+                                solarInstallation: {
+                                    ...installationInfos?.solarInstallation,
+                                    resaleTariff: resalePrice,
+                                },
+                            })
+                        }}
+                        setResaleContractPossessionToFalse={() => {
+                            addUpdateInstallationInfos({
+                                housingEquipments: [],
+                                solarInstallation: {
+                                    ...installationInfos?.solarInstallation,
+                                    hasResaleContract: false,
+                                },
+                            })
+                        }}
+                        updateResalePriceInProgress={addUpdateInstallationInfosInProgress}
+                    />
+                </div>
+            )}
 
             {isMetricsLoading || isAdditionalMetricsLoading ? (
                 <div className="flex h-full w-full flex-col items-center justify-center" style={{ height: '320px' }}>

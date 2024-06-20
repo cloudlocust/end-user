@@ -41,3 +41,25 @@ export interface EquipmentOptionsType {
      */
     disableDecrement: boolean
 }
+
+/**
+ * Select field type.
+ */
+export type SelectForm =
+    /**
+     *
+     */
+    {
+        /**
+         * Label Of the Select must indexed by <FormattedMessage /> or by using formatMessage.
+         */
+        name: string
+        /**
+         * Initial value.
+         */
+        titleLabel: JSX.Element
+        /**
+         * List options of the select.
+         */
+        formOptions: SelectOption[]
+    }

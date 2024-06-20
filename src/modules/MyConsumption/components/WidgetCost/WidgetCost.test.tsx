@@ -118,6 +118,37 @@ describe('WidgetCost test', () => {
         ).toBeInTheDocument()
     })
 
+    test('When period is daily and the selected day is a previous day, total cost with subscription value should be shown', async () => {
+        mockIsMetricsLoading = false
+        mockPeriod = 'daily'
+        mockRange = {
+            from: '2024-04-17T00:00:00.000Z',
+            to: '2024-04-17T23:59:59.999Z',
+        }
+        mockData[0].datapoints = [
+            [40, 1651406400],
+            [40, 1651406400],
+        ]
+        mockData[1].datapoints = [
+            [10, 1651406400],
+            [10, 1651406400],
+        ]
+        const totalCost = 80
+        const totalCostIncludingSubscriptions = 100
+
+        const { getByText, queryByText } = renderTestComponent()
+
+        expect(queryByText(TOTAL_COST_TEXT)).toBeInTheDocument()
+        expect(getByText(totalCost)).toBeInTheDocument()
+        expect(getByText(EURO_UNIT_TEXT)).toBeInTheDocument()
+
+        expect(
+            queryByText(
+                `${TOTAL_COST_INCLUDING_SUBSCRIPTIONS_TEXT} ${totalCostIncludingSubscriptions} ${EURO_UNIT_TEXT}`,
+            ),
+        ).toBeInTheDocument()
+    })
+
     test('When the data metrics is partially exist in yearly period, a missing data text is shown', async () => {
         mockIsMetricsLoading = false
         mockPeriod = 'yearly'

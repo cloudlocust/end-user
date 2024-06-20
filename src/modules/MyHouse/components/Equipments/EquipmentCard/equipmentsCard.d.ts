@@ -14,6 +14,8 @@ import { HousingEquipmentType } from 'src/modules/MyHouse/components/Equipments/
  */
 export type IconComponentType = (theme: Theme, isDisabled?: boolean, fill?: string) => ReactElement | ReactElement
 
+// export const type
+
 /**
  * EquipmentCardProps.
  */
@@ -23,9 +25,9 @@ export interface EquipmentCardProps {
      */
     equipment: HousingEquipmentType
     /**
-     * Equipment type.
+     * Equipment title.
      */
-    label?: string
+    title?: string | null
     /**
      * Equipment icon.
      */
@@ -42,4 +44,8 @@ export interface EquipmentCardProps {
      * Icon Component.
      */
     iconComponent?: IconComponentType
+    /**
+     * Equipment label.
+     */
+    label?: string
 }

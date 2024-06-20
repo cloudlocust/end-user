@@ -4,7 +4,7 @@ import {
     TEST_LOAD_ERROR_ID,
     TEST_LOAD_SUCCESS_ID,
 } from 'src/mocks/handlers/commercialOffer'
-import { useCommercialOffer } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
+import { useCommercialOffer, useCreateCustomProvider } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import { act } from 'react-dom/test-utils'
 
 const mockEnqueueSnackbar = jest.fn()
@@ -290,5 +290,57 @@ describe('useCommercialOffer Hook test', () => {
             expect(result.current.isTariffsLoading).toBe(false)
             expect(result.current.tariffs).not.toBeNull()
         }, 10000)
+    })
+})
+
+describe('useCreateCustomProvider', () => {
+    test('When create custom provider success', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useCreateCustomProvider(), {})
+
+        act(() => {
+            result.current.createCustomProvider({ name: 'custom name', housingId: 1 })
+        })
+
+        expect(result.current.isCreateCustomProviderLoading).toBe(true)
+
+        await waitForValueToChange(
+            () => {
+                return result.current.isCreateCustomProviderLoading
+            },
+            { timeout: 4000 },
+        )
+
+        expect(result.current.isCreateCustomProviderLoading).toBe(false)
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Votre fournisseur a été créé avec succès', {
+            variant: 'success',
+        })
+        expect(result.current.isCustomProviderCreated).toBe(true)
+    })
+
+    test('When create custom provider error', async () => {
+        const {
+            renderedHook: { result, waitForValueToChange },
+        } = reduxedRenderHook(() => useCreateCustomProvider(), {})
+
+        act(() => {
+            result.current.createCustomProvider({ name: 'custom name', housingId: 1 })
+        })
+
+        expect(result.current.isCreateCustomProviderLoading).toBe(true)
+
+        await waitForValueToChange(
+            () => {
+                return result.current.isCreateCustomProviderLoading
+            },
+            { timeout: 4000 },
+        )
+
+        expect(result.current.isCreateCustomProviderLoading).toBe(false)
+
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre fournisseur', {
+            variant: 'error',
+        })
     })
 })

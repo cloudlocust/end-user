@@ -17,9 +17,7 @@ describe('Test LoadingNrLinkConnectionSteps Page', () => {
         const { container, getByText } = reduxedRender(<LoadingNrLinkConnectionSteps />)
         expect(container.querySelector(loadingButtonClassName)).toBeInTheDocument()
         expect(
-            getByText(
-                'Merci de patienter quelques instants afin que l’appairage de votre appareil termine de se synchroniser. Ceci ne devrait pas dépasser 1 minute.',
-            ),
+            getByText('Plus que quelques secondes de patience, nous connectons votre nrLINK à votre espace personnel.'),
         ).toBeInTheDocument()
     })
 })

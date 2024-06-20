@@ -1,0 +1,164 @@
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/redux'
+import { axios } from 'src/common/react-platform-components'
+import { IntroductionStep } from 'src/modules/Onboarding/steps/IntroductionStep'
+import { NrLinkInstallationInstructionsStep } from 'src/modules/Onboarding/steps/NrLinkInstallationInstructionsStep'
+import { MeterConnectionStep } from 'src/modules/Onboarding/steps/MeterConnectionStep'
+import { NRLinkConnectionStep } from 'src/modules/Onboarding/steps/NRLinkConnectionStep'
+import { ContractStep } from 'src/modules/Onboarding/steps/ContractStep'
+import { SolarProductionConnectionStep } from 'src/modules/Onboarding/steps/SolarProductionConnectionStep'
+import { useLocation, useHistory } from 'react-router-dom'
+import { useHousingRedux } from 'src/modules/MyHouse/utils/MyHouseHooks'
+import { useConsents } from 'src/modules/Consents/consentsHook'
+import { useGetShowNrLinkPopupHook } from 'src/modules/nrLinkConnection/NrLinkConnectionHook'
+import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_DASHBOARD } from 'src/modules/Dashboard/DashboardConfig'
+import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
+import nrlinkLogo from 'src/assets/images/content/onboarding/nrlinkLogo.png'
+import { SET_SHOW_NRLINK_POPUP_ENDPOINT } from 'src/modules/nrLinkConnection/NrLinkConnection'
+
+/**
+ * Steps search paths of route.
+ */
+export const STEPS_NAMES = {
+    INTRODUCTION: 'introduction',
+    NRLINK_INSTALLATION_INSTRUCTIONS: 'nrLink-installation-instructions',
+    METER_CONNECTION: 'meter-connection',
+    NRLINK_CONNECTION: 'nrLink-connection',
+    CONTRACT: 'contract',
+    SOLAR_PRODUCTION_CONNECTION: 'solar-production-connection',
+}
+
+/**
+ * Onboarding used stepper to connect the meter, nrlink, solar installation.
+ *
+ * @returns JSX Element.
+ */
+export const Onboarding = () => {
+    const location = useLocation()
+    const history = useHistory()
+    // this ones are for handling the housing id's and their speceif meters
+    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const { loadHousingsAndScopes } = useHousingRedux()
+    const { getConsents, enedisSgeConsent, nrlinkConsent, consentsLoading } = useConsents()
+    const { isGetShowNrLinkLoading, isNrLinkPopupShowing } = useGetShowNrLinkPopupHook()
+    const [isOnboardingHidingLoading, setOnboardingHidingLoading] = useState(false)
+    const query = new URLSearchParams(location.search)
+    const step = query.get('step')
+    useEffect(() => {
+        document.body.style.backgroundColor = '#fff'
+        loadHousingsAndScopes()
+    }, [loadHousingsAndScopes])
+
+    useEffect(() => {
+        getConsents(currentHousing?.id as number)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    if (isGetShowNrLinkLoading || consentsLoading) {
+        return <FuseLoading />
+    }
+
+    if (isNrLinkPopupShowing === false) {
+        history.push(URL_DASHBOARD)
+    }
+
+    /**
+     * Handles the next step.
+     *
+     * @param step - The next step.
+     */
+    const handleNext = (step: string) => {
+        history.push(`${location.pathname}?step=${step}`)
+    }
+
+    /**
+     * Redirects to the dashboard.
+     */
+    const changeOnboardingDisplayStatusAndRedirectToDashboard = async () => {
+        // Make the onboarding not showing again.
+        try {
+            setOnboardingHidingLoading(true)
+            await axios.patch(SET_SHOW_NRLINK_POPUP_ENDPOINT, {
+                showNrlinkPopup: false,
+            })
+            history.push(URL_DASHBOARD)
+        } catch (error) {
+        } finally {
+            setOnboardingHidingLoading(false)
+        }
+    }
+
+    /**
+     * Renders the current step based on the value of `step`.
+     *
+     * @returns The current step.
+     */
+    const renderStep = () => {
+        const introductionStep = (
+            <IntroductionStep onNext={() => handleNext(STEPS_NAMES.NRLINK_INSTALLATION_INSTRUCTIONS)} />
+        )
+
+        switch (step) {
+            case STEPS_NAMES.INTRODUCTION:
+                return introductionStep
+            case STEPS_NAMES.NRLINK_INSTALLATION_INSTRUCTIONS:
+                return <NrLinkInstallationInstructionsStep onNext={() => handleNext(STEPS_NAMES.METER_CONNECTION)} />
+            case STEPS_NAMES.METER_CONNECTION:
+                return (
+                    <MeterConnectionStep
+                        onNext={() => handleNext(STEPS_NAMES.NRLINK_CONNECTION)}
+                        meter={currentHousing?.meter!}
+                        housingId={currentHousing?.id!}
+                        enedisSgeConsent={enedisSgeConsent}
+                        loadHousingsAndScopes={loadHousingsAndScopes}
+                    />
+                )
+            case STEPS_NAMES.NRLINK_CONNECTION:
+                return (
+                    <NRLinkConnectionStep
+                        onNext={() => handleNext(STEPS_NAMES.CONTRACT)}
+                        housingId={currentHousing?.id! as number}
+                        nrlinkConsent={nrlinkConsent}
+                    />
+                )
+            case STEPS_NAMES.CONTRACT:
+                return (
+                    <ContractStep
+                        onNext={() =>
+                            isProductionActiveAndHousingHasAccess(currentHousingScopes)
+                                ? handleNext(STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION)
+                                : changeOnboardingDisplayStatusAndRedirectToDashboard()
+                        }
+                        housingId={currentHousing?.id!}
+                        isHideOnboardingInProgress={isOnboardingHidingLoading}
+                    />
+                )
+            case STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION:
+                return (
+                    <SolarProductionConnectionStep
+                        onNext={() => changeOnboardingDisplayStatusAndRedirectToDashboard()}
+                        housingId={currentHousing?.id!}
+                        isHideOnboardingInProgress={isOnboardingHidingLoading}
+                    />
+                )
+            default:
+                return introductionStep
+        }
+    }
+
+    return (
+        <div
+            className="flex flex-col flex-auto items-center justify-start p-16 sm:p-32"
+            style={{ height: '100vh', paddingLeft: 15, paddingRight: 15, overflowX: 'hidden' }}
+        >
+            <div className="flex flex-col items-center justify-start w-full">
+                <div style={{ alignSelf: 'self-start', paddingTop: '5px', paddingBottom: '10px' }}>
+                    <img src={nrlinkLogo} alt="nrlink logo" style={{ width: 105 }} />
+                </div>
+                {renderStep()}
+            </div>
+        </div>
+    )
+}
