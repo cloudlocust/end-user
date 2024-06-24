@@ -100,6 +100,11 @@ const mockEditMeter = jest.fn()
 const mockLoadTariffsHousingContract = jest.fn()
 
 const mockCreateCustomProvider = jest.fn()
+const mockCreateCustomOffer = jest.fn()
+
+let mockIsCustomProviderCreated = false
+let mockIsCustomOfferCreated = false
+
 let mockIsTariffTypesLoading = false
 let mockIsPowersLoading = false
 let mockIsProvidersLoading = false
@@ -140,8 +145,14 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useCreateCustomProvider: () => ({
         createCustomProvider: mockCreateCustomProvider,
-        isCustomProviderCreated: true,
+        isCustomProviderCreated: mockIsCustomProviderCreated,
         isCreateCustomProviderLoading: false,
+    }),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useCreateCustomOffer: () => ({
+        createCustomOffer: mockCreateCustomOffer,
+        isCustomOfferCreated: mockIsCustomOfferCreated,
+        isCreateCustomOfferLoading: false,
     }),
 }))
 
