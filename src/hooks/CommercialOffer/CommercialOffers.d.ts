@@ -49,6 +49,10 @@ export type IOffer =
          * Whether the offer is deprecated or not.
          */
         isDeprecated?: boolean
+        /**
+         * Network identifier.
+         */
+        networkIdentifier?: number | null
     }
 
 /**
@@ -86,3 +90,25 @@ export type ICreateCustomProvider = {
      */
     networkIdentifier: number
 }
+
+/**
+ * Create  Custom offer type.
+ */
+export type ICreateCustomOffer =
+    /**
+     *
+     */
+    {
+        /**
+         * Name of the offer.
+         */
+        name: string
+        /**
+         * Id of the provider.
+         */
+        providerId: number
+        /**
+         * Network identifier.
+         */
+        networkIdentifier: number
+    }

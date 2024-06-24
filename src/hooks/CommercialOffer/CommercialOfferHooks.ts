@@ -38,6 +38,11 @@ export const TARIFFS_CONTRACT_API = `${API_RESOURCES_URL}/tariffs_contracts`
 export const CREATE_CUSTOM_PROVIDER_API = `${API_RESOURCES_URL}/providers/custom-provider`
 
 /**
+ * Custom Offer API.
+ */
+export const CREATE_CUSTOM_OFFER_API = `${API_RESOURCES_URL}/offers/custom-offer`
+
+/**
 `* Hooks for commercialOffer different fetch requests (Providers, TariffType, Power, contractType).
  *
  * @returns Hook useCommercialOffer.
@@ -81,11 +86,11 @@ export const useCommercialOffer = () => {
      * Fetching Providers function.
      */
     const loadProviders = useCallback(
-        async (contractTypeId: IContractType['id']) => {
+        async (contractTypeId: IContractType['id'], housingId?: number) => {
             setIsProvidersLoading(true)
             try {
                 const { data: responseData } = await axios.get<IProvider[]>(
-                    `${PROVIDERS_API}?contract_type_id=${contractTypeId}`,
+                    `${PROVIDERS_API}?contract_type_id=${contractTypeId}&housing_id=${housingId}`,
                 )
                 setProviderList(responseData)
             } catch (error) {
@@ -243,10 +248,10 @@ export const useCommercialOffer = () => {
 export const useCreateCustomProvider = () => {
     const [isCreateCustomProviderLoading, setIsCreateCustomProviderLoading] = useState(false)
     const [isCustomProviderCreated, setIsCustomProviderCreated] = useState(false)
+    const [customProvderData, setCustomProvderData] = useState<IProvider | null>(null)
     const { enqueueSnackbar } = useSnackbar()
     const { formatMessage } = useIntl()
 
-    // Create custom provider
     const createCustomProvider = useCallback(
         // eslint-disable-next-line jsdoc/require-jsdoc
         async ({ name, housingId }: { name: string; housingId: number }) => {
@@ -266,16 +271,13 @@ export const useCreateCustomProvider = () => {
                         { variant: 'success' },
                     )
                     setIsCustomProviderCreated(true)
+                    setCustomProvderData(data)
                     return data
                 }
-            } catch (error) {
-                enqueueSnackbar(
-                    formatMessage({
-                        id: 'Erreur lors de la création de votre fournisseur',
-                        defaultMessage: 'Erreur lors de la création de votre fournisseur',
-                    }),
-                    { variant: 'error' },
-                )
+            } catch (error: any) {
+                if (error.response.data.detail) {
+                    enqueueSnackbar(error.response.data.detail, { variant: 'error' })
+                } else enqueueSnackbar('Erreur lors de la création de votre fournisseur', { variant: 'error' })
             } finally {
                 setIsCreateCustomProviderLoading(false)
             }
@@ -288,5 +290,63 @@ export const useCreateCustomProvider = () => {
         createCustomProvider,
         isCustomProviderCreated,
         setIsCustomProviderCreated,
+        customProvderData,
+    }
+}
+
+/**
+ * Hook to create custom offer.
+ *
+ * @returns Hook useCreateCustomOffer.
+ */
+export const useCreateCustomOffer = () => {
+    const [isCreateCustomOfferLoading, setIsCreateCustomOfferLoading] = useState(false)
+    const [isCustomOfferCreated, setIsCustomOfferCreated] = useState(false)
+    const [customOfferData, setCustomOfferData] = useState<IOffer | null>(null)
+
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
+
+    // Create custom provider
+    const createCustomOffer = useCallback(
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        async ({ name, housingId, providerId }: { name: string; housingId: number; providerId: number }) => {
+            try {
+                setIsCreateCustomOfferLoading(true)
+                const { data, status } = await axios.post<IOffer>(CREATE_CUSTOM_OFFER_API, {
+                    name,
+                    networkIdentifier: housingId,
+                    providerId,
+                })
+
+                if (status === 201) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: 'Votre offre a été créé avec succès',
+                            defaultMessage: 'Votre offre a été créé avec succès',
+                        }),
+                        { variant: 'success' },
+                    )
+                    setIsCustomOfferCreated(true)
+                    setCustomOfferData(data)
+                    return data
+                }
+            } catch (error: any) {
+                if (error.response.data.detail) {
+                    enqueueSnackbar(error.response.data.detail, { variant: 'error' })
+                } else enqueueSnackbar('Erreur lors de la création de votre offre', { variant: 'error' })
+            } finally {
+                setIsCreateCustomOfferLoading(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
+    return {
+        isCreateCustomOfferLoading,
+        createCustomOffer,
+        isCustomOfferCreated,
+        setIsCustomOfferCreated,
+        customOfferData,
     }
 }

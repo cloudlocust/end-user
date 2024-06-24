@@ -2,6 +2,7 @@ import { rest } from 'msw'
 import { SnakeCasedPropertiesDeep } from 'type-fest'
 import {
     CONTRACT_TYPE_LIST_API,
+    CREATE_CUSTOM_OFFER_API,
     CREATE_CUSTOM_PROVIDER_API,
     OFFERS_API,
     POWERS_API,
@@ -34,21 +35,25 @@ export var TEST_OFFERS: SnakeCasedPropertiesDeep<IOffer>[] = [
         id: 1,
         name: 'Bleu',
         is_deprecated: true,
+        network_identifier: null,
     },
     {
         id: 2,
         name: 'Tarif réglementé',
         is_deprecated: false,
+        network_identifier: null,
     },
     {
         id: 3,
         name: 'Classique',
         is_deprecated: false,
+        network_identifier: null,
     },
     {
         id: 4,
         name: 'Digiwatt*',
         is_deprecated: false,
+        network_identifier: null,
     },
 ]
 
@@ -252,25 +257,65 @@ export const commercialOfferEndpoints = [
             network_identifier: number
         }
         if (!name) {
-            return res(ctx.status(400), ctx.json({ message: 'Name is required' }))
+            return res(ctx.status(400), ctx.json({ detail: 'Name is required' }))
         }
 
         if (!network_identifier) {
-            return res(ctx.status(400), ctx.json({ message: 'Network identifier is required' }))
+            return res(ctx.status(400), ctx.json({ detail: 'Network identifier is required' }))
         }
 
         if (name === 'error' || network_identifier === 0) {
-            return res(ctx.status(400), ctx.json({ message: 'Error' }))
+            return res(ctx.status(400), ctx.json({ detail: 'Error' }))
         }
 
         // Check if the provider already exists
         if (TEST_PROVIDERS.some((provider) => provider.name === name)) {
-            return res(ctx.status(400), ctx.json({ message: 'Provider already exists' }))
+            return res(ctx.status(400), ctx.json({ detail: 'Provider already exists' }))
         }
 
         // Create the provider
         TEST_PROVIDERS.push({ id: TEST_PROVIDERS.length + 1, name, network_identifier })
 
         return res(ctx.status(201), ctx.delay(1000), ctx.json({ id: 1, name: 'Custom Provider', network_identifier }))
+    }),
+
+    rest.post(CREATE_CUSTOM_OFFER_API, (req, res, ctx) => {
+        // Check if the request body is correct
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        const { name, network_identifier, provider_id } = req.body as {
+            /**
+             *
+             */
+            name: string
+            /**
+             *
+             */
+            network_identifier: number
+            /**
+             *
+             */
+            provider_id: number
+        }
+        if (!name) {
+            return res(ctx.status(400), ctx.json({ detail: 'Name is required' }))
+        }
+
+        if (name === 'error') {
+            return res(ctx.status(400), ctx.json({ detail: 'Error' }))
+        }
+
+        // Check if the offer already exists
+        if (TEST_OFFERS.some((offer) => offer.name === name)) {
+            return res(ctx.status(400), ctx.json({ detail: 'Offer already exists' }))
+        }
+
+        // Create the offer
+        TEST_OFFERS.push({ id: TEST_OFFERS.length + 1, name })
+
+        return res(
+            ctx.status(201),
+            ctx.delay(1000),
+            ctx.json({ id: 1, name: 'Custom Offer', network_identifier, provider_id }),
+        )
     }),
 ]

@@ -339,7 +339,7 @@ describe('useCreateCustomProvider', () => {
 
         expect(result.current.isCreateCustomProviderLoading).toBe(false)
 
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la création de votre fournisseur', {
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Provider already exists', {
             variant: 'error',
         })
     })

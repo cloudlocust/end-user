@@ -13,9 +13,14 @@ import { Form } from 'src/common/react-platform-components'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
 import ContractFormSelect from 'src/modules/Contracts/components/ContractFormSelect'
-import { useCommercialOffer, useCreateCustomProvider } from 'src/hooks/CommercialOffer/CommercialOfferHooks'
+import {
+    useCommercialOffer,
+    useCreateCustomOffer,
+    useCreateCustomProvider,
+} from 'src/hooks/CommercialOffer/CommercialOfferHooks'
 import {
     IContractType,
+    ICreateCustomOffer,
     ICreateCustomProvider,
     IOffer,
     IPower,
@@ -34,6 +39,7 @@ import { isValidDate } from 'src/modules/Contracts/utils/contractsFunctions'
 import TariffsContract from 'src/modules/Contracts/components/TariffsContract'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
 import ContractOtherField from 'src/modules/Contracts/components/ContractOtherField'
+import { useCurrentHousing } from 'src/hooks/CurrentHousing'
 
 const defaultContractFormValues: contractFormValuesType = {
     contractTypeId: 0,
@@ -130,10 +136,13 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
         isProvidersLoading,
         isTariffTypesLoading,
     } = useCommercialOffer()
-    const { createCustomProvider, isCreateCustomProviderLoading } = useCreateCustomProvider()
+    const { createCustomProvider, isCreateCustomProviderLoading, isCustomProviderCreated, customProvderData } =
+        useCreateCustomProvider()
+    const { createCustomOffer, isCreateCustomOfferLoading, isCustomOfferCreated } = useCreateCustomOffer()
     const { formatMessage } = useIntl()
     // Track if the user originally had a deprecated offer.
     const [isUserHasDeprecatedOffer, setIsUserHasDeprecatedOffer] = useState(false)
+    const currentHousing = useCurrentHousing()
 
     // When loading the offers, check if the user's current offer is deprecated.
     useEffect(() => {
@@ -178,8 +187,8 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
      * To avoid defining () => loadProviders as a prop inside the ContractFormSelect and thus multiple re-rendering cuz ()=>{} create a new function and thus re-ender and thus infinite re-render.
      */
     const loadProviderOptions = useCallback(() => {
-        loadProviders(formData.contractTypeId!)
-    }, [loadProviders, formData.contractTypeId])
+        loadProviders(formData.contractTypeId!, currentHousing?.id)
+    }, [loadProviders, formData.contractTypeId, currentHousing?.id])
 
     /**
      * LoadOfferOptions useCallback.
@@ -231,15 +240,35 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
             )}
             {/* When "Autre fournisseur" is selected */}
             {Number(formData.providerId) === -1 && (
-                <ContractOtherField<ICreateCustomProvider>
+                <ContractOtherField<ICreateCustomProvider, IProvider>
                     name="name"
                     label="Votre fournisseur"
-                    buttonAction={createCustomProvider as any}
-                    buttonLoading={isCreateCustomProviderLoading}
+                    onButtonClick={
+                        createCustomProvider as unknown as (data: ICreateCustomProvider) => Promise<IProvider>
+                    }
+                    isButtonLoading={isCreateCustomProviderLoading}
                     buttonLabel="Créer le fournisseur"
                     validateFunctions={[requiredBuilder()]}
+                    isOtherFieldSubmitted={isCustomProviderCreated}
                 />
             )}
+
+            {/* When user create "Autre fournisseur" succesfully, now they create a custom offer */}
+            {isCustomProviderCreated && (
+                <ContractOtherField<ICreateCustomOffer, IOffer>
+                    name="name"
+                    label="Votre offre"
+                    onButtonClick={createCustomOffer as unknown as (data: ICreateCustomOffer) => Promise<IOffer>}
+                    isButtonLoading={isCreateCustomOfferLoading}
+                    buttonLabel="Créer l'offre"
+                    validateFunctions={[requiredBuilder()]}
+                    isOtherFieldSubmitted={isCustomOfferCreated}
+                    onButtonClickParams={{
+                        providerId: customProvderData?.id,
+                    }}
+                />
+            )}
+
             {Number(formData.providerId) > 0 && (
                 <>
                     <ContractFormSelect<IOffer>
@@ -257,7 +286,6 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                     <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
                 </>
             )}
-
             {Number(formData.offerId) > 0 && (
                 <ContractFormSelect<ITariffType>
                     formatOptionLabel={(option) => option.name}

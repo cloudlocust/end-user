@@ -3,7 +3,7 @@ import { UiTextFieldProps } from 'src/common/ui-kit'
 /**
  * Contract other field props.
  */
-export interface ContractOtherFieldProps<T> extends UiTextFieldProps {
+export interface ContractOtherFieldProps<T, R> extends UiTextFieldProps {
     /**
      * Field name.
      */
@@ -21,9 +21,20 @@ export interface ContractOtherFieldProps<T> extends UiTextFieldProps {
      *
      * @param data It an object with a name and networkIdentifier property.
      */
-    buttonAction: (data: T) => Promise<void>
+    onButtonClick: (data: T) => Promise<R>
     /**
      * Button loading state.
      */
-    buttonLoading: boolean
+    isButtonLoading: boolean
+    /**
+     * Boolean state to check if the field is submitted.
+     */
+    isOtherFieldSubmitted: boolean
+    /**
+     * Rest of params for ButtonClick data.
+     */
+    onButtonClickParams?: /**
+     *
+     */
+    { [key: string]: any }
 }
