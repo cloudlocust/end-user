@@ -53,6 +53,8 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
         return housingEquipmentsDetails.find((housingEq) => housingEq.id === selectedEquipmentId)
     }, [housingEquipmentsDetails, selectedEquipmentId])
 
+    const isElectricCar = selectedEquipment?.equipment.name === 'electric_car'
+
     useEffect(() => {
         if (selectedEquipment) {
             setValue('equipmentBrand', selectedEquipment.equipmentBrand)
@@ -80,7 +82,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
             const extraData =
                 selectedEquipment.equipment.name === 'electric_car'
                     ? {
-                          isChargesAtHome: data.isChargesAtHome,
+                          isChargesAtHome: Boolean(data.isChargesAtHome),
                           chargingMethod: data.chargingMethod,
                       }
                     : undefined
@@ -136,7 +138,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                         )
                     }}
                 />
-                {selectedEquipment?.equipment.name === 'electric_car' && (
+                {isElectricCar && (
                     <div className="flex flex-col">
                         <FormControl className="mb-20 flex flex-col sm:flex-row sm:items-center sm:gap-36">
                             <TypographyFormatMessage text="Je charge ma voiture à mon domicile" />
