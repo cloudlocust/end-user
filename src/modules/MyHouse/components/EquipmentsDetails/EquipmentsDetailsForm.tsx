@@ -20,6 +20,16 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 
+const POWERED_EQUIPMENT_TYPES = [
+    'water_heater',
+    'electric_car',
+    'heatpump',
+    'radiator',
+    'air_conditioner',
+    'reversible_heatpump',
+    'swimmingpool_heatpump',
+]
+
 /**
  * Equipment details form.
  *
@@ -41,6 +51,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                 : null,
             isChargesAtHome: housingEquipmentsDetails[0]?.extraData?.isChargesAtHome,
             chargingMethod: housingEquipmentsDetails[0]?.extraData?.chargingMethod,
+            power: housingEquipmentsDetails[0]?.power,
         },
         mode: 'all',
     })
@@ -54,6 +65,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
     }, [housingEquipmentsDetails, selectedEquipmentId])
 
     const isElectricCar = selectedEquipment?.equipment.name === 'electric_car'
+    const isPoweredEquipment = POWERED_EQUIPMENT_TYPES.includes(selectedEquipment?.equipment.name ?? '')
 
     useEffect(() => {
         if (selectedEquipment) {
@@ -65,6 +77,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
             )
             setValue('isChargesAtHome', selectedEquipment.extraData?.isChargesAtHome)
             setValue('chargingMethod', selectedEquipment.extraData?.chargingMethod)
+            setValue('power', selectedEquipment.power)
         }
     }, [housingEquipmentsDetails, selectedEquipment, selectedEquipmentId, setValue])
 
@@ -79,13 +92,14 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
         try {
             setIsSubmitting(true)
 
-            const extraData =
-                selectedEquipment.equipment.name === 'electric_car'
-                    ? {
-                          isChargesAtHome: Boolean(data.isChargesAtHome),
-                          chargingMethod: data.chargingMethod,
-                      }
-                    : undefined
+            const extraData = isElectricCar
+                ? {
+                      isChargesAtHome: data.isChargesAtHome,
+                      chargingMethod: data.chargingMethod,
+                  }
+                : undefined
+
+            // const power = shouldShowPowerField ? data.power : undefined
 
             await addHousingEquipment([
                 {
@@ -96,12 +110,15 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                     // Convert Date into number
                     yearOfPurchase: data.yearOfPurchase ? dayjs(data.yearOfPurchase).year() : null,
                     extraData,
+                    power: data.power ? Number(data.power) : null,
                 },
             ])
         } finally {
             setIsSubmitting(false)
         }
     }
+
+    const shouldShowPowerField = isPoweredEquipment && (!isElectricCar || isChargesAtHome === 'true')
 
     return (
         <FormProvider {...methods}>
@@ -143,28 +160,39 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                         <FormControl className="mb-20 flex flex-col sm:flex-row sm:items-center sm:gap-36">
                             <TypographyFormatMessage text="Je charge ma voiture à mon domicile" />
                             <RadioGroup row {...register('isChargesAtHome')}>
-                                <FormControlLabel value={true} control={<Radio />} label="Oui" />
-                                <FormControlLabel value={false} control={<Radio />} label="Non" />
+                                <FormControlLabel
+                                    value={'true'}
+                                    control={<Radio {...register('isChargesAtHome')} />}
+                                    label="Oui"
+                                />
+                                <FormControlLabel
+                                    value={false}
+                                    control={<Radio {...register('isChargesAtHome')} />}
+                                    label="Non"
+                                />
                             </RadioGroup>
                         </FormControl>
-                        {isChargesAtHome && (
-                            <FormControl className="flex flex-col">
+                        {isChargesAtHome === 'true' && (
+                            <FormControl className="flex flex-col mb-20">
                                 <TypographyFormatMessage text="Méthode de chargement" />
                                 <RadioGroup className="flex flex-col pl-20" row {...register('chargingMethod')}>
                                     <FormControlLabel
                                         value="chargingStation"
-                                        control={<Radio />}
+                                        control={<Radio {...register('chargingMethod')} />}
                                         label="J’ai une borne de recharge"
                                     />
                                     <FormControlLabel
                                         value="socket"
-                                        control={<Radio />}
+                                        control={<Radio {...register('chargingMethod')} />}
                                         label="Je branche sur une prise sans borne"
                                     />
                                 </RadioGroup>
                             </FormControl>
                         )}
                     </div>
+                )}
+                {shouldShowPowerField && (
+                    <TextField {...register('power')} label="Puissance" type="number" fullWidth className="mb-20" />
                 )}
                 <div className="w-full mt-10">
                     <ButtonLoader type="submit" fullWidth inProgress={isSubmitting}>

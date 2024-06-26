@@ -97,6 +97,10 @@ export type equipmentMeterType = {
      */
     usage?: string[] | null
     /**
+     * Power of the Equipment.
+     */
+    power?: number | null
+    /**
      * Extra data for additional info.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -104,7 +108,7 @@ export type equipmentMeterType = {
         /**
          *
          */
-        isChargesAtHome?: boolean
+        isChargesAtHome?: 'true' | 'false'
         /**
          *
          */

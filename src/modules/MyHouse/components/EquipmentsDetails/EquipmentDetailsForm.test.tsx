@@ -6,6 +6,7 @@ import { EquipmentDetailsFormProps } from 'src/modules/MyHouse/components/Equipm
 import EquipmentDetailsForm from 'src/modules/MyHouse/components/EquipmentsDetails/EquipmentsDetailsForm'
 import { IEquipmentMeter } from 'src/modules/MyHouse/components/Installation/InstallationType'
 
+const POWER_FIELD_LABEL = 'Puissance'
 const CHARGING_STATION_LABEL = 'J’ai une borne de recharge'
 const SOCKET_LABEL = 'Je branche sur une prise sans borne'
 const SAVE_BUTTON_TEXT = 'Enregistrer'
@@ -67,6 +68,26 @@ let housingEquipmentDetailsData: IEquipmentMeter[] = applyCamelCase([
         equipment: {
             id: 3,
             name: 'electric_car',
+            allowed_type: ['electricity'],
+            customer_id: null,
+            measurement_duration: null,
+            measurement_modes: null,
+        },
+    },
+    {
+        equipment_id: 4,
+        equipment_type: 'electricity',
+        equipment_number: 4,
+        equipment_label: null,
+        equipment_brand: null,
+        equipment_model: null,
+        year_of_purchase: null,
+        frequency_of_usage_per_week: null,
+        average_usage_per_minute: null,
+        id: 4,
+        equipment: {
+            id: 4,
+            name: 'water_heater',
             allowed_type: ['electricity'],
             customer_id: null,
             measurement_duration: null,
@@ -139,6 +160,7 @@ describe('EquipmentDetailsForm', () => {
                     equipmentId: 1,
                     yearOfPurchase: null,
                     extraData: undefined,
+                    power: null,
                 },
             ])
         })
@@ -148,7 +170,6 @@ describe('EquipmentDetailsForm', () => {
         test('should render and interact with isChargesAtHome radio buttons', () => {
             // Select the third equipment which is an electric car
             equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
-
             const { getByLabelText, getByText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
 
             expect(getByText('Je charge ma voiture à mon domicile')).toBeInTheDocument()
@@ -164,20 +185,21 @@ describe('EquipmentDetailsForm', () => {
             userEvent.click(getByLabelText(NO_TEXT))
             expect(getByLabelText(NO_TEXT)).toBeChecked()
         })
-        test('should render and interact with chargingMethod radio buttons when isChargesAtHome is true', async () => {
+
+        test('should render and interact with chargingMethod radio buttons & power field when isChargesAtHome is true', async () => {
             // Select the third equipment which is an electric car
             equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
-
             const { getByLabelText, getByText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
 
             // Interact with the isChargesAtHome radio button
             userEvent.click(getByLabelText(YES_TEXT))
-
-            // Check if the chargingMethod radio buttons are rendered
             await waitFor(() => {
+                // Check if the chargingMethod radio buttons are rendered
                 expect(getByText('Méthode de chargement')).toBeInTheDocument()
                 expect(getByLabelText(CHARGING_STATION_LABEL)).toBeInTheDocument()
                 expect(getByLabelText(SOCKET_LABEL)).toBeInTheDocument()
+                // Check that power field is rendered
+                expect(getByLabelText(POWER_FIELD_LABEL)).toBeInTheDocument()
             })
 
             // Interact with the chargingMethod radio buttons
@@ -186,21 +208,13 @@ describe('EquipmentDetailsForm', () => {
 
             userEvent.click(getByLabelText(SOCKET_LABEL))
             expect(getByLabelText(SOCKET_LABEL)).toBeChecked()
-        })
-        test('should submit form with isChargesAtHome and chargingMethod fields', async () => {
-            // Select the third equipment which is an electric car
-            equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
-
-            const { getByLabelText, getByText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
 
             // Interact with fields
-            userEvent.click(getByLabelText(YES_TEXT))
-            userEvent.click(getByLabelText(CHARGING_STATION_LABEL))
+            const powerField = getByLabelText(POWER_FIELD_LABEL)
+            userEvent.type(powerField, '1500')
             userEvent.click(getByText(SAVE_BUTTON_TEXT))
 
             await waitFor(() => {
-                expect(mockAddHousingEquipment).toBeCalledTimes(1)
-
                 expect(mockAddHousingEquipment).toBeCalledWith([
                     {
                         id: 3,
@@ -209,9 +223,55 @@ describe('EquipmentDetailsForm', () => {
                         equipmentId: 3,
                         yearOfPurchase: null,
                         extraData: {
-                            isChargesAtHome: true,
+                            isChargesAtHome: 'true',
+                            chargingMethod: 'socket',
+                        },
+                        power: 1500,
+                    },
+                ])
+            })
+        })
+
+        test('should not render chargingMethod radio buttons & power field, when isChargesAtHome is false', () => {
+            // Select the third equipment which is an electric car
+            equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
+            const { getByLabelText, queryByLabelText, queryByText } = reduxedRender(
+                <EquipmentDetailsForm {...equipmentDetailsFormProps} />,
+            )
+
+            // Interact with the isChargesAtHome radio button
+            userEvent.click(getByLabelText(NO_TEXT))
+
+            // Check that chargingMethod radio buttons are not rendered
+            expect(queryByText('Méthode de chargement')).not.toBeInTheDocument()
+            expect(queryByLabelText(CHARGING_STATION_LABEL)).not.toBeInTheDocument()
+            expect(queryByLabelText(SOCKET_LABEL)).not.toBeInTheDocument()
+            // Check if the power field is not rendered
+            expect(queryByLabelText(POWER_FIELD_LABEL)).not.toBeInTheDocument()
+        })
+
+        test('should submit form with isChargesAtHome and chargingMethod fields', async () => {
+            // Select the third equipment which is an electric car
+            equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
+            const { getByLabelText, getByText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
+
+            // Interact with fields
+            userEvent.click(getByLabelText(YES_TEXT))
+            userEvent.click(getByLabelText(CHARGING_STATION_LABEL))
+            userEvent.click(getByText(SAVE_BUTTON_TEXT))
+            await waitFor(() => {
+                expect(mockAddHousingEquipment).toHaveBeenLastCalledWith([
+                    {
+                        id: 3,
+                        equipmentBrand: null,
+                        equipmentModel: null,
+                        equipmentId: 3,
+                        yearOfPurchase: null,
+                        extraData: {
+                            isChargesAtHome: 'true',
                             chargingMethod: 'chargingStation',
                         },
+                        power: null,
                     },
                 ])
             })
@@ -232,6 +292,50 @@ describe('EquipmentDetailsForm', () => {
                         equipmentId: 1,
                         yearOfPurchase: null,
                         extraData: undefined,
+                        power: null,
+                    },
+                ])
+            })
+        })
+    })
+
+    describe('Powered Equipment', () => {
+        test('should render and interact with power field for powered equipment types', () => {
+            // Select the fourth equipment which is a water heater
+            equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[3]]
+
+            const { getByLabelText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
+
+            // Check if the power field is rendered
+            expect(getByLabelText(POWER_FIELD_LABEL)).toBeInTheDocument()
+
+            // Interact with the power field
+            const powerField = getByLabelText(POWER_FIELD_LABEL)
+            userEvent.type(powerField, '1500')
+            expect(powerField).toHaveValue(1500)
+        })
+
+        test('should submit form with power field when applicable', async () => {
+            // Select the fourth equipment which is a water heater
+            equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[3]]
+
+            const { getByLabelText, getByText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
+
+            // Interact with fields
+            const powerField = getByLabelText(POWER_FIELD_LABEL)
+            userEvent.type(powerField, '1500')
+            userEvent.click(getByText(SAVE_BUTTON_TEXT))
+
+            await waitFor(() => {
+                expect(mockAddHousingEquipment).toBeCalledWith([
+                    {
+                        id: 4,
+                        equipmentBrand: null,
+                        equipmentModel: null,
+                        equipmentId: 4,
+                        yearOfPurchase: null,
+                        extraData: undefined,
+                        power: 1500,
                     },
                 ])
             })

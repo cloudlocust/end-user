@@ -23,11 +23,15 @@ export type EquipmentDetailsFormSubmitType =
         /**
          * Does the user charge their electric car at home.
          */
-        isChargesAtHome?: boolean
+        isChargesAtHome?: 'true' | 'false'
         /**
          * Method of charging the electric car.
          */
         chargingMethod?: 'chargingStation' | 'socket'
+        /**
+         * Power of the Equipment.
+         */
+        power?: number | null
     }
 
 /**
