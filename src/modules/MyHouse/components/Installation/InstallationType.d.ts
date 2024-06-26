@@ -99,7 +99,7 @@ export type equipmentMeterType = {
     /**
      * Power of the Equipment.
      */
-    power?: number | null
+    power?: number
     /**
      * Extra data for additional info.
      */
@@ -108,7 +108,7 @@ export type equipmentMeterType = {
         /**
          *
          */
-        isChargesAtHome?: 'true' | 'false'
+        isChargesAtHome?: boolean
         /**
          *
          */

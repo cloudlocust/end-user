@@ -110,7 +110,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                     // Convert Date into number
                     yearOfPurchase: data.yearOfPurchase ? dayjs(data.yearOfPurchase).year() : null,
                     extraData,
-                    power: data.power ? Number(data.power) : null,
+                    power: shouldShowPowerField && data.power ? Number(data.power) : undefined,
                 },
             ])
         } finally {
@@ -118,7 +118,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
         }
     }
 
-    const shouldShowPowerField = isPoweredEquipment && (!isElectricCar || isChargesAtHome === 'true')
+    const shouldShowPowerField = isPoweredEquipment && (!isElectricCar || isChargesAtHome)
 
     return (
         <FormProvider {...methods}>
@@ -159,20 +159,16 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                     <div className="flex flex-col">
                         <FormControl className="mb-20 flex flex-col sm:flex-row sm:items-center sm:gap-36">
                             <TypographyFormatMessage text="Je charge ma voiture à mon domicile" />
-                            <RadioGroup row {...register('isChargesAtHome')}>
-                                <FormControlLabel
-                                    value={'true'}
-                                    control={<Radio {...register('isChargesAtHome')} />}
-                                    label="Oui"
-                                />
-                                <FormControlLabel
-                                    value={false}
-                                    control={<Radio {...register('isChargesAtHome')} />}
-                                    label="Non"
-                                />
+                            <RadioGroup
+                                row
+                                value={isChargesAtHome}
+                                onChange={(e) => setValue('isChargesAtHome', e.target.value === 'true')}
+                            >
+                                <FormControlLabel value={true} control={<Radio />} label="Oui" />
+                                <FormControlLabel value={false} control={<Radio />} label="Non" />
                             </RadioGroup>
                         </FormControl>
-                        {isChargesAtHome === 'true' && (
+                        {isChargesAtHome && (
                             <FormControl className="flex flex-col mb-20">
                                 <TypographyFormatMessage text="Méthode de chargement" />
                                 <RadioGroup className="flex flex-col pl-20" row {...register('chargingMethod')}>

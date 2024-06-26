@@ -159,8 +159,6 @@ describe('EquipmentDetailsForm', () => {
                     equipmentModel: modelFieldNewValue,
                     equipmentId: 1,
                     yearOfPurchase: null,
-                    extraData: undefined,
-                    power: null,
                 },
             ])
         })
@@ -223,7 +221,7 @@ describe('EquipmentDetailsForm', () => {
                         equipmentId: 3,
                         yearOfPurchase: null,
                         extraData: {
-                            isChargesAtHome: 'true',
+                            isChargesAtHome: true,
                             chargingMethod: 'socket',
                         },
                         power: 1500,
@@ -255,7 +253,6 @@ describe('EquipmentDetailsForm', () => {
             equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
             const { getByLabelText, getByText } = reduxedRender(<EquipmentDetailsForm {...equipmentDetailsFormProps} />)
 
-            // Interact with fields
             userEvent.click(getByLabelText(YES_TEXT))
             userEvent.click(getByLabelText(CHARGING_STATION_LABEL))
             userEvent.click(getByText(SAVE_BUTTON_TEXT))
@@ -268,10 +265,10 @@ describe('EquipmentDetailsForm', () => {
                         equipmentId: 3,
                         yearOfPurchase: null,
                         extraData: {
-                            isChargesAtHome: 'true',
+                            isChargesAtHome: true,
                             chargingMethod: 'chargingStation',
                         },
-                        power: null,
+                        power: undefined,
                     },
                 ])
             })
@@ -292,7 +289,7 @@ describe('EquipmentDetailsForm', () => {
                         equipmentId: 1,
                         yearOfPurchase: null,
                         extraData: undefined,
-                        power: null,
+                        power: undefined,
                     },
                 ])
             })
