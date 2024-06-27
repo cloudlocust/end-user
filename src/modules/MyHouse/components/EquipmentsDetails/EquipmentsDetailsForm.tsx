@@ -99,8 +99,6 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                   }
                 : undefined
 
-            // const power = shouldShowPowerField ? data.power : undefined
-
             await addHousingEquipment([
                 {
                     id: selectedEquipmentId,
