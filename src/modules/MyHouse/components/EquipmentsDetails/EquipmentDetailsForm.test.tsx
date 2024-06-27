@@ -193,7 +193,6 @@ describe('EquipmentDetailsForm', () => {
             userEvent.click(getByLabelText(YES_TEXT))
             await waitFor(() => {
                 // Check if the chargingMethod radio buttons are rendered
-                expect(getByText('Méthode de chargement')).toBeInTheDocument()
                 expect(getByLabelText(CHARGING_STATION_LABEL)).toBeInTheDocument()
                 expect(getByLabelText(SOCKET_LABEL)).toBeInTheDocument()
                 // Check that power field is rendered
@@ -233,7 +232,7 @@ describe('EquipmentDetailsForm', () => {
         test('should not render chargingMethod radio buttons & power field, when isChargesAtHome is false', () => {
             // Select the third equipment which is an electric car
             equipmentDetailsFormProps.housingEquipmentsDetails = [housingEquipmentDetailsData[2]]
-            const { getByLabelText, queryByLabelText, queryByText } = reduxedRender(
+            const { getByLabelText, queryByLabelText } = reduxedRender(
                 <EquipmentDetailsForm {...equipmentDetailsFormProps} />,
             )
 
@@ -241,7 +240,6 @@ describe('EquipmentDetailsForm', () => {
             userEvent.click(getByLabelText(NO_TEXT))
 
             // Check that chargingMethod radio buttons are not rendered
-            expect(queryByText('Méthode de chargement')).not.toBeInTheDocument()
             expect(queryByLabelText(CHARGING_STATION_LABEL)).not.toBeInTheDocument()
             expect(queryByLabelText(SOCKET_LABEL)).not.toBeInTheDocument()
             // Check if the power field is not rendered

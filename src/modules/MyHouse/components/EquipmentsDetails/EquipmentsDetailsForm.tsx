@@ -95,7 +95,7 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
             const extraData = isElectricCar
                 ? {
                       isChargesAtHome: data.isChargesAtHome,
-                      chargingMethod: data.chargingMethod,
+                      chargingMethod: data.isChargesAtHome ? data.chargingMethod : undefined,
                   }
                 : undefined
 
@@ -169,21 +169,29 @@ export default function EquipmentsDetailsForm(props: EquipmentDetailsFormProps) 
                             </RadioGroup>
                         </FormControl>
                         {isChargesAtHome && (
-                            <FormControl className="flex flex-col mb-20">
-                                <TypographyFormatMessage text="Méthode de chargement" />
-                                <RadioGroup className="flex flex-col pl-20" row {...register('chargingMethod')}>
-                                    <FormControlLabel
-                                        value="chargingStation"
-                                        control={<Radio {...register('chargingMethod')} />}
-                                        label="J’ai une borne de recharge"
-                                    />
-                                    <FormControlLabel
-                                        value="socket"
-                                        control={<Radio {...register('chargingMethod')} />}
-                                        label="Je branche sur une prise sans borne"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
+                            <Controller
+                                name="chargingMethod"
+                                render={({ field }) => (
+                                    <RadioGroup
+                                        value={watch(field.name)}
+                                        onChange={(e) => {
+                                            setValue(field.name, e.target.value as 'chargingStation' | 'socket')
+                                        }}
+                                        className="flex flex-col sm:flex-row mb-20"
+                                    >
+                                        <FormControlLabel
+                                            value={'chargingStation'}
+                                            control={<Radio checked={watch(field.name) === 'chargingStation'} />}
+                                            label="J’ai une borne de recharge"
+                                        />
+                                        <FormControlLabel
+                                            value={'socket'}
+                                            control={<Radio checked={watch(field.name) === 'socket'} />}
+                                            label="Je branche sur une prise sans borne"
+                                        />
+                                    </RadioGroup>
+                                )}
+                            />
                         )}
                     </div>
                 )}
