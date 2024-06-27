@@ -20,6 +20,14 @@ export type EquipmentDetailsFormSubmitType =
          * Year of purchase.
          */
         yearOfPurchase?: Date | null
+        /**
+         * Does the user charge their electric car at home.
+         */
+        isChargesAtHome?: boolean
+        /**
+         * Method of charging the electric car.
+         */
+        chargingMethod?: 'chargingStation' | 'socket'
     }
 
 /**
