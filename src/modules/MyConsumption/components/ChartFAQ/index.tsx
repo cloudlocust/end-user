@@ -32,9 +32,7 @@ export const ChartFAQ: FC<FAQProps> = ({ period, housingId }) => {
 
     const isProduction = consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction
 
-    // todo: activate later when the FAQ content be ready
-    if (period !== PeriodEnum.DAILY || doesUserHasTempoContract || isProduction) {
-        return null
-    }
+    if (period !== PeriodEnum.DAILY || isProduction) return null
+
     return <FAQ items={faqItems} title={faqTitle} />
 }

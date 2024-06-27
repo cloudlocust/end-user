@@ -10,9 +10,7 @@ import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
-import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
@@ -69,7 +67,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(
         isSolarProductionConsentOff ? '1m' : '30m',
     )
-    const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
+    // const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
@@ -150,12 +148,12 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                     </div>
 
                     {/* Ecowatt Widget */}
-                    <div className="p-12 sm:p-24" id="ecowatt-widget">
+                    {/* <div className="p-12 sm:p-24" id="ecowatt-widget">
                         <EcowattWidget
                             ecowattSignalsData={ecowattSignalsData}
                             isEcowattDataInProgress={isEcowattDataInProgress}
                         />
-                    </div>
+                    </div> */}
                 </>
             )}
         </>
