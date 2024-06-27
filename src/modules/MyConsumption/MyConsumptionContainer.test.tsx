@@ -277,7 +277,8 @@ describe('MyConsumptionContainer test', () => {
             expect(queryByText(SwitchConsumptionButtonLabelEnum.Idle)).not.toBeInTheDocument()
             expect(getByText(LIST_WIDGETS_TEXT)).toBeInTheDocument()
             expect(getByTestId('faq')).toBeInTheDocument()
-            expect(getByText(ECOWATT_TITLE)).toBeInTheDocument()
+            // test will break when enable the component, change it when this happen to : expect(getByText()).toBeInTheDocument()
+            expect(queryByText(ECOWATT_TITLE)).toBeNull()
         })
         test('when enphase is off, idle button should also be shown', async () => {
             // we mock enphase consent to be off, to show the idle button also.
