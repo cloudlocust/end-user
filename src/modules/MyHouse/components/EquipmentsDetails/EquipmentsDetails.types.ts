@@ -28,6 +28,10 @@ export type EquipmentDetailsFormSubmitType =
          * Method of charging the electric car.
          */
         chargingMethod?: 'chargingStation' | 'socket'
+        /**
+         * Power of the Equipment.
+         */
+        power?: number
     }
 
 /**
