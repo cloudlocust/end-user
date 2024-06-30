@@ -623,12 +623,7 @@ export const ConsumptionChartContainer = ({
             >
                 <div style={{ height: 28 }}>
                     <MyConsumptionPeriod
-                        setPeriod={(value) => {
-                            if (value !== PeriodEnum.DAILY) {
-                                onEurosConsumptionButtonToggle(true)
-                            }
-                            onPeriodChange(value)
-                        }}
+                        setPeriod={onPeriodChange}
                         setRange={onRangeChange}
                         setMetricsInterval={setMetricsInterval}
                         range={range}
