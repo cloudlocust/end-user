@@ -128,5 +128,5 @@ export const BuilderUseRegister = ({
  */
 export const useRegister = BuilderUseRegister({
     // eslint-disable-next-line jsdoc/require-jsdoc
-    redirect: () => '/login',
+    redirect: () => '/onboarding',
 })
