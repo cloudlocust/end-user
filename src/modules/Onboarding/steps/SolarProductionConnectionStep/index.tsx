@@ -101,8 +101,8 @@ export const SolarProductionConnectionStep = ({
                         disableRipple={true}
                     >
                         {formatMessage({
-                            id: "Mon installation solaire n'est pas compatible",
-                            defaultMessage: "Mon installation solaire n'est pas compatible",
+                            id: "Je n'ai pas d'installation solaire",
+                            defaultMessage: "Je n'ai pas d'installation solaire",
                         })}
                     </Button>
                     <ButtonLoader
