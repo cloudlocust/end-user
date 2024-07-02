@@ -39,11 +39,13 @@ export const EnphaseConsentPopup = ({
 }) => {
     const [newWindow] = useState(url ? openWindow(url) : openWindow(''))
 
-    /**
-     * Close the window when it's unloaded.
-     */
-    newWindow!.onbeforeunload = () => {
-        onClose()
+    if (newWindow) {
+        /**
+         * Close the window when it's unloaded.
+         */
+        newWindow.onbeforeunload = () => {
+            onClose()
+        }
     }
 
     return createPortal(<>{!url ? 'Chargement...' : children}</>, newWindow!.document.body)
