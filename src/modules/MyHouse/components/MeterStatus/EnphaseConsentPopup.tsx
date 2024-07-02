@@ -31,7 +31,7 @@ export const EnphaseConsentPopup = ({
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    onClose: () => void
+    onClose?: () => void
     // eslint-disable-next-line jsdoc/require-jsdoc
     url?: string
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -39,13 +39,7 @@ export const EnphaseConsentPopup = ({
 }) => {
     const [newWindow] = useState(url ? openWindow(url) : openWindow(''))
 
-    if (newWindow) {
-        /**
-         * Close the window when it's unloaded.
-         */
-        newWindow.onbeforeunload = () => {
-            onClose()
-        }
+    if (onClose) {
     }
 
     return createPortal(<>{!url ? 'Chargement...' : children}</>, newWindow!.document.body)
