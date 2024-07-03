@@ -1,5 +1,4 @@
-import { ReactNode, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useEffect } from 'react'
 
 /**
  * Function that opens a new window.
@@ -7,7 +6,7 @@ import { createPortal } from 'react-dom'
  * @param url Url string.
  * @returns New window.
  */
-const openWindow = (url: string) => {
+const openWindow = (url: string): Window | null => {
     return window.open(
         url,
         'enphaseConsentWindow',
@@ -21,32 +20,50 @@ const openWindow = (url: string) => {
  * @param param0 N/A.
  * @param param0.onClose On close function.
  * @param param0.url Url string.
- * @param param0.children Children.
  * @returns EnphaseConsentPopup as a portal window sharing the same DOM as the parent.
  */
 export const EnphaseConsentPopup = ({
     onClose,
     url,
-    children,
 }: // eslint-disable-next-line jsdoc/require-jsdoc
 {
     // eslint-disable-next-line jsdoc/require-jsdoc
-    onClose: () => void
+    onClose?: () => void
     // eslint-disable-next-line jsdoc/require-jsdoc
     url?: string
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    children?: ReactNode
 }) => {
-    const [newWindow] = useState(url ? openWindow(url) : openWindow(''))
+    const [newWindow, setNewWindow] = useState<Window | null>(null)
 
-    if (newWindow) {
-        /**
-         * Close the window when it's unloaded.
-         */
-        newWindow.onbeforeunload = () => {
-            onClose()
+    useEffect(() => {
+        const win = url ? openWindow(url) : openWindow('')
+        setNewWindow(win)
+
+        const interval = setInterval(() => {
+            if (win && win.closed) {
+                if (onClose) onClose()
+                clearInterval(interval)
+            }
+        }, 1000)
+
+        return () => {
+            clearInterval(interval)
+            if (win) {
+                win.close()
+            }
         }
-    }
+    }, [url, onClose])
 
-    return createPortal(<>{!url ? 'Chargement...' : children}</>, newWindow!.document.body)
+    useEffect(() => {
+        if (newWindow && !url && newWindow.document.readyState === 'complete') {
+            newWindow.document.body.innerHTML = `<div id="root"></div>`
+            newWindow.document.title = 'Enphase Consent'
+
+            const rootDiv = newWindow.document.getElementById('root')
+            if (rootDiv) {
+                rootDiv.appendChild(document.createElement('div'))
+            }
+        }
+    }, [newWindow, url])
+
+    return null
 }
