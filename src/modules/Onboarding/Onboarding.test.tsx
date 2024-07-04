@@ -126,13 +126,14 @@ jest.mock('src/modules/Onboarding/steps/SolarProductionConnectionStep', () => ({
 jest.mock('axios')
 
 let mockIsNrLinkPopupShowing = true
+let mockIsGetShowNrLinkLoading = false
 const mockAxiosPatch = jest.fn()
 
 jest.mock('src/modules/nrLinkConnection/NrLinkConnectionHook', () => ({
     ...jest.requireActual('src/modules/nrLinkConnection/NrLinkConnectionHook'),
     // eslint-disable-next-line jsdoc/require-jsdoc
     useGetShowNrLinkPopupHook: () => ({
-        isGetShowNrLinkLoading: false,
+        isGetShowNrLinkLoading: mockIsGetShowNrLinkLoading,
         isNrLinkPopupShowing: mockIsNrLinkPopupShowing,
     }),
 }))
@@ -229,5 +230,49 @@ describe('Onboarding test', () => {
         expect(getByTestId(STEPS_NAMES.SOLAR_PRODUCTION_CONNECTION)).toBeInTheDocument()
         userEvent.click(screen.getByRole('button', { name: 'Suivant' }))
         await hideOnboardingAndRedirectToDashboard(history)
+    })
+
+    describe('Onboarding Loading States', () => {
+        test('should render FuseLoading when isGetShowNrLinkLoading is true', () => {
+            mockIsGetShowNrLinkLoading = true
+
+            const history = createMemoryHistory()
+            const { getByText } = reduxedRender(
+                <Router history={history}>
+                    <Onboarding />
+                </Router>,
+                {
+                    initialState: { housingModel: { currentHousing: { id: 1 } } },
+                },
+            )
+
+            expect(getByText('Chargement...')).toBeInTheDocument()
+
+            mockIsGetShowNrLinkLoading = false
+        })
+
+        test('should render FuseLoading when consentsLoading is true', () => {
+            const useConsents = jest.spyOn(require('src/modules/Consents/consentsHook'), 'useConsents')
+            useConsents.mockReturnValue({
+                getConsents: jest.fn(),
+                enedisSgeConsent: {},
+                nrlinkConsent: {},
+                consentsLoading: true,
+            })
+
+            const history = createMemoryHistory()
+            const { getByText } = reduxedRender(
+                <Router history={history}>
+                    <Onboarding />
+                </Router>,
+                {
+                    initialState: { housingModel: { currentHousing: { id: 1 } } },
+                },
+            )
+
+            expect(getByText('Chargement...')).toBeInTheDocument()
+
+            useConsents.mockRestore()
+        })
     })
 })
