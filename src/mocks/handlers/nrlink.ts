@@ -69,6 +69,10 @@ export const nrlinkEndpoints = [
         // invalid House Id
         if (Number(houseId) === -1) return res(ctx.status(404), ctx.delay(1000))
 
+        // test invalid House Id with error message
+        if (Number(houseId) === -2)
+            return res(ctx.status(404), ctx.delay(1000), ctx.json({ detail: 'Invalid house id' }))
+
         // testing clear_data payload.
         if (oldNrlinkGuid === 'aaaaa1aaaaa1aaaa') {
             return res(ctx.status(clearData ? 201 : 500), ctx.delay(1000))
