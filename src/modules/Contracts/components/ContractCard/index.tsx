@@ -18,6 +18,7 @@ import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import dayjs from 'dayjs'
 import { useIntl } from 'react-intl'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+// import { useContractStore } from 'src/modules/Contracts/store/contractStore'
 
 /**
  * Contract Card component.
@@ -38,6 +39,7 @@ const ContractCard = ({ contract, onAfterDeleteUpdateSuccess }: ContractCardProp
     } = useContractDetails(parseInt(houseId), contract.id)
     const [isContractFormOpen, setIsContractFormOpen] = useState(false)
     const { formatMessage } = useIntl()
+    // const contractFornType = useContractStore((state) => state.contractFormType)
 
     /**
      * Open warning remove popup on delete click.

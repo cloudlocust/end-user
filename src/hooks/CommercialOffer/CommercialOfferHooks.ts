@@ -43,6 +43,11 @@ export const CREATE_CUSTOM_PROVIDER_API = `${API_RESOURCES_URL}/providers/custom
 export const CREATE_CUSTOM_OFFER_API = `${API_RESOURCES_URL}/offers/custom-offer`
 
 /**
+ * Create custom tariff type.
+ */
+export const CREATE_CUSTOM_TARIFF_TYPE_API = `${API_RESOURCES_URL}/tariff_types/custom-tariff-type`
+
+/**
 `* Hooks for commercialOffer different fetch requests (Providers, TariffType, Power, contractType).
  *
  * @returns Hook useCommercialOffer.
@@ -348,5 +353,74 @@ export const useCreateCustomOffer = () => {
         isCustomOfferCreated,
         setIsCustomOfferCreated,
         customOfferData,
+    }
+}
+
+/**
+ * Hook to create custom tariff type.
+ *
+ * @returns Hook useCreateCustomTariffType.
+ */
+export const useCreateCustomTariffType = () => {
+    const [isCreateCustomTariffTypeLoading, setIsCreateCustomTariffTypeLoading] = useState(false)
+    const [isCustomTariffTypeCreated, setIsCustomTariffTypeCreated] = useState(false)
+    const [customTariffTypeData, setCustomTariffTypeData] = useState<ITariffType | null>(null)
+
+    const { enqueueSnackbar } = useSnackbar()
+    const { formatMessage } = useIntl()
+
+    // Create custom tariff type
+    const createCustomTariffType = useCallback(
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        async ({
+            name,
+            housingId,
+        }: // eslint-disable-next-line jsdoc/require-jsdoc
+        {
+            /**
+             * Name of the tariff type.
+             */
+            name: string
+            /**
+             * Housing identifier.
+             */
+            housingId: number
+        }) => {
+            try {
+                setIsCreateCustomTariffTypeLoading(true)
+                const { data, status } = await axios.post<ITariffType>(CREATE_CUSTOM_TARIFF_TYPE_API, {
+                    name,
+                    networkIdentifier: housingId,
+                })
+
+                if (status === 201) {
+                    enqueueSnackbar(
+                        formatMessage({
+                            id: 'Votre type de contrat a été créé avec succès',
+                            defaultMessage: 'Votre type de contrat a été créé avec succès',
+                        }),
+                        { variant: 'success' },
+                    )
+                    setIsCustomTariffTypeCreated(true)
+                    setCustomTariffTypeData(data)
+                    return data
+                }
+            } catch (error: any) {
+                if (error.response.data.detail) {
+                    enqueueSnackbar(error.response.data.detail, { variant: 'error' })
+                } else enqueueSnackbar('Erreur lors de la création de votre type de contract', { variant: 'error' })
+            } finally {
+                setIsCreateCustomTariffTypeLoading(false)
+            }
+        },
+        [enqueueSnackbar, formatMessage],
+    )
+
+    return {
+        isCreateCustomTariffTypeLoading,
+        createCustomTariffType,
+        isCustomTariffTypeCreated,
+        setIsCustomTariffTypeCreated,
+        customTariffTypeData,
     }
 }

@@ -4,6 +4,7 @@ import {
     CONTRACT_TYPE_LIST_API,
     CREATE_CUSTOM_OFFER_API,
     CREATE_CUSTOM_PROVIDER_API,
+    CREATE_CUSTOM_TARIFF_TYPE_API,
     OFFERS_API,
     POWERS_API,
     PROVIDERS_API,
@@ -316,6 +317,38 @@ export const commercialOfferEndpoints = [
             ctx.status(201),
             ctx.delay(1000),
             ctx.json({ id: 1, name: 'Custom Offer', network_identifier, provider_id }),
+        )
+    }),
+
+    // Create custom tariff type
+    rest.post(CREATE_CUSTOM_TARIFF_TYPE_API, (req, res, ctx) => {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        const { name, network_identifier } = req.body as {
+            /**
+             *
+             */
+            name: string
+            /**
+             *
+             */
+            network_identifier: number
+        }
+
+        if (!name) {
+            return res(ctx.status(400), ctx.json({ detail: 'Missing name' }))
+        }
+
+        if (name === 'error') {
+            return res(ctx.status(400), ctx.json({ detail: 'Error' }))
+        }
+
+        // Create the tariff type
+        TEST_TARIFF_TYPES.push({ id: TEST_TARIFF_TYPES.length + 1, name })
+
+        return res(
+            ctx.status(201),
+            ctx.delay(1000),
+            ctx.json({ id: 1, name: 'Custom Tariff Type', network_identifier }),
         )
     }),
 ]

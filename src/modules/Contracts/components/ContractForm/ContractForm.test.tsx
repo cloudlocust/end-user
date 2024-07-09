@@ -41,8 +41,6 @@ const CONTRACT_FORM_FIELDS_LABEL_LIST = [
     END_SUBSCRIPTION_LABEL_TEXT,
 ]
 
-const OTHER_PROVIDER_OFFER_OPTION_MESSAGE =
-    "en précisant le fournisseur et l’offre que vous souhaitez voir renseignés. Si vous le pouvez, ajoutez la grille tarifaire correspondante à votre offre. Cela nous permettra de l'enregistrer plus rapidement."
 const CONTRACT_FORM_OFFPEAK_HOURS_LABEL_LIST = [
     TYPE_LABEL_TEXT,
     PROVIDER_LABEL_TEXT,
@@ -337,8 +335,6 @@ describe('Test ContractFormSelect Component', () => {
 
         // When selecting other offer, tariffType is not shown
         userEvent.click(getByLabelText(OFFER_LABEL_TEXT, { exact: false }))
-        selectOption(getAllByRole, TEST_OFFERS.length)
-        expect(getByText(OTHER_PROVIDER_OFFER_OPTION_MESSAGE, { exact: false })).toBeTruthy()
         expect(() => getByLabelText(TARRIF_TYPE_LABEL_TEXT, { exact: false })).toThrow()
         await waitFor(() => {
             expect(mockLoadTariffTypes).not.toHaveBeenCalled()

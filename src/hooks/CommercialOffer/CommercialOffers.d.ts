@@ -69,6 +69,10 @@ export type ITariffType =
          * Name of tariff type.
          */
         name: string
+        /**
+         * Network identifier.
+         */
+        networkIdentifier?: number | null
     }
 
 /**
@@ -112,3 +116,22 @@ export type ICreateCustomOffer =
          */
         networkIdentifier: number
     }
+
+/**
+ * Create custom tariff type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type ICreateCustomTariffType = {
+    /**
+     * Name of the tariff type.
+     */
+    name: string
+    /**
+     * Id of the offer.
+     */
+    offerId: number
+    /**
+     * Network identifier.
+     */
+    networkIdentifier: number
+}
