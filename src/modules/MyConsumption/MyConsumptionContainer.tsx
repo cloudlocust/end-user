@@ -20,7 +20,10 @@ import {
     isProductionActiveAndHousingHasAccess,
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
-import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import {
+    useMyConsumptionStore,
+    useMyProductionConnectedPlugStore,
+} from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
@@ -46,6 +49,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
     const { consumptionToggleButton } = useMyConsumptionStore()
+    const { isProductionConnectedPlug, setIsProductionConnectedPlug } = useMyProductionConnectedPlugStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -54,7 +58,9 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList,
     } = useConnectedPlugList(currentHousing?.id)
     // Check if there's connected plug in production mode.
-    const isProductionConnectedPlug = getProductionConnectedPlug()
+    useEffect(() => {
+        setIsProductionConnectedPlug(!!getProductionConnectedPlug())
+    }, [getProductionConnectedPlug, setIsProductionConnectedPlug])
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
     let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'

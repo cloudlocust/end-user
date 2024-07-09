@@ -12,7 +12,10 @@ import { useShellyConnectedPlugs } from 'src/modules/MyHouse/components/Connecte
 import SelectConnectedPlugProductionList from 'src/modules/MyHouse/components/MeterStatus/ConnectedPlugProductionConsentPopup/SelectConnectedPlugProductionList'
 import { IConnectedPlugProductionConsentPopupProps } from 'src/modules/MyHouse/components/MeterStatus/MeterStatus.d'
 import { URL_CONSUMPTION } from 'src/modules/MyConsumption'
-import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import {
+    useMyConsumptionStore,
+    useMyProductionConnectedPlugStore,
+} from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
 
 /**
@@ -26,6 +29,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
     const { formatMessage } = useIntl()
     const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
     const { setConsumptionToggleButton } = useMyConsumptionStore()
+    const { setIsProductionConnectedPlug } = useMyProductionConnectedPlugStore()
 
     const theme = useTheme()
     const mdDown = useMediaQuery(theme.breakpoints.down('md'))
@@ -87,6 +91,7 @@ const ConnectedPlugProductionConsentPopup = ({ onClose }: IConnectedPlugProducti
                             )
                             if (isSuccessResponse) {
                                 onClose()
+                                setIsProductionConnectedPlug(true)
                                 setConsumptionToggleButton(SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction)
                                 history.push(URL_CONSUMPTION)
                             }
