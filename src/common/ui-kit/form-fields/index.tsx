@@ -177,6 +177,14 @@ export interface CheckboxProps {
      * Material ui specific field, should be removed.
      */
     defaultValue?: boolean
+    /**
+     * To override the default checked icon.
+     */
+    checkedIcon?: JSX.Element
+    /**
+     * To override the default icon.
+     */
+    icon?: JSX.Element
 }
 // TODO test Checkox Component.
 /**
@@ -186,15 +194,26 @@ export interface CheckboxProps {
  * @returns Checkbox field.
  */
 export const Checkbox: FC<CheckboxProps> = function (props): JSX.Element {
-    const { color, disabled, formControlProps, fullWidth, label, name, required, validate, formControlLabelProps } =
-        props
+    const {
+        color,
+        disabled,
+        formControlProps,
+        fullWidth,
+        label,
+        name,
+        required,
+        validate,
+        formControlLabelProps,
+        checkedIcon,
+        icon,
+    } = props
 
     const {
         formState: { errors },
         register,
         setValue,
+        watch,
     } = useFormContext()
-
     /**
      * Handle changes in the field.
      *
@@ -226,7 +245,15 @@ export const Checkbox: FC<CheckboxProps> = function (props): JSX.Element {
             <FormControlLabel
                 label={label}
                 control={
-                    <CheckboxUI color="primary" id={name} onChange={handleChange} sx={{ pointerEvents: 'auto' }} />
+                    <CheckboxUI
+                        color="primary"
+                        id={name}
+                        onChange={handleChange}
+                        sx={{ pointerEvents: 'auto' }}
+                        checkedIcon={checkedIcon}
+                        icon={icon}
+                        checked={watch(name)}
+                    />
                 }
                 sx={{ marginLeft: '0px', pointerEvents: 'none', marginTop: '10px' }}
                 labelPlacement="end"

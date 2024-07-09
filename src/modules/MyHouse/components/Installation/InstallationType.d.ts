@@ -96,6 +96,24 @@ export type equipmentMeterType = {
      * Usage.
      */
     usage?: string[] | null
+    /**
+     * Power of the Equipment.
+     */
+    power?: number
+    /**
+     * Extra data for additional info.
+     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    extraData?: {
+        /**
+         *
+         */
+        isChargesAtHome?: boolean
+        /**
+         *
+         */
+        chargingMethod?: 'chargingStation' | 'socket'
+    }
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc

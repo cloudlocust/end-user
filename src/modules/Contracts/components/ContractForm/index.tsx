@@ -6,7 +6,6 @@ import {
     ContractFormFieldsProps,
     ContractFormProps,
     contractFormValuesType,
-    contractsRouteParam,
 } from 'src/modules/Contracts/contractsTypes'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Form } from 'src/common/react-platform-components'
@@ -19,7 +18,6 @@ import { ButtonLoader } from 'src/common/ui-kit'
 import { isNil, isNull, orderBy, pick } from 'lodash'
 import { SelectChangeEvent } from '@mui/material/Select'
 import OffpeakHoursField from 'src/modules/Contracts/components/OffpeakHoursField'
-import { useParams } from 'react-router-dom'
 import { useMeterForHousing } from 'src/modules/Meters/metersHook'
 import { OtherProviderOfferOptionMessage } from 'src/modules/Contracts/components/ContractFormMessages'
 import { isActivateOtherOffersAndProviders } from 'src/modules/Contracts/ContractsConfig'
@@ -30,13 +28,13 @@ import { useCurrentHousing } from 'src/hooks/CurrentHousing'
 import { ContractFormTypeEnum, useContractStore } from 'src/modules/Contracts/store/contractStore'
 
 const defaultContractFormValues: contractFormValuesType = {
-    contractTypeId: 0,
+    contractTypeId: '' as unknown as number,
     endSubscription: '',
-    offerId: 0,
-    power: 0,
-    providerId: 0,
+    offerId: '' as unknown as number,
+    power: '' as unknown as number,
+    providerId: '' as unknown as number,
     startSubscription: '',
-    tariffTypeId: 0,
+    tariffTypeId: '' as unknown as number,
 }
 
 /**
@@ -46,12 +44,19 @@ const defaultContractFormValues: contractFormValuesType = {
  * @param props.onSubmit Callback when submitting form.
  * @param props.isContractsLoading Loading state when addContract request.
  * @param props.defaultValues Indicate if contractForm has defaultValues and thus in edit mode.
+ * @param props.isFormDescriptionsVisible Indicate if the form descriptions is visible.
+ * @param props.isUsingRemoteSubmit Indicate if the form is using remote submit.
  * @returns Contract Form component.
  */
-const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractFormProps) => {
-    // HouseId extracted from params of the url :houseId/contracts
-    const { houseId } = useParams<contractsRouteParam>()
+const ContractForm = ({
+    onSubmit,
+    isContractsLoading,
+    defaultValues,
+    isFormDescriptionsVisible = true,
+    isUsingRemoteSubmit = false,
+}: ContractFormProps) => {
     const { editMeter, loadingInProgress } = useMeterForHousing()
+    const currentHousing = useCurrentHousing()
 
     return (
         <Form
@@ -67,7 +72,7 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 // Update meterFeatures if offPeakhours have been set.
                 if (meterFeatures && !meterFeatures.offpeak.readOnly) {
                     try {
-                        await editMeter(parseInt(houseId), { features: meterFeatures })
+                        await editMeter(currentHousing!.id, { features: meterFeatures })
                     } catch (error) {
                         // Stop the execution of onSubmit when editMeter fails, and prevent the stop of the app with try/catch block.
                         return
@@ -76,19 +81,29 @@ const ContractForm = ({ onSubmit, isContractsLoading, defaultValues }: ContractF
                 onSubmit(cleanData)
             }}
             defaultValues={defaultValues ?? defaultContractFormValues}
+            id="contract-form"
         >
             <div className="p-24">
-                <TypographyFormatMessage className="text-16 font-medium md:text-20">
-                    Contrat de fourniture
-                </TypographyFormatMessage>
-                <TypographyFormatMessage
-                    className="text-13 font-medium md:text-16"
-                    sx={{ color: 'primary.main', marginBottom: '20px' }}
-                >
-                    Toutes les informations demandées sont disponibles sur votre facture ou votre contrat d'énergie
-                </TypographyFormatMessage>
+                {isFormDescriptionsVisible && (
+                    <>
+                        <TypographyFormatMessage className="text-16 font-medium md:text-20">
+                            Contrat de fourniture
+                        </TypographyFormatMessage>
+                        <TypographyFormatMessage
+                            className="text-13 font-medium md:text-16"
+                            sx={{ color: 'primary.main', marginBottom: '20px' }}
+                        >
+                            Toutes les informations demandées sont disponibles sur votre facture ou votre contrat
+                            d'énergie
+                        </TypographyFormatMessage>
+                    </>
+                )}
                 <div className="flex flex-col justify-center w-full">
-                    <ContractFormFields isContractsLoading={isContractsLoading || loadingInProgress} />
+                    <ContractFormFields
+                        isContractsLoading={isContractsLoading || loadingInProgress}
+                        isUsingRemoteSubmit={isUsingRemoteSubmit}
+                        houseId={currentHousing!.id}
+                    />
                 </div>
             </div>
         </Form>
@@ -102,9 +117,15 @@ export default ContractForm
  *
  * @param props N/A.
  * @param props.isContractsLoading Loading state when addContract request.
+ * @param props.isUsingRemoteSubmit Indicate if the form is using remote submit.
+ * @param props.houseId The house id which the contract is associated with.
  * @returns Contract Form Fields component.
  */
-const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => {
+export const ContractFormFields = ({
+    isContractsLoading,
+    isUsingRemoteSubmit = false,
+    houseId,
+}: ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({})
     const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
@@ -215,7 +236,6 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
     const loadPowerOptions = useCallback(() => {
         loadPowers(formData.offerId!, formData.tariffTypeId!)
     }, [loadPowers, formData.offerId, formData.tariffTypeId])
-
     return (
         <>
             <ContractFormSelect<IContractType>
@@ -225,7 +245,7 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 loadOptions={loadContractTypes}
                 optionList={contractTypeList}
                 name="contractTypeId"
-                label="Type"
+                label="Contrat pro ou particulier"
                 validateFunctions={[requiredBuilder()]}
                 onChange={(e) => onSelectChange(e, [])}
             />
@@ -274,7 +294,9 @@ const ContractFormFields = ({ isContractsLoading }: ContractFormFieldsProps) => 
                 />
             )}
 
-            {isOffpeakHoursSelected && <OffpeakHoursField name="meterFeatures" label="Plages heures creuses :" />}
+            {isOffpeakHoursSelected && (
+                <OffpeakHoursField name="meterFeatures" label="Plages heures creuses :" houseId={houseId} />
+            )}
             {isOffpeakHoursSelected
                 ? Boolean(formData.meterFeatures) &&
                   // Before showing the power check that start and end has been filled

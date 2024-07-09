@@ -30,3 +30,18 @@ export interface IMyConsumptionStore {
      */
     resetToDefault: () => void
 }
+
+/**
+ * My Consumption Store.
+ */
+export interface IMyProductionConnectedPlugStore {
+    /**
+     * Consumption toggle button.
+     */
+    isProductionConnectedPlug: boolean
+    /**
+     *
+     * @param value Switch consumption button type.
+     */
+    setIsProductionConnectedPlug: (value: boolean) => void
+}

@@ -1,44 +1,23 @@
-import FusePageCarded from 'src/common/ui-kit/fuse/components/FusePageCarded/FusePageCarded'
-import { styled } from '@mui/material'
-import { EquipmentsHeader } from 'src/modules/MyHouse/components/Equipments/EquipmentsHeader/'
-import { EquipmentsList } from 'src/modules/MyHouse/components/Equipments/EquipmentsList'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux'
-import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
-import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
 import { useEffect, useMemo, useState } from 'react'
+import { CircularProgress } from '@mui/material'
+import { useEquipmentList } from 'src/modules/MyHouse/components/Installation/installationHook'
+import { useCurrentHousing } from 'src/hooks/CurrentHousing'
+import { EquipmentsList } from 'src/modules/MyHouse/components/Equipments/EquipmentsList'
+import { EquipmentsQuickAddPopup } from 'src/modules/MyHouse/components/Equipments/EquipmentsQuickAddPopup'
 import { EmptyEquipmentsList } from 'src/modules/MyHouse/components/Equipments/EmptyEquipmentsList'
 import { AddEquipmentPopup } from 'src/modules/MyHouse/components/Equipments/AddEquipmentPopup'
-import { mappingEquipmentNameToType, myEquipmentOptions } from 'src/modules/MyHouse/utils/MyHouseVariables'
-import { equipmentNameType } from 'src/modules/MyHouse/components/Installation/InstallationType'
-import { getAvailableEquipments } from 'src/modules/MyHouse/components/Equipments/utils'
-import { orderListBy } from 'src/modules/utils'
-import FuseLoading from 'src/common/ui-kit/fuse/components/FuseLoading'
-
-const Root = styled(FusePageCarded)(() => ({
-    '& .FusePageCarded-header': {
-        minHeight: 90,
-        height: 'fit-content',
-        alignItems: 'center',
-        margin: '24px 0',
-    },
-    '& .FusePageCarded-content': {
-        overflowX: 'hidden',
-        overflowY: 'auto',
-        margin: 10,
-    },
-    '& .FusePageCarded-contentCard': {
-        overflow: 'hidden',
-    },
-}))
+import {
+    filterAndFormathousingEquipments,
+    getAvailableEquipments,
+} from 'src/modules/MyHouse/components/Equipments/utils'
 
 /**
- * Housing Equipments.
+ * Equipments component renders a list of housing equipments.
  *
  * @returns Housing Equipments.
  */
-export const Equipments = () => {
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
+export const EquipmentsTab = () => {
+    const currentHousing = useCurrentHousing()
     const {
         equipmentsList,
         housingEquipmentsList,
@@ -49,6 +28,7 @@ export const Equipments = () => {
         addEquipment,
         isAddEquipmentLoading,
     } = useEquipmentList(currentHousing?.id)
+
     const [isEquipmentsQuickAddPopupOpen, setIsEquipmentsQuickAddPopupOpen] = useState(false)
     const [isAddEquipmentPopupOpen, setIsAddEquipmentPopupOpen] = useState(false)
 
@@ -56,92 +36,50 @@ export const Equipments = () => {
         loadEquipmentList()
     }, [loadEquipmentList])
 
-    const mappedHousingEquipmentsList = useMemo(
-        () =>
-            housingEquipmentsList
-                ?.filter(
-                    (housingEquipment) =>
-                        housingEquipment.equipment.allowedType.includes('existant') ||
-                        housingEquipment.equipment.allowedType.includes('electricity'),
-                )
-                ?.map((housingEquipment) => {
-                    const equipmentOption = myEquipmentOptions.find(
-                        (option) => option.name === housingEquipment.equipment.name,
-                    )
-                    return {
-                        id: housingEquipment.equipmentId,
-                        housingEquipmentId: housingEquipment.id,
-                        name: housingEquipment.equipment.name,
-                        equipmentTitle: equipmentOption?.labelTitle,
-                        iconComponent: equipmentOption?.iconComponent,
-                        allowedType: housingEquipment.equipment.allowedType,
-                        number: housingEquipment.equipmentNumber,
-                        isNumber:
-                            mappingEquipmentNameToType[housingEquipment.equipment.name as equipmentNameType] ===
-                            'number',
-                        measurementModes: housingEquipment.equipment.measurementModes,
-                        customerId: housingEquipment.equipment.customerId,
-                        ...housingEquipment,
-                    }
-                })
-                .filter((eq) => eq.number && (eq.isNumber || eq.customerId)),
+    const formatedHousingEquipmentsList = useMemo(
+        () => filterAndFormathousingEquipments(housingEquipmentsList),
         [housingEquipmentsList],
     )
 
-    const orderedHousingEquipmentsList = useMemo(
-        () =>
-            mappedHousingEquipmentsList
-                ? orderListBy(mappedHousingEquipmentsList, (item) => item.equipmentLabel || item.name)
-                : mappedHousingEquipmentsList,
-        [mappedHousingEquipmentsList],
-    )
-
-    const availableEquipments = getAvailableEquipments(mappedHousingEquipmentsList, equipmentsList)
+    if (loadingEquipmentInProgress) {
+        return (
+            <div className="flex flex-col justify-center items-center w-full h-256">
+                <CircularProgress size={50} />
+            </div>
+        )
+    }
 
     return (
-        <Root
-            header={
-                <EquipmentsHeader
-                    isEquipmentMeterListEmpty={!mappedHousingEquipmentsList?.length}
+        <>
+            {formatedHousingEquipmentsList?.length ? (
+                <EquipmentsList
+                    housingEquipmentsList={formatedHousingEquipmentsList}
+                    addingInProgressEquipmentsIds={addingInProgressEquipmentsIds}
+                    addHousingEquipment={addHousingEquipment}
                     onOpenAddEquipmentPopup={() => setIsAddEquipmentPopupOpen(true)}
                 />
-            }
-            content={
-                <>
-                    {isEquipmentsQuickAddPopupOpen && (
-                        <EquipmentsQuickAddPopup
-                            open={isEquipmentsQuickAddPopupOpen}
-                            handleClosePopup={() => setIsEquipmentsQuickAddPopupOpen(false)}
-                            addHousingEquipment={addHousingEquipment}
-                            housingEquipmentsList={housingEquipmentsList}
-                            loadingEquipmentInProgress={loadingEquipmentInProgress}
-                        />
-                    )}
-                    {loadingEquipmentInProgress ? (
-                        <div className="h-full items-center flex">
-                            <FuseLoading />
-                        </div>
-                    ) : !mappedHousingEquipmentsList?.length ? (
-                        <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
-                    ) : (
-                        <EquipmentsList
-                            housingEquipmentsList={orderedHousingEquipmentsList}
-                            addingInProgressEquipmentsIds={addingInProgressEquipmentsIds}
-                            addHousingEquipment={addHousingEquipment}
-                        />
-                    )}
-                    {isAddEquipmentPopupOpen && (
-                        <AddEquipmentPopup
-                            isOpen={isAddEquipmentPopupOpen}
-                            onClosePopup={() => setIsAddEquipmentPopupOpen(false)}
-                            equipmentsList={availableEquipments}
-                            addEquipment={addEquipment}
-                            addHousingEquipment={addHousingEquipment}
-                            isAddEquipmentLoading={isAddEquipmentLoading}
-                        />
-                    )}
-                </>
-            }
-        />
+            ) : (
+                <EmptyEquipmentsList handleOpenPopup={() => setIsEquipmentsQuickAddPopupOpen(true)} />
+            )}
+            {isAddEquipmentPopupOpen && (
+                <AddEquipmentPopup
+                    isOpen={isAddEquipmentPopupOpen}
+                    onClosePopup={() => setIsAddEquipmentPopupOpen(false)}
+                    equipmentsList={getAvailableEquipments(formatedHousingEquipmentsList, equipmentsList)}
+                    addEquipment={addEquipment}
+                    addHousingEquipment={addHousingEquipment}
+                    isAddEquipmentLoading={isAddEquipmentLoading}
+                />
+            )}
+            {isEquipmentsQuickAddPopupOpen && (
+                <EquipmentsQuickAddPopup
+                    open={isEquipmentsQuickAddPopupOpen}
+                    handleClosePopup={() => setIsEquipmentsQuickAddPopupOpen(false)}
+                    addHousingEquipment={addHousingEquipment}
+                    housingEquipmentsList={housingEquipmentsList}
+                    loadingEquipmentInProgress={loadingEquipmentInProgress}
+                />
+            )}
+        </>
     )
 }

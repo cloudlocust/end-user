@@ -164,11 +164,12 @@ export function useConnectedPlugList(housingId?: number) {
      *
      * @returns The production mode connected plug if found.
      */
-    const getProductionConnectedPlug = () => {
+    const getProductionConnectedPlug = useCallback(() => {
         return connectedPlugList.find(
             (connectedPlug) => connectedPlug.linkType === connectedPlugLinkTypeEnum.production,
         )
-    }
+    }, [connectedPlugList])
+
     return {
         loadingInProgress,
         loadConnectedPlugList,

@@ -10,9 +10,7 @@ import { RootState } from 'src/redux'
 import { useHasMissingHousingContracts } from 'src/hooks/HasMissingHousingContracts'
 import { ChartErrorMessage } from 'src/modules/MyConsumption/components/ChartErrorMessage'
 import { NRLINK_ENEDIS_OFF_MESSAGE } from 'src/modules/MyConsumption/utils/myConsumptionVariables'
-import { EcowattWidget } from 'src/modules/Ecowatt/EcowattWidget'
 import { MissingHousingMeterErrorMessage } from 'src/modules/MyConsumption/utils/ErrorMessages'
-import { useEcowatt } from 'src/modules/Ecowatt/EcowattHook'
 import ConsumptionWidgetsContainer from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer'
 import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
@@ -22,13 +20,17 @@ import {
     isProductionActiveAndHousingHasAccess,
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
-import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import {
+    useMyConsumptionStore,
+    useMyProductionConnectedPlugStore,
+} from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
 import SolarProductionDiscoveringPrompt from 'src/modules/MyConsumption/components/SolarProductionDiscoveringPrompt'
 import { useCurrentHousingScopes } from 'src/hooks/CurrentHousing'
+import useEnphaseConsentChecker from 'src/hooks/useEnphaseConsentChecker'
 
 /**
  * MyConsumptionContainer.
@@ -46,7 +48,8 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
     const [range, setRange] = useState<metricRangeType>(getRangeV2(PeriodEnum.DAILY))
     const [filters, setFilters] = useState<metricFiltersType>([])
-    const { consumptionToggleButton, resetToDefault } = useMyConsumptionStore()
+    const { consumptionToggleButton } = useMyConsumptionStore()
+    const { isProductionConnectedPlug, setIsProductionConnectedPlug } = useMyProductionConnectedPlugStore()
 
     // Load connected plug only when housing is defined
     const {
@@ -55,7 +58,9 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         loadConnectedPlugList,
     } = useConnectedPlugList(currentHousing?.id)
     // Check if there's connected plug in production mode.
-    const isProductionConnectedPlug = getProductionConnectedPlug()
+    useEffect(() => {
+        setIsProductionConnectedPlug(!!getProductionConnectedPlug())
+    }, [getProductionConnectedPlug, setIsProductionConnectedPlug])
 
     // TODO put enphaseConsent.enphaseConsentState in an enum.
     let isSolarProductionConsentOff = enphaseConsent?.enphaseConsentState !== 'ACTIVE'
@@ -68,7 +73,7 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
     const [metricsInterval, setMetricsInterval] = useState<metricIntervalType>(
         isSolarProductionConsentOff ? '1m' : '30m',
     )
-    const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
+    // const { ecowattSignalsData, isLoadingInProgress: isEcowattDataInProgress } = useEcowatt(true)
 
     const { hasMissingHousingContracts } = useHasMissingHousingContracts(range, currentHousing?.id)
 
@@ -82,16 +87,12 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
         return metricsInterval
     }, [consumptionToggleButton, metricsInterval, period])
 
-    // UseEffect to check for consent whenever a meter is selected.
     useEffect(() => {
         if (!currentHousing?.id) return
         setFilters(formatMetricFilter(currentHousing?.id))
-        getConsents(currentHousing?.id)
+    }, [setFilters, currentHousing?.id])
 
-        return () => {
-            resetToDefault()
-        }
-    }, [setFilters, getConsents, currentHousing?.id, resetToDefault])
+    useEnphaseConsentChecker(currentHousing, getConsents)
 
     useEffect(() => {
         loadConnectedPlugList()
@@ -153,12 +154,12 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
                     </div>
 
                     {/* Ecowatt Widget */}
-                    <div className="p-12 sm:p-24" id="ecowatt-widget">
+                    {/* <div className="p-12 sm:p-24" id="ecowatt-widget">
                         <EcowattWidget
                             ecowattSignalsData={ecowattSignalsData}
                             isEcowattDataInProgress={isEcowattDataInProgress}
                         />
-                    </div>
+                    </div> */}
                 </>
             )}
         </>

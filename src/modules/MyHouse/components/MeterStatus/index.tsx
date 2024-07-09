@@ -2,7 +2,7 @@ import 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus/MeterSt
 import { Card, CircularProgress, Icon, Tooltip, styled, useTheme } from '@mui/material'
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
@@ -11,7 +11,8 @@ import { MuiCardContent } from 'src/common/ui-kit'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { enedisSgeConsentStatus, nrlinkConsentStatus } from 'src/modules/Consents/Consents'
 import { useConsents } from 'src/modules/Consents/consentsHook'
-import { URL_MY_HOUSE, sgeConsentFeatureState, sgeConsentFeatureStatePopup } from 'src/modules/MyHouse/MyHouseConfig'
+import { sgeConsentFeatureState, sgeConsentFeatureStatePopup } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
 import { EnedisSgePopup } from 'src/modules/MyHouse/components/MeterStatus/EnedisSgePopup'
 import { NrlinkConnectionStepsEnum } from 'src/modules/nrLinkConnection/nrlinkConnectionSteps.d'
 import { RootState } from 'src/redux'
@@ -26,6 +27,7 @@ import { useModal } from 'src/hooks/useModal'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import Typography from '@mui/material/Typography'
+import useEnphaseConsentChecker from 'src/hooks/useEnphaseConsentChecker'
 
 const FORMATTED_DATA = 'DD/MM/YYYY'
 const TEXT_CONNEXION_LE = 'Connexion le'
@@ -110,38 +112,7 @@ export const MeterStatus = () => {
     /* To have the ending date of the consent, we add 3 years to the date the consent was made */
     const enedisConsentEndingDate = dayjs(enedisSgeConsent?.createdAt).add(3, 'year').format('DD/MM/YYYY')
 
-    /**
-     * This useEffect listen to changes in localStorage for enphaseConsentState.
-     *
-     * It also listen to changes in currentHousing that triggers getConsents.
-     *
-     */
-    useEffect(() => {
-        getConsents(currentHousing?.id)
-
-        /**
-         * OnStorage function that execute the setter for EnphaseStateFromLocalStorage.
-         */
-        const onStorage = () => {
-            const enphaseConfirmConsentState = localStorage.getItem('enphaseConfirmState')
-            if (enphaseConfirmConsentState === 'SUCCESS' && currentHousing?.id) {
-                localStorage.removeItem('enphaseConfirmState')
-                getConsents(currentHousing.id)
-            }
-        }
-
-        /**
-         * Listen to localStorage changes.
-         */
-        window.addEventListener('storage', onStorage)
-
-        /**
-         * Clear up function when the component unmounts.
-         */
-        return () => {
-            window.removeEventListener('storage', onStorage)
-        }
-    }, [currentHousing?.id, getConsents])
+    useEnphaseConsentChecker(currentHousing, getConsents)
 
     /**
      * Function that renders JSX accorrding to nrlink status.

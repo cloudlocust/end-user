@@ -67,4 +67,8 @@ export interface EquipmentsListProps {
      * Saving the equipment.
      */
     addHousingEquipment: (body: postEquipmentInputType) => Promise<postEquipmentInputType | undefined>
+    /**
+     * Callback function to open addEquipmentPopup component.
+     */
+    onOpenAddEquipmentPopup: () => void
 }

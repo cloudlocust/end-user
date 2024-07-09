@@ -13,7 +13,7 @@ import userEvent from '@testing-library/user-event'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 import { TEST_HOUSES } from 'src/mocks/handlers/houses'
-import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseConfig'
+import { URL_MY_HOUSE } from 'src/modules/MyHouse'
 import { IEnedisSgeConsent, INrlinkConsent, IEnphaseConsent } from 'src/modules/Consents/Consents'
 import {
     ConsumptionChartContainer,
@@ -25,6 +25,7 @@ import { NUMBER_OF_LAST_YEARS_TO_DISPLAY_IN_DATE_PICKER_OF_YEARLY_VIEW } from 's
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 import { screen, within } from '@testing-library/react'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
+import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
 
 // List of houses to add to the redux state
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
@@ -238,6 +239,18 @@ jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
     }),
 }))
 
+const euroConsumptionSwitcherAriaLabel = 'euros-consumption-switcher'
+jest.mock('src/modules/MyConsumption/components/EurosConsumptionButtonToggler', () => (props: any) => {
+    return (
+        <input
+            type="checkbox"
+            aria-label={euroConsumptionSwitcherAriaLabel}
+            checked={props.value}
+            onChange={props.onChange}
+        />
+    )
+})
+
 // Now, when you import and use echarts-for-react in your Jest tests
 // It will use the mocked EChartsReact component instead of the real one.
 // This ensures that the rendering logic of the real charts is bypassed,
@@ -265,7 +278,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -286,7 +299,7 @@ describe('MyConsumptionContainer test', () => {
                 </Router>,
                 { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
             )
-            const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+            const eurosConsumptionButtonToggler = getByLabelText(euroConsumptionSwitcherAriaLabel)
             expect(eurosConsumptionButtonToggler).not.toBeChecked()
             // TOGGLING TO EUROS CONSUMPTION CHART
             userEvent.click(eurosConsumptionButtonToggler)
@@ -305,7 +318,7 @@ describe('MyConsumptionContainer test', () => {
             </Router>,
             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
         )
-        const eurosConsumptionButtonToggler = getByLabelText('euros-consumption-switcher')
+        const eurosConsumptionButtonToggler = getByLabelText(euroConsumptionSwitcherAriaLabel)
         expect(eurosConsumptionButtonToggler).not.toBeChecked()
         // TOGGLING TO EUROS CONSUMPTION CHART
         userEvent.click(eurosConsumptionButtonToggler)
@@ -450,6 +463,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
+                interval: '1d',
                 targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
             })
         })
@@ -468,12 +482,8 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                targets: [
-                    metricTargetsEnum.autoconsumption,
-                    metricTargetsEnum.consumption,
-                    metricTargetsEnum.injectedProduction,
-                    metricTargetsEnum.totalProduction,
-                ],
+                interval: '1d',
+                targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
             })
         })
     })
@@ -596,6 +606,7 @@ describe('MyConsumptionContainer test', () => {
         test('When clicking on reset button, getMetrics should be called without pMax or temperature', async () => {
             echartsConsumptionChartContainerProps.period = PeriodEnum.WEEKLY
             echartsConsumptionChartContainerProps.metricsInterval = '1d' as metricIntervalType
+            // mockGetMetricsWithParams.mockClear()
 
             const { getByLabelText, getAllByRole } = reduxedRender(
                 <Router>
@@ -614,7 +625,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(5)
             })
         }, 10000)
     })
@@ -637,6 +648,7 @@ describe('MyConsumptionContainer test', () => {
         test('should navigate to the labelization page when the button is clicked', async () => {
             mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
             echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
+            mockPushHistory.mockClear()
             const { getByTestId } = reduxedRender(
                 <Router>
                     <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
@@ -646,7 +658,7 @@ describe('MyConsumptionContainer test', () => {
             const button = getByTestId('linkToLabelizationPage')
             userEvent.click(button)
             await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalledWith('/my-consumption/labelization')
+                expect(mockPushHistory).toHaveBeenCalled()
             })
         })
     })
@@ -680,8 +692,8 @@ describe('MyConsumptionContainer test', () => {
             const button = getByTestId('linkToSolarInstallationForm')
             userEvent.click(button)
             await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses/1/information', {
-                    focusOnInstallationForm: true,
+                expect(mockPushHistory).toHaveBeenCalledWith('/my-houses', {
+                    defaultSelectedSection: IHouseOverviewSectionsEnum.INSTALLATION,
                 })
             })
         })

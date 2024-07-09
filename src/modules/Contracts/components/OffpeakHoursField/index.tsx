@@ -16,7 +16,6 @@ import RemoveCircleOutline from '@mui/icons-material/RemoveCircleOutline'
 import dayjs from 'dayjs'
 import { useHousingMeterDetails } from 'src/modules/Meters/metersHook'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useParams } from 'react-router-dom'
 
 /**
  * Indicates the key of offpeakHours intervals inside meterFeatures object. This is used purposefully to access offpeakHours, for example to access start hour of first interval in meterFeatures, using get of lodash we'll have get(meterFeatures, "offpeak.offpeakHours.0.start").
@@ -45,20 +44,13 @@ const initialMeterFeatures: IMeterFeatures = {
  * @param param0.name The name of the field.
  * @param param0.label The label of the field.
  * @param param0.labelProps The props of the InputLabel.
+ * @param param0.houseId The house id which the contract is associated with.
  * @returns Material UI Select field wrapped.
  */
-const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, labelProps }) {
-    const { houseId } = useParams</**
-     *
-     */
-    {
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        houseId: string
-    }>()
-
+const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, labelProps, houseId }) {
     const { control, setValue } = useFormContext()
     const { formatMessage } = useIntl()
-    const { elementDetails: housingMeter, loadingInProgress } = useHousingMeterDetails(parseInt(houseId), true)
+    const { elementDetails: housingMeter, loadingInProgress } = useHousingMeterDetails(houseId, true)
     const meterFeatures: IMeterFeatures = useWatch({ name, defaultValue: initialMeterFeatures })
 
     /**

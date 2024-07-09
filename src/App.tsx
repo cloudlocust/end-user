@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useRef } from 'react'
+import { Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useAuth } from 'src/modules/User/authentication/useAuth'
 import { routes as routesConfig, navigationsConfig, IAdditionnalSettings, IPageSettingsDisabled } from 'src/routes'
 import Layout1 from 'src/common/ui-kit/fuse/layouts/layout1/Layout1'
@@ -19,8 +19,8 @@ import { Maintenance } from 'src/modules/Maintenance/Maintenance'
 import { getTokenFromFirebase } from 'src/firebase'
 import { URL_ALPIQ_SUBSCRIPTION_FORM } from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionConfig'
 import { isAlpiqSubscriptionForm } from 'src/modules/User/AlpiqSubscription/index.d'
-import { useConsents } from 'src/modules/Consents/consentsHook'
-import AlpiqSubscriptionStepper from 'src/modules/User/AlpiqSubscription/AlpiqSubscriptionStepper'
+import { URL_ONBOARDING } from 'src/modules/Onboarding/OnboardingConfig'
+import { useGetShowNrLinkPopupHook } from './modules/nrLinkConnection/NrLinkConnectionHook'
 
 const Root = styled('div')(({ theme }) => ({
     '& #fuse-main': {
@@ -85,17 +85,9 @@ const Routes = () => {
     const location = useLocation()
     const { user } = useSelector(({ userModel }: RootState) => userModel)
     const { updateLastVisitTime } = useLastVisit()
-    const { currentHousing } = useSelector(({ housingModel }: RootState) => housingModel)
-    const { getConsents } = useConsents()
-    const isInitialMount = useRef(true)
-
-    // TODO - DELETE IT !
-    useEffect(() => {
-        if (isInitialMount.current && currentHousing?.id) {
-            isInitialMount.current = false
-            getConsents(currentHousing?.id)
-        }
-    }, [getConsents, currentHousing])
+    const history = useHistory()
+    const { isNrLinkPopupShowing, getShowNrLinkPopup } = useGetShowNrLinkPopupHook(false)
+    const initialGetShowNrLinkPopup = useRef(true)
 
     useEffect(() => {
         /**
@@ -105,6 +97,24 @@ const Routes = () => {
         if (!user) return
         updateLastVisitTime(dayjs().toISOString())
     }, [location.pathname, updateLastVisitTime, user])
+
+    //eslint-disable-next-line
+    const verifyPaths = useCallback(async () => {
+        if (!isMaintenanceMode && user) {
+            // Check if the user is in alpiq subscription or not.
+            if (isAlpiqSubscriptionForm && !user.isProviderSubscriptionCompleted) {
+                location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM && history.push(URL_ALPIQ_SUBSCRIPTION_FORM)
+            } else if (location.pathname !== URL_ONBOARDING && initialGetShowNrLinkPopup.current) {
+                await getShowNrLinkPopup()
+                if (isNrLinkPopupShowing === true) history.push(URL_ONBOARDING)
+                else initialGetShowNrLinkPopup.current = false
+            }
+        }
+    }, [user, location.pathname, history, isNrLinkPopupShowing, getShowNrLinkPopup])
+
+    useEffect(() => {
+        verifyPaths()
+    }, [verifyPaths])
 
     const { hasAccess, getUrlRedirection } = useAuth()
 
@@ -117,20 +127,6 @@ const Routes = () => {
 
         hasAccess(navigationConfig.auth) && navbarContent.push(UINavbarItem)
     })
-
-    if (
-        isAlpiqSubscriptionForm &&
-        !isMaintenanceMode &&
-        user &&
-        !user.isProviderSubscriptionCompleted &&
-        location.pathname !== URL_ALPIQ_SUBSCRIPTION_FORM
-    ) {
-        return (
-            <ThemingProvider>
-                <AlpiqSubscriptionStepper />
-            </ThemingProvider>
-        )
-    }
 
     return (
         <Switch>

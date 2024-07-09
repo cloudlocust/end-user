@@ -111,7 +111,7 @@ const AnalysisChartCircleContent = ({
             interval: '1M',
         } as getMetricType,
         // execute getMetrics on instanciation only if filters meterGuid is not empty, because the filters props error will already be handled in the parent.
-        Boolean(filters.length),
+        { immediate: Boolean(filters.length) },
     )
 
     // This Metrics Request Gets the data of previous year month for comparaison.
@@ -138,7 +138,7 @@ const AnalysisChartCircleContent = ({
             interval: '1M',
         } as getMetricType,
         // execute getMetrics on instanciation only if filters meterGuid is not empty, because the filters props error will already be handled in the parent.
-        Boolean(filters.length),
+        { immediate: Boolean(filters.length) },
     )
     // Wrap in useMemo for better performance, as we save the result of convertMetricsData function and we don't call it again on every reender, until data changes.
     let ChartsAxisValues: ChartsAxisValuesType = useMemo(() => convertMetricsDataToChartsAxisValues(data), [data])

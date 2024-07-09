@@ -99,7 +99,7 @@ export const BuilderUseRegister = ({
                         !isPopupAfterRegistration &&
                             enqueueSnackbar(
                                 Boolean(USER_REGISTRATION_AUTO_VALIDATE)
-                                    ? 'Votre inscription a bien été prise en compte. Vous allez reçevoir un lien de confirmation sur votre adresse email.'
+                                    ? 'Votre inscription a bien été prise en compte. Vous allez recevoir un lien de confirmation sur votre adresse email.'
                                     : "Votre inscription a bien été prise en compte, vous pourrez vous connecter une fois celle-ci validée par l'administrateur.",
                                 { variant: 'success', autoHideDuration: 8000 },
                             )
@@ -128,5 +128,5 @@ export const BuilderUseRegister = ({
  */
 export const useRegister = BuilderUseRegister({
     // eslint-disable-next-line jsdoc/require-jsdoc
-    redirect: () => '/login',
+    redirect: () => '/onboarding',
 })

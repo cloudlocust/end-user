@@ -20,7 +20,7 @@ import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
 const TEST_HOUSES: IHousing[] = applyCamelCase(MOCK_HOUSES)
 
 const SUBMIT_BUTTON_TEXT = 'Enregistrer'
-const TYPE_LABEL_TEXT = 'Type *'
+const TYPE_LABEL_TEXT = 'Contrat pro ou particulier *'
 const PROVIDER_LABEL_TEXT = 'Fournisseur *'
 const OFFER_LABEL_TEXT = 'Offre *'
 const TARRIF_TYPE_LABEL_TEXT = 'Type de contrat *'
@@ -74,14 +74,6 @@ const selectOption = (getAllByRole: Function, optionIndex?: number) => {
     return userEvent.click(getAllByRole('option')[optionIndex || 0])
 }
 
-/**
- * Mock for ContractForm props.
- */
-const mockContractFormProps: ContractFormProps = {
-    onSubmit: jest.fn(),
-    isContractsLoading: false,
-}
-
 let mockContractTypeList = TEST_CONTRACT_TYPES
 let mockOfferList = TEST_OFFERS
 let mockProviderList = TEST_PROVIDERS
@@ -112,6 +104,15 @@ let mockIsMeterLoading = false
 let mockIsTariffsLoading = false
 const mockHouseId = TEST_HOUSE_ID
 let mockManualContractFillingIsEnabled = true
+
+/**
+ * Mock for ContractForm props.
+ */
+const mockContractFormProps: ContractFormProps = {
+    onSubmit: jest.fn(),
+    isContractsLoading: false,
+    houseId: mockHouseId,
+}
 
 /**
  * Mocking the useCommercialOffer.
@@ -167,21 +168,6 @@ jest.mock('src/modules/Meters/metersHook', () => ({
     useMeterForHousing: () => ({
         loadingInProgress: mockIsMeterLoading,
         editMeter: mockEditMeter,
-    }),
-}))
-
-/**
- * Mocking the react-router-dom used in contractsHooks.
- */
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    /**
-     * Mock the useParams to get the houseId from url.
-     *
-     * @returns UseParams containing houseId.
-     */
-    useParams: () => ({
-        houseId: `${mockHouseId}`,
     }),
 }))
 
