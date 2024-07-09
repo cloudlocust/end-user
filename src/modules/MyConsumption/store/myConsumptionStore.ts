@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
-import { IMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore.types'
+import {
+    IMyConsumptionStore,
+    IMyProductionConnectedPlugStore,
+} from 'src/modules/MyConsumption/store/myConsumptionStore.types'
 
 /**
  * My Consumption Store.
@@ -29,4 +32,18 @@ export const useMyConsumptionStore = create<IMyConsumptionStore>()((set) => ({
      * @returns Default value of consumption toggle button.
      */
     resetToDefault: () => set(() => ({ consumptionToggleButton: SwitchConsumptionButtonTypeEnum.Consumption })),
+}))
+
+/**
+ * My Production Connected Plug Store.
+ */
+export const useMyProductionConnectedPlugStore = create<IMyProductionConnectedPlugStore>()((set) => ({
+    isProductionConnectedPlug: false,
+    /**
+     * Function to set consumption toggle button.
+     *
+     * @param value New value of consumption toggle button.
+     * @returns New value of consumption toggle button.
+     */
+    setIsProductionConnectedPlug: (value) => set(() => ({ isProductionConnectedPlug: value })),
 }))
