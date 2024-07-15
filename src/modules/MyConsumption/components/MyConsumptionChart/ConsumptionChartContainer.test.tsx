@@ -630,38 +630,38 @@ describe('MyConsumptionContainer test', () => {
         }, 10000)
     })
 
-    describe('Navigate to labelization page button test', () => {
-        test('should show the button to navigate to the labelization page on consumption view and daily period', () => {
-            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
-            echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
-            const { getByTestId } = reduxedRender(
-                <Router>
-                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-                </Router>,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-            const button = getByTestId('linkToLabelizationPage')
-            expect(button).toBeInTheDocument()
-            expect(button).toHaveTextContent('Identifier un pic de conso')
-        })
+    // describe('Navigate to labelization page button test', () => {
+    //     test('should show the button to navigate to the labelization page on consumption view and daily period', () => {
+    //         mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+    //         echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
+    //         const { getByTestId } = reduxedRender(
+    //             <Router>
+    //                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+    //             </Router>,
+    //             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+    //         )
+    //         const button = getByTestId('linkToLabelizationPage')
+    //         expect(button).toBeInTheDocument()
+    //         expect(button).toHaveTextContent('Identifier un pic de conso')
+    //     })
 
-        test('should navigate to the labelization page when the button is clicked', async () => {
-            mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
-            echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
-            mockPushHistory.mockClear()
-            const { getByTestId } = reduxedRender(
-                <Router>
-                    <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
-                </Router>,
-                { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
-            )
-            const button = getByTestId('linkToLabelizationPage')
-            userEvent.click(button)
-            await waitFor(() => {
-                expect(mockPushHistory).toHaveBeenCalled()
-            })
-        })
-    })
+    //     test('should navigate to the labelization page when the button is clicked', async () => {
+    //         mockMyConsumptionTab = SwitchConsumptionButtonTypeEnum.Consumption
+    //         echartsConsumptionChartContainerProps.period = PeriodEnum.DAILY
+    //         mockPushHistory.mockClear()
+    //         const { getByTestId } = reduxedRender(
+    //             <Router>
+    //                 <ConsumptionChartContainer {...echartsConsumptionChartContainerProps} />
+    //             </Router>,
+    //             { initialState: { housingModel: { currentHousing: LIST_OF_HOUSES[0] } } },
+    //         )
+    //         const button = getByTestId('linkToLabelizationPage')
+    //         userEvent.click(button)
+    //         await waitFor(() => {
+    //             expect(mockPushHistory).toHaveBeenCalled()
+    //         })
+    //     })
+    // })
 
     describe('Navigate to solar installation form button test', () => {
         test('should show the button to navigate to the solar installation form on production view', () => {

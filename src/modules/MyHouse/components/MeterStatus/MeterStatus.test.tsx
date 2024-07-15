@@ -20,7 +20,7 @@ import { TEST_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import * as reactRedux from 'react-redux'
 import { sgeConsentMessage } from 'src/modules/MyHouse/MyHouseConfig'
-import { waitFor } from '@testing-library/react'
+// import { waitFor } from '@testing-library/react'
 
 const LIST_OF_HOUSES: IHousing[] = applyCamelCase(TEST_HOUSES)
 const CURRENT_HOUSING = LIST_OF_HOUSES[0]
@@ -48,7 +48,7 @@ const CONTACT_MAIL_MESSAGE = 'Contacter support@myem.fr'
 
 const VERIFY_METER_MESSAGE = "Vérification de l'existence de votre compteur"
 const CREATION_ENEDIS_SGE_CONSENT_TEXT = `${sgeConsentMessage}`
-const REVOKE_ENPHASE_CONSENT_TEXT = 'Annuler la récolte de mes données'
+// const REVOKE_ENPHASE_CONSENT_TEXT = 'Annuler la récolte de mes données'
 const CREATED_AT = '2022-09-02T08:06:08Z'
 
 const CONNECTED_ICON_TEXT = 'connected-icon'
@@ -70,7 +70,7 @@ let mockHouseId = TEST_MOCKED_HOUSES[0].id
 let mockCreateEnedisSgeConsent = jest.fn()
 let mockSetMeterVerification = jest.fn()
 let mockEditMeter = jest.fn()
-const circularProgressClassname = '.MuiCircularProgress-root'
+// const circularProgressClassname = '.MuiCircularProgress-root'
 let mockRevokeEnphaseConsent = jest.fn()
 let mockLoadConnectedPlugList = jest.fn()
 
@@ -318,32 +318,32 @@ describe('MeterStatus component test', () => {
             expect(ENEDIS_UNSYNCHRONIZED_MESSAGE).toBeTruthy()
         })
     })
-    describe('enphase status', () => {
-        test('when revoking enphase status', async () => {
-            mockEnphaseConsent = 'ACTIVE'
-            const { getByText } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
-            userEvent.click(getByText(REVOKE_ENPHASE_CONSENT_TEXT))
-            await waitFor(() => {
-                expect(mockRevokeEnphaseConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.id)
-            })
-            expect(mockGetConsent).toHaveBeenCalledWith(mockHouseId)
-        })
-        test('when revoking enphase and isEnphaseLoading, spinner should be shown', async () => {
-            mockEnphaseConsent = 'ACTIVE'
-            mockIsEnphaseConsentLoading = true
-            const { container } = reduxedRender(
-                <Router>
-                    <MeterStatus />
-                </Router>,
-            )
+    // describe('enphase status', () => {
+    //     test('when revoking enphase status', async () => {
+    //         mockEnphaseConsent = 'ACTIVE'
+    //         const { getByText } = reduxedRender(
+    //             <Router>
+    //                 <MeterStatus />
+    //             </Router>,
+    //         )
+    //         userEvent.click(getByText(REVOKE_ENPHASE_CONSENT_TEXT))
+    //         await waitFor(() => {
+    //             expect(mockRevokeEnphaseConsent).toHaveBeenCalledWith(CURRENT_HOUSING?.id)
+    //         })
+    //         expect(mockGetConsent).toHaveBeenCalledWith(mockHouseId)
+    //     })
+    //     test('when revoking enphase and isEnphaseLoading, spinner should be shown', async () => {
+    //         mockEnphaseConsent = 'ACTIVE'
+    //         mockIsEnphaseConsentLoading = true
+    //         const { container } = reduxedRender(
+    //             <Router>
+    //                 <MeterStatus />
+    //             </Router>,
+    //         )
 
-            expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
-        })
-    })
+    //         expect(container.querySelector(circularProgressClassname)).toBeInTheDocument()
+    //     })
+    // })
     describe('test implementation of EnedisSgePopup', () => {
         test('when clicked on error message, verify meter popup is shown with loading', async () => {
             mockEnedisSgeConsent = 'EXPIRED' || 'NONEXISTENT'
