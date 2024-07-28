@@ -105,7 +105,6 @@ export const ContractStep = ({ onNext, housingId, isHideOnboardingInProgress }: 
                                 isContractsLoading={isContractsLoading}
                                 isFormDescriptionsVisible={false}
                                 isUsingRemoteSubmit={true}
-                                houseId={housingId}
                                 // @ts-ignore
                                 defaultValues={defaultValues}
                             />

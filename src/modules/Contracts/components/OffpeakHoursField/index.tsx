@@ -45,9 +45,10 @@ const initialMeterFeatures: IMeterFeatures = {
  * @param param0.label The label of the field.
  * @param param0.labelProps The props of the InputLabel.
  * @param param0.houseId The house id which the contract is associated with.
+ * @param param0.disabled Disabled.
  * @returns Material UI Select field wrapped.
  */
-const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, labelProps, houseId }) {
+const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, labelProps, houseId, disabled }) {
     const { control, setValue } = useFormContext()
     const { formatMessage } = useIntl()
     const { elementDetails: housingMeter, loadingInProgress } = useHousingMeterDetails(houseId, true)
@@ -174,7 +175,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, l
                                 <TimePicker
                                     label={startTimePickerLabel}
                                     value={getOffpeakHourValue(`[${index}].start`) || null}
-                                    disabled={meterFeatures.offpeak.readOnly}
+                                    disabled={meterFeatures.offpeak.readOnly || disabled}
                                     onChange={(val) => onOffPeakHourChange(`[${index}].start`, val)}
                                     className="max-w-320 mr-4"
                                     renderInput={(params) => <TextField {...params} required />}
@@ -182,7 +183,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, l
                                 <TimePicker
                                     label={endTimePickerLabel}
                                     value={getOffpeakHourValue(`[${index}].end`) || null}
-                                    disabled={meterFeatures.offpeak.readOnly}
+                                    disabled={meterFeatures.offpeak.readOnly || disabled}
                                     onChange={(val) => onOffPeakHourChange(`[${index}].end`, val)}
                                     className="max-w-320 ml-4"
                                     renderInput={(params) => <TextField {...params} required />}
@@ -202,7 +203,7 @@ const OffpeakHoursField: FC<offpeakHoursFieldProps> = function ({ name, label, l
                                 </Tooltip>
                                 <Tooltip title={removeOffpeakButtonTitle}>
                                     <IconButton
-                                        disabled={meterFeatures.offpeak.offpeakHours.length < 2}
+                                        disabled={meterFeatures.offpeak.offpeakHours.length < 2 || disabled}
                                         className="w-4/5 sm:w-auto"
                                         size="large"
                                         color="error"

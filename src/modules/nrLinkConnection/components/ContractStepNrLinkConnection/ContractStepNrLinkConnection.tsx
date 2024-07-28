@@ -74,7 +74,6 @@ const ContractStepNrLinkConnection = ({ housingId }: { housingId?: number }) => 
                         setIsContractAdding(false)
                     }}
                     isContractsLoading={isContractsLoading}
-                    houseId={housingId!}
                 />
             </div>
 

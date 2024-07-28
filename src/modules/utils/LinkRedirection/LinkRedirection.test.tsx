@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import { IntlProvider } from 'react-intl'
 import { LinkRedirection } from 'src/modules/utils/LinkRedirection'

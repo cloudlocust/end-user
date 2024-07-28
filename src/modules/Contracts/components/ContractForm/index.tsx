@@ -44,6 +44,7 @@ const defaultContractFormValues: contractFormValuesType = {
  * @param props.onSubmit Callback when submitting form.
  * @param props.isContractsLoading Loading state when addContract request.
  * @param props.defaultValues Indicate if contractForm has defaultValues and thus in edit mode.
+ * @param props.isUpdateMode Indicate if the form is in update mode.
  * @param props.isFormDescriptionsVisible Indicate if the form descriptions is visible.
  * @param props.isUsingRemoteSubmit Indicate if the form is using remote submit.
  * @returns Contract Form component.
@@ -52,6 +53,7 @@ const ContractForm = ({
     onSubmit,
     isContractsLoading,
     defaultValues,
+    isUpdateMode = false,
     isFormDescriptionsVisible = true,
     isUsingRemoteSubmit = false,
 }: ContractFormProps) => {
@@ -103,6 +105,7 @@ const ContractForm = ({
                         isContractsLoading={isContractsLoading || loadingInProgress}
                         isUsingRemoteSubmit={isUsingRemoteSubmit}
                         houseId={currentHousing!.id}
+                        isUpdateMode={isUpdateMode}
                     />
                 </div>
             </div>
@@ -119,13 +122,16 @@ export default ContractForm
  * @param props.isContractsLoading Loading state when addContract request.
  * @param props.isUsingRemoteSubmit Indicate if the form is using remote submit.
  * @param props.houseId The house id which the contract is associated with.
+ * @param props.isUpdateMode Tells if form is on update or create mode.
  * @returns Contract Form Fields component.
  */
 export const ContractFormFields = ({
     isContractsLoading,
     isUsingRemoteSubmit = false,
     houseId,
-}: ContractFormFieldsProps) => {
+    isUpdateMode,
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+ContractFormFieldsProps) => {
     const formData = useWatch<contractFormValuesType>({})
     const { reset, getValues } = useFormContext<contractFormValuesType>()
     const {
@@ -164,11 +170,21 @@ export const ContractFormFields = ({
             setContractFormType(ContractFormTypeEnum.Custom)
             setFormData({
                 contractTypeId: formData.contractTypeId,
+                providerId: formData.providerId,
+                offerId: formData.offerId,
+                tariffTypeId: formData.tariffTypeId,
             })
         } else {
             setDefaultContractFormType()
         }
-    }, [formData.contractTypeId, isCustomFormEnabled, setContractFormType, setDefaultContractFormType, setFormData])
+    }, [
+        formData,
+        isCustomFormEnabled,
+        setContractFormType,
+        setDefaultContractFormType,
+        setFormData,
+        formData.providerId,
+    ])
 
     // When loading the offers, check if the user's current offer is deprecated.
     useEffect(() => {
@@ -179,6 +195,39 @@ export const ContractFormFields = ({
             }
         }
     }, [offerList, formData.offerId])
+
+    const [isEDFOffer, setIsEDFOffer] = useState(false)
+    const [isCustomOffer, setIsCustomOffer] = useState(false)
+
+    const ALLOWED_OFFERS = useMemo(() => ['Tarif Bleu', 'Tempo'], [])
+
+    useEffect(() => {
+        if (formData.offerId && Boolean(offerList?.find((offer) => offer.id === formData.offerId)?.networkIdentifier)) {
+            setIsCustomOffer(true)
+        }
+    }, [formData.offerId, offerList, setIsCustomOffer])
+
+    useEffect(() => {
+        if (ALLOWED_OFFERS.includes(offerList?.find((offer) => offer.id === formData.offerId)?.name!)) {
+            setIsEDFOffer(true)
+        }
+    }, [formData.offerId, offerList, setIsEDFOffer, ALLOWED_OFFERS])
+
+    // if the offer is selected and it's not one of the default offers, set the form type to custom.
+    useEffect(() => {
+        if (
+            !isUpdateMode &&
+            formData.offerId! > 0 &&
+            !ALLOWED_OFFERS.includes(offerList?.find((offer) => offer.id === formData.offerId)?.name!)
+        ) {
+            setFormData({
+                contractTypeId: formData.contractTypeId,
+                providerId: formData.providerId,
+                offerId: formData.offerId,
+            })
+            setContractFormType(ContractFormTypeEnum.Custom)
+        }
+    }, [formData, isUpdateMode, setFormData, setContractFormType, isEDFOffer, ALLOWED_OFFERS, offerList])
 
     const offersListWithoutDeprecated = useMemo(() => {
         return offerList?.filter((offer) => isUserHasDeprecatedOffer || !offer?.isDeprecated)
@@ -213,15 +262,15 @@ export const ContractFormFields = ({
      * To avoid defining () => loadProviders as a prop inside the ContractFormSelect and thus multiple re-rendering cuz ()=>{} create a new function and thus re-ender and thus infinite re-render.
      */
     const loadProviderOptions = useCallback(() => {
-        loadProviders(formData.contractTypeId!, currentHousing?.id)
-    }, [loadProviders, formData.contractTypeId, currentHousing?.id])
+        loadProviders(formData.contractTypeId!, currentHousing?.id, isUpdateMode ? undefined : true)
+    }, [loadProviders, formData.contractTypeId, currentHousing?.id, isUpdateMode])
 
     /**
      * LoadOfferOptions useCallback.
      */
     const loadOfferOptions = useCallback(() => {
-        loadOffers(formData.providerId!, formData.contractTypeId!)
-    }, [loadOffers, formData.providerId, formData.contractTypeId])
+        loadOffers(formData.providerId!, formData.contractTypeId!, houseId, isUpdateMode ? undefined : true)
+    }, [loadOffers, formData.providerId, formData.contractTypeId, isUpdateMode, houseId])
 
     /**
      * LoadTariffTypeOptions useCallback.
@@ -248,6 +297,7 @@ export const ContractFormFields = ({
                 label="Contrat pro ou particulier"
                 validateFunctions={[requiredBuilder()]}
                 onChange={(e) => onSelectChange(e, [])}
+                disabled={isUpdateMode}
             />
             {Boolean(formData.contractTypeId) && (
                 <ContractFormSelect<IProvider>
@@ -261,6 +311,7 @@ export const ContractFormFields = ({
                     label="Fournisseur"
                     validateFunctions={[requiredBuilder()]}
                     onChange={(e) => onSelectChange(e, ['contractTypeId'])}
+                    disabled={isUpdateMode}
                 />
             )}
 
@@ -272,10 +323,12 @@ export const ContractFormFields = ({
                         isOptionsInProgress={isOffersLoading}
                         loadOptions={loadOfferOptions}
                         optionList={orderBy(offersListWithoutDeprecated, 'name', 'asc')}
+                        otherOptionLabel={isActivateOtherOffersAndProviders ? 'Autre offre' : undefined}
                         name="offerId"
                         label="Offre"
                         validateFunctions={[requiredBuilder()]}
                         onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId'])}
+                        disabled={isUpdateMode}
                     />
                     <OtherProviderOfferOptionMessage isShowMessage={formData.offerId === -1} />
                 </>
@@ -291,11 +344,17 @@ export const ContractFormFields = ({
                     label="Type de contrat"
                     validateFunctions={[requiredBuilder()]}
                     onChange={(e) => onSelectChange(e, ['providerId', 'contractTypeId', 'offerId'])}
+                    disabled={isUpdateMode && !isEDFOffer}
                 />
             )}
 
             {isOffpeakHoursSelected && (
-                <OffpeakHoursField name="meterFeatures" label="Plages heures creuses :" houseId={houseId} />
+                <OffpeakHoursField
+                    name="meterFeatures"
+                    label="Plages heures creuses :"
+                    houseId={houseId}
+                    disabled={isUpdateMode && !isEDFOffer}
+                />
             )}
             {isOffpeakHoursSelected
                 ? Boolean(formData.meterFeatures) &&
@@ -312,6 +371,7 @@ export const ContractFormFields = ({
                           name="power"
                           label="Puissance"
                           validateFunctions={[requiredBuilder()]}
+                          disabled={!isEDFOffer}
                           onChange={(e) =>
                               onSelectChange(e, [
                                   'providerId',
@@ -332,6 +392,7 @@ export const ContractFormFields = ({
                           optionList={powerList}
                           name="power"
                           label="Puissance"
+                          disabled={isUpdateMode && !isEDFOffer}
                           validateFunctions={[requiredBuilder()]}
                           onChange={(e) =>
                               onSelectChange(e, ['providerId', 'contractTypeId', 'offerId', 'tariffTypeId'])
@@ -347,7 +408,7 @@ export const ContractFormFields = ({
                         defaultMessage: 'Date de début',
                     })}
                     validateFunctions={[requiredBuilder()]}
-                    disabled={!manualContractFillingIsEnabled}
+                    disabled={!manualContractFillingIsEnabled || (isUpdateMode && !isEDFOffer) || isCustomOffer}
                 />
             )}
             {
@@ -359,40 +420,45 @@ export const ContractFormFields = ({
                     <DatePicker
                         name="endSubscription"
                         label={formatMessage({
-                            id: 'Date de fin (Si terminé)',
-                            defaultMessage: 'Date de fin (Si terminé)',
+                            id: `Date de fin ${isEDFOffer && '(Si terminé)'}`,
+                            defaultMessage: `Date de fin ${isEDFOffer && '(Si terminé)'}`,
                         })}
-                        disabled={!manualContractFillingIsEnabled}
+                        validateFunctions={isEDFOffer ? [] : [requiredBuilder()]}
+                        disabled={!manualContractFillingIsEnabled || (isUpdateMode && !isEDFOffer) || isCustomOffer}
                     />
                 )
             }
-            {manualContractFillingIsEnabled && !isCustomFormEnabled && (
-                <ButtonLoader
-                    variant="contained"
-                    color="primary"
-                    className="w-full mx-auto mt-20"
-                    type="submit"
-                    inProgress={isContractsLoading}
-                    disabled={
-                        isContractTypesLoading ||
-                        isProvidersLoading ||
-                        isOffersLoading ||
-                        isTariffTypesLoading ||
-                        isPowersLoading ||
-                        isNull(contractTypeList) ||
-                        isNull(providerList) ||
-                        isNull(offerList) ||
-                        isNull(tariffTypeList) ||
-                        isNull(powerList) ||
-                        !Boolean(formData.startSubscription)
-                    }
-                >
-                    {formatMessage({
-                        id: 'Enregistrer',
-                        defaultMessage: 'Enregistrer',
-                    })}
-                </ButtonLoader>
-            )}
+            {/* DOUBLE CHECK CONDITION for isUsingRemoteSubmit */}
+            {((isUpdateMode && isEDFOffer) || !isUpdateMode) &&
+                !isCustomOffer &&
+                manualContractFillingIsEnabled &&
+                (!isCustomFormEnabled || !isUsingRemoteSubmit) && (
+                    <ButtonLoader
+                        variant="contained"
+                        color="primary"
+                        className="w-full mx-auto mt-20"
+                        type="submit"
+                        inProgress={isContractsLoading}
+                        disabled={
+                            isContractTypesLoading ||
+                            isProvidersLoading ||
+                            isOffersLoading ||
+                            isTariffTypesLoading ||
+                            isPowersLoading ||
+                            isNull(contractTypeList) ||
+                            isNull(providerList) ||
+                            isNull(offerList) ||
+                            isNull(tariffTypeList) ||
+                            isNull(powerList) ||
+                            !Boolean(formData.startSubscription)
+                        }
+                    >
+                        {formatMessage({
+                            id: 'Enregistrer',
+                            defaultMessage: 'Enregistrer',
+                        })}
+                    </ButtonLoader>
+                )}
 
             <TariffsContract />
         </>

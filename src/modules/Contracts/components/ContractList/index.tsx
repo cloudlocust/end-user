@@ -57,7 +57,9 @@ const ContractList = () => {
                 {contracTypeForm === ContractFormTypeEnum.Regular && (
                     <ContractForm onSubmit={onFormSubmit} isContractsLoading={isContractsLoading} />
                 )}
-                {contracTypeForm === ContractFormTypeEnum.Custom && <CustonContractForm onSubmit={onFormSubmit} />}
+                {contracTypeForm === ContractFormTypeEnum.Custom && (
+                    <CustonContractForm onSubmit={onFormSubmit} isContractsLoading={isContractsLoading} />
+                )}
             </Dialog>
             <div className="p-24">
                 <Button className="flex justify-center items-center" variant="text" onClick={() => history.goBack()}>

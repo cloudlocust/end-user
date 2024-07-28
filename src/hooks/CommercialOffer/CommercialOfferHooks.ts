@@ -91,13 +91,19 @@ export const useCommercialOffer = () => {
      * Fetching Providers function.
      */
     const loadProviders = useCallback(
-        async (contractTypeId: IContractType['id'], housingId?: number) => {
+        async (contractTypeId: IContractType['id'], housingId?: number, isProviderFiltered?: boolean) => {
             setIsProvidersLoading(true)
             try {
                 const { data: responseData } = await axios.get<IProvider[]>(
                     `${PROVIDERS_API}?contract_type_id=${contractTypeId}&housing_id=${housingId}`,
                 )
-                setProviderList(responseData)
+                let filteredProviders = responseData
+                if (isProviderFiltered) {
+                    filteredProviders = responseData.filter(
+                        (provider) => provider.networkIdentifier !== null || provider.name === 'EDF',
+                    )
+                }
+                setProviderList(filteredProviders)
             } catch (error) {
                 enqueueSnackbar(
                     formatMessage({
@@ -116,13 +122,25 @@ export const useCommercialOffer = () => {
      * Fetching Offers function.
      */
     const loadOffers = useCallback(
-        async (providerId: IProvider['id'], contractTypeId: IContractType['id']) => {
+        async (
+            providerId: IProvider['id'],
+            contractTypeId: IContractType['id'],
+            housing_id: number,
+            isOffersFiltered?: boolean,
+        ) => {
             setIsOffersLoading(true)
             try {
                 const { data: responseData } = await axios.get<ITariffType[]>(
-                    `${OFFERS_API}?provider_id=${providerId}&contract_type_id=${contractTypeId}`,
+                    `${OFFERS_API}?provider_id=${providerId}&contract_type_id=${contractTypeId}&housing_id=${housing_id}`,
                 )
-                setOfferList(responseData)
+                let filteredOffers = responseData
+                if (isOffersFiltered) {
+                    filteredOffers = responseData.filter(
+                        (offer) =>
+                            offer.networkIdentifier !== null || offer.name === 'Tarif Bleu' || offer.name === 'Tempo',
+                    )
+                }
+                setOfferList(filteredOffers)
             } catch (error) {
                 enqueueSnackbar(
                     formatMessage({
@@ -337,7 +355,7 @@ export const useCreateCustomOffer = () => {
                     return data
                 }
             } catch (error: any) {
-                if (error.response.data.detail) {
+                if (error?.response?.data?.detail) {
                     enqueueSnackbar(error.response.data.detail, { variant: 'error' })
                 } else enqueueSnackbar('Erreur lors de la création de votre offre', { variant: 'error' })
             } finally {
@@ -393,7 +411,7 @@ export const useCreateCustomTariffType = () => {
                     networkIdentifier: housingId,
                 })
 
-                if (status === 201) {
+                if (status === 201 || status === 200) {
                     enqueueSnackbar(
                         formatMessage({
                             id: 'Votre type de contrat a été créé avec succès',

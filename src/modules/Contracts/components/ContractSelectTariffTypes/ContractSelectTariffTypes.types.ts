@@ -33,4 +33,8 @@ export interface ContractSelectTariffTypesProps {
     onButtonClickParams?: {
         [key: string]: any
     }
+    /**
+     * Disabled.
+     */
+    disabled?: boolean
 }

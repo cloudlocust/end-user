@@ -8,4 +8,8 @@ export interface CustomContractFormProps {
      * Callback when submitting contract form.
      */
     onSubmit: (data: addContractDataType) => void
+    /**
+     * IsContractsLoading.
+     */
+    isContractsLoading: boolean
 }

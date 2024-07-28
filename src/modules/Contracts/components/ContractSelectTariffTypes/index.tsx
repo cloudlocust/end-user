@@ -6,7 +6,11 @@ import { requiredBuilder } from 'src/common/react-platform-components'
 import { ContractSelectTariffTypesProps } from 'src/modules/Contracts/components/ContractSelectTariffTypes/ContractSelectTariffTypes.types'
 import { useCurrentHousing } from 'src/hooks/CurrentHousing'
 
-const BASE = 'Base'
+/**
+ * Contract Base Tariff type.
+ */
+export const BASE = 'Base'
+const HEURES_PLEINES_HEURES_CREUSES = 'Heures Pleines / Heures Creuses'
 
 /**
  * Contract select custom tariff types.
@@ -17,6 +21,7 @@ const BASE = 'Base'
  * @param root0.isOtherFieldSubmitted State of other field when submitted.
  * @param root0.onButtonClick On button click handler.
  * @param root0.onButtonClickParams On button click params.
+ * @param root0.disabled Disabled.
  * @returns Select custom tariff types.
  */
 export function ContractSelectTariffTypes({
@@ -25,6 +30,7 @@ export function ContractSelectTariffTypes({
     isOtherFieldSubmitted,
     onButtonClick,
     onButtonClickParams,
+    disabled,
 }: ContractSelectTariffTypesProps) {
     const methods = useForm()
     const { getValues, watch } = methods
@@ -66,9 +72,10 @@ export function ContractSelectTariffTypes({
                     formControlProps={{
                         margin: 'normal',
                     }}
+                    disabled={disabled}
                 >
                     <MenuItem value={BASE}>{BASE}</MenuItem>
-                    {/* <MenuItem value={HEURES_PLEINES_HEURES_CREUSES}>{HEURES_PLEINES_HEURES_CREUSES}</MenuItem> */}
+                    <MenuItem value={HEURES_PLEINES_HEURES_CREUSES}>{HEURES_PLEINES_HEURES_CREUSES}</MenuItem>
                 </Select>
                 {/* When the field is submitted, we don't display the submit button */}
                 {!isOtherFieldSubmitted && (

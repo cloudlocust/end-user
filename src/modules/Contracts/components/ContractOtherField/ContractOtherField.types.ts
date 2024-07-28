@@ -37,4 +37,8 @@ export interface ContractOtherFieldProps<T, R> extends UiTextFieldProps {
      *
      */
     { [key: string]: any }
+    /**
+     * Disabled.
+     */
+    disabled?: boolean
 }

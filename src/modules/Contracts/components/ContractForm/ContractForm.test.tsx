@@ -11,7 +11,6 @@ import {
     TEST_TARIFF_TYPES,
 } from 'src/mocks/handlers/commercialOffer'
 import { waitFor } from '@testing-library/react'
-import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_HOUSES as MOCK_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
@@ -102,7 +101,6 @@ let mockIsOffersLoading = false
 let mockIsContractTypesLoading = false
 let mockIsMeterLoading = false
 let mockIsTariffsLoading = false
-const mockHouseId = TEST_HOUSE_ID
 let mockManualContractFillingIsEnabled = true
 
 /**
@@ -111,7 +109,6 @@ let mockManualContractFillingIsEnabled = true
 const mockContractFormProps: ContractFormProps = {
     onSubmit: jest.fn(),
     isContractsLoading: false,
-    houseId: mockHouseId,
 }
 
 /**

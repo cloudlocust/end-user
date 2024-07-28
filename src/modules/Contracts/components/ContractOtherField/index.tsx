@@ -15,6 +15,8 @@ import { useCurrentHousing } from 'src/hooks/CurrentHousing'
  * @param param0.validateFunctions Field validation functions.
  * @param param0.isOtherFieldSubmitted Boolean state to check if the field is submitted.
  * @param param0.onButtonClickParams Rest of params for ButtonClick data.
+ * @param param0.disabled Disabled.
+ * @param param0.value Field value.
  * @returns ContractOtherField component.
  */
 export default function ContractOtherField<T extends unknown, R>({
@@ -26,6 +28,8 @@ export default function ContractOtherField<T extends unknown, R>({
     validateFunctions,
     isOtherFieldSubmitted,
     onButtonClickParams,
+    disabled,
+    value,
 }: ContractOtherFieldProps<T, R>) {
     const methods = useForm<T & FieldValues>()
     const currentHousing = useCurrentHousing()
@@ -54,6 +58,8 @@ export default function ContractOtherField<T extends unknown, R>({
                     margin="normal"
                     fullWidth
                     data-testid="custom-provider-textfield"
+                    disabled={disabled}
+                    value={value}
                 />
                 {/* When the field is submitted, we don't display the submit button */}
                 {!isOtherFieldSubmitted && (
