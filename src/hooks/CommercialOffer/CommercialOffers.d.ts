@@ -49,6 +49,10 @@ export type IOffer =
          * Whether the offer is deprecated or not.
          */
         isDeprecated?: boolean
+        /**
+         * Network identifier.
+         */
+        networkIdentifier?: number | null
     }
 
 /**
@@ -65,6 +69,10 @@ export type ITariffType =
          * Name of tariff type.
          */
         name: string
+        /**
+         * Network identifier.
+         */
+        networkIdentifier?: number | null
     }
 
 /**
@@ -83,6 +91,47 @@ export type ICreateCustomProvider = {
     name: string
     /**
      * Id of the housing.
+     */
+    networkIdentifier: number
+}
+
+/**
+ * Create  Custom offer type.
+ */
+export type ICreateCustomOffer =
+    /**
+     *
+     */
+    {
+        /**
+         * Name of the offer.
+         */
+        name: string
+        /**
+         * Id of the provider.
+         */
+        providerId: number
+        /**
+         * Network identifier.
+         */
+        networkIdentifier: number
+    }
+
+/**
+ * Create custom tariff type.
+ */
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type ICreateCustomTariffType = {
+    /**
+     * Name of the tariff type.
+     */
+    name: string
+    /**
+     * Id of the offer.
+     */
+    offerId: number
+    /**
+     * Network identifier.
      */
     networkIdentifier: number
 }
