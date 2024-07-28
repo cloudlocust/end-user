@@ -52,7 +52,7 @@ import { ConsumptionChartTooltip } from 'src/modules/MyConsumption/components/My
 import { parseXAxisLabelToDate } from 'src/modules/MyConsumption/components/MyConsumptionChart/consumptionChartOptions'
 import { consumptionWattUnitConversion } from 'src/modules/MyConsumption/utils/unitConversionFunction'
 import { ConsumptionChartHeaderButton } from 'src/modules/MyConsumption/components/MyConsumptionChart/ConsumptionChartHeaderButton'
-import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
+// import { URL_CONSUMPTION_LABELIZATION } from 'src/modules/MyConsumption/MyConsumptionConfig'
 import { ResalePriceForm } from 'src/modules/MyConsumption/components/ResalePriceForm'
 import { useEquipmentList, useInstallation } from 'src/modules/MyHouse/components/Installation/installationHook'
 import { IHouseOverviewSectionsEnum } from 'src/modules/MyHouse/components/MyHouseOverview/HouseOverview.types'
@@ -466,9 +466,9 @@ export const ConsumptionChartContainer = ({
     /**
      * Function to navigate to the consumption labeliation page.
      */
-    const navigateToConsumptionLabelizationPage = () => {
-        history.push(URL_CONSUMPTION_LABELIZATION)
-    }
+    // const navigateToConsumptionLabelizationPage = () => {
+    //     history.push(URL_CONSUMPTION_LABELIZATION)
+    // }
 
     /**
      * Function to navigate to the solar installation form.
@@ -562,10 +562,10 @@ export const ConsumptionChartContainer = ({
     /*
      ********************************************************* Rendering Logic: *****************************************************
      */
-    const NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT = formatMessage({
-        id: 'Identifier un pic de conso',
-        defaultMessage: 'Identifier un pic de conso',
-    })
+    // const NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT = formatMessage({
+    //     id: 'Identifier un pic de conso',
+    //     defaultMessage: 'Identifier un pic de conso',
+    // })
 
     const NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT = formatMessage({
         id: 'Mon installation solaire',
@@ -580,7 +580,7 @@ export const ConsumptionChartContainer = ({
     return (
         <div className="mb-12">
             <div className="flex flex-col items-start gap-8 my-8">
-                {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction ? (
+                {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction && (
                     <>
                         <ConsumptionChartHeaderButton
                             text={NAVIGATE_TO_SOLAR_INSTALLATION_FORM_BUTTON_TEXT}
@@ -599,7 +599,9 @@ export const ConsumptionChartContainer = ({
                             data-testid="solarInstallationRecommendationButton"
                         />
                     </>
-                ) : (
+                )}
+                {/* TODO -- TO-ENABLE-SOMEDAY - DO AN IF ELSE TO GET THIS PART  */}
+                {/* ): (
                     period === PeriodEnum.DAILY && (
                         <ConsumptionChartHeaderButton
                             text={NAVIGATE_TO_LABELIZATION_PAGE_BUTTON_TEXT}
@@ -608,7 +610,7 @@ export const ConsumptionChartContainer = ({
                             data-testid="linkToLabelizationPage"
                         />
                     )
-                )}
+                )} */}
             </div>
 
             <div

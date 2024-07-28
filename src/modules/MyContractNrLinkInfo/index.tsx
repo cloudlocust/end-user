@@ -1,14 +1,17 @@
-import { isEmpty } from 'lodash'
+// import { isEmpty } from 'lodash'
 import { motion } from 'framer-motion'
 
 import PageSimple from 'src/common/ui-kit/fuse/components/PageSimple'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { Icon } from 'src/common/ui-kit'
 import { MeterStatus } from 'src/modules/MyHouse/components/MeterStatus'
-import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
-import { useCurrentHousing, useCurrentHousingScopes } from 'src/hooks/CurrentHousing'
-import { HousingDetailsCard } from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
-import { HousingCardTypeOfDetailsEnum } from 'src/modules/MyHouse/components/HousingDetails/housingDetails.d'
+// import { arePlugsUsedBasedOnProductionStatus } from 'src/modules/MyHouse/MyHouseConfig'
+import {
+    useCurrentHousing,
+    // useCurrentHousingScopes
+} from 'src/hooks/CurrentHousing'
+// import { HousingDetailsCard } from 'src/modules/MyHouse/components/HousingDetails/HousingDetailsCard'
+// import { HousingCardTypeOfDetailsEnum } from 'src/modules/MyHouse/components/HousingDetails/housingDetails.d'
 import { useConnectedPlugInfo } from 'src/hooks/useConnectedPlugInfo'
 
 /**
@@ -17,12 +20,13 @@ import { useConnectedPlugInfo } from 'src/hooks/useConnectedPlugInfo'
  * @returns  The JSX element representing the MyContractNrLinkInfo component.
  */
 export const MyContractNrLinkInfo = () => {
-    const currentHousingScopes = useCurrentHousingScopes()
+    // const currentHousingScopes = useCurrentHousingScopes()
     const currentHousing = useCurrentHousing()
 
-    const { theme, connectedPlugsElements, isConnectedPlugListLoading, connectedPlugList } = useConnectedPlugInfo(
-        currentHousing?.id,
-    )
+    const {
+        theme,
+        // connectedPlugsElements, isConnectedPlugListLoading, connectedPlugList
+    } = useConnectedPlugInfo(currentHousing?.id)
 
     return (
         <PageSimple
@@ -49,7 +53,8 @@ export const MyContractNrLinkInfo = () => {
             content={
                 <>
                     <MeterStatus />
-                    <div className="flex flex-col md:flex-row px-16 max-w-512 mx-auto md:mx-0">
+                    {/* TO-ENABLE-SOMEDAY */}
+                    {/* <div className="flex flex-col md:flex-row px-16 max-w-512 mx-auto md:mx-0">
                         {arePlugsUsedBasedOnProductionStatus(currentHousingScopes) && (
                             <HousingDetailsCard
                                 title="Mes prises connectées"
@@ -59,7 +64,7 @@ export const MyContractNrLinkInfo = () => {
                                 loadingInProgress={isConnectedPlugListLoading}
                             />
                         )}
-                    </div>
+                    </div> */}
                 </>
             }
         />

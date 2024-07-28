@@ -19,9 +19,9 @@ import { RootState } from 'src/redux'
 import { ReplaceNRLinkModule } from 'src/modules/MyHouse/components/ReplaceNRLinkFormPopup/ReplaceNRLinkModule'
 import MeterInfos from 'src/modules/MyHouse/components/MeterInfo'
 import { HousingAddressCard } from 'src/modules/MyHouse/components/HousingAddressCard'
-import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
+// import { SolarProductionConsentStatus } from 'src/modules/MyHouse/components/MeterStatus/SolarProductionStatus'
 import { RevokeNrlinkConsent } from 'src/modules/MyHouse/components/RevokeNrlinkConsent'
-import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
+// import { isProductionActiveAndHousingHasAccess } from 'src/modules/MyHouse/MyHouseConfig'
 import clsx from 'clsx'
 import { useModal } from 'src/hooks/useModal'
 import Dialog from '@mui/material/Dialog'
@@ -92,12 +92,15 @@ export const MeterStatus = () => {
         createEnedisSgeConsent,
         isCreateEnedisSgeConsentLoading,
         createEnedisSgeConsentError,
-        enphaseConsent,
-        isEnphaseConsentLoading,
-        revokeEnphaseConsent,
+        // enphaseConsent,
+        // isEnphaseConsentLoading,
+        // revokeEnphaseConsent,
         revokeNrlinkConsent,
     } = useConsents()
-    const { currentHousing, currentHousingScopes } = useSelector(({ housingModel }: RootState) => housingModel)
+    const {
+        currentHousing,
+        // currentHousingScopes
+    } = useSelector(({ housingModel }: RootState) => housingModel)
     const [openCancelCollectionDataTooltip, setOpenCancelCollectionDataTooltip] = useState(false)
     const {
         closeModal: closeUnsynchronizedInfoDialog,
@@ -105,7 +108,7 @@ export const MeterStatus = () => {
         openModal: openUnsynchronizedInfoDialog,
     } = useModal()
 
-    const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
+    // const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
 
     /*  Nrlink created at date formatted */
     const nrlinkConsentCreatedAt = dayjs(nrlinkConsent?.createdAt).format(FORMATTED_DATA)
@@ -411,7 +414,8 @@ export const MeterStatus = () => {
                                 )}
                             </div>
                         </Tooltip>
-                        {['CONNECTED', 'DISCONNECTED'].includes(nrlinkConsent?.nrlinkConsentState ?? '') && (
+                        {/* TO-ENABLE-SOMEDAY */}
+                        {/* {['CONNECTED', 'DISCONNECTED'].includes(nrlinkConsent?.nrlinkConsentState ?? '') && (
                             <div className={!isProductionActive ? 'hidden' : ''}>
                                 <SolarProductionConsentStatus
                                     solarProductionConsentLoadingInProgress={consentsLoading || isEnphaseConsentLoading}
@@ -423,7 +427,7 @@ export const MeterStatus = () => {
                                     }}
                                 />
                             </div>
-                        )}
+                        )} */}
                     </div>
                 </MuiCardContent>
             </Card>

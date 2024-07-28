@@ -16,7 +16,7 @@ import { ConsumptionWidgetsMetricsProvider } from 'src/modules/MyConsumption/com
 import { useConnectedPlugList } from 'src/modules/MyHouse/components/ConnectedPlugs/connectedPlugsHook'
 import {
     arePlugsUsedBasedOnProductionStatus,
-    globalProductionFeatureState,
+    // globalProductionFeatureState,
     isProductionActiveAndHousingHasAccess,
 } from 'src/modules/MyHouse/MyHouseConfig'
 import { SwitchConsumptionButtonTypeEnum } from 'src/modules/MyConsumption/components/SwitchConsumptionButton/SwitchConsumptionButton.types'
@@ -26,7 +26,7 @@ import {
 } from 'src/modules/MyConsumption/store/myConsumptionStore'
 import { ChartFAQ } from 'src/modules/MyConsumption/components/ChartFAQ'
 import { MyConsumptionContainerProps } from 'src/modules/MyConsumption/myConsumptionTypes.d'
-import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
+// import { SwitchConsumptionButton } from 'src/modules/MyConsumption/components/SwitchConsumptionButton'
 import SolarProductionLinkingPrompt from 'src/modules/MyConsumption/components/SolarProductionLinkingPrompt'
 import SolarProductionDiscoveringPrompt from 'src/modules/MyConsumption/components/SolarProductionDiscoveringPrompt'
 import { useCurrentHousingScopes } from 'src/hooks/CurrentHousing'
@@ -107,12 +107,12 @@ export const MyConsumptionContainer = ({ defaultPeriod = PeriodEnum.DAILY }: MyC
 
     return (
         <>
-            <div style={{ background: theme.palette.common.white }} className="w-full flex justify-center">
+            {/* <div style={{ background: theme.palette.common.white }} className="w-full flex justify-center">
                 <SwitchConsumptionButton
                     isIdleShown={isSolarProductionConsentOff}
                     isAutoConsumptionProductionShown={globalProductionFeatureState}
                 />
-            </div>
+            </div> */}
             {consumptionToggleButton === SwitchConsumptionButtonTypeEnum.AutoconsmptionProduction &&
             isSolarProductionConsentOff ? (
                 <SolarProductionSection />

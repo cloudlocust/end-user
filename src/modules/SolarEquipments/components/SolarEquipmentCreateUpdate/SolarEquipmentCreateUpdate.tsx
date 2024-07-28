@@ -157,6 +157,7 @@ export const SolarEquipmentCreateUpdate = (props: SolarEquipmentCreateUpdateProp
                                 <div className="px-16">
                                     <ButtonResetForm
                                         initialValues={() => (solarEquipmentDetails ? defaultFormValues : {})}
+                                        onClickButtonReset={onClose}
                                     />
                                 </div>
                                 <div className="px-16">

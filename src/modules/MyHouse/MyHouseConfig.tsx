@@ -1,13 +1,13 @@
 import { authTypes } from 'src/common/react-platform-components'
 import { IRouteNavigationConfig } from 'src/routes'
 import { MyHouse } from 'src/modules/MyHouse/MyHouse'
-import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
+// import ConnectedPlugs from 'src/modules/MyHouse/components/ConnectedPlugs'
 import { ReactComponent as HousingIcon } from 'src/assets/images/navbarItems/housing.svg'
 import { ReactComponent as HousingSelectedIcon } from 'src/assets/images/navbarItems/housing-selected.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import { HousingInformation } from 'src/modules/MyHouse/components/HousingInformation'
 import { EquipmentsTab } from 'src/modules/MyHouse/components/Equipments'
-import { store } from 'src/redux'
+// import { store } from 'src/redux'
 import { ScopesTypesEnum } from 'src/modules/MyHouse/utils/MyHouseCommonTypes.d'
 import { isAccessRightsActive } from 'src/configs'
 import { URL_MY_HOUSE } from 'src/modules/MyHouse/MyHouseVariables'
@@ -315,37 +315,38 @@ export const MyHouseConfig = [
             },
         },
     } as IRouteNavigationConfig<MyHouseProps>,
-    {
-        path: URL_HOUSING_CONNECTED_PLUGS,
-        component: ConnectedPlugs,
-        auth: { authType: authTypes.loginRequired },
-        settings: {
-            layout: {
-                navbar: {
-                    UINavbarItem: {
-                        id: 'Logement',
-                        label: 'Logement',
-                        labelAbbreviation: 'Logement',
-                        type: 'item',
-                        icon: (
-                            <SvgIcon>
-                                <HousingIcon />
-                            </SvgIcon>
-                        ),
-                        selectedIcon: (
-                            <SvgIcon>
-                                <HousingSelectedIcon />
-                            </SvgIcon>
-                        ),
-                        url: URL_HOUSING_EQUIPMENTS,
-                        disabled: arePlugsUsedBasedOnProductionStatus(
-                            store.getState().housingModel.currentHousingScopes,
-                        ),
-                    },
-                },
-            },
-        },
-    } as IRouteNavigationConfig<MyHouseProps>,
+    // TODO - TO-ENABLE-SOMEDAY
+    // {
+    //     path: URL_HOUSING_CONNECTED_PLUGS,
+    //     component: ConnectedPlugs,
+    //     auth: { authType: authTypes.loginRequired },
+    //     settings: {
+    //         layout: {
+    //             navbar: {
+    //                 UINavbarItem: {
+    //                     id: 'Logement',
+    //                     label: 'Logement',
+    //                     labelAbbreviation: 'Logement',
+    //                     type: 'item',
+    //                     icon: (
+    //                         <SvgIcon>
+    //                             <HousingIcon />
+    //                         </SvgIcon>
+    //                     ),
+    //                     selectedIcon: (
+    //                         <SvgIcon>
+    //                             <HousingSelectedIcon />
+    //                         </SvgIcon>
+    //                     ),
+    //                     url: URL_HOUSING_EQUIPMENTS,
+    //                     disabled: arePlugsUsedBasedOnProductionStatus(
+    //                         store.getState().housingModel.currentHousingScopes,
+    //                     ),
+    //                 },
+    //             },
+    //         },
+    //     },
+    // } as IRouteNavigationConfig<MyHouseProps>,
     {
         path: URL_HOUSING_EQUIPMENT_USAGE,
         component: EquipmentsUsage,
