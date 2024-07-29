@@ -1,22 +1,23 @@
-import { useContext, useEffect, useMemo } from 'react'
+import { useContext, useEffect, useMemo, useRef } from 'react'
 import { metricTargetsEnum } from 'src/modules/Metrics/Metrics.d'
 import { useMetrics } from 'src/modules/Metrics/metricsHook'
 import { Widget } from 'src/modules/MyConsumption/components/Widget'
 import { IWidgetProps } from 'src/modules/MyConsumption/components/Widget/Widget'
 import {
-    checkIfItIsCurrentDayRange,
     computeTotalEuros,
     computeTotalEurosWithSubscriptionPrice,
     getWidgetRange,
 } from 'src/modules/MyConsumption/components/Widget/WidgetFunctions'
 import { ConsumptionWidgetsMetricsContext } from 'src/modules/MyConsumption/components/ConsumptionWidgetsContainer/ConsumptionWidgetsMetricsContext'
 import { useMyConsumptionStore } from 'src/modules/MyConsumption/store/myConsumptionStore'
+import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux'
 import { useCurrentDayConsumption } from 'src/modules/MyConsumption/components/Widget/currentDayConsumptionHook'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
 
 const emptyValueUnit = { value: 0, unit: '' }
+const parisTimeZone = 'Europe/Paris'
 
 /**
  * WidgetCost Component.
@@ -37,30 +38,60 @@ export const WidgetCost = (props: IWidgetProps) => {
         [getMetricsWidgetsData, props.targets],
     )
 
-    const { data, setData, getMetricsWithParams } = useMetrics(undefined, {
-        isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(
-            period as PeriodEnum,
-        ),
-    })
+    const { data, setData, setMetricsInterval, setRange } = useMetrics(
+        {
+            interval: ['1m', '30m'].includes(metricsInterval) ? '1d' : metricsInterval,
+            range: getWidgetRange(range, period),
+            targets: [
+                {
+                    target: metricTargetsEnum.subscriptionPrices,
+                    type: 'timeserie',
+                },
+            ],
+            filters: filters,
+        },
+        {
+            isUsingHistoryTargets: [PeriodEnum.WEEKLY, PeriodEnum.MONTHLY, PeriodEnum.YEARLY].includes(
+                period as PeriodEnum,
+            ),
+        },
+    )
 
-    const isCurrentDayRange = useMemo(() => checkIfItIsCurrentDayRange(period, range.from), [period, range.from])
+    const isRangeChanged = useRef(false)
 
+    // When range change, set isRangedChanged
     useEffect(() => {
-        if (
-            (period === PeriodEnum.DAILY && !isCurrentDayRange) ||
-            period === PeriodEnum.MONTHLY ||
-            period === PeriodEnum.WEEKLY
-        ) {
-            getMetricsWithParams({
-                interval: ['1m', '30m'].includes(metricsInterval) ? '1d' : metricsInterval,
-                range: getWidgetRange(range, period),
-                targets: [metricTargetsEnum.subscriptionPrices],
-                filters: filters,
-            })
+        isRangeChanged.current = true
+    }, [range])
+
+    const isCurrentDayRange = useMemo(
+        () =>
+            period === 'daily' &&
+            utcToZonedTime(new Date(range.from), parisTimeZone).getDate() ===
+                utcToZonedTime(new Date(), parisTimeZone).getDate(),
+        [period, range.from],
+    )
+
+    // get metrics when metricsInterval change.
+    useEffect(() => {
+        if (!isCurrentDayRange || period === 'monthly' || period === 'yearly') {
+            setMetricsInterval(period === 'daily' ? '1d' : metricsInterval)
         } else {
             setData([])
         }
-    }, [filters, getMetricsWithParams, isCurrentDayRange, metricsInterval, period, range, setData])
+    }, [isCurrentDayRange, metricsInterval, period, range.from, setData, setMetricsInterval])
+
+    // When period or range changes
+    useEffect(() => {
+        // If period just changed block the call of getMetrics, because period and range changes at the same time, so to avoid two call of getMetrics
+        // 1 call when range change and the other when period change, then only focus on when range changes.
+        if (isRangeChanged.current && (!isCurrentDayRange || period === 'monthly' || period === 'yearly')) {
+            const widgetRange = getWidgetRange(range, period)
+            setRange(widgetRange)
+            // reset isRangeChanged
+            isRangeChanged.current = false
+        }
+    }, [isCurrentDayRange, period, range, setRange])
 
     useEffect(() => {
         if (isCurrentDayRange) {
@@ -74,7 +105,7 @@ export const WidgetCost = (props: IWidgetProps) => {
             if (!euroConsumptionData.length || !data.length) {
                 return emptyValueUnit
             }
-            if (isCurrentDayRange && typeof currentDayEuroConsumption === 'number') {
+            if (isCurrentDayRange && currentDayEuroConsumption !== null && currentDayEuroConsumption !== undefined) {
                 const { value: totalSubscriptionPrice } = computeTotalEuros(data, metricTargetsEnum.subscriptionPrices)
                 return {
                     value: Number((currentDayEuroConsumption + totalSubscriptionPrice).toFixed(2)),

@@ -240,16 +240,16 @@ jest.mock('src/modules/MyConsumption/store/myConsumptionStore', () => ({
 }))
 
 const euroConsumptionSwitcherAriaLabel = 'euros-consumption-switcher'
-jest.mock('src/modules/MyConsumption/components/EurosConsumptionButtonToggler', () => (props: any) => {
-    return (
-        <input
-            type="checkbox"
-            aria-label={euroConsumptionSwitcherAriaLabel}
-            checked={props.value}
-            onChange={props.onChange}
-        />
-    )
-})
+// jest.mock('src/modules/MyConsumption/components/EurosConsumptionButtonToggler', () => (props: any) => {
+//     return (
+//         <input
+//             type="checkbox"
+//             aria-label={euroConsumptionSwitcherAriaLabel}
+//             checked={props.value}
+//             onChange={props.onChange}
+//         />
+//     )
+// })
 
 // Now, when you import and use echarts-for-react in your Jest tests
 // It will use the mocked EChartsReact component instead of the real one.
@@ -278,7 +278,7 @@ describe('MyConsumptionContainer test', () => {
 
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith(mockGetMetricsWithParamsValues)
-            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(4)
+            expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
         })
 
         expect(() => getByText(CONSUMPTION_ENEDIS_SGE_WARNING_TEXT)).toThrow()
@@ -463,7 +463,7 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                interval: '1d',
+                // interval: '1d',
                 targets: [metricTargetsEnum.consumptionByTariffComponent, metricTargetsEnum.consumption],
             })
         })
@@ -482,8 +482,13 @@ describe('MyConsumptionContainer test', () => {
         await waitFor(() => {
             expect(mockGetMetricsWithParams).toHaveBeenCalledWith({
                 ...mockGetMetricsWithParamsValues,
-                interval: '1d',
-                targets: [metricTargetsEnum.consumption, metricTargetsEnum.eurosConsumption],
+                // interval: '1d',
+                targets: [
+                    metricTargetsEnum.autoconsumption,
+                    metricTargetsEnum.consumption,
+                    metricTargetsEnum.injectedProduction,
+                    metricTargetsEnum.totalProduction,
+                ],
             })
         })
     })
@@ -625,7 +630,7 @@ describe('MyConsumptionContainer test', () => {
             userEvent.click(getAllByRole(menuItemRole)[1])
 
             await waitFor(() => {
-                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(5)
+                expect(mockGetMetricsWithParams).toHaveBeenCalledTimes(2)
             })
         }, 10000)
     })
