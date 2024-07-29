@@ -18,62 +18,92 @@ jest.mock('notistack', () => ({
 }))
 
 describe('ReplaceNrLink Hook tests', () => {
-    test('When using bad house id, should throw error', async () => {
-        const {
-            renderedHook: { result, waitForValueToChange },
-        } = reduxedRenderHook(() => useReplaceNRLinkHook(-1), { initialState: {} })
+    describe('when using bad houseId', () => {
+        test('When using bad house id, should throw error', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useReplaceNRLinkHook(-1), { initialState: {} })
 
-        expect(result.current.loadingInProgress).toBe(false)
+            expect(result.current.loadingInProgress).toBe(false)
 
-        act(async () => {
-            try {
-                await result.current.replaceNRLink({
-                    old: 'aaaaa1aaaaa1aaaa',
-                    new: 'aaaaadaaaaadaaaa',
-                })
-            } catch (err) {}
+            act(async () => {
+                try {
+                    await result.current.replaceNRLink({
+                        old: 'aaaaa1aaaaa1aaaa',
+                        new: 'aaaaadaaaaadaaaa',
+                    })
+                } catch (err) {}
+            })
+
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 6000 },
+            )
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Erreur lors de la modification de votre nrLINK', {
+                variant: 'error',
+            })
         })
 
-        await waitForValueToChange(
-            () => {
-                return result.current.loadingInProgress
-            },
-            { timeout: 6000 },
-        )
+        test('When using bad house id, should throw error that comes from backend', async () => {
+            const {
+                renderedHook: { result, waitForValueToChange },
+            } = reduxedRenderHook(() => useReplaceNRLinkHook(-2), { initialState: {} })
 
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(expect.any(String), {
-            variant: 'error',
-        })
-    })
+            expect(result.current.loadingInProgress).toBe(false)
 
-    test('When there is no house id, the api should not be called', async () => {
-        // mock axios.patch
-        const originalAxiosPatch = axios.patch
-        const mockAxiosPatch = jest.fn()
-        axios.patch = mockAxiosPatch
+            act(async () => {
+                try {
+                    await result.current.replaceNRLink({
+                        old: 'aaaaa2aaaaa2aaaa',
+                        new: 'aaaaadaaaaadaaaa',
+                    })
+                } catch (err) {}
+            })
 
-        const {
-            renderedHook: { result },
-        } = reduxedRenderHook(() => useReplaceNRLinkHook(undefined), { initialState: {} })
+            await waitForValueToChange(
+                () => {
+                    return result.current.loadingInProgress
+                },
+                { timeout: 6000 },
+            )
 
-        expect(result.current.loadingInProgress).toBe(false)
-
-        act(async () => {
-            try {
-                await result.current.replaceNRLink({
-                    old: 'aaaaa1aaaaa1aaab',
-                    new: 'aaaaa1aaaaa1aaab',
-                })
-            } catch (err) {}
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Invalid house id', {
+                variant: 'error',
+            })
         })
 
-        expect(result.current.loadingInProgress).toBe(false)
+        test('When there is no house id, the api should not be called', async () => {
+            // mock axios.patch
+            const originalAxiosPatch = axios.patch
+            const mockAxiosPatch = jest.fn()
+            axios.patch = mockAxiosPatch
 
-        expect(mockAxiosPatch).not.toHaveBeenCalled()
-        expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+            const {
+                renderedHook: { result },
+            } = reduxedRenderHook(() => useReplaceNRLinkHook(undefined), { initialState: {} })
 
-        // reset the original value
-        axios.patch = originalAxiosPatch
+            expect(result.current.loadingInProgress).toBe(false)
+
+            act(async () => {
+                try {
+                    await result.current.replaceNRLink({
+                        old: 'aaaaa1aaaaa1aaab',
+                        new: 'aaaaa1aaaaa1aaab',
+                    })
+                } catch (err) {}
+            })
+
+            expect(result.current.loadingInProgress).toBe(false)
+
+            expect(mockAxiosPatch).not.toHaveBeenCalled()
+            expect(mockEnqueueSnackbar).not.toHaveBeenCalled()
+
+            // reset the original value
+            axios.patch = originalAxiosPatch
+        })
     })
 
     describe('when using good houseId', () => {

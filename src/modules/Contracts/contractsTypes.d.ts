@@ -62,9 +62,9 @@ export type ContractFormProps =
          */
         isUsingRemoteSubmit?: boolean
         /**
-         * The house id which the contract is associated with.
+         * Is update Mode.
          */
-        houseId: number
+        isUpdateMode?: boolean
     }
 
 /**
@@ -89,6 +89,10 @@ export type ContractFormFieldsProps =
          * The house id which the contract is associated with.
          */
         houseId: number
+        /**
+         * Tells if form is on update or create mode.
+         */
+        isUpdateMode: boolean
     }
 
 /**
@@ -228,6 +232,26 @@ export type addContractDataType = {
      * End contract subscription.
      */
     endSubscription?: string
+    /**
+     * Monthly price.
+     */
+    monthlyPrice?: number
+    /**
+     * Base price.
+     */
+    basePrice?: number
+    /**
+     * Heures pleines price.
+     */
+    hpPrice?: number
+    /**
+     * Heures creuses price.
+     */
+    hcPrice?: number
+    /**
+     * Is Contract Custom.
+     */
+    isContractCustom?: boolean
 }
 
 /**
@@ -331,6 +355,10 @@ export interface offpeakHoursFieldProps {
      * The house id which the contract is associated with.
      */
     houseId: number
+    /**
+     * Disabled.
+     */
+    disabled?: boolean
 }
 
 /**

@@ -18,3 +18,4 @@ export type textFieldCommonTypes =
     | 'value'
     | 'placeholder'
     | 'fullWidth'
+    | 'InputProps'

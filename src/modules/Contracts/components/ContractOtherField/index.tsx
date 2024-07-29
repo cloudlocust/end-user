@@ -10,19 +10,27 @@ import { useCurrentHousing } from 'src/hooks/CurrentHousing'
  * @param param0.name Field name.
  * @param param0.label Field label.
  * @param param0.buttonLabel Button label.
- * @param param0.buttonAction Button action.
- * @param param0.buttonLoading Button loading state.
+ * @param param0.onButtonClick Button action.
+ * @param param0.isButtonLoading Button loading state.
  * @param param0.validateFunctions Field validation functions.
+ * @param param0.isOtherFieldSubmitted Boolean state to check if the field is submitted.
+ * @param param0.onButtonClickParams Rest of params for ButtonClick data.
+ * @param param0.disabled Disabled.
+ * @param param0.value Field value.
  * @returns ContractOtherField component.
  */
-export default function ContractOtherField<T extends unknown>({
+export default function ContractOtherField<T extends unknown, R>({
     name,
     label,
     buttonLabel,
-    buttonAction,
-    buttonLoading,
+    onButtonClick,
+    isButtonLoading,
     validateFunctions,
-}: ContractOtherFieldProps<T>) {
+    isOtherFieldSubmitted,
+    onButtonClickParams,
+    disabled,
+    value,
+}: ContractOtherFieldProps<T, R>) {
     const methods = useForm<T & FieldValues>()
     const currentHousing = useCurrentHousing()
 
@@ -34,9 +42,9 @@ export default function ContractOtherField<T extends unknown>({
      * @param data Form data.
      */
     async function handleFormSubmit(data: UnpackNestedValue<T & FieldValues>) {
-        const name = data.name as string
+        const name = data.name as keyof T
         if (currentHousing?.id) {
-            await buttonAction({ name, housingId: currentHousing.id } as T)
+            return (await onButtonClick({ name, housingId: currentHousing.id, ...onButtonClickParams } as T)) as R
         }
     }
 
@@ -50,20 +58,25 @@ export default function ContractOtherField<T extends unknown>({
                     margin="normal"
                     fullWidth
                     data-testid="custom-provider-textfield"
+                    disabled={disabled}
+                    value={value}
                 />
-                <div className="mt-5 w-full">
-                    <ButtonLoader
-                        fullWidth
-                        inProgress={buttonLoading}
-                        type="button"
-                        onClick={() => {
-                            const values = getValues()
-                            handleFormSubmit(values)
-                        }}
-                    >
-                        {buttonLabel}
-                    </ButtonLoader>
-                </div>
+                {/* When the field is submitted, we don't display the submit button */}
+                {!isOtherFieldSubmitted && (
+                    <div className="mt-5 w-full">
+                        <ButtonLoader
+                            fullWidth
+                            inProgress={isButtonLoading}
+                            type="button"
+                            onClick={() => {
+                                const values = getValues()
+                                handleFormSubmit(values)
+                            }}
+                        >
+                            {buttonLabel}
+                        </ButtonLoader>
+                    </div>
+                )}
             </div>
         </FormProvider>
     )

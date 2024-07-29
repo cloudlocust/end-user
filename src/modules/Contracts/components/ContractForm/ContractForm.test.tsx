@@ -11,7 +11,6 @@ import {
     TEST_TARIFF_TYPES,
 } from 'src/mocks/handlers/commercialOffer'
 import { waitFor } from '@testing-library/react'
-import { TEST_HOUSE_ID } from 'src/mocks/handlers/contracts'
 import { TEST_HOUSES as MOCK_HOUSES } from 'src/mocks/handlers/houses'
 import { applyCamelCase } from 'src/common/react-platform-components'
 import { IHousing } from 'src/modules/MyHouse/components/HousingList/housing'
@@ -41,8 +40,6 @@ const CONTRACT_FORM_FIELDS_LABEL_LIST = [
     END_SUBSCRIPTION_LABEL_TEXT,
 ]
 
-const OTHER_PROVIDER_OFFER_OPTION_MESSAGE =
-    "en précisant le fournisseur et l’offre que vous souhaitez voir renseignés. Si vous le pouvez, ajoutez la grille tarifaire correspondante à votre offre. Cela nous permettra de l'enregistrer plus rapidement."
 const CONTRACT_FORM_OFFPEAK_HOURS_LABEL_LIST = [
     TYPE_LABEL_TEXT,
     PROVIDER_LABEL_TEXT,
@@ -92,6 +89,11 @@ const mockEditMeter = jest.fn()
 const mockLoadTariffsHousingContract = jest.fn()
 
 const mockCreateCustomProvider = jest.fn()
+const mockCreateCustomOffer = jest.fn()
+
+let mockIsCustomProviderCreated = false
+let mockIsCustomOfferCreated = false
+
 let mockIsTariffTypesLoading = false
 let mockIsPowersLoading = false
 let mockIsProvidersLoading = false
@@ -99,7 +101,6 @@ let mockIsOffersLoading = false
 let mockIsContractTypesLoading = false
 let mockIsMeterLoading = false
 let mockIsTariffsLoading = false
-const mockHouseId = TEST_HOUSE_ID
 let mockManualContractFillingIsEnabled = true
 
 /**
@@ -108,7 +109,6 @@ let mockManualContractFillingIsEnabled = true
 const mockContractFormProps: ContractFormProps = {
     onSubmit: jest.fn(),
     isContractsLoading: false,
-    houseId: mockHouseId,
 }
 
 /**
@@ -141,8 +141,14 @@ jest.mock('src/hooks/CommercialOffer/CommercialOfferHooks', () => ({
     // eslint-disable-next-line jsdoc/require-jsdoc
     useCreateCustomProvider: () => ({
         createCustomProvider: mockCreateCustomProvider,
-        isCustomProviderCreated: true,
+        isCustomProviderCreated: mockIsCustomProviderCreated,
         isCreateCustomProviderLoading: false,
+    }),
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    useCreateCustomOffer: () => ({
+        createCustomOffer: mockCreateCustomOffer,
+        isCustomOfferCreated: mockIsCustomOfferCreated,
+        isCreateCustomOfferLoading: false,
     }),
 }))
 
@@ -312,8 +318,6 @@ describe('Test ContractFormSelect Component', () => {
 
         // When selecting other offer, tariffType is not shown
         userEvent.click(getByLabelText(OFFER_LABEL_TEXT, { exact: false }))
-        selectOption(getAllByRole, TEST_OFFERS.length)
-        expect(getByText(OTHER_PROVIDER_OFFER_OPTION_MESSAGE, { exact: false })).toBeTruthy()
         expect(() => getByLabelText(TARRIF_TYPE_LABEL_TEXT, { exact: false })).toThrow()
         await waitFor(() => {
             expect(mockLoadTariffTypes).not.toHaveBeenCalled()

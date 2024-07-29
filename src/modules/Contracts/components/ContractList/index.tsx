@@ -15,6 +15,8 @@ import { primaryMainColor } from 'src/modules/utils/muiThemeVariables'
 import Dialog from '@mui/material/Dialog'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import { manualContractFillingIsEnabled } from 'src/modules/MyHouse/MyHouseConfig'
+import { ContractFormTypeEnum, useContractStore } from 'src/modules/Contracts/store/contractStore'
+import CustonContractForm from 'src/modules/Contracts/components/CustomContractForm'
 
 /**
  * ContractsList Page Component.
@@ -26,6 +28,7 @@ const ContractList = () => {
     const { houseId } = useParams<contractsRouteParam>()
     const [isOpenDialog, setIsOpenDialog] = useState(false)
     const history = useHistory()
+    const contracTypeForm = useContractStore((state) => state.contractFormType)
 
     const {
         elementList: contractList,
@@ -34,21 +37,29 @@ const ContractList = () => {
         addElement: addContract,
     } = useContractList(parseInt(houseId))
 
+    /**
+     *  Function to submit the form.
+     *
+     * @param input - The input data to submit.
+     */
+    async function onFormSubmit(input: addContractDataType) {
+        try {
+            await addContract(input)
+            setIsOpenDialog(false)
+            reloadContractList()
+            // Catching the error to avoir application crash and stops working.
+        } catch (error) {}
+    }
+
     return (
         <>
             <Dialog open={isOpenDialog} fullWidth={true} maxWidth="sm" onClose={() => setIsOpenDialog(false)}>
-                <ContractForm
-                    onSubmit={async (input: addContractDataType) => {
-                        try {
-                            await addContract(input)
-                            setIsOpenDialog(false)
-                            reloadContractList()
-                            // Catching the error to avoir application crash and stops working.
-                        } catch (error) {}
-                    }}
-                    isContractsLoading={isContractsLoading}
-                    houseId={parseInt(houseId)}
-                />
+                {contracTypeForm === ContractFormTypeEnum.Regular && (
+                    <ContractForm onSubmit={onFormSubmit} isContractsLoading={isContractsLoading} />
+                )}
+                {contracTypeForm === ContractFormTypeEnum.Custom && (
+                    <CustonContractForm onSubmit={onFormSubmit} isContractsLoading={isContractsLoading} />
+                )}
             </Dialog>
             <div className="p-24">
                 <Button className="flex justify-center items-center" variant="text" onClick={() => history.goBack()}>

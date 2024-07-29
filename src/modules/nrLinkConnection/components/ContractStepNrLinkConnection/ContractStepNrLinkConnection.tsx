@@ -7,6 +7,8 @@ import { addContractDataType } from 'src/modules/Contracts/contractsTypes'
 import { useContractList } from 'src/modules/Contracts/contractsHook'
 import ContractForm from 'src/modules/Contracts/components/ContractForm'
 import { useState } from 'react'
+import { ContractFormTypeEnum, useContractStore } from 'src/modules/Contracts/store/contractStore'
+import CustonContractForm from 'src/modules/Contracts/components/CustomContractForm'
 
 // TODO: Add tests for this component.
 /**
@@ -22,6 +24,7 @@ const ContractStepNrLinkConnection = ({ housingId }: { housingId?: number }) => 
     const history = useHistory()
     const [isContractAdding, setIsContractAdding] = useState(false)
     const { loadingInProgress: isContractsLoading, addElement: addContract } = useContractList(housingId!)
+    const contracTypeForm = useContractStore((state) => state.contractFormType)
 
     const contractSetupTypography = (
         <TypographyFormatMessage className="text-center mb-20 text-13 font-medium md:text-16">
@@ -60,22 +63,31 @@ const ContractStepNrLinkConnection = ({ housingId }: { housingId?: number }) => 
             </div>
         )
 
+    /**
+     * On form submit.
+     *
+     * @param input Input.
+     * @returns Void.
+     */
+    const onFormSubmit = async (input: addContractDataType) => {
+        setIsContractAdding(true)
+        try {
+            await addContract(input)
+            history.push(URL_DASHBOARD)
+            // Catching the error to avoir application crash and stops working.
+        } catch (error) {}
+        setIsContractAdding(false)
+    }
+
     return (
         <Box className="landscape:flex landscape:justify-between portrait:flex-col">
             <div className="w-full">
-                <ContractForm
-                    onSubmit={async (input: addContractDataType) => {
-                        setIsContractAdding(true)
-                        try {
-                            await addContract(input)
-                            history.push(URL_DASHBOARD)
-                            // Catching the error to avoir application crash and stops working.
-                        } catch (error) {}
-                        setIsContractAdding(false)
-                    }}
-                    isContractsLoading={isContractsLoading}
-                    houseId={housingId!}
-                />
+                {contracTypeForm === ContractFormTypeEnum.Regular && (
+                    <ContractForm onSubmit={onFormSubmit} isContractsLoading={isContractsLoading} />
+                )}
+                {contracTypeForm === ContractFormTypeEnum.Custom && (
+                    <CustonContractForm onSubmit={onFormSubmit} isContractsLoading={isContractsLoading} />
+                )}
             </div>
 
             <div className="my-16 flex justify-center align-center flex-col">
