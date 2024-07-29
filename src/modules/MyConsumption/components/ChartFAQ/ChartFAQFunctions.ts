@@ -1,12 +1,12 @@
 import {
     faqForDailyPeriod,
-    faqForDailyPeriodTempo,
+    // faqForDailyPeriodTempo,
     faqForPeriodicIntervals,
-    faqForPeriodicIntervalsTempo,
+    // faqForPeriodicIntervalsTempo,
     faqTitleForDailyPeriod,
-    faqTitleForDailyPeriodTempo,
+    // faqTitleForDailyPeriodTempo,
     faqTitleForPeriodicIntervals,
-    faqTitleForPeriodicIntervalsTempo,
+    // faqTitleForPeriodicIntervalsTempo,
 } from 'src/modules/MyConsumption/components/ChartFAQ/ChartFAQVariables'
 import { FAQItem } from 'src/modules/shared/FAQ/FAQ.types'
 import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
@@ -20,19 +20,22 @@ import { PeriodEnum } from 'src/modules/MyConsumption/myConsumptionTypes.d'
  */
 export const getFAQItemsByPeriodAndContractType = (
     period: PeriodEnum,
+    // @typescript-eslint/no-unused-vars
     hasTempoContract: boolean,
 ): [Array<FAQItem>, string | JSX.Element] => {
     switch (period) {
-        case PeriodEnum.DAILY:
-            return hasTempoContract
-                ? [faqForDailyPeriodTempo, faqTitleForDailyPeriodTempo]
-                : [faqForDailyPeriod, faqTitleForDailyPeriod]
+        // case PeriodEnum.DAILY:
+        //     return hasTempoContract
+        //         ? [faqForDailyPeriodTempo, faqTitleForDailyPeriodTempo]
+        //         : [faqForDailyPeriod, faqTitleForDailyPeriod]
         case PeriodEnum.WEEKLY:
         case PeriodEnum.MONTHLY:
         case PeriodEnum.YEARLY:
-            return hasTempoContract
-                ? [faqForPeriodicIntervalsTempo, faqTitleForPeriodicIntervalsTempo]
-                : [faqForPeriodicIntervals, faqTitleForPeriodicIntervals]
+            return [faqForPeriodicIntervals, faqTitleForPeriodicIntervals]
+        // return hasTempoContract
+        //     ? [faqForPeriodicIntervalsTempo, faqTitleForPeriodicIntervalsTempo]
+        //     : [faqForPeriodicIntervals, faqTitleForPeriodicIntervals]
+        case PeriodEnum.DAILY:
         default:
             return [faqForDailyPeriod, faqTitleForDailyPeriod]
     }
