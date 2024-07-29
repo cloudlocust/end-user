@@ -9,6 +9,8 @@ import { useState } from 'react'
 import { ContractStepProps } from 'src/modules/Onboarding/steps/ContractStep/ContractStep.types'
 import { useContractDetails } from 'src/modules/Contracts/contractsHook'
 import { greyTitleColor, primaryMainColor } from 'src/modules/Onboarding/OnboardingVariables'
+import { ContractFormTypeEnum, useContractStore } from 'src/modules/Contracts/store/contractStore'
+import CustonContractForm from 'src/modules/Contracts/components/CustomContractForm'
 
 /**
  * Contract step in nrLink connection.
@@ -34,6 +36,7 @@ export const ContractStep = ({ onNext, housingId, isHideOnboardingInProgress }: 
     )
     const [isContractAdding, setIsContractAdding] = useState(false)
     const { formatMessage } = useIntl()
+    const contracTypeForm = useContractStore((state) => state.contractFormType)
 
     /**
      * Handle Submit form.
@@ -100,14 +103,24 @@ export const ContractStep = ({ onNext, housingId, isHideOnboardingInProgress }: 
                                 })}
                             </Typography>
                         ) : (
-                            <ContractForm
-                                onSubmit={handleSubmit}
-                                isContractsLoading={isContractsLoading}
-                                isFormDescriptionsVisible={false}
-                                isUsingRemoteSubmit={true}
-                                // @ts-ignore
-                                defaultValues={defaultValues}
-                            />
+                            <>
+                                {contracTypeForm === ContractFormTypeEnum.Regular && (
+                                    <ContractForm
+                                        onSubmit={handleSubmit}
+                                        isContractsLoading={isContractsLoading}
+                                        isFormDescriptionsVisible={false}
+                                        isUsingRemoteSubmit={true}
+                                        // @ts-ignore
+                                        defaultValues={defaultValues}
+                                    />
+                                )}
+                                {contracTypeForm === ContractFormTypeEnum.Custom && (
+                                    <CustonContractForm
+                                        onSubmit={handleSubmit}
+                                        isContractsLoading={isContractsLoading}
+                                    />
+                                )}
+                            </>
                         )}
                     </Card>
 
