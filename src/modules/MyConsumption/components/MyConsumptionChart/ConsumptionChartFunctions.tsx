@@ -50,7 +50,10 @@ export const getMaxTimeBetweenSuccessiveMissingValue = (datapointsOfMetrics: num
     // check if the metrics have missing data int time points.
     const datapointsOfMetricsPresenceStatus = checkMissingDataList(datapointsOfMetrics)
     // calculate the time between successive null value
-    const deltaTime = datapointsOfMetricsPresenceStatus[1][1] - datapointsOfMetricsPresenceStatus[0][1]
+    const deltaTime =
+        datapointsOfMetricsPresenceStatus[0] && datapointsOfMetricsPresenceStatus[1]
+            ? datapointsOfMetricsPresenceStatus[1][1] - datapointsOfMetricsPresenceStatus[0][1]
+            : 0
     let timeBetweenSuccessiveNullValue = 0
     // iterate over the data to find the max time between successive null value
     for (const [value] of datapointsOfMetricsPresenceStatus) {
