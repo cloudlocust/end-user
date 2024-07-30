@@ -105,7 +105,7 @@ export const MeterStatus = () => {
     const {
         closeModal: closeUnsynchronizedInfoDialog,
         isOpen: isUnsynchronizedInfoDialogOpen,
-        openModal: openUnsynchronizedInfoDialog,
+        // openModal: openUnsynchronizedInfoDialog,
     } = useModal()
 
     // const isProductionActive = isProductionActiveAndHousingHasAccess(currentHousingScopes)
@@ -240,6 +240,7 @@ export const MeterStatus = () => {
      */
     function renderEnedisStatus(enedisSgeConsent?: enedisSgeConsentStatus) {
         switch (enedisSgeConsent) {
+            case 'UNSYNCHRONIZED':
             case 'CONNECTED':
                 return (
                     <>
@@ -278,30 +279,30 @@ export const MeterStatus = () => {
                         </div>
                     </>
                 )
-            case 'UNSYNCHRONIZED':
-                return (
-                    <>
-                        <Icon className="mr-12">
-                            <img
-                                src="./assets/images/content/housing/consent-status/meter-error.svg"
-                                alt="sge-error-icon"
-                            />
-                        </Icon>
-                        <div className="flex flex-col">
-                            <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
-                                Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
-                                votre nrLINK
-                            </TypographyFormatMessage>
-                            <TypographyFormatMessage
-                                className="italic underline font-600 cursor-pointer"
-                                color={theme.palette.grey[500]}
-                                onClick={() => openUnsynchronizedInfoDialog()}
-                            >
-                                Que faire ?
-                            </TypographyFormatMessage>
-                        </div>
-                    </>
-                )
+            // case 'UNSYNCHRONIZED':
+            //     return (
+            //         <>
+            //             <Icon className="mr-12">
+            //                 <img
+            //                     src="./assets/images/content/housing/consent-status/meter-error.svg"
+            //                     alt="sge-error-icon"
+            //                 />
+            //             </Icon>
+            //             <div className="flex flex-col">
+            //                 <TypographyFormatMessage color={theme.palette.warning.main} fontWeight={600}>
+            //                     Les données de votre récolte d'historique semblent incohérentes par rapport à celle de
+            //                     votre nrLINK
+            //                 </TypographyFormatMessage>
+            //                 <TypographyFormatMessage
+            //                     className="italic underline font-600 cursor-pointer"
+            //                     color={theme.palette.grey[500]}
+            //                     onClick={() => openUnsynchronizedInfoDialog()}
+            //                 >
+            //                     Que faire ?
+            //                 </TypographyFormatMessage>
+            //             </div>
+            //         </>
+            //     )
             case 'EXPIRED':
             case 'NONEXISTENT':
             default:
