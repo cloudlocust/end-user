@@ -108,7 +108,7 @@
     "copyfiles": "^2.4.1",
     "dotenv": "^16.0.0",
     "eslint-config-prettier": "^7.0.0",
-    "eslint-plugin-css-modules": "^2.11.0",
+    "eslint-plugin-css-modules": "^2.12.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^37.0.3",
     "eslint-plugin-prettier": "^3.3.0",
