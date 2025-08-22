@@ -16,13 +16,7 @@ export const useRegisterToEnergyProvider = () => {
      */
     const displayEnergyProviderSubscribeForm = async (energyProviderFormLink: string) => {
         try {
-            const myWindow = window.open(
-                energyProviderFormLink,
-                '_blank',
-                `width=1024,height=768,left=${window.screen.availWidth / 2 - 200},top=${
-                    window.screen.availHeight / 2 - 150
-                }`,
-            )
+            const myWindow = window.open(energyProviderFormLink)
             await sleep(3000)
             if (!myWindow) throw Error()
         } catch (error) {
