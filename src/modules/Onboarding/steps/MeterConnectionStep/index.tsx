@@ -68,7 +68,10 @@ export const MeterConnectionStep = ({
                     const newMeter = await (currentMeter ? editMeter : addMeter)(housingId, { guid: data.guid })
                     loadHousingsAndScopes()
                     if (newMeter) {
-                        await makeEnedisSgeConsent()
+                        // TODO: Call makeEnedisSgeConsent() once SGE is active.
+                        // Remove onNext() after SGE activation.
+                        // await makeEnedisSgeConsent();
+                        onNext()
                     }
                 } else if (enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
                     await makeEnedisSgeConsent()
