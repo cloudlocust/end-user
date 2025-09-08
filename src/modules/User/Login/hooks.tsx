@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Dispatch } from 'src/redux'
 import { useSnackbar } from 'notistack'
+import { Link } from '@mui/material'
+import { sleep } from '../Register/utils'
 
 /**
  * Builder to create userLogin hooks. We use a builder easily modify redirect url after login. This function returns a function.
@@ -30,7 +32,6 @@ export const BuilderUseLogin = ({
         const [isLoginInProgress, setLoginInProgress] = useToggle(false)
         const history = useHistory()
         const { enqueueSnackbar } = useSnackbar()
-
         /**
          * Submit login function.
          *
@@ -47,7 +48,31 @@ export const BuilderUseLogin = ({
             } catch (error) {
                 setLoginInProgress(false)
                 if (typeof error === 'string') {
-                    enqueueSnackbar(error, { variant: 'error', autoHideDuration: 5000 })
+                    if (error === "Votre email n'a pas encore été validé par l'administrateur.") {
+                        enqueueSnackbar(
+                            <span style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <div>Votre email n'a pas encore été validé par l'administrateur.</div>
+                                <div>
+                                    Si vous avez déjà commencé une inscription sur ALPIQ, finalisez la en cliquant sur
+                                    le lien: :{' '}
+                                    <Link
+                                        color="primary"
+                                        onClick={async () => {
+                                            window.open('https://particuliers.alpiq.fr/souscription-bowatts', '_blank')
+                                            await sleep(3000)
+                                        }}
+                                        underline="hover"
+                                        style={{ cursor: 'pointer', fontWeight: 600 }}
+                                    >
+                                        Alpiq
+                                    </Link>
+                                </div>
+                            </span>,
+                            { variant: 'error', autoHideDuration: 10000 },
+                        )
+                    } else {
+                        enqueueSnackbar(error, { variant: 'error', autoHideDuration: 5000 })
+                    }
                 } else {
                     enqueueSnackbar('Une erreur est survenue', { variant: 'error', autoHideDuration: 5000 })
                 }
