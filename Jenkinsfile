@@ -80,7 +80,7 @@ pipeline{
                 ENV_NAME = getEnvName(BRANCH_NAME)
                 ENV_BUILD = getBuildEnv(BRANCH_NAME)
                 DOCKER_BUILDKIT='1'
-                VERSION= "${BUILD_NUMBER}"                
+                VERSION= "${BUILD_NUMBER}"
             }
             steps{
                 script {
@@ -88,22 +88,22 @@ pipeline{
                         // we copy files inside the app image and tag it
                         def appimage = docker.build(app_regisgtry + ":${ENV_NAME}", "--build-arg ENV=${ENV_BUILD} --build-arg REACT_APP_TITLE='MYEM | Application de suivi de consommation ' --build-arg REACT_APP_CLIENT_ICON_FOLDER='ned' . -f ci/Dockerfile " )
                         appimage.push("${ENV_NAME}")
-                        if (env.BRANCH_NAME == "production") {                                          
-                        appimage.push("${ENV_NAME}-${VERSION}")   
-                        }                         
+                        if (env.BRANCH_NAME == "production") {
+                        appimage.push("${ENV_NAME}-${VERSION}")
+                        }
                     }
                     // Clean up unused Docker resources older than 1 hour
-                    sh 'docker system prune -af --filter "until=1h"'                        
+                    sh 'docker system prune -af --filter "until=1h"'
                }
             }
 
-        } 
+        }
            }
         }
         stage('Publish in chart regisry'){
-                    when{  
+                    when{
                         expression { BRANCH_NAME ==~ /(production|master|develop)/ }
-                        expression { changeset('enduser-react-chart')} 
+                        expression { changeset('enduser-react-chart')}
                         }
                     environment {
                         ENV_NAME = getEnvName(BRANCH_NAME)
@@ -118,15 +118,15 @@ pipeline{
 
                             sh(script: " helm registry login -u ${USER_NAME_} -p ${PASSWORD_} ${URL_} ")
                             sh(script: "rm -rf helm-chart-repository")
-                            sh(script: "mkdir helm-chart-repository")         
+                            sh(script: "mkdir helm-chart-repository")
                             sh(script: "helm package enduser-react-chart --version ${VERSION_CHART} -d helm-chart-repository")
                             sh(script: "helm push helm-chart-repository/* oci://${URL_}")
                             sh(script: "rm -rf helm-chart-repository")
 
             }
-            }  
+            }
 
-            } 
+            }
 
        stage ('Deploy') {
         when {
@@ -138,7 +138,7 @@ pipeline{
               PASSWORD_ = credentials('helm_registry_password')
               url = credentials('helm_registry_url')
               URL_ = "${url}/${ENV_NAME}registry"
-                            
+
            }
             steps {
                 script{
@@ -151,7 +151,8 @@ pipeline{
 
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
                         sh "sh ./deployments-scripts/deploy.sh enduser-react ng${ENV_NAME} ${URL_}"
-                        
+                        sh "helm upgrade --install alpiq-app-${ENV_NAME}  oci://${URL_}/backbone-tariff-chameleon -f environments/ng${ENV_NAME}/global-values.yaml -f environments/ng${ENV_NAME}/microservices/alpiq-app-end-user-react.yaml --namespace ng${ENV_NAME}"
+
                     }
                 }
             }
@@ -194,12 +195,12 @@ def getBuildEnv(branchName) {
      }
 }
 
-def allChangeSetsFromLastSuccessfulBuild() { 
+def allChangeSetsFromLastSuccessfulBuild() {
     def jobName="$JOB_NAME"
     def job = Jenkins.getInstance().getItemByFullName(jobName)
     def lastSuccessBuild = job.lastSuccessfulBuild.number as int
     def currentBuildId = "$BUILD_ID" as int
-    
+
     def changeSets = []
 
     for(int i = lastSuccessBuild + 1; i < currentBuildId; i++) {
@@ -229,32 +230,32 @@ def getFilesChanged(chgSets) {
 }
 
 def isPathExist(changeSets,path) {
-    
+
             b = false
-            changeSets.each { 
+            changeSets.each {
                 a = it.startsWith(path)
                 b = a || b
             }
             return b
-            
-    
+
+
 }
 def isJustPathExist(changeSets,path) {
-    
+
             b = true
-            changeSets.each { 
+            changeSets.each {
                 a = it.startsWith(path)
                 b = a && b
             }
             return b
-            
-    
+
+
 }
 def changeset(path){
     def jobName="$JOB_NAME"
     def job = Jenkins.getInstance().getItemByFullName(jobName)
-    if ( job.lastSuccessfulBuild == null) { return true }    
-    def changeSets = allChangeSetsFromLastSuccessfulBuild()                                          
+    if ( job.lastSuccessfulBuild == null) { return true }
+    def changeSets = allChangeSetsFromLastSuccessfulBuild()
     return  isPathExist(getFilesChanged(changeSets),path)
 
 }
