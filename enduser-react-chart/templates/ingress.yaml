@@ -1,7 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: enduser-react
+  name: {{ include "enduser-react.fullname" . }}
+  labels:
+      app.kubernetes.io/name: {{ include "enduser-react.name" . }}
+      helm.sh/chart: {{ include "enduser-react.chart" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
     kubernetes.io/tls-acme: "true"
@@ -17,7 +22,7 @@ spec:
         pathType: Prefix
         backend:
             service:
-              name: enduser-react
+              name: {{ include "enduser-react.fullname" . }}
               port:
                 number: 80
   tls:

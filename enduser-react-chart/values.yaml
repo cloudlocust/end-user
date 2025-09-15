@@ -1,0 +1,77 @@
+replicaCount: 1
+
+image:
+    repository: myem/enduser-react
+    pullPolicy: IfNotPresent
+    tag: "prod"
+
+service:
+    type: ClusterIP
+    port: 80
+
+ingress:
+    enabled: true
+    host: myapp.example.com
+    tls:
+        secretName: enduser-react-tls
+
+env:
+    REACT_APP_MSW_MOCK: 'disabled'
+    NGINX_HOST: "ngstaging.alpiq.network.bowatts.fr"
+    REACT_APP_AUTH_BASE_URL: 'https://staging.bowatts.fr/webservice/user'
+    REACT_APP_API_BASE_URL: 'https://staging.bowatts.fr/gway/enduser/ng-api'
+    REACT_APP_API_RESOURCES_URL: 'https://staging.bowatts.fr/gway/enduser/ng-api'
+    REACT_APP_LOGO_URL: 'https://media-exp1.licdn.com/dms/image/C4D0BAQEKyb9rcLWorA/company-logo_200_200/0/1590575826627?e=2159024400&v=beta&t=B7nanP7XQz7mkRzqBvCSUwj9FCAq1pblZiZfiqLX_No'
+    REACT_APP_TITLE: 'BôWatts'
+    REACT_APP_CLIENT_ICON_FOLDER: 'cdconseils'
+    REACT_APP_CLIENT_RGPD_REDIRECT: "https://www.voltfase.fr/mentions-legales.html"
+    ENVIRONMENT: enduser-react-ngstaging
+    REACT_APP_ANALYSIS_FEATURE_STATE: 'disabled'
+    REACT_APP_ADVICES_FEATURE_STATE: 'disabled'
+    REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE: 'disabled'
+    REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE: 'disabled'
+    REACT_APP_TEMP_PMAX_FEATURE_STATE: 'disabled'
+    REACT_APP_SGE_CONSENT_FEATURE_STATE: 'disabled'
+    REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE: 'disabled'
+    REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE: 'disabled'
+    REACT_APP_CONNECTED_PLUGS_FEATURE_STATE: 'disabled'
+    REACT_APP_PRODUCTION_CHART_ERROR_STATE: 'disabled'
+    REACT_APP_BASENAME_URL: '/'
+    REACT_APP_GOOGLE_MAPS_API_KEY: 'AIzaSyBkYc2CYw-YCdNr_lgwYcyZGmYVUicCo8Y'
+    REACT_APP_SOLAR_EQUIPMENTS_FEATURE_STATE: 'disabled'
+    REACT_APP_NOVU_BACKEND_URL: 'https://staging.bowatts.fr/novu/api'
+    REACT_APP_NOVU_SOCKET_URL: 'https://staging.bowatts.fr/novu/ws'
+    REACT_APP_NOVU_APPLICATION_IDENTIFIER: 'H8zZam_uiO3y'
+    REACT_APP_DELETE_ACCOUNT_FEATURE_STATE: "disabled"
+    REACT_APP_USER_REGISTRATION_FEATURE_STATE: "disabled"
+    REACT_APP_FIREBASE_API_KEY: "AIzaSyBPHFiVq6L868dfXZz0qOxlRkrcUL_BeNA"
+    REACT_APP_FIREBASE_AUTH_DOMAIN: "myem-staging.firebaseapp.com"
+    REACT_APP_FIREBASE_PROJECT_ID: "myem-staging"
+    REACT_APP_FIREBASE_STORAGE_BUCKET: "myem-staging.appspot.com"
+    REACT_APP_FIREBASE_MESSAGING_SENDER_ID: "'391767321408'"
+    REACT_APP_FIREBASE_APP_ID: "1:391767321408:web:fc90282e4ec9991a34e8a5"
+    REACT_APP_FIREBASE_VAPID_KEY: "BOoetQqtN0LE-WKjw9ATovCveTVDGJjxdDV4d5K9bGctv1yzfxwYhcuaa5_iLle6wTb6H_-bdA-xwXhEpIRM1oo"
+    REACT_APP_USER_REGISTRATION_AUTO_VALIDATE: false
+    REACT_APP_GTM_ID: "GTM-M7TQFF9X"
+    REACT_APP_SGE_CONSENT_POPUP_MESSAGE: "J'autorise BôWatts - nrLINK à la récolte de mon historique de données de consommation auprès d'Enedis."
+    REACT_APP_GENERAL_TERMS_OF_USE: https://www.myem.fr/mentions-legales/
+    REACT_APP_PRIVACY_POLICY: "https://drive.google.com/uc?export=download&id=1sMFMizrEPZ4ZHhe6Zf-PTJGRUQBFGUEv"
+    REACT_APP_TECH_SUPPORT_ADDRESS: 'info@bowatts.fr'
+    REACT_APP_POPUP_AFTER_REGISTRATION: "disabled"
+    REACT_APP_ENERGY_PROVIDER_POPUP_LINK: 'https://particuliers.alpiq.fr/souscription-bowatts'
+    REACT_APP_ENERGY_PROVIDER_NAME: 'ALPIQ'
+    REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS: ""
+    REACT_APP_PROFESSIONAL_REGISTER_FEATURE: 'disabled'
+    REACT_APP_ACTIVATE_CONTRACT_OTHER_PROVIDERS_AND_OFFERS: "disabled"
+    REACT_APP_CLIENT_LOGO_REDIRECT_LINK: "https://www.bowatts-beaujolais.fr/"
+    REACT_APP_FAQ_REDIRECT_LINK: "https://magic-sloth-1ca.notion.site/FAQ-nrLINK-B-Watts-4b020075eecf44238d1de49999294f81"
+    REACT_APP_MANUAL_CONTRACT_FILLING: "disabled"
+    REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE: "disabled"
+    REACT_APP_DASHBOARD_FEATURE_STATE: "disabled"
+    REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE: "disabled"
+    REACT_APP_AUTO_LOGIN_AFTER_REGISTRATION_STATE: "disabled"
+    REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION: ""
+    REACT_APP_IS_MAINTENANCE_MODE: ""
+    REACT_APP_CLIENT_ENVIRONNEMENT: ""
+    REACT_APP_SENTRY_DSN: ""
+    REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE: "Cette fonctionnalité n'est pas encore disponible"
