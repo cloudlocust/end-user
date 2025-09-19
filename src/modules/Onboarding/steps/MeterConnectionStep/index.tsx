@@ -74,7 +74,10 @@ export const MeterConnectionStep = ({
                         onNext()
                     }
                 } else if (enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
-                    await makeEnedisSgeConsent()
+                        // TODO: Call makeEnedisSgeConsent() once SGE is active.
+                        // Remove onNext() after SGE activation.
+                        // await makeEnedisSgeConsent();
+                        onNext()
                 } else {
                     // If the meter is already verified and enedis consent is already connected.
                     onNext()
