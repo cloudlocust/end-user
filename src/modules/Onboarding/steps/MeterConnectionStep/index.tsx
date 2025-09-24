@@ -38,21 +38,22 @@ export const MeterConnectionStep = ({
 }: MeterConnectionStepProps) => {
     const { formatMessage } = useIntl()
     const { addMeter, editMeter, loadingInProgress: loadingMeterInProgress } = useMeterForHousing()
-    const { createEnedisSgeConsent, isCreateEnedisSgeConsentLoading, verifyMeter, isMeterVerifyLoading } = useConsents()
+    const { isCreateEnedisSgeConsentLoading, isMeterVerifyLoading } = useConsents()
     const [meterVerificationStatus, setMeterVerificationStatus] = useState<MeterVerificationEnum | null>(null)
 
     /**
      * Make Enedis Sge Consent.
      */
-    const makeEnedisSgeConsent = async () => {
-        verifyMeter(housingId, (meterStatus) => {
-            if (meterStatus === MeterVerificationEnum.VERIFIED) {
-                createEnedisSgeConsent(housingId, onNext)
-            } else {
-                setMeterVerificationStatus(MeterVerificationEnum.NOT_VERIFIED)
-            }
-        })
-    }
+    // TODO: create makeEnedisSgeConsent() once SGE is active.
+    // const makeEnedisSgeConsent = async () => {
+    //     verifyMeter(housingId, (meterStatus) => {
+    //         if (meterStatus === MeterVerificationEnum.VERIFIED) {
+    //             createEnedisSgeConsent(housingId, onNext)
+    //         } else {
+    //             setMeterVerificationStatus(MeterVerificationEnum.NOT_VERIFIED)
+    //         }
+    //     })
+    // }
     /**
      * On Submit function which calls addMeter and handleNext on success.
      *
@@ -74,10 +75,10 @@ export const MeterConnectionStep = ({
                         onNext()
                     }
                 } else if (enedisSgeConsent?.enedisSgeConsentState !== 'CONNECTED') {
-                        // TODO: Call makeEnedisSgeConsent() once SGE is active.
-                        // Remove onNext() after SGE activation.
-                        // await makeEnedisSgeConsent();
-                        onNext()
+                    // TODO: Call makeEnedisSgeConsent() once SGE is active.
+                    // Remove onNext() after SGE activation.
+                    // await makeEnedisSgeConsent();
+                    onNext()
                 } else {
                     // If the meter is already verified and enedis consent is already connected.
                     onNext()
