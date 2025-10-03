@@ -151,7 +151,7 @@ pipeline{
 
                     withKubeConfig([credentialsId:'kubernetes_staging-alpha-preprod', contextName: "ng${ENV_NAME}"]) {
                         sh "sh ./deployments-scripts/deploy.sh enduser-react ng${ENV_NAME} ${URL_}"
-                        sh "helm upgrade --install alpiq-ng${ENV_NAME} oci://${URL_}//enduser-react -f environments/ng${ENV_NAME}/global-values.yaml -f environments/ng${ENV_NAME}/microservices/alpiq.yaml --namespace ng${ENV_NAME}"
+                        sh "helm upgrade --install alpiq-ng${ENV_NAME} oci://${URL_}/enduser-react -f environments/ng${ENV_NAME}/global-values.yaml -f environments/ng${ENV_NAME}/microservices/alpiq.yaml --namespace ng${ENV_NAME}"
                     }
                 }
             }
