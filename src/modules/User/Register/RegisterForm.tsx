@@ -1,33 +1,46 @@
-import React, { useRef } from 'react'
-import { useIntl } from 'react-intl'
-import { email, requiredBuilder, repeatPassword, Form, regex } from 'src/common/react-platform-components'
-import { TextField, PasswordField, ButtonLoader } from 'src/common/ui-kit'
-import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
-import { useRegister } from 'src/modules/User/Register/hooks'
-import { civilityEnum, IUserRegister } from 'src/modules/User/model'
-import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import FormControl from '@mui/material/FormControl'
-import { FormHelperText } from '@mui/material'
-import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
-import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
-import { Select } from 'src/common/ui-kit/form-fields/Select'
+import { ButtonLoader, PasswordField, TextField } from 'src/common/ui-kit'
+import { Form, email, regex, repeatPassword, requiredBuilder } from 'src/common/react-platform-components'
+import { IUserRegister, civilityEnum } from 'src/modules/User/model'
 import { MenuItem, TextField as MuiTextFieldSelect } from '@mui/material'
+import React, { useRef } from 'react'
+import {
+    allowedZipCodesInRegistration,
+    isBowattsNrLinkForm,
+    isProfessionalRegisterFeature,
+} from 'src/modules/User/Register/RegisterConfig'
+import { convertUserDataToQueryString, sirenFieldRegex } from 'src/modules/User/Register/utils'
 import { generalTermsOfUse, privacyPolicy } from 'src/modules/Mentions/MentionsConfig'
-import { isProfessionalRegisterFeature, allowedZipCodesInRegistration } from 'src/modules/User/Register/RegisterConfig'
-import { sirenFieldRegex } from 'src/modules/User/Register/utils'
+
+import Checkbox from '@mui/material/Checkbox'
+import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { FormHelperText } from '@mui/material'
+import { GoogleMapsAddressAutoCompleteField } from 'src/common/ui-kit/form-fields/GoogleMapsAddressAutoComplete/GoogleMapsAddressAutoCompleteField'
+import { LinkRedirection } from 'src/modules/utils/LinkRedirection'
+import { PhoneNumber } from 'src/common/ui-kit/form-fields/phoneNumber/PhoneNumber'
+import { Select } from 'src/common/ui-kit/form-fields/Select'
 import TypographyFormatMessage from 'src/common/ui-kit/components/TypographyFormatMessage/TypographyFormatMessage'
 import { linksColor } from 'src/modules/utils/muiThemeVariables'
-import { DatePicker } from 'src/common/ui-kit/form-fields/DatePicker'
+import { passwordFieldValidationSecurity1 } from 'src/modules/utils'
+import { useIntl } from 'react-intl'
+import { useRegister } from 'src/modules/User/Register/hooks'
 
 /**
  * Civility Option has two properties: (label that shown in the front visual) and (value that goes to the backend).
+ *
+ * @returns List of civility options.
  */
-const civilityOptionsList = [
-    { label: 'Mr', value: civilityEnum.MONSIEUR },
-    { label: 'Mme', value: civilityEnum.MADAME },
-]
+const getCivilityOptionsList = () => {
+    const baseOptions = [
+        { label: 'Mr', value: civilityEnum.MONSIEUR },
+        { label: 'Mme', value: civilityEnum.MADAME },
+    ]
+    if (isBowattsNrLinkForm) {
+        baseOptions.push({ label: 'Non précisé', value: civilityEnum.NON_PRECISE })
+    }
+    return baseOptions
+}
 
 /**
  * Form used for user registration. This is a component based on form hooks.
@@ -58,6 +71,8 @@ export const RegisterForm = ({
     const [rgpdCheckboxState, setRgpdCheckboxState] = React.useState<Boolean | string>('false')
     const [isProfessionelFields, setIsProfessionalFields] = React.useState(false)
     const { formatMessage } = useIntl()
+    const primaryMainColor = 'primary.main'
+    const linkColor = linksColor || primaryMainColor
 
     /**
      * Handle Change of the checkbox.
@@ -79,6 +94,17 @@ export const RegisterForm = ({
     const onSubmitWrapper = async ({ repeatPwd, ...cleanData }: { repeatPwd: string } & IUserRegister) => {
         if (rgpdCheckboxState !== true) {
             setRgpdCheckboxState('')
+            return
+        }
+
+        // If BôWatts-nrLINK form is enabled, redirect directly to Alpiq without registration
+        if (isBowattsNrLinkForm) {
+            const queryString = convertUserDataToQueryString({
+                ...cleanData,
+                role: defaultRole,
+            })
+            const alpiqUrl = `https://particuliers.alpiq.fr/souscription-bowatts/1?${queryString}`
+            window.location.href = alpiqUrl
             return
         }
 
@@ -138,22 +164,36 @@ export const RegisterForm = ({
                     label="Civilité"
                     validateFunctions={[requiredBuilder()]}
                     sx={{ margin: '0 0 1.25rem 0' }}
-                    children={civilityOptionsList.map((civility) => {
+                    children={getCivilityOptionsList().map((civility) => {
                         return <MenuItem value={civility.value}>{civility.label}</MenuItem>
                     })}
                     formControlProps={{
                         margin: 'normal',
                     }}
                 />
+                {isBowattsNrLinkForm && (
+                    <TypographyFormatMessage
+                        className="text-13 mb-20 text-center font-medium"
+                        sx={{
+                            color: primaryMainColor,
+                            padding: '12px 16px',
+                            borderRadius: '4px',
+                            border: '2px solid',
+                            borderColor: primaryMainColor,
+                        }}
+                    >
+                        Si vous souscrivez, ces informations apparaitront sur votre facture
+                    </TypographyFormatMessage>
+                )}
                 <TextField
                     name="firstName"
-                    label="Prénom présent sur votre facture d'électricité"
+                    label={isBowattsNrLinkForm ? 'Prénom' : "Prénom présent sur votre facture d'électricité"}
                     validateFunctions={[requiredBuilder()]}
                     variant="outlined"
                 />
                 <TextField
                     name="lastName"
-                    label="Nom présent sur votre facture d'électricité"
+                    label={isBowattsNrLinkForm ? 'Nom' : "Nom présent sur votre facture d'électricité"}
                     validateFunctions={[requiredBuilder()]}
                 />
                 <TextField
@@ -170,19 +210,25 @@ export const RegisterForm = ({
                     sx={{ margin: '0 0 1.25rem 0' }}
                     validateFunctions={[requiredBuilder()]}
                 />
-                <GoogleMapsAddressAutoCompleteField name="address" validateFunctions={[requiredBuilder()]} />
-                <DatePicker
-                    name="birthdate"
-                    label={formatMessage({
-                        id: 'Date de naissance (optionnel)',
-                        defaultMessage: 'Date de naissance (optionnel)',
-                    })}
-                    textFieldProps={{
-                        style: {
-                            margin: '0 0 20px 0',
-                        },
-                    }}
+                <GoogleMapsAddressAutoCompleteField
+                    name="address"
+                    validateFunctions={[requiredBuilder()]}
+                    hideAddressAddition={isBowattsNrLinkForm}
                 />
+                {!isBowattsNrLinkForm && (
+                    <DatePicker
+                        name="birthdate"
+                        label={formatMessage({
+                            id: 'Date de naissance (optionnel)',
+                            defaultMessage: 'Date de naissance (optionnel)',
+                        })}
+                        textFieldProps={{
+                            style: {
+                                margin: '0 0 20px 0',
+                            },
+                        }}
+                    />
+                )}
                 <PasswordField
                     name="password"
                     label="Mot de passe"
@@ -201,21 +247,39 @@ export const RegisterForm = ({
                     validateFunctions={[requiredBuilder(), repeatPassword(passwordRef)]}
                 />
 
-                <span>
-                    {formatMessage({
-                        id: ` Les informations récoltées dans ce formulaire sont utilisées afin de vous permettre de rejoindre la
+                {isBowattsNrLinkForm ? (
+                    <div style={{ marginBottom: '16px' }}>
+                        <p style={{ marginBottom: '8px' }}>
+                            Ce formulaire permet de vous rediriger sur la page de notre fournisseur, Alpiq. Les
+                            informations récoltées sont utilisées afin de :
+                        </p>
+                        <ul style={{ paddingLeft: '20px', marginTop: '0', marginBottom: '8px', listStyleType: 'disc' }}>
+                            <li>préparer votre estimation</li>
+                            <li>préparer votre compte nrLINK</li>
+                        </ul>
+                        <p style={{ marginTop: '8px' }}>
+                            Vous pouvez retrouver plus d'informations sur vos droits via notre{' '}
+                            <LinkRedirection
+                                url="https://www.bowattsbeaujolais.fr/pdf/Politique_de_Confidentialité_BoWatts.pdf"
+                                label="Politique de Confidentialité"
+                                color={linkColor}
+                            />
+                            .
+                        </p>
+                    </div>
+                ) : (
+                    <span>
+                        {formatMessage({
+                            id: ` Les informations récoltées dans ce formulaire sont utilisées afin de vous permettre de rejoindre la
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
-                        defaultMessage: ` Les informations récoltées dans ce formulaire sont utilisées afin de vous permettre de rejoindre la
+                            defaultMessage: ` Les informations récoltées dans ce formulaire sont utilisées afin de vous permettre de rejoindre la
                                     plateforme et suivre votre consommation. Vous pouvez retrouver plus d'informations sur vos droits
                                     via notre `,
-                    })}
-                    <LinkRedirection
-                        url={privacyPolicy}
-                        label="Politique de Confidentialité"
-                        color={linksColor || 'primary.main'}
-                    />
-                </span>
+                        })}
+                        <LinkRedirection url={privacyPolicy} label="Politique de Confidentialité" color={linkColor} />
+                    </span>
+                )}
                 {/* TODO Create a checkbox reusable component */}
                 <FormControl required error={rgpdCheckboxState === ''}>
                     <FormControlLabel
@@ -238,8 +302,8 @@ export const RegisterForm = ({
                                 })}
                                 <LinkRedirection
                                     url={generalTermsOfUse}
-                                    label="Conditions Générales d’Utilisation"
-                                    color={linksColor || 'primary.main'}
+                                    label="Conditions Générales d'Utilisation"
+                                    color={linkColor}
                                 />
                             </span>
                         }
@@ -261,10 +325,12 @@ export const RegisterForm = ({
                     inProgress={isRegisterInProgress}
                     type="submit"
                 >
-                    {formatMessage({
-                        id: 'Submit',
-                        defaultMessage: 'Valider',
-                    })}
+                    {isBowattsNrLinkForm
+                        ? 'En validant, vous serez redirigé sur le site Alpiq'
+                        : formatMessage({
+                              id: 'Submit',
+                              defaultMessage: 'Valider',
+                          })}
                 </ButtonLoader>
             </div>
         </Form>

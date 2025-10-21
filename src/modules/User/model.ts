@@ -147,6 +147,10 @@ export enum civilityEnum {
      * Madame.
      */
     MADAME = 'Mrs',
+    /**
+     * Non précisé.
+     */
+    NON_PRECISE = 'Not specified',
 }
 
 /**

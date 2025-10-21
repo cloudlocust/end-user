@@ -1,18 +1,6 @@
-import { CustomValidateResult, validators } from 'src/common/react-platform-components'
-import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import _ from 'lodash'
-import { MutableRefObject, SyntheticEvent, useRef, useEffect } from 'react'
-import usePlacesAutocomplete, { GeocodeResult, getGeocode, LatLon } from 'use-places-autocomplete'
-import { Suggestion } from 'use-places-autocomplete'
-import { useIntl } from 'src/common/react-platform-translation'
-import Autocomplete from '@mui/material/Autocomplete'
-import TextField from '@mui/material/TextField'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import parse from 'autosuggest-highlight/parse'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
+import { CustomValidateResult, validators } from 'src/common/react-platform-components'
+import { MutableRefObject, SyntheticEvent, useEffect, useRef } from 'react'
 import {
     defaultValueType,
     getDefaultAddressAdditionValue,
@@ -21,7 +9,20 @@ import {
     getDefaultPlaceIdFromValue,
     setDefaultAddressAdditionValue,
 } from './utils'
+import usePlacesAutocomplete, { GeocodeResult, LatLon, getGeocode } from 'use-places-autocomplete'
+
+import Autocomplete from '@mui/material/Autocomplete'
+import Box from '@mui/material/Box'
+import { FC } from 'react'
 import { GOOGLE_MAPS_API_KEY } from 'src/configs'
+import Grid from '@mui/material/Grid'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import { Suggestion } from 'use-places-autocomplete'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import _ from 'lodash'
+import parse from 'autosuggest-highlight/parse'
+import { useIntl } from 'src/common/react-platform-translation'
 
 /**
  * Common UI Address AutoComplete field interface between different ui kits.
@@ -67,6 +68,10 @@ export interface UiAddressAutoCompleteFieldProps<valueType> {
      * Disable visual element.
      */
     disabled?: boolean
+    /**
+     * Hide address addition field.
+     */
+    hideAddressAddition?: boolean
 }
 
 /**
@@ -132,6 +137,7 @@ export const GoogleMapsAddressAutoCompleteFieldBuilder = <T extends any>(): FC<U
      * @param root0.validateFunctions Validators functions.
      * @param root0.valueFunctionsOverride Value handling functions to override with output value modification.
      * @param root0.disabled Disable visual element.
+     * @param root0.hideAddressAddition Hide address addition field.
      * @returns Return a react component ready to use.
      */
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -140,6 +146,7 @@ export const GoogleMapsAddressAutoCompleteFieldBuilder = <T extends any>(): FC<U
         validateFunctions = [],
         valueFunctionsOverride,
         disabled,
+        hideAddressAddition,
     }: UiAddressAutoCompleteFieldProps<T>): JSX.Element {
         const {
             control,
@@ -289,20 +296,22 @@ export const GoogleMapsAddressAutoCompleteFieldBuilder = <T extends any>(): FC<U
                                 )
                             }}
                         />
-                        <TextField
-                            inputProps={{ 'data-testid': 'AddressAdditionAutoCompleteField' }}
-                            disabled={!!disabled}
-                            style={{ marginBottom: '20px', display: 'flex' }}
-                            onChange={(event) => {
-                                onChange(setAddressAdditionValue(value, event.target.value))
-                            }}
-                            label={formatMessage({
-                                id: "Complément d'adresse",
-                                defaultMessage: "Complément d'adresse",
-                            })}
-                            fullWidth
-                            value={getAddressAdditionValue(value)}
-                        />
+                        {!hideAddressAddition && (
+                            <TextField
+                                inputProps={{ 'data-testid': 'AddressAdditionAutoCompleteField' }}
+                                disabled={!!disabled}
+                                style={{ marginBottom: '20px', display: 'flex' }}
+                                onChange={(event) => {
+                                    onChange(setAddressAdditionValue(value, event.target.value))
+                                }}
+                                label={formatMessage({
+                                    id: "Complément d'adresse",
+                                    defaultMessage: "Complément d'adresse",
+                                })}
+                                fullWidth
+                                value={getAddressAdditionValue(value)}
+                            />
+                        )}
                     </>
                 )}
             />
