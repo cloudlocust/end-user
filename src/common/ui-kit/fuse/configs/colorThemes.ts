@@ -223,6 +223,37 @@ const colorThemes: colorThemesType = {
             },
         },
     },
+    alpiq: {
+        MUI: {
+            palette: {
+                mode: 'light',
+                text: {
+                    primary: '#000000',
+                    secondary: lightText.secondary,
+                    disabled: '#C4C7C7',
+                },
+                primary: {
+                    light: '#FFB84D', // plus clair
+                    main: '#FF9400', // couleur principale
+                    dark: '#CC7600', // plus foncé
+                    contrastText: '#FFFFFF',
+                },
+                secondary: {
+                    light: '#ffe182',
+                    main: '#FFC200',
+                    dark: '#ffa200',
+                },
+                common: {
+                    white: '#ffffff',
+                    black: '#000000',
+                },
+                background: {
+                    paper: '#FFFFFF',
+                    default: '#EFF1F1',
+                },
+            },
+        },
+    },
     // Energie d'ici
     enerdici: {
         extendedColors: {

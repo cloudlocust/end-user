@@ -1,331 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: enduser-react
+    name: {{ include "enduser-react.fullname" . }}
+    labels:
+        app.kubernetes.io/name: {{ include "enduser-react.name" . }}
+        helm.sh/chart: {{ include "enduser-react.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-
-  replicas: {{ .Values.replicaCount | default 1 }}
-  selector:
-    matchLabels:
-      app: enduser-react
-  template:
-    metadata:
-    # We add this annotations.rollme so that each time we upgrade the chart, the deployment restarts
-      annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
-      labels:
-        app: enduser-react
-    spec:
-      containers:
-      - name: enduser-react
-        image: "{{ .Values.image.repository }}:{{ .Values.global.image.tag}}"
-        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
-        ports:
-        - containerPort: 80
-          port: 
-        env:
-        - name: NGINX_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: NGINX_HOST
-        - name: REACT_APP_MSW_MOCK
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_MSW_MOCK
-        - name: REACT_APP_AUTH_BASE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_AUTH_BASE_URL
-        - name: REACT_APP_API_BASE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_API_BASE_URL
-        - name: REACT_APP_API_RESOURCES_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_API_RESOURCES_URL
-        - name: REACT_APP_LOGO_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_LOGO_URL
-        - name: REACT_APP_ANALYSIS_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ANALYSIS_FEATURE_STATE
-        - name: REACT_APP_ADVICES_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ADVICES_FEATURE_STATE
-        - name: REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ADD_DELETE_HOUSING_FEATURE_STATE        
-        - name: REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_EQUIPMENTS_ACCOMODATION_FEATURE_STATE
-        - name: REACT_APP_TEMP_PMAX_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_TEMP_PMAX_FEATURE_STATE   
-        - name: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_INSTALLATION_REQUESTS_FEATURE_STATE 
-        - name: REACT_APP_SGE_CONSENT_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_SGE_CONSENT_FEATURE_STATE
-        - name: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_SGE_CONSENT_POPUP_MESSAGE
-        - name: REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_GLOBAL_PRODUCTION_FEATURE_STATE             
-        - name: REACT_APP_CONNECTED_PLUGS_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_CONNECTED_PLUGS_FEATURE_STATE             
-        - name: REACT_APP_GOOGLE_MAPS_API_KEY
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_GOOGLE_MAPS_API_KEY
-        - name: REACT_APP_TITLE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_TITLE
-        - name: REACT_APP_CLIENT_ICON_FOLDER
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_CLIENT_ICON_FOLDER
-        - name: REACT_APP_CLIENT_RGPD_REDIRECT
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_CLIENT_RGPD_REDIRECT
-        - name: REACT_APP_CLIENT_LOGO_REDIRECT_LINK
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_CLIENT_LOGO_REDIRECT_LINK
-        - name: REACT_APP_PRODUCTION_CHART_ERROR_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_PRODUCTION_CHART_ERROR_STATE
-        - name: REACT_APP_DELETE_ACCOUNT_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_DELETE_ACCOUNT_FEATURE_STATE
-        - name: REACT_APP_SOLAR_EQUIPMENTS_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_SOLAR_EQUIPMENTS_FEATURE_STATE
-        - name: REACT_APP_BASENAME_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_BASENAME_URL
-        - name: ENVIRONMENT
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: ENVIRONMENT       
-        - name: REACT_APP_NOVU_BACKEND_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_NOVU_BACKEND_URL
-        - name: REACT_APP_NOVU_SOCKET_URL
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_NOVU_SOCKET_URL
-        - name: REACT_APP_NOVU_APPLICATION_IDENTIFIER
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER                
-
-              name: enduser-react
-              key: REACT_APP_NOVU_APPLICATION_IDENTIFIER  
-        - name: REACT_APP_FIREBASE_API_KEY
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_API_KEY 
-        - name: REACT_APP_FIREBASE_AUTH_DOMAIN
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_AUTH_DOMAIN 
-        - name: REACT_APP_FIREBASE_PROJECT_ID
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_PROJECT_ID 
-        - name: REACT_APP_FIREBASE_STORAGE_BUCKET
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_STORAGE_BUCKET 
-        - name: REACT_APP_FIREBASE_MESSAGING_SENDER_ID
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_MESSAGING_SENDER_ID 
-        - name: REACT_APP_FIREBASE_APP_ID
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_APP_ID 
-        - name: REACT_APP_FIREBASE_VAPID_KEY
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FIREBASE_VAPID_KEY                                                                                     
-        - name: REACT_APP_USER_REGISTRATION_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_USER_REGISTRATION_FEATURE_STATE
-        - name: REACT_APP_GENERAL_TERMS_OF_USE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_GENERAL_TERMS_OF_USE
-        - name: REACT_APP_PRIVACY_POLICY
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_PRIVACY_POLICY          
-        - name: REACT_APP_POPUP_AFTER_REGISTRATION
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_POPUP_AFTER_REGISTRATION
-        - name: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ENERGY_PROVIDER_POPUP_LINK
-        - name: REACT_APP_ENERGY_PROVIDER_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ENERGY_PROVIDER_NAME                        
-        - name: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_USER_REGISTRATION_AUTO_VALIDATE            
-        - name: REACT_APP_TECH_SUPPORT_ADDRESS
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_TECH_SUPPORT_ADDRESS
-        - name: REACT_APP_GTM_ID
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_GTM_ID            
-        - name: REACT_APP_PROFESSIONAL_REGISTER_FEATURE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_PROFESSIONAL_REGISTER_FEATURE            
-        - name: REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ENERGY_PROVIDER_REGISTER_MAPPING_KEYS            
-        - name: REACT_APP_ACTIVATE_CONTRACT_OTHER_PROVIDERS_AND_OFFERS
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ACTIVATE_CONTRACT_OTHER_PROVIDERS_AND_OFFERS   
-        - name: REACT_APP_FAQ_REDIRECT_LINK
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_FAQ_REDIRECT_LINK 
-        - name: REACT_APP_MANUAL_CONTRACT_FILLING
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_MANUAL_CONTRACT_FILLING           
-        - name: REACT_APP_IS_MAINTENANCE_MODE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_IS_MAINTENANCE_MODE       
-        - name: REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_SGE_CONSENT_FEATURE_STATE_POPUP_MESSAGE        
-        - name: REACT_APP_ACCESS_RIGHTS_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ACCESS_RIGHTS_STATE 
-        - name: REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_EQUIPMENT_MEASUREMENT_FEATURE_STATE 
-        - name: REACT_APP_DASHBOARD_FEATURE_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_DASHBOARD_FEATURE_STATE
-        - name: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ALPIQ_SUBSCRIPTION_FORM_STATE
-        - name: REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_ALLOWED_ZIP_CODE_IN_REGISTRATION
-        - name: REACT_APP_AUTO_LOGIN_AFTER_REGISTRATION_STATE
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_AUTO_LOGIN_AFTER_REGISTRATION_STATE
-        - name: REACT_APP_CLIENT_ENVIRONNEMENT
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_CLIENT_ENVIRONNEMENT
-        - name: REACT_APP_SENTRY_DSN
-          valueFrom:
-            configMapKeyRef:
-              name: enduser-react
-              key: REACT_APP_SENTRY_DSN
-      imagePullSecrets:
-      - name: dockersecret  
+    replicas: {{ .Values.replicaCount | default 1 }}
+    selector:
+        matchLabels:
+            app.kubernetes.io/name: {{ include "enduser-react.name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
+    template:
+        metadata:
+            annotations:
+                # Forces a new pod rollout on each upgrade
+                rollme: {{ randAlphaNum 5 | quote }}
+            labels:
+                app.kubernetes.io/name: {{ include "enduser-react.name" . }}
+                app.kubernetes.io/instance: {{ .Release.Name }}
+        spec:
+            containers:
+                - name: {{ include "enduser-react.name" . }}
+                  image: "{{ .Values.image.repository }}:{{ .Values.global.image.tag }}"
+                  imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+                  ports:
+                      - containerPort: 80
+                  env:
+{{- range $key, $value := .Values.env }}
+                      - name: {{ $key }}
+                        valueFrom:
+                            configMapKeyRef:
+                                name: {{ include "enduser-react.fullname" $ }}
+                                key: {{ $key }}
+{{- end }}
+            imagePullSecrets:
+                - name: dockersecret
