@@ -35,7 +35,7 @@
     "react-lottie": "^1.2.4"
   },
   "scripts": {
-    "start": "craco --max_old_space_size=2048 start",
+    "start": "craco --max_old_space_size=8048 start",
     "build": "NODE_OPTIONS=--max-old-space-size=7900 craco build",
     "test": "craco test --silent",
     "eject": "react-scripts eject",
