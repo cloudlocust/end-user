@@ -114,7 +114,7 @@
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-sonarjs": "^0.11.0",
     "factory.ts": "^0.5.2",
-    "husky": "^6.0.0",
+    "husky": "^9.1.7",
     "jest-canvas-mock": "^2.5.2",
     "jest-sonar-reporter": "^2.0.0",
     "jsdoc": "^3.6.7",
